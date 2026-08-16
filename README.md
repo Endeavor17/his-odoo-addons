@@ -40,8 +40,8 @@ docker compose restart odoo
 développement vierge, créez-la d'abord :
 
 ```bash
-docker compose exec odoo odoo shell -d <base> --no-http < tools/seed_categories.py
-docker compose exec odoo odoo -d <base> -i his_stock_mdm --stop-after-init
+docker compose run --rm -T odoo odoo shell -d <base> --no-http < tools/seed_categories.py
+docker compose run --rm odoo odoo -d <base> -i his_stock_mdm --stop-after-init
 ```
 
 Sur la base de production, les catégories existent déjà : seule la seconde
@@ -50,9 +50,14 @@ commande est nécessaire.
 ## Lancer les tests
 
 ```bash
-docker compose exec odoo odoo -d <base> -u his_stock_mdm \
+docker compose run --rm odoo odoo -d <base> -u his_stock_mdm \
   --test-enable --test-tags /his_stock_mdm --stop-after-init
 ```
+
+> Utilisez `docker compose run --rm`, **pas** `exec` : le service `odoo` publie
+> déjà le port 8069, et une seconde instance lancée dans le même conteneur
+> échouerait sur `Address already in use` (`--no-http` ne suffit pas en 19.0).
+> `run --rm` démarre un conteneur jetable sans port publié.
 
 ## Branches
 

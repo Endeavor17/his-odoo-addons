@@ -23,15 +23,14 @@ services:
     ports:
       - "8069:8069"
     environment:
-      HOST: db
-      USER: odoo
-      PASSWORD: odoo
       # Evite de semer des __pycache__ dans le depot monte
       PYTHONDONTWRITEBYTECODE: "1"
     volumes:
       # Ce depot est monte comme repertoire d'addons supplementaires.
-      # /mnt/extra-addons fait deja partie de l'addons_path de l'image.
       - ./:/mnt/extra-addons
+      # La conf porte les parametres de connexion, ce qui rend chaque
+      # `docker compose exec odoo odoo ...` utilisable sans arguments -db.
+      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
       - odoo-data:/var/lib/odoo
 
 volumes:

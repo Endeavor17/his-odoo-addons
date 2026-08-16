@@ -8,7 +8,9 @@ venv/
 # Odoo
 *.log
 .odoorc
-odoo.conf
+# config/odoo.conf est versionne (environnement de dev) ; on ignore seulement
+# une conf locale deposee a la racine.
+/odoo.conf
 
 # Outils / IDE
 .idea/
