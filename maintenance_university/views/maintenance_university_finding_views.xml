@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_maintenance_university_finding_list" model="ir.ui.view">
+        <field name="name">maintenance.university.finding.list</field>
+        <field name="model">maintenance.university.finding</field>
+        <field name="arch" type="xml">
+            <list string="Inspection Findings">
+                <field name="image" widget="image" options="{'size': [40, 40]}"/>
+                <field name="request_id"/>
+                <field name="building_id"/>
+                <field name="category_id" domain="[('is_inspection', '=', False)]"/>
+                <field name="severity"/>
+                <field name="found_date"/>
+                <field name="state" decoration-success="state == 'converted'"/>
+                <field name="created_request_id"/>
+                <button name="action_convert_to_request" type="object" string="Convert to Request"
+                        invisible="state != 'draft'"
+                        groups="maintenance_university.group_maintenance_manager"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_maintenance_university_finding_form" model="ir.ui.view">
+        <field name="name">maintenance.university.finding.form</field>
+        <field name="model">maintenance.university.finding</field>
+        <field name="arch" type="xml">
+            <form string="Inspection Finding">
+                <header>
+                    <button name="action_convert_to_request" type="object" string="Convert to Request"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"
+                            groups="maintenance_university.group_maintenance_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <group>
+                        <group>
+                            <field name="request_id"/>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="building_id"/>
+                            <field name="category_id" domain="[('is_inspection', '=', False)]"/>
+                        </group>
+                        <group>
+                            <field name="severity"/>
+                            <field name="found_date"/>
+                            <field name="created_request_id" invisible="not created_request_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" nolabel="1" placeholder="Describe what was found..."/>
+                        <field name="notes" nolabel="1" placeholder="Additional notes..."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_maintenance_university_finding_search" model="ir.ui.view">
+        <field name="name">maintenance.university.finding.search</field>
+        <field name="model">maintenance.university.finding</field>
+        <field name="arch" type="xml">
+            <search string="Inspection Findings">
+                <field name="request_id"/>
+                <field name="building_id"/>
+                <field name="category_id"/>
+                <filter string="Draft" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Converted" name="filter_converted" domain="[('state', '=', 'converted')]"/>
+                <group>
+                    <filter string="Inspection Request" name="groupby_request" context="{'group_by': 'request_id'}"/>
+                    <filter string="Building" name="groupby_building" context="{'group_by': 'building_id'}"/>
+                    <filter string="Category" name="groupby_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Severity" name="groupby_severity" context="{'group_by': 'severity'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_maintenance_university_finding" model="ir.actions.act_window">
+        <field name="name">Inspection Findings</field>
+        <field name="res_model">maintenance.university.finding</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No findings yet
+            </p><p>
+                Findings come from inspection tours — a worker logs them while touring a
+                building, then a manager can convert any of them into a new maintenance request.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate: a module upgrade must never reset a running sequence. -->
+    <data noupdate="1">
+
+        <record id="seq_hr_employee_matricule_institutionnel" model="ir.sequence">
+            <field name="name">Employee Institutional ID</field>
+            <field name="code">hr.employee.matricule.institutionnel</field>
+            <field name="prefix">HIS-%(year)s-</field>
+            <field name="padding">6</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

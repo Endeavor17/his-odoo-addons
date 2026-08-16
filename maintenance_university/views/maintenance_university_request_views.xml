@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_maintenance_university_request_list" model="ir.ui.view">
+        <field name="name">maintenance.university.request.list</field>
+        <field name="model">maintenance.university.request</field>
+        <field name="arch" type="xml">
+            <list string="Maintenance Requests">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="building_id"/>
+                <field name="category_id"/>
+                <field name="create_uid" string="Manager"/>
+                <field name="employee_ids" widget="many2many_tags"/>
+                <field name="priority" widget="priority"/>
+                <field name="state" decoration-success="state == 'done'" decoration-danger="state == 'cancelled'" decoration-info="state == 'in_progress'"/>
+                <field name="request_date"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="duration" widget="float_time" sum="Total Duration"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_maintenance_university_request_kanban" model="ir.ui.view">
+        <field name="name">maintenance.university.request.kanban</field>
+        <field name="model">maintenance.university.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="building_id"/>
+                <field name="category_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="duration"/>
+                <field name="is_inspection"/>
+                <field name="scheduled_date"/>
+                <field name="is_manager"/>
+                <templates>
+                    <t t-name="card">
+                        <main>
+                            <div t-if="record.is_inspection.raw_value" class="badge text-bg-warning mb-1">Inspection tour</div>
+                            <field name="name" class="fw-bold fs-5"/>
+                            <div class="text-muted">
+                                <field name="building_id"/> · <field name="category_id"/>
+                            </div>
+                            <div t-if="record.scheduled_date.raw_value" class="text-muted small">
+                                <i class="fa fa-clock-o me-1" title="Scheduled for" role="img" aria-label="Scheduled for"/><field name="scheduled_date"/>
+                            </div>
+                            <footer>
+                                <field name="priority" widget="priority" readonly="not is_manager"/>
+                                <div class="d-flex ms-auto gap-1">
+                                    <button name="action_start" type="object" string="Start"
+                                            invisible="state != 'assigned' or is_manager" class="btn btn-sm btn-primary"/>
+                                    <button name="action_pause" type="object" string="Pause"
+                                            invisible="state != 'in_progress' or is_manager" class="btn btn-sm btn-outline-secondary"/>
+                                    <button name="action_resume" type="object" string="Resume"
+                                            invisible="state != 'paused' or is_manager" class="btn btn-sm btn-primary"/>
+                                    <button name="action_done" type="object" string="Complete"
+                                            invisible="state not in ('in_progress', 'paused') or is_manager" class="btn btn-sm btn-success"/>
+                                </div>
+                            </footer>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_maintenance_university_request_form" model="ir.ui.view">
+        <field name="name">maintenance.university.request.form</field>
+        <field name="model">maintenance.university.request</field>
+        <field name="arch" type="xml">
+            <form string="Maintenance Request">
+                <header>
+                    <button name="action_assign" type="object" string="Assign"
+                            class="oe_highlight"
+                            invisible="state != 'new'"
+                            groups="maintenance_university.group_maintenance_manager"/>
+                    <button name="action_start" type="object" string="Start"
+                            class="oe_highlight"
+                            invisible="state != 'assigned' or is_manager"/>
+                    <button name="action_pause" type="object" string="Pause"
+                            invisible="state != 'in_progress' or is_manager"/>
+                    <button name="action_resume" type="object" string="Resume"
+                            class="oe_highlight"
+                            invisible="state != 'paused' or is_manager"/>
+                    <button name="action_done" type="object" string="Complete"
+                            class="btn-success"
+                            invisible="state not in ('in_progress', 'paused') or is_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('done', 'cancelled')"
+                            confirm="Cancel this request? This cannot be undone."/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,assigned,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_findings" type="object"
+                                class="oe_stat_button" icon="fa-search"
+                                invisible="not is_inspection">
+                            <field name="finding_count" widget="statinfo" string="Findings"/>
+                        </button>
+                    </div>
+                    <field name="is_manager" invisible="1"/>
+                    <group>
+                        <group>
+                            <field name="name" readonly="not is_manager"/>
+                            <field name="building_id" readonly="not is_manager"/>
+                            <field name="category_id" readonly="not is_manager"/>
+                            <field name="is_inspection" invisible="1"/>
+                            <field name="employee_ids" widget="many2many_tags" readonly="not is_manager"/>
+                            <field name="priority" widget="priority" readonly="not is_manager"/>
+                        </group>
+                        <group>
+                            <field name="request_date"/>
+                            <field name="scheduled_date" readonly="not is_manager"/>
+                            <field name="date_assigned" readonly="1"/>
+                            <field name="date_start" readonly="1"/>
+                            <field name="date_end" readonly="1"/>
+                            <field name="duration" widget="float_time" readonly="1"/>
+                            <field name="origin_finding_id" readonly="1"
+                                   invisible="not origin_finding_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" nolabel="1" placeholder="Describe the problem..."
+                               readonly="not is_manager"/>
+                    </group>
+                    <notebook>
+                        <page name="time_log" string="Time Log">
+                            <field name="time_log_ids" readonly="1">
+                                <list>
+                                    <field name="employee_id"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="duration" widget="float_time"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="findings" string="Findings" invisible="not is_inspection">
+                            <field name="finding_ids"
+                                   context="{'default_building_id': building_id}">
+                                <list editable="bottom">
+                                    <field name="image" widget="image" options="{'size': [40, 40]}"/>
+                                    <field name="building_id"/>
+                                    <field name="category_id" domain="[('is_inspection', '=', False)]"/>
+                                    <field name="description"/>
+                                    <field name="severity"/>
+                                    <field name="state"/>
+                                    <field name="created_request_id"/>
+                                    <button name="action_convert_to_request" type="object" string="Convert to Request"
+                                            invisible="state != 'draft'"
+                                            groups="maintenance_university.group_maintenance_manager"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="report" string="Report" invisible="not is_inspection">
+                            <group>
+                                <field name="inspection_report" nolabel="1"
+                                       placeholder="How did the tour go? Anything the leader should know..."/>
+                            </group>
+                            <button name="action_submit_report" type="object" string="Send Report to Leader"
+                                    class="oe_highlight"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_maintenance_university_request_search" model="ir.ui.view">
+        <field name="name">maintenance.university.request.search</field>
+        <field name="model">maintenance.university.request</field>
+        <field name="arch" type="xml">
+            <search string="Maintenance Requests">
+                <field name="name"/>
+                <field name="building_id"/>
+                <field name="category_id"/>
+                <field name="employee_ids"/>
+                <filter string="My Requests" name="filter_my_requests" domain="[('employee_ids.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="New" name="filter_new" domain="[('state', '=', 'new')]"/>
+                <filter string="Assigned" name="filter_assigned" domain="[('state', '=', 'assigned')]"/>
+                <filter string="In Progress" name="filter_in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Paused" name="filter_paused" domain="[('state', '=', 'paused')]"/>
+                <filter string="Done" name="filter_done" domain="[('state', '=', 'done')]"/>
+                <filter string="Cancelled" name="filter_cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <group>
+                    <filter string="Category" name="groupby_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Building" name="groupby_building" context="{'group_by': 'building_id'}"/>
+                    <filter string="Worker" name="groupby_employee" context="{'group_by': 'employee_ids'}"/>
+                    <filter string="Status" name="groupby_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_maintenance_university_request" model="ir.actions.act_window">
+        <field name="name">Maintenance Requests</field>
+        <field name="res_model">maintenance.university.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a maintenance request
+            </p><p>
+                Log a problem in a university building, assign it to a worker and
+                track the time spent on it.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_maintenance_university_request_my_work" model="ir.actions.act_window">
+        <field name="name">My Work</field>
+        <field name="res_model">maintenance.university.request</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="view_maintenance_university_request_kanban"/>
+        <field name="search_view_id" ref="view_maintenance_university_request_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Nothing assigned to you yet
+            </p><p>
+                Once a manager assigns you a request, it shows up here as a card you can
+                start, pause, resume and complete.
+            </p>
+        </field>
+    </record>
+
+</odoo>
