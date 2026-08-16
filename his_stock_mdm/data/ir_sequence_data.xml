@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- noupdate="1" est IMPERATIF : sans lui, chaque mise a jour du module
+         remettrait number_next a 1 et regenererait des references deja
+         attribuees. -->
+    <data noupdate="1">
+        <record id="seq_product_internal_reference" model="ir.sequence">
+            <field name="name">Référence interne produit (MDM)</field>
+            <field name="code">product.internal.reference</field>
+            <field name="prefix">INV-</field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <!-- company_id vide = compteur unique et global. HIS, HTC et IRA
+                 partagent la meme sequence : la reference ne porte aucune
+                 information d'entite juridique. -->
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

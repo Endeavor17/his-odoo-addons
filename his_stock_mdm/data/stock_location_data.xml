@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Emplacements de vente : sous-emplacements de WH/Stock. Pas un
+             deuxieme entrepot (stock.warehouse.create genere sequences, types
+             d'operation et routes dont on n'a pas l'usage). La separation est
+             ce qui rend possibles les seuils, les pertes et le reporting par
+             point de vente. usage vaut 'internal' par defaut. -->
+
+        <record id="loc_cafeteria" model="stock.location">
+            <field name="name">Cafétéria</field>
+            <field name="location_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+        </record>
+        <record id="loc_restaurant" model="stock.location">
+            <field name="name">Restaurant</field>
+            <field name="location_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+        </record>
+        <record id="loc_copy_center" model="stock.location">
+            <field name="name">Copy Center</field>
+            <field name="location_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+        </record>
+
+        <!-- Emplacements de perte par point de vente : c'est ce qui permet un
+             reporting des pertes ventile par point (MDM Phase 7). Rattaches a
+             l'emplacement Scrap cree par res.company._create_scrap_location(),
+             qui n'a pas de XML ID -> resolu comme le fait
+             stock.scrap._compute_scrap_location_id (usage=inventory, id min). -->
+
+        <record id="loc_scrap_cafeteria" model="stock.location">
+            <field name="name">Pertes Cafétéria</field>
+            <field name="usage">inventory</field>
+            <field name="location_id" model="stock.location"
+                   eval="obj().env['stock.location'].search([('usage', '=', 'inventory')], order='id', limit=1).id"/>
+        </record>
+        <record id="loc_scrap_restaurant" model="stock.location">
+            <field name="name">Pertes Restaurant</field>
+            <field name="usage">inventory</field>
+            <field name="location_id" model="stock.location"
+                   eval="obj().env['stock.location'].search([('usage', '=', 'inventory')], order='id', limit=1).id"/>
+        </record>
+        <record id="loc_scrap_copy_center" model="stock.location">
+            <field name="name">Pertes Copy Center</field>
+            <field name="usage">inventory</field>
+            <field name="location_id" model="stock.location"
+                   eval="obj().env['stock.location'].search([('usage', '=', 'inventory')], order='id', limit=1).id"/>
+        </record>
+
+        <!-- Types d'operation POS : sans eux, les 3 caisses partagent
+             warehouse.pos_type_id et decrementent toutes le stock central.
+             C'est la piece qui rend l'exigence « magasins multiples » reelle. -->
+
+        <record id="picking_type_pos_cafeteria" model="stock.picking.type">
+            <field name="name">Ventes Cafétéria</field>
+            <field name="code">outgoing</field>
+            <field name="sequence_code">CAFOUT</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="default_location_src_id" ref="loc_cafeteria"/>
+            <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
+        </record>
+        <record id="picking_type_pos_restaurant" model="stock.picking.type">
+            <field name="name">Ventes Restaurant</field>
+            <field name="code">outgoing</field>
+            <field name="sequence_code">RESOUT</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="default_location_src_id" ref="loc_restaurant"/>
+            <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
+        </record>
+        <record id="picking_type_pos_copy_center" model="stock.picking.type">
+            <field name="name">Ventes Copy Center</field>
+            <field name="code">outgoing</field>
+            <field name="sequence_code">COPOUT</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="default_location_src_id" ref="loc_copy_center"/>
+            <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
+        </record>
+
+    </data>
+
+    <!-- Sans ce groupe les emplacements ci-dessus sont invisibles dans l'UI et
+         la colonne Emplacement des regles de reapprovisionnement est masquee. -->
+    <record id="base.group_user" model="res.groups">
+        <field name="implied_ids" eval="[Command.link(ref('stock.group_stock_multi_locations'))]"/>
+    </record>
+</odoo>

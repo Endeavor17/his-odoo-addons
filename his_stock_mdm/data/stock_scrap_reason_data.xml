@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Le modele stock.scrap.reason.tag existe nativement en 19.0
+             (stock/models/stock_scrap.py). Seules les 5 valeurs du MDM sont a
+             charger ; l'obligation de saisie est dans models/stock_scrap.py. -->
+
+        <record id="scrap_reason_perime" model="stock.scrap.reason.tag">
+            <field name="name">Périmé/Expiré</field>
+            <field name="sequence">10</field>
+            <field name="color">#C55</field>
+        </record>
+        <record id="scrap_reason_casse" model="stock.scrap.reason.tag">
+            <field name="name">Casse/Endommagé</field>
+            <field name="sequence">20</field>
+            <field name="color">#D80</field>
+        </record>
+        <record id="scrap_reason_vol" model="stock.scrap.reason.tag">
+            <field name="name">Vol/Manquant inexpliqué</field>
+            <field name="sequence">30</field>
+            <field name="color">#933</field>
+        </record>
+        <record id="scrap_reason_preparation" model="stock.scrap.reason.tag">
+            <field name="name">Erreur de préparation</field>
+            <field name="sequence">40</field>
+            <field name="color">#57A</field>
+        </record>
+        <record id="scrap_reason_autre" model="stock.scrap.reason.tag">
+            <field name="name">Autre</field>
+            <field name="sequence">50</field>
+            <field name="color">#888</field>
+        </record>
+    </data>
+</odoo>

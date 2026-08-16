@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- DOIT rester le premier fichier de donnees du manifeste : il rattache
+         l'arborescence de categories DEJA en base aux XML IDs utilises par les
+         fichiers suivants. Sans lui, ceux-ci creeraient une arborescence en
+         double. Meme mecanisme que stock/data/stock_data.xml pour
+         stock.stock_location_stock. -->
+    <function model="product.category" name="_bind_mdm_xmlids"/>
+</odoo>
