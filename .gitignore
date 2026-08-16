@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Odoo
+*.log
+.odoorc
+odoo.conf
+
+# Outils / IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Documents de travail locaux (non versionnes)
+/CLAUDE.md
+/MDM_Produits_Stock_POS_v1.md
+/Plan_Implementation_Stock_Module_Odoo19.md
