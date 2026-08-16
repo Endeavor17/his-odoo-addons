@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Exposition des 3 champs ajoutes. Rien de plus : le module est pilote
+         par la donnee, pas par l'UI. -->
+
+    <record id="product_category_form_view_mdm" model="ir.ui.view">
+        <field name="name">product.category.form.mdm</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <group name="first" position="after">
+                <group name="mdm" string="Gouvernance MDM">
+                    <field name="default_tracking"
+                           groups="stock.group_production_lot"/>
+                    <field name="default_use_expiration_date"
+                           groups="stock.group_production_lot"
+                           invisible="default_tracking == 'none' or not default_tracking"/>
+                </group>
+            </group>
+        </field>
+    </record>
+
+    <record id="product_attribute_view_form_mdm" model="ir.ui.view">
+        <field name="name">product.attribute.form.mdm</field>
+        <field name="model">product.attribute</field>
+        <field name="inherit_id" ref="product.product_attribute_view_form"/>
+        <field name="arch" type="xml">
+            <field name="display_type" position="after">
+                <field name="allowed_categ_ids" widget="many2many_tags"
+                       placeholder="Vide = aucune restriction de catégorie"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="stock_scrap_form_view_mdm" model="ir.ui.view">
+        <field name="name">stock.scrap.form.mdm</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+        <field name="arch" type="xml">
+            <field name="scrap_reason_tag_ids" position="after">
+                <field name="scrap_note" readonly="state == 'done'"
+                       placeholder="Obligatoire si le motif « Autre » est retenu"/>
+            </field>
+        </field>
+    </record>
+</odoo>

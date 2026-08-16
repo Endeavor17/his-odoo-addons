@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Uniquement des mises a jour de categories existantes (cf. mdm_bind_data.xml).
+         Aucun <record> createur : l'arborescence est deja en production.
+
+         Tracabilite  : MDM Phase 5. Valeur par defaut 'none' partout ailleurs.
+         Valorisation : MDM Phase 6. FIFO sur le frais Restaurant, CUMP (average)
+                        ailleurs. LIFO n'existe pas comme methode de valorisation
+                        dans Odoo et n'est pas autorise sous IFRS/SCF. -->
+
+    <!-- ============ Restaurant : frais, lot + peremption, FIFO ============ -->
+    <record id="categ_resto_alimentations" model="product.category">
+        <field name="default_tracking">lot</field>
+        <field name="default_use_expiration_date" eval="True"/>
+        <field name="property_cost_method">fifo</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_resto_fruits" model="product.category">
+        <field name="default_tracking">lot</field>
+        <field name="default_use_expiration_date" eval="True"/>
+        <field name="property_cost_method">fifo</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_resto_legumes" model="product.category">
+        <field name="default_tracking">lot</field>
+        <field name="default_use_expiration_date" eval="True"/>
+        <field name="property_cost_method">fifo</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_resto_viandes" model="product.category">
+        <field name="default_tracking">lot</field>
+        <field name="default_use_expiration_date" eval="True"/>
+        <field name="property_cost_method">fifo</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+
+    <!-- ============ Le reste : pas de lot, CUMP (AVCO) ==================== -->
+    <record id="categ_resto_epices" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_book" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_menage" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_cafe_biscuits" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_cafe_boissons" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_cafe_bonbons" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_cafe_chocolat" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_cafe_divers" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_cafe_snacks" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_copy_bureautique" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_copy_flexy" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_copy_impression" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_copy_photocopie" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+    <record id="categ_copy_scan" model="product.category">
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
+</odoo>

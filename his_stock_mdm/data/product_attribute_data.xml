@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- MDM section 4.4. « Marque » existe deja et n'est restreint par aucune
+         categorie : allowed_categ_ids vide = pas de restriction, il n'y a donc
+         rien a faire dessus.
+
+         NB : le MDM cite « Café / Gaz » parmi les categories eligibles, mais
+         cette categorie n'existe pas dans l'arborescence de la section 4.1
+         (« Gaz Ghadir » est un produit de Café / Boissons). Non reprise ici ;
+         a ajouter si la categorie est creee. -->
+
+    <record id="attribute_format" model="product.attribute">
+        <field name="name">Format</field>
+        <field name="display_type">radio</field>
+        <field name="create_variant">always</field>
+        <field name="allowed_categ_ids" eval="[Command.set([
+            ref('categ_cafe_boissons'),
+            ref('categ_resto_alimentations'),
+            ref('categ_resto_epices'),
+            ref('categ_menage'),
+        ])]"/>
+    </record>
+
+    <record id="attribute_variante" model="product.attribute">
+        <field name="name">Variante</field>
+        <field name="display_type">radio</field>
+        <field name="create_variant">always</field>
+        <field name="allowed_categ_ids" eval="[Command.set([
+            ref('categ_cafe_boissons'),
+            ref('categ_resto_alimentations'),
+            ref('categ_resto_epices'),
+            ref('categ_menage'),
+            ref('categ_copy_impression'),
+            ref('categ_copy_photocopie'),
+        ])]"/>
+    </record>
+
+    <!-- Liste controlee Format (MDM 4.4). Variante reste a valeurs libres. -->
+    <record id="format_33cl" model="product.attribute.value">
+        <field name="name">33CL</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">10</field>
+    </record>
+    <record id="format_30cl" model="product.attribute.value">
+        <field name="name">30CL</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">20</field>
+    </record>
+    <record id="format_25cl" model="product.attribute.value">
+        <field name="name">25CL</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">30</field>
+    </record>
+    <record id="format_24cl" model="product.attribute.value">
+        <field name="name">24CL</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">40</field>
+    </record>
+    <record id="format_20cl" model="product.attribute.value">
+        <field name="name">20CL</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">50</field>
+    </record>
+    <record id="format_175cl" model="product.attribute.value">
+        <field name="name">17.5CL</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">60</field>
+    </record>
+    <record id="format_1l" model="product.attribute.value">
+        <field name="name">1L</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">70</field>
+    </record>
+    <record id="format_2l" model="product.attribute.value">
+        <field name="name">2L</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">80</field>
+    </record>
+    <record id="format_5l" model="product.attribute.value">
+        <field name="name">5L</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">90</field>
+    </record>
+    <record id="format_125ml" model="product.attribute.value">
+        <field name="name">125ML</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">100</field>
+    </record>
+    <record id="format_100g" model="product.attribute.value">
+        <field name="name">100G</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">110</field>
+    </record>
+    <record id="format_120g" model="product.attribute.value">
+        <field name="name">120G</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">120</field>
+    </record>
+    <record id="format_130g" model="product.attribute.value">
+        <field name="name">130G</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">130</field>
+    </record>
+    <record id="format_200g" model="product.attribute.value">
+        <field name="name">200G</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">140</field>
+    </record>
+    <record id="format_260g" model="product.attribute.value">
+        <field name="name">260G</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">150</field>
+    </record>
+    <record id="format_05kg" model="product.attribute.value">
+        <field name="name">0.5KG</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">160</field>
+    </record>
+    <record id="format_15kg" model="product.attribute.value">
+        <field name="name">1.5KG</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">170</field>
+    </record>
+    <record id="format_18kg" model="product.attribute.value">
+        <field name="name">1.8KG</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">180</field>
+    </record>
+    <record id="format_5kg" model="product.attribute.value">
+        <field name="name">5KG</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">190</field>
+    </record>
+    <record id="format_15kg_bulk" model="product.attribute.value">
+        <field name="name">15KG</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">200</field>
+    </record>
+    <record id="format_25kg" model="product.attribute.value">
+        <field name="name">25KG</field><field name="attribute_id" ref="attribute_format"/><field name="sequence">210</field>
+    </record>
+</odoo>

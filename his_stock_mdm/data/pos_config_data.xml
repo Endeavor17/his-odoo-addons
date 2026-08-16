@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Une caisse par point de vente, chacune rattachee a son type
+             d'operation (et donc a son emplacement). Le reste de la config
+             (journaux, moyens de paiement) prend les defauts Odoo. -->
+
+        <record id="pos_config_cafeteria" model="pos.config">
+            <field name="name">Cafétéria</field>
+            <field name="picking_type_id" ref="picking_type_pos_cafeteria"/>
+        </record>
+        <record id="pos_config_restaurant" model="pos.config">
+            <field name="name">Restaurant</field>
+            <field name="picking_type_id" ref="picking_type_pos_restaurant"/>
+        </record>
+        <record id="pos_config_copy_center" model="pos.config">
+            <field name="name">Copy Center</field>
+            <field name="picking_type_id" ref="picking_type_pos_copy_center"/>
+        </record>
+    </data>
+</odoo>
