@@ -5,17 +5,18 @@
         <field name="name">maintenance.university.finding.list</field>
         <field name="model">maintenance.university.finding</field>
         <field name="arch" type="xml">
-            <list string="Inspection Findings">
-                <field name="image" widget="image" options="{'size': [40, 40]}"/>
+            <list string="Findings &amp; Reports">
                 <field name="request_id"/>
                 <field name="building_id"/>
                 <field name="category_id" domain="[('is_inspection', '=', False)]"/>
                 <field name="severity"/>
                 <field name="found_date"/>
-                <field name="state" decoration-success="state == 'converted'"/>
+                <field name="state" decoration-info="state == 'submitted'" decoration-success="state == 'converted'"/>
                 <field name="created_request_id"/>
+                <button name="action_submit" type="object" string="Submit"
+                        invisible="state != 'draft'"/>
                 <button name="action_convert_to_request" type="object" string="Convert to Request"
-                        invisible="state != 'draft'"
+                        invisible="state != 'submitted'"
                         groups="maintenance_university.group_maintenance_manager"/>
             </list>
         </field>
@@ -25,32 +26,39 @@
         <field name="name">maintenance.university.finding.form</field>
         <field name="model">maintenance.university.finding</field>
         <field name="arch" type="xml">
-            <form string="Inspection Finding">
+            <form string="Finding / Report">
                 <header>
+                    <button name="action_submit" type="object" string="Submit"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
                     <button name="action_convert_to_request" type="object" string="Convert to Request"
                             class="oe_highlight"
-                            invisible="state != 'draft'"
+                            invisible="state != 'submitted'"
                             groups="maintenance_university.group_maintenance_manager"/>
-                    <field name="state" widget="statusbar"/>
+                    <field name="state" widget="statusbar" readonly="1"/>
                 </header>
                 <sheet>
-                    <field name="image" widget="image" class="oe_avatar"/>
+                    <field name="image_ids" widget="many2many_binary" string="Photos"
+                           options="{'accepted_file_extensions': 'image/*'}"
+                           readonly="state != 'draft'"/>
                     <group>
                         <group>
-                            <field name="request_id"/>
+                            <field name="request_id" readonly="state != 'draft'"/>
                             <field name="employee_id" readonly="1"/>
-                            <field name="building_id"/>
-                            <field name="category_id" domain="[('is_inspection', '=', False)]"/>
+                            <field name="building_id" readonly="state != 'draft'"/>
+                            <field name="category_id" domain="[('is_inspection', '=', False)]" readonly="state != 'draft'"/>
                         </group>
                         <group>
-                            <field name="severity"/>
+                            <field name="severity" readonly="state != 'draft'"/>
                             <field name="found_date"/>
                             <field name="created_request_id" invisible="not created_request_id"/>
                         </group>
                     </group>
                     <group>
-                        <field name="description" nolabel="1" placeholder="Describe what was found..."/>
-                        <field name="notes" nolabel="1" placeholder="Additional notes..."/>
+                        <field name="description" nolabel="1" placeholder="Describe what was found..."
+                               readonly="state != 'draft'"/>
+                        <field name="notes" nolabel="1" placeholder="Additional notes..."
+                               readonly="state != 'draft'"/>
                     </group>
                 </sheet>
                 <chatter/>
@@ -62,11 +70,15 @@
         <field name="name">maintenance.university.finding.search</field>
         <field name="model">maintenance.university.finding</field>
         <field name="arch" type="xml">
-            <search string="Inspection Findings">
+            <search string="Findings &amp; Reports">
                 <field name="request_id"/>
                 <field name="building_id"/>
                 <field name="category_id"/>
+                <filter string="Inspection Findings" name="filter_inspection" domain="[('request_id', '!=', False)]"/>
+                <filter string="Department Reports" name="filter_reports" domain="[('request_id', '=', False)]"/>
+                <separator/>
                 <filter string="Draft" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Submitted" name="filter_submitted" domain="[('state', '=', 'submitted')]"/>
                 <filter string="Converted" name="filter_converted" domain="[('state', '=', 'converted')]"/>
                 <group>
                     <filter string="Inspection Request" name="groupby_request" context="{'group_by': 'request_id'}"/>
@@ -79,15 +91,26 @@
     </record>
 
     <record id="action_maintenance_university_finding" model="ir.actions.act_window">
-        <field name="name">Inspection Findings</field>
+        <field name="name">Findings &amp; Reports</field>
         <field name="res_model">maintenance.university.finding</field>
         <field name="view_mode">list,form</field>
+        <!-- Explicit view_ids: this model now has a second list/form (the
+             Reporter-facing "Report a Problem" screen) sharing it, so
+             default view resolution is no longer unambiguous — same reason
+             the Requests action needed this after it started sharing
+             maintenance.request with core. -->
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_maintenance_university_finding_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_maintenance_university_finding_form')}),
+        ]"/>
+        <field name="search_view_id" ref="view_maintenance_university_finding_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                No findings yet
+                No findings or reports yet
             </p><p>
-                Findings come from inspection tours — a worker logs them while touring a
-                building, then a manager can convert any of them into a new maintenance request.
+                Findings come from inspection tours; department reports come from staff
+                flagging a problem directly. Convert either into a new maintenance request.
             </p>
         </field>
     </record>

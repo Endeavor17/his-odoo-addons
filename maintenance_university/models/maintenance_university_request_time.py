@@ -7,7 +7,7 @@ class MaintenanceUniversityRequestTime(models.Model):
     _order = 'date_start desc'
 
     request_id = fields.Many2one(
-        'maintenance.university.request',
+        'maintenance.request',
         string="Request",
         required=True,
         ondelete='cascade',

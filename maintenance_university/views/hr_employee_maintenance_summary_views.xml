@@ -62,6 +62,13 @@
         <field name="name">Worker Summary</field>
         <field name="res_model">hr.employee</field>
         <field name="view_mode">list,form</field>
+        <!-- Scoped to maintenance Workers, excluding Managers (same reason as
+             the dashboard's worker query): without this, every employee in
+             the university showed up here, almost all with all-zero stats. -->
+        <field name="domain" eval="[
+            ('user_id.group_ids', 'in', ref('maintenance_university.group_maintenance_worker')),
+            ('user_id.group_ids', 'not in', ref('maintenance_university.group_maintenance_manager')),
+        ]"/>
         <field name="view_ids" eval="[
             (5, 0, 0),
             (0, 0, {'view_mode': 'list', 'view_id': ref('view_hr_employee_maintenance_summary_list')}),

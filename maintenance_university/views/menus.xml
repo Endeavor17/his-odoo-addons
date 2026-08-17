@@ -1,10 +1,14 @@
 <odoo>
-    <!-- Named "University Maintenance" so it does not collide with the root
-         menu of Odoo's standard `maintenance` app. -->
+    <!-- "Maintenance", not "University Maintenance": this app now IS core
+         Odoo's Maintenance app (maintenance_university_request.py inherits
+         maintenance.request directly), just customized for the university —
+         it should present as the real thing, not a separate lookalike.
+         Core's own generic Maintenance menu stays hidden from everyone
+         (see other_apps_menu_restrictions.xml) so there's no collision. -->
     <menuitem id="menu_maintenance_root"
-              name="University Maintenance"
+              name="Maintenance"
               sequence="10"
-              groups="maintenance_university.group_maintenance_worker"/>
+              groups="maintenance_university.group_maintenance_worker,maintenance_university.group_maintenance_reporter"/>
 
     <menuitem id="menu_maintenance_my_work"
               name="My Work"
@@ -12,6 +16,16 @@
               action="action_maintenance_university_request_my_work"
               sequence="5"
               groups="maintenance_university.group_maintenance_worker"/>
+
+    <!-- Reporter's only screen. Every other item under this root keeps its
+         existing Worker/Manager-only groups, so a Reporter logging in sees
+         the Maintenance app tile with just this one item inside. -->
+    <menuitem id="menu_maintenance_report"
+              name="Report a Problem"
+              parent="menu_maintenance_root"
+              action="action_maintenance_university_report"
+              sequence="7"
+              groups="maintenance_university.group_maintenance_reporter"/>
 
     <menuitem id="menu_maintenance_dashboard"
               name="Monthly Recap"
@@ -28,7 +42,7 @@
               groups="maintenance_university.group_maintenance_manager"/>
 
     <menuitem id="menu_maintenance_finding"
-              name="Inspection Findings"
+              name="Findings &amp; Reports"
               parent="menu_maintenance_root"
               action="action_maintenance_university_finding"
               sequence="20"
@@ -51,17 +65,20 @@
               name="Buildings"
               parent="menu_maintenance_configuration"
               action="action_maintenance_building"
-              sequence="10"/>
+              sequence="10"
+              groups="maintenance_university.group_maintenance_manager"/>
 
     <menuitem id="menu_maintenance_category"
               name="Categories"
               parent="menu_maintenance_configuration"
               action="action_maintenance_category"
-              sequence="20"/>
+              sequence="20"
+              groups="maintenance_university.group_maintenance_manager"/>
 
     <menuitem id="menu_maintenance_worker_create"
               name="Create Workers"
               parent="menu_maintenance_configuration"
               action="action_maintenance_university_worker_create"
-              sequence="30"/>
+              sequence="30"
+              groups="maintenance_university.group_maintenance_manager"/>
 </odoo>

@@ -26,21 +26,66 @@
         <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
 
+    <!-- Its own privilege, deliberately NOT shared with Worker/Manager's: those
+         two share one privilege because Manager implies Worker (a single
+         ladder, rendered as one dropdown in Settings > Users). Reporter is a
+         sibling role someone can hold on its own, so it needs its own
+         checkbox-style control there, not a rung on that same ladder. -->
+    <record id="res_groups_privilege_maintenance_university_reporter" model="res.groups.privilege">
+        <field name="name">University Maintenance Reporter</field>
+        <field name="category_id" ref="module_category_maintenance_university"/>
+    </record>
+
+    <record id="group_maintenance_reporter" model="res.groups">
+        <field name="name">Reporter</field>
+        <field name="sequence">15</field>
+        <field name="privilege_id" ref="res_groups_privilege_maintenance_university_reporter"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
     <!-- Record rules are intentionally NOT noupdate: they must be re-applied on
          every module upgrade, otherwise a corrected domain never reaches an
          already-installed database. -->
 
+    <!-- model_id points at core's own maintenance.request model — we inherit
+         it, we don't own it. Verified live (not assumed) that core's own
+         base.group_user rule leaks visibility beyond what we want: a Worker
+         who is merely a chatter follower of a request they're NOT assigned to
+         could see it, since ir.rule domains across a user's groups combine
+         with OR, not AND — our tighter Worker rule doesn't narrow anything
+         core's own rule already grants. The actual fix (deactivating core's
+         two default rules) is in post_init_hook, not here — both records are
+         noupdate="1" in the maintenance module's own data, which silently
+         blocks any XML-based override regardless of which module attempts
+         it; only a direct ORM write bypasses that. Create/unlink are locked
+         down in Python too (see maintenance_university_request.py) since
+         ir.rule can only ever narrow visibility, never override the ACL
+         grant base.group_user already has on this model. -->
     <record id="rule_maintenance_university_request_manager_all" model="ir.rule">
         <field name="name">Maintenance Request: Manager sees all</field>
-        <field name="model_id" ref="model_maintenance_university_request"/>
+        <field name="model_id" ref="maintenance.model_maintenance_request"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_maintenance_manager'))]"/>
     </record>
     <record id="rule_maintenance_university_request_worker_own" model="ir.rule">
         <field name="name">Maintenance Request: Worker sees own</field>
-        <field name="model_id" ref="model_maintenance_university_request"/>
+        <field name="model_id" ref="maintenance.model_maintenance_request"/>
         <field name="domain_force">[('employee_ids.user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_maintenance_worker'))]"/>
+    </record>
+    <!-- Reporter has no business on maintenance.request at all — they only
+         ever file a standalone finding (see below), never see the pipeline
+         it feeds into. This deny-all rule is required, not decorative: core's
+         own base.group_user ACL grants every internal user full read/write on
+         this model, and ir.rule domains only ever OR together across a user's
+         groups. Without this, a Reporter would silently inherit visibility
+         into every request in the university the same way the Worker
+         follower-leak did before it got fixed. -->
+    <record id="rule_maintenance_university_request_reporter_none" model="ir.rule">
+        <field name="name">Maintenance Request: Reporter sees none</field>
+        <field name="model_id" ref="maintenance.model_maintenance_request"/>
+        <field name="domain_force">[('id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_maintenance_reporter'))]"/>
     </record>
 
     <record id="rule_maintenance_university_request_time_manager_all" model="ir.rule">
@@ -67,6 +112,17 @@
         <field name="model_id" ref="model_maintenance_university_finding"/>
         <field name="domain_force">[('request_id.employee_ids.user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_maintenance_worker'))]"/>
+    </record>
+    <!-- Same model, reused for a second purpose: a Reporter's entries never
+         have a request_id (they're standalone, not tied to an inspection
+         tour) — the first clause keeps a Reporter walled off from inspection
+         findings even if a create_uid coincidence ever happened, the second
+         limits them to their own. -->
+    <record id="rule_maintenance_university_finding_reporter_own" model="ir.rule">
+        <field name="name">Finding: Reporter sees own standalone reports</field>
+        <field name="model_id" ref="model_maintenance_university_finding"/>
+        <field name="domain_force">[('request_id', '=', False), ('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_maintenance_reporter'))]"/>
     </record>
 
 </odoo>

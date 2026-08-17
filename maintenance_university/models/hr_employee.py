@@ -29,7 +29,7 @@ class HrEmployee(models.Model):
     # employee_ids is a Many2many, so there's no single "the" inverse field
     # name to pair against — this just searches for it directly instead.
     maintenance_request_ids = fields.Many2many(
-        'maintenance.university.request', string="Maintenance Requests",
+        'maintenance.request', string="Maintenance Requests",
         compute='_compute_maintenance_request_ids',
     )
     maintenance_hours_this_month = fields.Float(
@@ -77,16 +77,23 @@ class HrEmployee(models.Model):
         # the least-privileged role, rather than leaving it with no access.
         # Skipped if they already have a group (e.g. deliberately made a
         # Manager) — Manager already implies Worker, so this never downgrades.
+        # Also skipped for a Reporter: that's a sibling role, not a lesser
+        # one — without this check, giving someone an hr.employee record
+        # after setting them up as a Reporter would silently also make them
+        # a Worker (assignable to real maintenance work), which they aren't.
         worker_group = self.env.ref('maintenance_university.group_maintenance_worker')
         for employee in employees:
             user = employee.sudo().user_id
-            if user and not user.has_group('maintenance_university.group_maintenance_worker'):
+            if user and not (
+                user.has_group('maintenance_university.group_maintenance_worker')
+                or user.has_group('maintenance_university.group_maintenance_reporter')
+            ):
                 user.sudo().write({'group_ids': [(4, worker_group.id)]})
         return employees
 
     @api.depends()
     def _compute_maintenance_request_ids(self):
-        Request = self.env['maintenance.university.request']
+        Request = self.env['maintenance.request']
         for employee in self:
             employee.maintenance_request_ids = Request.search([('employee_ids', 'in', employee.id)])
 
@@ -97,7 +104,7 @@ class HrEmployee(models.Model):
         month_start = fields.Date.context_today(self).replace(day=1)
         month_start_dt = fields.Datetime.to_datetime(month_start)
         next_month_dt = month_start_dt + relativedelta(months=1)
-        Request = self.env['maintenance.university.request']
+        Request = self.env['maintenance.request']
         Time = self.env['maintenance.university.request.time']
         Finding = self.env['maintenance.university.finding']
         for employee in self:

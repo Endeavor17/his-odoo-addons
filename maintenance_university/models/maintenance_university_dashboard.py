@@ -23,12 +23,19 @@ class MaintenanceUniversityDashboard(models.AbstractModel):
         end_dt = start_dt + relativedelta(months=1)
 
         Employee = self.env['hr.employee']
-        Request = self.env['maintenance.university.request']
+        Request = self.env['maintenance.request']
         Time = self.env['maintenance.university.request.time']
         Finding = self.env['maintenance.university.finding']
 
+        # Manager implies Worker, so without excluding it explicitly, a
+        # Manager with their own hr.employee record would show up in this
+        # worker-to-worker comparison too — confirmed live as a real bug,
+        # not hypothetical.
+        worker_group = self.env.ref('maintenance_university.group_maintenance_worker')
+        manager_group = self.env.ref('maintenance_university.group_maintenance_manager')
         workers = Employee.search([
-            ('user_id.group_ids', 'in', self.env.ref('maintenance_university.group_maintenance_worker').id),
+            ('user_id.group_ids', 'in', worker_group.id),
+            ('user_id.group_ids', 'not in', manager_group.id),
         ])
         worker_rows = []
         for worker in workers:
