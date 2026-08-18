@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="module_category_his_person" model="ir.module.category">
+            <field name="name">Identite Groupe</field>
+            <field name="description">Gestion du referentiel des personnes et du matricule institutionnel.</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Groupe de gestion. Deliberement etroit : creer une fiche personne,
+             c'est emettre un matricule a vie, sur lequel s'appuieront la carte
+             RFID et le portefeuille. Les modules qui doivent en creer (ex.
+             his_hr_base a l'embauche) le font en sudo() depuis leur logique
+             serveur, pas en donnant ce groupe a tout le monde. -->
+        <record id="group_his_person_manager" model="res.groups">
+            <field name="name">Identite : gestionnaire</field>
+            <field name="category_id" ref="module_category_his_person"/>
+            <field name="comment">Peut creer et modifier les fiches personne du groupe.</field>
+        </record>
+
+    </data>
+</odoo>
