@@ -1,6 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 """Regles de l'import Sheets. La plus importante : jamais de fusion automatique."""
 import base64
+import os
 
 from odoo.tests import TransactionCase, tagged
 
@@ -176,3 +177,52 @@ class TestSheetsImport(TransactionCase):
         before = wizard.file
         wizard.action_import()
         self.assertEqual(wizard.file, before)
+
+
+@tagged('post_install', '-at_install')
+class TestSampleExport(TransactionCase):
+    """Le fichier d'exemple livre avec le module, de bout en bout.
+
+    Trois lignes, trois issues differentes : matricule exact, correspondance
+    floue a arbitrer, nouvelle personne. C'est le scenario de recette.
+    """
+
+    def test_sample_export_produces_the_three_expected_outcomes(self):
+        path = os.path.join(os.path.dirname(__file__), 'exemple_export.csv')
+        with open(path, 'rb') as handle:
+            content = handle.read()
+
+        # Ligne 1 : la personne existe deja sous ce matricule.
+        self.env['his.person'].create({
+            'matricule_institutionnel': 'HIS-2023-000090-6',
+            'nom_latin': "Amina Haddad",
+            'type_personne': 'etudiant',
+            'source_system': 'google_sheets',
+        })
+        # Ligne 2 : la personne existe, sans matricule dans la feuille.
+        self.env['his.person'].create({
+            'nom_latin': "Youssef Idrissi",
+            'email_personnel': 'youssef.idrissi@example.ma',
+            'telephone': '0600000005',
+            'type_personne': 'candidat',
+            'source_system': 'manual',
+        })
+        # Ligne 3 : inconnue au bataillon.
+
+        wizard = self.env['his.person.import'].create({
+            'file': base64.b64encode(content),
+            'filename': 'exemple_export.csv',
+        })
+        wizard.action_import()
+
+        outcomes = {line.external_ref: line.outcome for line in wizard.line_ids}
+        self.assertEqual(outcomes['ADM-2023-0090'], 'updated')
+        self.assertEqual(outcomes['ADM-2024-0117'], 'flagged')
+        self.assertEqual(outcomes['ADM-2024-0118'], 'created')
+        self.assertEqual(wizard.flagged_count, 1)
+        self.assertEqual(wizard.conflict_count, 0)
+
+        new_person = wizard.line_ids.filtered(
+            lambda line: line.external_ref == 'ADM-2024-0118'
+        ).person_id
+        self.assertRegex(new_person.matricule_institutionnel, r'^HIS-\d{4}-\d{6}-[0-9X]$')
