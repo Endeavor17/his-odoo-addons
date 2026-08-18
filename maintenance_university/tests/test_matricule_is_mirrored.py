@@ -15,7 +15,10 @@ class TestMatriculeIsMirrored(TransactionCase):
         """hr_employee_views.xml reference le champ par ce nom : il doit exister."""
         field = self.env['hr.employee']._fields.get('matricule_institutionnel')
         self.assertIsNotNone(field, "champ retire : les vues de ce module casseraient")
-        self.assertEqual(field.related, ('person_id', 'matricule_institutionnel'))
+        related = field.related
+        if isinstance(related, (list, tuple)):
+            related = '.'.join(related)
+        self.assertEqual(related, 'person_id.matricule_institutionnel')
         self.assertTrue(field.store)
         self.assertTrue(field.readonly)
 
