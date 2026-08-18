@@ -259,6 +259,22 @@ class HisPerson(models.Model):
                 }
             return {'person': existing, 'method': 'deterministic', 'score': 1.0, 'conflict': False}
 
+        # Second cle deterministe : la reference source. Rejouer un import a
+        # l'identique doit retomber sur la meme fiche, pas en proposer un
+        # rapprochement. Generique a tout adaptateur, d'ou sa place ici.
+        external_ref = (candidate_vals.get('external_ref') or '').strip()
+        source_system = candidate_vals.get('source_system')
+        if external_ref and source_system:
+            existing = self.with_context(active_test=False).search([
+                ('external_ref', '=', external_ref),
+                ('source_system', '=', source_system),
+            ], limit=1)
+            if existing:
+                return {
+                    'person': existing, 'method': 'deterministic', 'score': 1.0,
+                    'conflict': False,
+                }
+
         domain = [('type_personne', 'in', list(types))] if types else []
         best, best_score = None, 0.0
         for person in self.with_context(active_test=False).search(domain):

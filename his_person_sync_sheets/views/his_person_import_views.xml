@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_his_person_import_form" model="ir.ui.view">
+        <field name="name">his.person.import.form</field>
+        <field name="model">his.person.import</field>
+        <field name="arch" type="xml">
+            <form string="Importer l'export Google Sheets">
+                <field name="state" invisible="1"/>
+
+                <div invisible="state != 'upload'">
+                    <p>
+                        Deposez l'export Sales/Admission (CSV ou XLSX). L'import est a
+                        <b>sens unique</b> : rien n'est jamais reecrit dans le fichier source.
+                    </p>
+                    <p>
+                        Aucune fiche n'est fusionnee automatiquement. Une correspondance
+                        probable est <b>proposee</b> : c'est vous qui confirmez ou refusez.
+                    </p>
+                    <group>
+                        <field name="file" filename="filename"/>
+                        <field name="filename" invisible="1"/>
+                    </group>
+                </div>
+
+                <div invisible="state != 'review'">
+                    <group>
+                        <group>
+                            <field name="created_count"/>
+                            <field name="updated_count"/>
+                        </group>
+                        <group>
+                            <field name="flagged_count"/>
+                            <field name="conflict_count"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" nolabel="1">
+                        <list create="false" delete="false" edit="false">
+                            <field name="external_ref"/>
+                            <field name="nom_latin"/>
+                            <field name="matricule_institutionnel"/>
+                            <field name="outcome" widget="badge"
+                                   decoration-danger="outcome == 'conflict'"
+                                   decoration-warning="outcome == 'flagged'"
+                                   decoration-success="outcome in ('created', 'updated', 'confirmed', 'rejected')"/>
+                            <field name="score" optional="show"/>
+                            <field name="candidate_person_id" string="Fiche proposee"/>
+                            <field name="person_id" string="Fiche resultante"/>
+                            <field name="message"/>
+                            <button name="action_confirm_match" type="object" icon="fa-check"
+                                    title="Confirmer : c'est la meme personne"
+                                    invisible="outcome != 'flagged'"/>
+                            <button name="action_reject_match" type="object" icon="fa-times"
+                                    title="Refuser : creer une fiche distincte"
+                                    invisible="outcome != 'flagged'"/>
+                        </list>
+                    </field>
+                </div>
+
+                <footer>
+                    <button name="action_import" type="object" string="Importer"
+                            class="btn-primary" invisible="state != 'upload'"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_his_person_import" model="ir.actions.act_window">
+        <field name="name">Importer des personnes (Google Sheets)</field>
+        <field name="res_model">his.person.import</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_his_person_import"
+              name="Importer (Google Sheets)"
+              parent="his_person_core.menu_his_person_root"
+              action="action_his_person_import"
+              sequence="20"/>
+
+</odoo>

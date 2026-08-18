@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_his_person_sync_log_list" model="ir.ui.view">
+        <field name="name">his.person.sync.log.list</field>
+        <field name="model">his.person.sync.log</field>
+        <field name="arch" type="xml">
+            <list string="Journal de synchronisation" create="false" edit="false">
+                <field name="create_date" string="Date"/>
+                <field name="source_system"/>
+                <field name="external_ref"/>
+                <field name="nom_source"/>
+                <field name="matricule_source" optional="show"/>
+                <field name="outcome" widget="badge"
+                       decoration-danger="outcome == 'conflict'"
+                       decoration-warning="outcome == 'flagged'"
+                       decoration-success="outcome in ('created', 'updated', 'confirmed')"/>
+                <field name="score" optional="hide"/>
+                <field name="person_id"/>
+                <field name="user_id"/>
+                <field name="message" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_his_person_sync_log_search" model="ir.ui.view">
+        <field name="name">his.person.sync.log.search</field>
+        <field name="model">his.person.sync.log</field>
+        <field name="arch" type="xml">
+            <search string="Journal">
+                <field name="external_ref"/>
+                <field name="nom_source"/>
+                <field name="matricule_source"/>
+                <field name="person_id"/>
+                <filter name="filter_conflict" string="Conflits" domain="[('outcome','=','conflict')]"/>
+                <filter name="filter_flagged" string="A arbitrer" domain="[('outcome','=','flagged')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_outcome" string="Resultat" context="{'group_by':'outcome'}"/>
+                    <filter name="group_user" string="Execute par" context="{'group_by':'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_his_person_sync_log" model="ir.actions.act_window">
+        <field name="name">Journal de synchronisation</field>
+        <field name="res_model">his.person.sync.log</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_his_person_sync_log"
+              name="Journal de synchronisation"
+              parent="his_person_core.menu_his_person_root"
+              action="action_his_person_sync_log"
+              sequence="30"/>
+
+</odoo>
