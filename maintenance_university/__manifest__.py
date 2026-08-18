@@ -1,6 +1,6 @@
 {
     'name': 'University Maintenance',
-    'version': '19.0.1.0.0',
+    'version': '19.0.2.0.0',
     'summary': 'University maintenance management system',
     'description': """
 University Maintenance
@@ -11,7 +11,9 @@ Manage maintenance requests for university buildings:
   workflow and automatic time tracking.
 * Inspection requests that collect findings, each convertible into a new
   maintenance request.
-* Institutional ID automatically assigned to every employee.
+* Institutional ID displayed on every employee — owned and issued by
+  his_person_core, mirrored here through his_hr_base (this module no longer
+  mints it).
 """,
     'author': 'Abdo Chabouti',
     'category': 'Operations/Maintenance',
@@ -21,13 +23,13 @@ Manage maintenance requests for university buildings:
         'base',
         'mail',
         'hr',
+        'his_hr_base',
         'maintenance',
     ],
 
     'data': [
         'security/maintenance_university_security.xml',
         'security/ir.model.access.csv',
-        'data/hr_employee_sequence.xml',
         'data/maintenance_stage_data.xml',
         'views/hr_employee_views.xml',
         'views/maintenance_building_views.xml',
