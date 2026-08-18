@@ -96,7 +96,7 @@ docker compose run --rm odoo odoo -d <base> -u his_stock_mdm \
 - `main` — base commune, socle du dépôt.
 - `inventory` — module Stock/Inventaire/POS (`his_stock_mdm`).
 - `maintenance` — module Maintenance universitaire (`maintenance_university`).
-- `feature/his-person-identity-foundation` — socle Identité (`his_person_core`,
+- `identity` — socle Identité (`his_person_core`,
   `his_hr_base`, `his_person_sync_sheets`) et correction de
   `maintenance_university`, partie de `maintenance`.
 - Les autres chantiers (Achats, POS avancé) partent de `main` sur leur propre
