@@ -1,0 +1,1373 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* maintenance_university
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: \n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid ""
+"<i class=\"fa fa-clock-o me-1\" title=\"Scheduled for\" role=\"img\" aria-"
+"label=\"Scheduled for\"/>"
+msgstr ""
+"<i class=\"fa fa-clock-o me-1\" title=\"مجدول لـ\" role=\"img\" aria-"
+"label=\"مجدول لـ\"/>"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "A closed request can no longer be assigned."
+msgstr "لا يمكن تعيين طلب مغلق."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid ""
+"A finding cannot use the Inspection category: converting it would create "
+"another inspection instead of a repair request."
+msgstr ""
+"لا يمكن أن تستخدم نتيجة التفتيش فئة \"تفتيش\": تحويلها سينشئ عملية تفتيش "
+"أخرى بدلاً من طلب إصلاح."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_needaction
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+msgid "Additional notes..."
+msgstr "ملاحظات إضافية..."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_search
+msgid "Archived"
+msgstr "مؤرشف"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Assign"
+msgstr "تعيين"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__assigned
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Assigned"
+msgstr "مُعيَّن"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__date_assigned
+msgid "Assigned On"
+msgstr "تاريخ التعيين"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__employee_ids
+msgid "Assigned Workers"
+msgstr "العمال المعينون"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid ""
+"At least one worker must be assigned before the request leaves the New "
+"state."
+msgstr "يجب تعيين عامل واحد على الأقل قبل أن يغادر الطلب حالة \"جديد\"."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_attachment_count
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__building_id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__building_id
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_building_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Building"
+msgstr "المبنى"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__name
+msgid "Building Name"
+msgstr "اسم المبنى"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_building
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_building
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_building_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_building_search
+msgid "Buildings"
+msgstr "المباني"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__cancelled
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Cancelled"
+msgstr "ملغى"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_category
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_category
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_search
+msgid "Categories"
+msgstr "الفئات"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__category_id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__category_id
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Category"
+msgstr "الفئة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__name
+msgid "Category Name"
+msgstr "اسم الفئة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__code
+msgid "Code"
+msgstr "الرمز"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid "Complete"
+msgstr "إنهاء"
+
+#. module: maintenance_university
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_configuration
+msgid "Configuration"
+msgstr "الإعدادات"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Convert"
+msgstr "تحويل"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_list
+msgid "Convert to Request"
+msgstr "تحويل إلى طلب"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__state__converted
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Converted"
+msgstr "تم التحويل"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_request
+msgid "Create a maintenance request"
+msgstr "إنشاء طلب صيانة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__create_uid
+msgid "Created by"
+msgstr "أنشأه"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__create_date
+msgid "Created on"
+msgstr "تاريخ الإنشاء"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__critical
+msgid "Critical"
+msgstr "حرجة"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Describe the problem..."
+msgstr "صف المشكلة..."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+msgid "Describe what was found..."
+msgstr "صف ما تم العثور عليه..."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__description
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__description
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__description
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__description
+msgid "Description"
+msgstr "الوصف"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__done
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Done"
+msgstr "منجز"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__state__draft
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__duration
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__duration
+msgid "Duration (hours)"
+msgstr "المدة (ساعات)"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_hr_employee
+msgid "Employee"
+msgstr "موظف"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__date_end
+msgid "End"
+msgstr "النهاية"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "Finding"
+msgstr "نتيجة تفتيش"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "Finding follow-up"
+msgstr "متابعة نتيجة التفتيش"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__finding_ids
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Findings"
+msgstr "نتائج التفتيش"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__finding_count
+msgid "Findings Count"
+msgstr "عدد نتائج التفتيش"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__date_end
+msgid "Finished On"
+msgstr "تاريخ الانتهاء"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_follower_ids
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_follower_ids
+msgid "Followers"
+msgstr "المتابعون"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_partner_ids
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعون (جهات الاتصال)"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة Font Awesome، مثال: fa-tasks"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__found_date
+msgid "Found On"
+msgstr "تاريخ الاكتشاف"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__created_request_id
+msgid "Generated Request"
+msgstr "الطلب الناتج"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__has_message
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__has_message
+msgid "Has Message"
+msgstr "لديه رسالة"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__high
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__priority__2
+msgid "High"
+msgstr "عالية"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_hours_this_month
+msgid "Hours This Month"
+msgstr "ساعات هذا الشهر"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Hours Worked"
+msgstr "ساعات العمل"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "How did the tour go? Anything the leader should know..."
+msgstr "كيف سارت الجولة؟ أي شيء يجب أن يعرفه القائد..."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__id
+msgid "ID"
+msgstr "المعرّف"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__activity_exception_icon
+msgid "Icon"
+msgstr "أيقونة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "أيقونة للإشارة إلى نشاط استثنائي."
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__message_needaction
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "إذا تم التحديد، فإن الرسائل الجديدة تتطلب انتباهك."
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__message_has_error
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__message_has_sms_error
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__message_has_error
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "إذا تم التحديد، فإن بعض الرسائل بها خطأ في التسليم."
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__in_progress
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_search
+msgid "Inspection Categories"
+msgstr "فئات التفتيش"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_finding
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+msgid "Inspection Finding"
+msgstr "نتيجة تفتيش"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_finding
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_finding
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Inspection Findings"
+msgstr "نتائج التفتيش"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__inspection_report
+msgid "Inspection Report"
+msgstr "تقرير التفتيش"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__request_id
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Inspection Request"
+msgstr "طلب تفتيش"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Inspection report"
+msgstr "تقرير التفتيش"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid "Inspection tour"
+msgstr "جولة تفتيش"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__matricule_institutionnel
+msgid "Institutional ID"
+msgstr "الرقم المؤسسي"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_is_follower
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_is_follower
+msgid "Is Follower"
+msgstr "متابِع"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__is_inspection
+msgid "Is Inspection"
+msgstr "طلب تفتيش؟"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__is_inspection
+msgid "Is Inspection Category"
+msgstr "فئة تفتيش؟"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__is_manager
+msgid "Is Manager"
+msgstr "مدير؟"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_list
+msgid "Leader"
+msgstr "القائد"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_request
+msgid ""
+"Log a problem in a university building, assign it to a worker and\n"
+"                track the time spent on it."
+msgstr ""
+"سجّل مشكلة في مبنى جامعي، وعيّن لها عاملاً،\n"
+"                وتتبّع الوقت المستغرق فيها."
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__low
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__priority__0
+msgid "Low"
+msgstr "منخفضة"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_category
+msgid "Maintenance Category"
+msgstr "فئة الصيانة"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Maintenance Request"
+msgstr "طلب صيانة"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_request_time
+msgid "Maintenance Request Time Log"
+msgstr "سجل وقت طلب الصيانة"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_request
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_request_ids
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Maintenance Requests"
+msgstr "طلبات الصيانة"
+
+#. module: maintenance_university
+#: model:res.groups,name:maintenance_university.group_maintenance_manager
+msgid "Manager"
+msgstr "مدير"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__medium
+msgid "Medium"
+msgstr "متوسطة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_has_error
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسالة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_ids
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطي"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "My Requests"
+msgstr "طلباتي"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_request_my_work
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_my_work
+msgid "My Work"
+msgstr "عملي"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__new
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "New"
+msgstr "جديد"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_hr_employee_maintenance_summary
+msgid "No employees yet"
+msgstr "لا يوجد موظفون بعد"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__priority__1
+msgid "Normal"
+msgstr "عادية"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__notes
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_request_my_work
+msgid "Nothing assigned to you yet"
+msgstr "لا يوجد شيء معيّن لك بعد"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_needaction_counter
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_has_error_counter
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__message_needaction_counter
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب إجراءً"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__message_has_error_counter
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل التي بها خطأ في التسليم"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_request_my_work
+msgid ""
+"Once a manager assigns you a request, it shows up here as a card you can\n"
+"                start, pause, resume and complete."
+msgstr ""
+"بمجرد أن يعيّن لك المدير طلبًا، يظهر هنا كبطاقة يمكنك\n"
+"                بدؤها وإيقافها مؤقتًا واستئنافها وإنهاؤها."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a manager can assign a maintenance request."
+msgstr "المدير فقط يمكنه تعيين طلب صيانة."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "Only a manager can convert a finding into a maintenance request."
+msgstr "المدير فقط يمكنه تحويل نتيجة تفتيش إلى طلب صيانة."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a paused request can be resumed."
+msgstr "لا يمكن استئناف إلا طلب متوقف مؤقتًا."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a request in progress can be paused."
+msgstr "لا يمكن إيقاف إلا طلب قيد التنفيذ مؤقتًا."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a request in progress or paused can be completed."
+msgstr "لا يمكن إنهاء إلا طلب قيد التنفيذ أو متوقف مؤقتًا."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only an assigned request can be started."
+msgstr "لا يمكن بدء إلا طلب مُعيَّن."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid ""
+"Only an assigned worker can start, pause, resume or complete this request."
+msgstr "العامل المعيَّن فقط يمكنه بدء هذا الطلب أو إيقافه أو استئنافه أو إنهاءه."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only inspection requests take a report."
+msgstr "طلبات التفتيش فقط تأخذ تقريرًا."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_category.py:0
+msgid "Only one active category can be marked as the Inspection category."
+msgstr "لا يمكن تحديد سوى فئة نشطة واحدة كفئة تفتيش."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__origin_finding_id
+msgid "Originating Finding"
+msgstr "المصدر"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid "Pause"
+msgstr "إيقاف مؤقت"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__paused
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Paused"
+msgstr "متوقف مؤقتًا"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__image
+msgid "Photo"
+msgstr "صورة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__priority
+msgid "Priority"
+msgstr "الأولوية"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Report"
+msgstr "التقرير"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__employee_id
+msgid "Reported By"
+msgstr "المُبلِّغ"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__request_id
+msgid "Request"
+msgstr "الطلب"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__request_date
+msgid "Request Date"
+msgstr "تاريخ الطلب"
+
+#. module: maintenance_university
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_request
+msgid "Requests"
+msgstr "الطلبات"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_category__is_inspection
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__is_inspection
+msgid ""
+"Requests using this category show the Findings tab and enable the inspection"
+" workflow."
+msgstr ""
+"الطلبات التي تستخدم هذه الفئة تُظهر تبويب نتائج التفتيش وتفعّل مسار عمل "
+"التفتيش."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid "Resume"
+msgstr "استئناف"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_has_sms_error
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسالة النصية"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__scheduled_date
+msgid "Scheduled For"
+msgstr "التاريخ المجدول"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Select at least one worker before assigning the request."
+msgstr "اختر عاملاً واحدًا على الأقل قبل تعيين الطلب."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Send Report to Leader"
+msgstr "إرسال التقرير إلى القائد"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__severity
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Severity"
+msgstr "الخطورة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__date_start
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid "Start"
+msgstr "بدء"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__date_start
+msgid "Started On"
+msgstr "تاريخ البدء"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__state
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__state
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Status"
+msgstr "الحالة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"الحالة استنادًا إلى الأنشطة\n"
+"متأخر: تاريخ الاستحقاق قد مضى\n"
+"اليوم: تاريخ النشاط هو اليوم\n"
+"مخطط له: أنشطة مستقبلية."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__name
+msgid "Subject"
+msgstr "الموضوع"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Tasks Completed"
+msgstr "المهام المكتملة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_requests_done_this_month
+msgid "Tasks Done This Month"
+msgstr "المهام المنجزة هذا الشهر"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "This Month"
+msgstr "هذا الشهر"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "This finding has already been converted."
+msgstr "تم تحويل نتيجة التفتيش هذه بالفعل."
+
+#. module: maintenance_university
+#: model:ir.model.constraint,message:maintenance_university.constraint_hr_employee_matricule_institutionnel_unique
+msgid "This institutional ID is already assigned to another employee."
+msgstr "هذا الرقم المؤسسي معيَّن بالفعل لموظف آخر."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "This request is already closed."
+msgstr "هذا الطلب مغلق بالفعل."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__time_log_ids
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Time Log"
+msgstr "سجل الوقت"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_list
+msgid "Total"
+msgstr "الإجمالي"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_list
+msgid "Total Duration"
+msgstr "إجمالي المدة"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_building
+msgid "University Building"
+msgstr "مبنى جامعي"
+
+#. module: maintenance_university
+#: model:ir.module.category,name:maintenance_university.module_category_maintenance_university
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_root
+#: model:res.groups.privilege,name:maintenance_university.res_groups_privilege_maintenance_university
+msgid "University Maintenance"
+msgstr "صيانة الجامعة"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__priority__3
+msgid "Urgent"
+msgstr "عاجلة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__website_message_ids
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع الإلكتروني"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__website_message_ids
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__website_message_ids
+msgid "Website communication history"
+msgstr "سجل تواصل الموقع الإلكتروني"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__scheduled_date
+msgid "When the worker is expected to do this."
+msgstr "الموعد المتوقع أن يقوم فيه العامل بذلك."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__employee_id
+#: model:res.groups,name:maintenance_university.group_maintenance_worker
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Worker"
+msgstr "عامل"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_hr_employee_maintenance_summary
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_worker_summary
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_list
+msgid "Worker Summary"
+msgstr "ملخص العامل"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Write something before sending the report."
+msgstr "اكتب شيئًا قبل إرسال التقرير."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "You can only operate on your own assigned requests."
+msgstr "لا يمكنك التصرف إلا في الطلبات المعيَّنة لك."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid ""
+"You can only update your own progress on this request, not its details."
+msgstr "لا يمكنك تحديث سوى تقدّمك الخاص في هذا الطلب، وليس تفاصيله."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "request_id"
+msgstr "request_id"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/wizard/maintenance_university_worker_create.py:0
+msgid "Add at least one worker before creating."
+msgstr "أضف عاملاً واحدًا على الأقل قبل الإنشاء."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid ""
+"Add each worker's name and the login you want them to use, then click\n"
+"                    Create Workers. Type a password yourself, or leave it blank to generate\n"
+"                    one — either way, copy it out before closing this window, or look it up\n"
+"                    again later from Worker Summary."
+msgstr ""
+"أضف اسم كل عامل وتسجيل الدخول الذي تريده أن يستخدمه، ثم انقر على\n"
+"                    \"إنشاء عمال\". اكتب كلمة مرور بنفسك، أو اتركها فارغة لإنشاء\n"
+"                    واحدة تلقائيًا — في الحالتين، انسخها قبل إغلاق هذه النافذة، أو ابحث\n"
+"                    عنها لاحقًا من ملخص العامل."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid "Close"
+msgstr "إغلاق"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_worker_create
+#: model:ir.model,name:maintenance_university.model_maintenance_university_worker_create
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_worker_create
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid "Create Workers"
+msgstr "إنشاء عمال"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_worker_create_line
+msgid "Create Workers - Line"
+msgstr "إنشاء عمال - سطر"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__login
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__login
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Login Info"
+msgstr "معلومات الدخول"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/wizard/maintenance_university_worker_create.py:0
+msgid "Only a manager can create workers."
+msgstr "المدير فقط يمكنه إنشاء العمال."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__password
+msgid "Password"
+msgstr "كلمة المرور"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__initial_password
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Temporary Password"
+msgstr "كلمة المرور المؤقتة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_hr_employee__login
+msgid "Used to log into the system"
+msgstr "تُستخدم لتسجيل الدخول إلى النظام"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__wizard_id
+msgid "Wizard"
+msgstr "المعالج"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__line_ids
+msgid "Workers"
+msgstr "العمال"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "By Building"
+msgstr "حسب المبنى"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "By Category"
+msgstr "حسب الفئة"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.js:0
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Critical/High Findings"
+msgstr "الملاحظات الحرجة/العالية"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_findings_critical_this_month
+msgid "Critical/High Findings This Month"
+msgstr "الملاحظات الحرجة/العالية هذا الشهر"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.js:0
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Findings Logged"
+msgstr "الملاحظات المسجلة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_findings_logged_this_month
+msgid "Findings Logged This Month"
+msgstr "الملاحظات المسجلة هذا الشهر"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Hours Logged"
+msgstr "الساعات المسجلة"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model:ir.actions.client,name:maintenance_university.action_maintenance_university_dashboard
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_dashboard
+msgid "Monthly Recap"
+msgstr "الملخص الشهري"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_dashboard
+msgid "Monthly Recap Dashboard Data"
+msgstr "بيانات لوحة الملخص الشهري"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "No requests this month"
+msgstr "لا توجد طلبات هذا الشهر"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "No workers yet"
+msgstr "لا يوجد عمال بعد"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_dashboard.py:0
+msgid "Only a manager can view the monthly recap."
+msgstr "يمكن للمدير فقط عرض الملخص الشهري."
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Requests Completed"
+msgstr "الطلبات المكتملة"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Worker Comparison"
+msgstr "مقارنة العمال"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_building
+msgid "Add your first building"
+msgstr "أضف أول مبنى"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_category
+msgid "Add your first category"
+msgstr "أضف أول فئة"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Cancel this request? This cannot be undone."
+msgstr "إلغاء هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء."
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_finding
+msgid ""
+"Findings come from inspection tours; department reports come from staff\n"
+"                flagging a problem directly. Convert either into a new maintenance request."
+msgstr ""
+"تأتي نتائج التفتيش من جولات التفتيش؛ أما بلاغات الأقسام فتأتي من الموظفين\n"
+"                عند الإبلاغ عن مشكلة مباشرة. يمكن تحويل أي منها إلى طلب صيانة جديد."
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_category
+msgid ""
+"Mark one \"Inspection\" to use it for inspection tours instead of repair "
+"requests."
+msgstr ""
+"حدد فئة واحدة كـ\"تفتيش\" لاستخدامها في جولات التفتيش بدلاً من طلبات "
+"الإصلاح."
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Next month"
+msgstr "الشهر التالي"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_finding
+msgid "No findings or reports yet"
+msgstr "لا توجد نتائج تفتيش أو بلاغات بعد"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Previous month"
+msgstr "الشهر السابق"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_building
+msgid "Requests and findings are always logged against one of these."
+msgstr "تُسجَّل الطلبات ونتائج التفتيش دائمًا مقابل أحد هذه المباني."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__date_start_working
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__date_start_working
+msgid "Start Date"
+msgstr "تاريخ بدء العمل"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_hr_employee__date_start_working
+msgid ""
+"When this employee starts working — determines the year in their "
+"institutional ID."
+msgstr ""
+"تاريخ بدء عمل الموظف — يُستخدم لتحديد السنة في رقمه المؤسسي."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid "Leave blank to auto-generate"
+msgstr "اتركه فارغًا للإنشاء التلقائي"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a manager can create a maintenance request."
+msgstr "يمكن للمدير فقط إنشاء طلب صيانة."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a manager can delete a maintenance request."
+msgstr "يمكن للمدير فقط حذف طلب صيانة."
+
+#. module: maintenance_university
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_root
+msgid "Maintenance"
+msgstr "الصيانة"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_finding
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_finding
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Findings & Reports"
+msgstr "نتائج التفتيش والبلاغات"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__date_assigned
+msgid "Assigned On"
+msgstr "تاريخ الإسناد"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__employee_ids
+msgid "Assigned Workers"
+msgstr "العمال المعيّنون"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Department Reports"
+msgstr "بلاغات الأقسام"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+msgid "Finding / Report"
+msgstr "نتيجة تفتيش / بلاغ"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__finding_count
+msgid "Findings Count"
+msgstr "عدد نتائج التفتيش"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__date_end
+msgid "Finished On"
+msgstr "تاريخ الانتهاء"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__inspection_report
+msgid "Inspection Report"
+msgstr "تقرير التفتيش"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__is_inspection
+msgid "Is Inspection"
+msgstr "جولة تفتيش"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__is_manager
+msgid "Is Manager"
+msgstr "مدير"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_list
+msgid "My Reports"
+msgstr "بلاغاتي"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_report
+msgid "No reports yet"
+msgstr "لا توجد بلاغات بعد"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "Only the person who logged this can submit it."
+msgstr "الشخص الذي سجّل هذا فقط يمكنه إرساله."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__origin_finding_id
+msgid "Originating Finding"
+msgstr "نتيجة التفتيش الأصلية"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__image_ids
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_form
+msgid "Photos"
+msgstr "الصور"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_report
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_report
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_form
+msgid "Report a Problem"
+msgstr "الإبلاغ عن مشكلة"
+
+#. module: maintenance_university
+#: model:res.groups,name:maintenance_university.group_maintenance_reporter
+msgid "Reporter"
+msgstr "مُبلِّغ"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__scheduled_date
+msgid "Scheduled For"
+msgstr "مجدول لـ"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__date_start
+msgid "Started On"
+msgstr "تاريخ البدء"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Submit"
+msgstr "إرسال"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__state__submitted
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Submitted"
+msgstr "تم الإرسال"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "This has already been submitted and can no longer be edited."
+msgstr "تم إرسال هذا بالفعل ولم يعد بالإمكان تعديله."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "This has already been submitted."
+msgstr "تم إرسال هذا بالفعل."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "This hasn't been submitted yet."
+msgstr "لم يتم إرسال هذا بعد."
+
+#. module: maintenance_university
+#: model:res.groups.privilege,name:maintenance_university.res_groups_privilege_maintenance_university_reporter
+msgid "University Maintenance Reporter"
+msgstr "مُبلِّغ صيانة الجامعة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_request__scheduled_date
+msgid "When the worker is expected to do this."
+msgstr "الوقت المتوقع أن يقوم فيه العامل بذلك."

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="maintenance_university.Dashboard">
+        <div class="o_maintenance_university_dashboard o_content p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h2 class="mb-0">Monthly Recap</h2>
+                <div class="d-flex align-items-center gap-2" t-if="state.data">
+                    <button class="btn btn-outline-secondary btn-sm" title="Previous month" aria-label="Previous month" t-on-click="goToPreviousMonth">
+                        <i class="oi oi-arrow-left"/>
+                    </button>
+                    <span class="fw-bold" t-esc="state.data.month_label"/>
+                    <button class="btn btn-outline-secondary btn-sm" title="Next month" aria-label="Next month" t-on-click="goToNextMonth">
+                        <i class="oi oi-arrow-right"/>
+                    </button>
+                    <i t-if="state.refreshing" class="fa fa-spinner fa-spin text-muted ms-1"/>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="text-center text-muted p-5">
+                <i class="fa fa-spinner fa-spin fa-2x"/>
+            </div>
+
+            <div t-if="state.data">
+                <div class="row mb-4 g-3">
+                    <div class="col-md-4">
+                        <div class="card p-3 text-center">
+                            <div class="fs-3 fw-bold" t-esc="state.data.totals.requests_done"/>
+                            <div class="text-muted">Requests Completed</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-3 text-center">
+                            <div class="fs-3 fw-bold" t-esc="state.data.totals.hours.toFixed(1)"/>
+                            <div class="text-muted">Hours Logged</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-3 text-center">
+                            <div class="fs-3 fw-bold" t-esc="state.data.totals.findings_logged"/>
+                            <div class="text-muted">Findings Logged</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-3 mb-4">
+                    <h5>Worker Comparison</h5>
+                    <div t-if="state.data.workers.length === 0" class="text-muted text-center p-4">
+                        No workers yet
+                    </div>
+                    <t t-else="">
+                        <div class="o_maintenance_university_chart_box">
+                            <canvas t-ref="radarCanvas"/>
+                        </div>
+                        <table class="visually-hidden">
+                            <caption>Worker Comparison</caption>
+                            <thead>
+                                <tr>
+                                    <th>Worker</th>
+                                    <th>Hours Worked</th>
+                                    <th>Tasks Completed</th>
+                                    <th>Findings Logged</th>
+                                    <th>Critical/High Findings</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="state.data.workers" t-as="worker" t-key="worker.id">
+                                    <td t-esc="worker.name"/>
+                                    <td t-esc="worker.hours"/>
+                                    <td t-esc="worker.tasks_done"/>
+                                    <td t-esc="worker.findings_logged"/>
+                                    <td t-esc="worker.findings_critical"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card p-3">
+                            <h5>By Category</h5>
+                            <div t-if="state.data.category_breakdown.length === 0" class="text-muted text-center p-4">
+                                No requests this month
+                            </div>
+                            <t t-else="">
+                                <div class="o_maintenance_university_chart_box o_maintenance_university_chart_box_sm">
+                                    <canvas t-ref="categoryCanvas"/>
+                                </div>
+                                <table class="visually-hidden">
+                                    <caption>By Category</caption>
+                                    <thead><tr><th>Category</th><th>Requests</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="state.data.category_breakdown" t-as="row" t-key="row.name">
+                                            <td t-esc="row.name"/>
+                                            <td t-esc="row.count"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card p-3">
+                            <h5>By Building</h5>
+                            <div t-if="state.data.building_breakdown.length === 0" class="text-muted text-center p-4">
+                                No requests this month
+                            </div>
+                            <t t-else="">
+                                <div class="o_maintenance_university_chart_box o_maintenance_university_chart_box_sm">
+                                    <canvas t-ref="buildingCanvas"/>
+                                </div>
+                                <table class="visually-hidden">
+                                    <caption>By Building</caption>
+                                    <thead><tr><th>Building</th><th>Requests</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="state.data.building_breakdown" t-as="row" t-key="row.name">
+                                            <td t-esc="row.name"/>
+                                            <td t-esc="row.count"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,16 @@
+.o_maintenance_university_chart_box {
+    position: relative;
+    height: 420px;
+
+    @media (max-width: 767.98px) {
+        height: 260px;
+    }
+}
+
+.o_maintenance_university_chart_box_sm {
+    height: 280px;
+
+    @media (max-width: 767.98px) {
+        height: 200px;
+    }
+}

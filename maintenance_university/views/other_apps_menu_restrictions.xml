@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Discuss, Employees, and core Maintenance are visible to any internal
+         user in vanilla Odoo (base.group_user), and Apps/Users&Companies have
+         no restriction at all. To keep a Worker's app switcher down to just
+         University Maintenance, replace that blanket "any internal user"
+         access with our own Manager group on all four.
+
+         Maintenance specifically: we now depend on this module (our own
+         request model inherits maintenance.request), but its own generic
+         menu/views are still not what anyone should use day to day — they
+         show every field unfiltered, none of our workflow/security logic.
+         Hidden from everyone, Managers included, same as before this module
+         depended on it at all.
+
+         Employees keeps hr.group_hr_user / hr.group_hr_manager intact, so
+         real HR staff still see it via their own HR access regardless of
+         maintenance group membership.
+
+         This is a global menu setting, not scoped to our module's users only:
+         any other internal user who isn't a maintenance Manager also loses
+         default access to these apps, not just maintenance workers. -->
+
+    <record id="mail.menu_root_discuss" model="ir.ui.menu">
+        <field name="group_ids" eval="[(3, ref('base.group_user')), (4, ref('group_maintenance_manager'))]"/>
+    </record>
+
+    <record id="hr.menu_hr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[(3, ref('base.group_user')), (4, ref('group_maintenance_manager'))]"/>
+    </record>
+
+    <record id="maintenance.menu_maintenance_title" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('base.group_no_one')])]"/>
+    </record>
+
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('group_maintenance_manager')])]"/>
+    </record>
+
+</odoo>

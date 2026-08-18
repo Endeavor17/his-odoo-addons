@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate: a Manager may reorder/rename these via the standard Maintenance
+         Stages admin screen; a module upgrade must never stomp on that. -->
+    <data noupdate="1">
+
+        <record id="maintenance_team_university" model="maintenance.team">
+            <field name="name">University Maintenance</field>
+        </record>
+
+        <record id="maintenance_stage_new" model="maintenance.stage">
+            <field name="name">New</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="maintenance_stage_assigned" model="maintenance.stage">
+            <field name="name">Assigned</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="maintenance_stage_in_progress" model="maintenance.stage">
+            <field name="name">In Progress</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="maintenance_stage_done" model="maintenance.stage">
+            <field name="name">Done</field>
+            <field name="sequence">40</field>
+            <field name="done" eval="True"/>
+            <field name="fold" eval="True"/>
+        </record>
+        <record id="maintenance_stage_cancelled" model="maintenance.stage">
+            <field name="name">Cancelled</field>
+            <field name="sequence">50</field>
+            <field name="done" eval="True"/>
+            <field name="fold" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

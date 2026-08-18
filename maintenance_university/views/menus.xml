@@ -1,0 +1,84 @@
+<odoo>
+    <!-- "Maintenance", not "University Maintenance": this app now IS core
+         Odoo's Maintenance app (maintenance_university_request.py inherits
+         maintenance.request directly), just customized for the university —
+         it should present as the real thing, not a separate lookalike.
+         Core's own generic Maintenance menu stays hidden from everyone
+         (see other_apps_menu_restrictions.xml) so there's no collision. -->
+    <menuitem id="menu_maintenance_root"
+              name="Maintenance"
+              sequence="10"
+              groups="maintenance_university.group_maintenance_worker,maintenance_university.group_maintenance_reporter"/>
+
+    <menuitem id="menu_maintenance_my_work"
+              name="My Work"
+              parent="menu_maintenance_root"
+              action="action_maintenance_university_request_my_work"
+              sequence="5"
+              groups="maintenance_university.group_maintenance_worker"/>
+
+    <!-- Reporter's only screen. Every other item under this root keeps its
+         existing Worker/Manager-only groups, so a Reporter logging in sees
+         the Maintenance app tile with just this one item inside. -->
+    <menuitem id="menu_maintenance_report"
+              name="Report a Problem"
+              parent="menu_maintenance_root"
+              action="action_maintenance_university_report"
+              sequence="7"
+              groups="maintenance_university.group_maintenance_reporter"/>
+
+    <menuitem id="menu_maintenance_dashboard"
+              name="Monthly Recap"
+              parent="menu_maintenance_root"
+              action="action_maintenance_university_dashboard"
+              sequence="6"
+              groups="maintenance_university.group_maintenance_manager"/>
+
+    <menuitem id="menu_maintenance_request"
+              name="Requests"
+              parent="menu_maintenance_root"
+              action="action_maintenance_university_request"
+              sequence="10"
+              groups="maintenance_university.group_maintenance_manager"/>
+
+    <menuitem id="menu_maintenance_finding"
+              name="Findings &amp; Reports"
+              parent="menu_maintenance_root"
+              action="action_maintenance_university_finding"
+              sequence="20"
+              groups="maintenance_university.group_maintenance_manager"/>
+
+    <menuitem id="menu_maintenance_worker_summary"
+              name="Worker Summary"
+              parent="menu_maintenance_root"
+              action="action_hr_employee_maintenance_summary"
+              sequence="30"
+              groups="maintenance_university.group_maintenance_manager"/>
+
+    <menuitem id="menu_maintenance_configuration"
+              name="Configuration"
+              parent="menu_maintenance_root"
+              sequence="90"
+              groups="maintenance_university.group_maintenance_manager"/>
+
+    <menuitem id="menu_maintenance_building"
+              name="Buildings"
+              parent="menu_maintenance_configuration"
+              action="action_maintenance_building"
+              sequence="10"
+              groups="maintenance_university.group_maintenance_manager"/>
+
+    <menuitem id="menu_maintenance_category"
+              name="Categories"
+              parent="menu_maintenance_configuration"
+              action="action_maintenance_category"
+              sequence="20"
+              groups="maintenance_university.group_maintenance_manager"/>
+
+    <menuitem id="menu_maintenance_worker_create"
+              name="Create Workers"
+              parent="menu_maintenance_configuration"
+              action="action_maintenance_university_worker_create"
+              sequence="30"
+              groups="maintenance_university.group_maintenance_manager"/>
+</odoo>

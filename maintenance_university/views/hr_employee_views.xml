@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_employee_form_inherit_maintenance"
+        model="ir.ui.view">
+
+    <field name="name">hr.employee.form.maintenance</field>
+    <field name="model">hr.employee</field>
+    <field name="inherit_id" ref="hr.view_employee_form"/>
+
+    <field name="arch" type="xml">
+
+        <xpath expr="//field[@name='job_title']" position="after">
+            <field name="matricule_institutionnel"/>
+            <field name="date_start_working"/>
+        </xpath>
+
+    </field>
+
+</record>
+
+</odoo>
