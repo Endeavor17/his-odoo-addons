@@ -105,6 +105,27 @@ class TestPersonLink(TransactionCase):
         self.assertTrue(employee.person_id)
         self.assertRegex(employee.matricule_institutionnel, r'^HIS-\d{4}-\d{6}-[0-9X]$')
 
+    def test_backfill_advances_the_sequence_past_reused_numbers(self):
+        """Le compteur repart au-dessus des numeros que l'ancienne sequence a brules.
+
+        Sinon une embauche datee de la meme annee recevrait HIS-AAAA-000031-C
+        alors que HIS-AAAA-000031 est deja porte : deux chaines differentes a
+        cause de la cle, donc l'unicite ne dit rien, mais le meme numero pour
+        deux personnes.
+        """
+        employee = self._employee()
+        self._make_legacy(employee, 'HIS-2022-000031')
+        post_init_hook(self.env)
+
+        newcomer = self.env['his.person'].create({
+            'nom_latin': "Nouvelle Recrue",
+            'type_personne': 'employe',
+            'source_system': 'odoo_hr',
+            'matricule_sequence_date': '2022-06-01',
+        })
+        number = int(newcomer.matricule_institutionnel.split('-')[2])
+        self.assertGreater(number, 31, newcomer.matricule_institutionnel)
+
     # --- Regle 3 : l'annee du matricule vient de la date d'entree -----------
 
     def test_date_start_working_drives_the_year(self):

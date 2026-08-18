@@ -95,3 +95,15 @@ docker compose run --rm odoo odoo -d <base> -u his_hr_base \
 
 Ni carte RFID, ni portefeuille repas, ni POS/Restaurant/Copy Center, ni Uniflow :
 cf. la section « Hors périmètre » de [`his_person_core`](../his_person_core/README.md).
+
+## Calage de la séquence
+
+L'ancienne séquence a déjà brûlé des numéros, et la nouvelle repart à 1 chaque
+année. Sans calage, une embauche datée 2022 recevrait `HIS-2022-000001-C` alors
+que `HIS-2022-000001` est déjà porté : la clé de contrôle rend les deux chaînes
+différentes, donc la contrainte d'unicité ne dit rien — mais c'est **le même
+numéro pour deux personnes**, et l'œil humain ne fait pas la différence.
+
+Le `post_init_hook` cale donc le compteur de chaque année au-delà du plus haut
+numéro repris, avant d'émettre le moindre matricule neuf. Constaté en répétition
+de migration : sans ce calage, le doublon se produit.

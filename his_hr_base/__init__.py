@@ -1,5 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import logging
+import re
+from datetime import date
 
 from . import models
 
@@ -11,6 +13,53 @@ _logger = logging.getLogger(__name__)
 # l'etat des matricules AVANT migration. Migration a un coup sur un
 # identifiant a vie : on ne la supprime pas apres coup.
 BACKUP_TABLE = 'his_hr_base_matricule_backup'
+
+# Portion analysable d'un matricule : annee + numero sequentiel.
+MATRICULE_NUMBER_RE = re.compile(r'^HIS-(\d{4})-(\d{6})')
+
+
+def _advance_sequence_past_existing(env):
+    """Cale la sequence commune au-dela des numeros deja consommes, par annee.
+
+    L'ancienne sequence de maintenance_university a deja brule des numeros, et
+    la nouvelle repart a 1 pour chaque annee. Sans ce calage, une embauche
+    datee 2022 recevrait HIS-2022-000001-2 alors que HIS-2022-000001 est deja
+    porte par quelqu'un : la cle de controle rend les deux chaines
+    differentes, donc la contrainte d'unicite ne dit rien — mais c'est le meme
+    numero pour deux personnes, et l'oeil humain ne fait pas la difference.
+
+    Verifie en repetition de migration : sans cet appel, le doublon se produit.
+    """
+    sequence = env.ref('his_person_core.seq_his_person_matricule_institutionnel')
+    highest = {}
+    for person in env['his.person'].sudo().with_context(active_test=False).search([]):
+        match = MATRICULE_NUMBER_RE.match(person.matricule_institutionnel or '')
+        if match:
+            year, number = int(match.group(1)), int(match.group(2))
+            highest[year] = max(highest.get(year, 0), number)
+
+    DateRange = env['ir.sequence.date_range'].sudo()
+    for year, number in sorted(highest.items()):
+        date_from, date_to = date(year, 1, 1), date(year, 12, 31)
+        date_range = DateRange.search([
+            ('sequence_id', '=', sequence.id),
+            ('date_from', '=', date_from),
+            ('date_to', '=', date_to),
+        ], limit=1)
+        if date_range:
+            if date_range.number_next_actual <= number:
+                date_range.number_next_actual = number + 1
+        else:
+            DateRange.create({
+                'sequence_id': sequence.id,
+                'date_from': date_from,
+                'date_to': date_to,
+                'number_next_actual': number + 1,
+            })
+        _logger.info(
+            "his_hr_base: sequence %s calee a %s (plus haut numero repris : %s).",
+            year, number + 1, number,
+        )
 
 
 def _column_exists(cr, table, column):
@@ -123,6 +172,10 @@ def post_init_hook(env):
         })
         employee.person_id = person
         migrated += 1
+
+    # Avant d'emettre quoi que ce soit de neuf : caler la sequence au-dela des
+    # numeros que l'ancienne a deja consommes.
+    _advance_sequence_past_existing(env)
 
     # Employes sans matricule du tout (base anterieure, ou employe cree hors
     # de ce module) : ils recoivent une fiche et un matricule neufs. Reprend le
