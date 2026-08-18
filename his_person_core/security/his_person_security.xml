@@ -4,8 +4,13 @@
 
         <record id="module_category_his_person" model="ir.module.category">
             <field name="name">Identite Groupe</field>
-            <field name="description">Gestion du referentiel des personnes et du matricule institutionnel.</field>
+            <field name="description">Referentiel des personnes et matricule institutionnel.</field>
             <field name="sequence">20</field>
+        </record>
+
+        <record id="res_groups_privilege_his_person" model="res.groups.privilege">
+            <field name="name">Identite Groupe</field>
+            <field name="category_id" ref="module_category_his_person"/>
         </record>
 
         <!-- Groupe de gestion. Deliberement etroit : creer une fiche personne,
@@ -14,9 +19,11 @@
              his_hr_base a l'embauche) le font en sudo() depuis leur logique
              serveur, pas en donnant ce groupe a tout le monde. -->
         <record id="group_his_person_manager" model="res.groups">
-            <field name="name">Identite : gestionnaire</field>
-            <field name="category_id" ref="module_category_his_person"/>
-            <field name="comment">Peut creer et modifier les fiches personne du groupe.</field>
+            <field name="name">Gestionnaire des personnes</field>
+            <field name="sequence">10</field>
+            <field name="privilege_id" ref="res_groups_privilege_his_person"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         </record>
 
     </data>

@@ -151,6 +151,14 @@ class HisPerson(models.Model):
                 continue
             sequence_date = fields.Date.to_date(sequence_date) or fields.Date.context_today(self)
             base = sequence.next_by_code(MATRICULE_SEQUENCE_CODE, sequence_date=sequence_date)
+            if not base:
+                # Sequence absente : installation cassee. Mieux vaut refuser la
+                # creation que poser une fiche sans matricule ou avec un
+                # matricule fabrique ailleurs.
+                raise ValidationError(
+                    "Sequence %s introuvable : impossible d'emettre un matricule."
+                    % MATRICULE_SEQUENCE_CODE
+                )
             vals['matricule_institutionnel'] = '%s-%s' % (
                 base, _compute_matricule_checksum(base[-6:]),
             )

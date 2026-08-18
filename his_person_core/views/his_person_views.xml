@@ -71,10 +71,9 @@
                 <filter name="filter_candidat" string="Candidats" domain="[('type_personne','=','candidat')]"/>
                 <separator/>
                 <filter name="filter_inactive" string="Archives" domain="[('active','=',False)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_type" string="Type" context="{'group_by':'type_personne'}"/>
-                    <filter name="group_source" string="Systeme source" context="{'group_by':'source_system'}"/>
-                </group>
+                <separator/>
+                <filter name="group_type" string="Type" context="{'group_by': 'type_personne'}"/>
+                <filter name="group_source" string="Systeme source" context="{'group_by': 'source_system'}"/>
             </search>
         </field>
     </record>
@@ -85,7 +84,7 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_his_person_root" name="Identite" web_icon="base,static/description/icon.png" sequence="85"/>
+    <menuitem id="menu_his_person_root" name="Identite" sequence="85"/>
     <menuitem id="menu_his_person" name="Personnes" parent="menu_his_person_root" action="action_his_person" sequence="10"/>
 
 </odoo>

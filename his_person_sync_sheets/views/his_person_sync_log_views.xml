@@ -34,10 +34,9 @@
                 <field name="person_id"/>
                 <filter name="filter_conflict" string="Conflits" domain="[('outcome','=','conflict')]"/>
                 <filter name="filter_flagged" string="A arbitrer" domain="[('outcome','=','flagged')]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_outcome" string="Resultat" context="{'group_by':'outcome'}"/>
-                    <filter name="group_user" string="Execute par" context="{'group_by':'user_id'}"/>
-                </group>
+                <separator/>
+                <filter name="group_outcome" string="Resultat" context="{'group_by': 'outcome'}"/>
+                <filter name="group_user" string="Execute par" context="{'group_by': 'user_id'}"/>
             </search>
         </field>
     </record>
