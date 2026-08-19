@@ -14,13 +14,15 @@ a donc aucun fork du code source Odoo à maintenir.
 | [`his_person_core`](his_person_core/) | Socle Identité — fiche personne et matricule institutionnel unique, délégué à `res.partner` | Développé, 13 tests |
 | [`his_hr_base`](his_hr_base/) | Socle RH — rattache `hr.employee` au référentiel Personnes, reprise des matricules et réutilisation des contacts | Développé, 16 tests |
 | [`his_person_sync_sheets`](his_person_sync_sheets/) | Import — export Google Sheets (Sales/Admission) vers le référentiel Personnes | Développé, 19 tests |
+| [`his_meal_management`](his_meal_management/) | Carte RFID, portefeuille repas, Restaurant — cartes étudiants et crédits repas prépayés consommés en caisse | Développé, 45 tests |
 | [`maintenance_university`](maintenance_university/) | Maintenance universitaire — demandes, inspections, constats, tableau de bord | Développé ; ne possède plus le matricule (v19.0.2.0.0) |
 | _(à venir)_ | Achats | Autre intervenant |
 | _(à venir)_ | Point de Vente avancé | Autre intervenant |
-| _(à venir)_ | Carte RFID, portefeuille repas, Restaurant, Copy Center | Autre intervenant, s'appuie sur `his_person_core` |
 
 Chaque module documente ses propres règles et écarts assumés dans son
-`README.md`.
+`README.md`, à l'exception de `his_meal_management` et
+`maintenance_university`, qui se documentent pour l'instant via leur
+`__manifest__.py` et les commentaires du code.
 
 ## Démarrer l'environnement
 
@@ -30,13 +32,32 @@ Prérequis : Docker Desktop.
 docker compose up -d
 ```
 
-Odoo écoute sur http://localhost:8069. Le dépôt est monté dans le conteneur
+Odoo écoute sur **http://localhost:8072** (le port 8069 est déjà occupé par un
+autre conteneur sur le poste de développement, cf. `docker-compose.yml` : le
+mapping est `8072:8069`, Odoo écoute toujours sur 8069 *dans* le conteneur).
+Le dépôt est monté dans le conteneur
 comme répertoire d'addons supplémentaires, donc **toute modification du code
-est prise en compte après un simple redémarrage** :
+Python est prise en compte après un simple redémarrage** :
 
 ```bash
 docker compose restart odoo
 ```
+
+Une modification de vues ou de données XML exige en revanche une mise à jour du
+module (`-u`, cf. plus bas) : un redémarrage seul ne recharge pas les fichiers
+de données.
+
+## Base de travail
+
+La base de recette s'appelle **`his`** : elle porte les trois modules installés
+et les données de démonstration (points de vente configurés, cartes réelles,
+historique de crédits repas, tournées de maintenance).
+
+Elle provient d'un ancien poste de travail séparé (`D:\Point_of_sell`, base
+`meal_credits`, port 8071) qui ne contenait que `his_meal_management`. Ce poste
+a été **retiré** : son code faisait doublon avec celui de ce dépôt. Ses volumes
+Docker sont conservés en l'état comme filet de sécurité, mais **ce dépôt est
+désormais l'unique source de vérité du code**.
 
 ## Installer un module
 
@@ -79,17 +100,37 @@ passe mal sur des matricules déjà distribués.
 docker compose run --rm odoo odoo -d <base> -i his_person_sync_sheets --stop-after-init
 ```
 
+`his_meal_management` n'a aucun prérequis de données ; il dépend en revanche du
+socle Identité, qui doit donc être installé avant lui :
+
+```bash
+docker compose run --rm odoo odoo -d <base> -i his_meal_management --stop-after-init
+```
+
+> `maintenance_university` **désactive deux règles d'enregistrement du module
+> Maintenance natif** dans son `post_init_hook`, et retire Discuss / Employés /
+> Paramètres de la barre d'applications pour tout utilisateur interne qui n'est
+> pas Manager de maintenance. C'est délibéré et documenté dans le module, mais
+> c'est un effet de bord qui dépasse ses propres utilisateurs.
+
 ## Lancer les tests
 
 ```bash
 docker compose run --rm odoo odoo -d <base> -u his_stock_mdm \
   --test-enable --test-tags /his_stock_mdm --stop-after-init
+
+docker compose run --rm odoo odoo -d <base> -u his_meal_management \
+  --test-enable --test-tags /his_meal_management --stop-after-init
 ```
 
-> Utilisez `docker compose run --rm`, **pas** `exec` : le service `odoo` publie
-> déjà le port 8069, et une seconde instance lancée dans le même conteneur
-> échouerait sur `Address already in use` (`--no-http` ne suffit pas en 19.0).
-> `run --rm` démarre un conteneur jetable sans port publié.
+Lancez-les de préférence sur une base jetable plutôt que sur `his` : les
+séquences PostgreSQL ne sont pas transactionnelles, une campagne de tests
+consomme donc des numéros `INV-` réels.
+
+> Utilisez `docker compose run --rm`, **pas** `exec` : le conteneur `odoo` déjà
+> lancé occupe le port 8069 en interne, et une seconde instance dans le même
+> conteneur échouerait sur `Address already in use` (`--no-http` ne suffit pas
+> en 19.0). `run --rm` démarre un conteneur jetable sans port publié.
 
 ## Branches
 
@@ -99,6 +140,7 @@ docker compose run --rm odoo odoo -d <base> -u his_stock_mdm \
 - `identity` — socle Identité (`his_person_core`,
   `his_hr_base`, `his_person_sync_sheets`) et correction de
   `maintenance_university`, partie de `maintenance`.
+- `meal` — carte RFID et portefeuille repas (`his_meal_management`).
 - Les autres chantiers (Achats, POS avancé) partent de `main` sur leur propre
   branche et fusionnent dans `main`.
 

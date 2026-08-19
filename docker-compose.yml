@@ -21,7 +21,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8069:8069"
+      - "8072:8069"
     environment:
       # Evite de semer des __pycache__ dans le depot monte
       PYTHONDONTWRITEBYTECODE: "1"
