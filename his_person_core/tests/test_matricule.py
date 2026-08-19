@@ -124,3 +124,29 @@ class TestMatricule(TransactionCase):
         self.assertEqual(numbers[1], numbers[0] + 1)
         self.assertEqual(numbers[2], numbers[1] + 1)
         self.assertEqual(len({p.matricule_institutionnel for p in (first, second, third)}), 3)
+
+    # --- Regle 7 : la fiche est creable a la main depuis l'interface --------
+
+    def test_manual_creation_needs_no_partner(self):
+        """Saisie manuelle : la delegation cree le contact, l'utilisateur non.
+
+        partner_id est required, mais il n'est renseigne qu'au create par la
+        delegation. S'il apparait vide dans le formulaire, le client web
+        bloque la sauvegarde sur « champs requis manquants » — un champ que
+        l'utilisateur ne peut pas remplir.
+        """
+        arch = self.env['his.person'].get_view(
+            view_id=self.env.ref('his_person_core.view_his_person_form').id,
+            view_type='form',
+        )['arch']
+        self.assertIn(
+            'invisible="not partner_id"', arch,
+            "partner_id visible et vide bloquerait toute creation manuelle",
+        )
+        person = self.env['his.person'].create({
+            'name': "Saisie Manuelle",
+            'type_personne': 'candidat',
+            'source_system': 'manual',
+        })
+        self.assertTrue(person.partner_id, "la delegation n'a pas cree de contact")
+        self.assertEqual(person.partner_id.name, "Saisie Manuelle")

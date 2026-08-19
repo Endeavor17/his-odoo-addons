@@ -41,7 +41,14 @@
                             <field name="phone" string="Telephone"/>
                         </group>
                         <group string="Provenance">
-                            <field name="partner_id" readonly="1"/>
+                            <!-- invisible tant qu'il est vide : partner_id est
+                                 required, mais il n'est renseigne que par la
+                                 delegation au moment du create. Affiche et
+                                 vide, le client web refuserait la sauvegarde
+                                 sur un champ obligatoire que l'utilisateur ne
+                                 peut pas remplir. -->
+                            <field name="partner_id" readonly="1"
+                                   invisible="not partner_id"/>
                             <field name="source_system"/>
                             <field name="external_ref"/>
                         </group>
