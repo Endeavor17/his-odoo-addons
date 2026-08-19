@@ -146,6 +146,42 @@ class TestMealCredits(TransactionCase):
         self.assertFalse(self.student.barcode)
         self.assertFalse(self.env['res.partner'].search([('barcode', '=', "HIS-TEST-CARD-1")]))
 
+    def test_deleting_a_card_stops_it_being_scannable(self):
+        """Blocking a card was covered; deleting one was not, and leaked.
+
+        Four people in the live database were still scannable by cards that had
+        been deleted, because only create()/write() maintained the mirrored
+        barcode. Deleting the record left the code on the person forever.
+        """
+        card = self.env['his.meal.card'].create({
+            'partner_id': self.student.id,
+            'code': "HIS-TEST-CARD-DEL",
+        })
+        self.assertEqual(self.student.barcode, "HIS-TEST-CARD-DEL")
+
+        card.unlink()
+        self.assertFalse(self.student.barcode)
+        self.assertFalse(
+            self.env['res.partner'].search([('barcode', '=', "HIS-TEST-CARD-DEL")]),
+            "a deleted card must not leave the person scannable",
+        )
+
+    def test_deleting_a_retired_card_leaves_the_new_one_alone(self):
+        """The replacement owns the barcode; deleting the old card is a no-op."""
+        old = self.env['his.meal.card'].create({
+            'partner_id': self.student.id,
+            'code': "HIS-TEST-CARD-OLD",
+        })
+        old.action_block()
+        new = self.env['his.meal.card'].create({
+            'partner_id': self.student.id,
+            'code': "HIS-TEST-CARD-NEW",
+        })
+        self.assertEqual(self.student.barcode, new.code)
+
+        old.unlink()
+        self.assertEqual(self.student.barcode, new.code)
+
     def test_replacing_a_lost_card_keeps_the_credits(self):
         card = self.env['his.meal.card'].create({
             'partner_id': self.student.id,

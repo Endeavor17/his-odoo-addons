@@ -91,6 +91,17 @@ class HisMealCard(models.Model):
             self._sync_partner_barcode()
         return res
 
+    def unlink(self):
+        # Without this the person stays scannable by a card that no longer
+        # exists: create() and write() mirror the code onto res.partner.barcode,
+        # and nothing was taking it back off. Same "only if this card still owns
+        # it" guard as _sync_partner_barcode, so deleting a retired card cannot
+        # clear a barcode a newer active card has already claimed.
+        for card in self:
+            if card.partner_id.barcode == card.code:
+                card.partner_id.barcode = False
+        return super().unlink()
+
     @api.model
     def _next_code(self):
         return self.env['ir.sequence'].next_by_code('his.meal.card')
