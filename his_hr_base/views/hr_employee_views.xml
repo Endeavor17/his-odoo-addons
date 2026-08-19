@@ -10,6 +10,16 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
+            <!-- Work Address attend une adresse de site ou de societe. Le champ
+                 natif n'a AUCUN domaine : depuis que chaque personne du
+                 referentiel porte un res.partner, le selecteur proposait aussi
+                 les employes, les etudiants et les candidats. On les ecarte
+                 ici, sans toucher aux autres selecteurs — le POS et le
+                 portefeuille, eux, auront besoin de ces memes partenaires. -->
+            <xpath expr="//field[@name='address_id']" position="attributes">
+                <attribute name="domain">[('his_person_ids', '=', False)]</attribute>
+            </xpath>
+
             <xpath expr="//field[@name='job_title']" position="after">
                 <field name="matricule_institutionnel"/>
                 <!-- Modifiable : rattacher un employe a une fiche existante est

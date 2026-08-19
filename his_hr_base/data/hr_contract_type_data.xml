@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- noupdate="1" : les libelles peuvent etre ajustes par les RH sans
+         qu'une mise a jour du module ne les remette a leur valeur d'origine. -->
+    <data noupdate="1">
+
+        <!-- Types de contrat du droit algerien (loi n° 90-11 du 21 avril 1990
+             relative aux relations de travail).
+
+             Ajoutes A COTE des types livres par Odoo, pas a leur place : les
+             renommer ou les archiver casserait les fiches employe qui les
+             utilisent deja. country_id est le mecanisme prevu par Odoo pour
+             qualifier un type de contrat par pays.
+
+             Le CDI est la forme normale et generale de la relation de travail
+             (art. 12). Le CDD n'est admis que dans les cas limitativement
+             enumeres (art. 12 bis) : remplacement d'un absent, travaux non
+             renouvelables, activite saisonniere ou discontinue. Un CDD conclu
+             hors de ces cas est requalifie en CDI. -->
+
+        <record id="contract_type_dz_cdi" model="hr.contract.type">
+            <field name="name">CDI — Contrat à Durée Indéterminée</field>
+            <field name="code">CDI</field>
+            <field name="country_id" ref="base.dz"/>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="contract_type_dz_cdd" model="hr.contract.type">
+            <field name="name">CDD — Contrat à Durée Déterminée</field>
+            <field name="code">CDD</field>
+            <field name="country_id" ref="base.dz"/>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="contract_type_dz_temps_partiel" model="hr.contract.type">
+            <field name="name">Contrat à temps partiel</field>
+            <field name="code">CTP</field>
+            <field name="country_id" ref="base.dz"/>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="contract_type_dz_apprentissage" model="hr.contract.type">
+            <field name="name">Contrat d'apprentissage</field>
+            <field name="code">APP</field>
+            <field name="country_id" ref="base.dz"/>
+            <field name="sequence">4</field>
+        </record>
+
+    </data>
+</odoo>

@@ -20,6 +20,7 @@ rattaches a des fiches his.person portant exactement la meme valeur.
         'his_person_core',
     ],
     'data': [
+        'data/hr_contract_type_data.xml',
         'views/hr_employee_views.xml',
     ],
     'pre_init_hook': 'pre_init_hook',

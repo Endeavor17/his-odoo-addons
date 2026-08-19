@@ -217,3 +217,45 @@ class TestPersonLink(TransactionCase):
             "matricule_institutionnel affiche zero ou plusieurs fois",
         )
         self.assertIn('name="person_id"', arch)
+
+    def test_work_address_excludes_identity_partners(self):
+        """Work Address attend une adresse, pas un etudiant ni un employe.
+
+        Le champ natif n'a aucun domaine. Depuis que chaque personne porte un
+        res.partner, le selecteur les proposait toutes.
+        """
+        employee = self._employee()
+        Partner = self.env['res.partner']
+        proposes = Partner.search([('his_person_ids', '=', False)])
+        self.assertNotIn(
+            employee.person_id.partner_id, proposes,
+            "le contact d'un employe est propose comme adresse de travail",
+        )
+        self.assertIn(
+            self.env.company.partner_id, proposes,
+            "l'adresse de la societe doit rester proposee",
+        )
+
+    # --- Regle 5 : types de contrat du droit algerien -----------------------
+
+    def test_algerian_contract_types_exist_and_are_scoped(self):
+        """CDI et CDD sont charges en donnee versionnee, qualifies Algerie.
+
+        Ajoutes a cote des types livres par Odoo, jamais a leur place :
+        renommer ou archiver ceux-ci casserait les fiches qui les utilisent.
+        """
+        algeria = self.env.ref('base.dz')
+        for xmlid, code in [
+            ('his_hr_base.contract_type_dz_cdi', 'CDI'),
+            ('his_hr_base.contract_type_dz_cdd', 'CDD'),
+            ('his_hr_base.contract_type_dz_temps_partiel', 'CTP'),
+            ('his_hr_base.contract_type_dz_apprentissage', 'APP'),
+        ]:
+            contract_type = self.env.ref(xmlid)
+            self.assertEqual(contract_type.code, code)
+            self.assertEqual(contract_type.country_id, algeria)
+
+        self.assertTrue(
+            self.env['hr.contract.type'].search_count([('name', 'ilike', 'Permanent')]),
+            "les types livres par Odoo ont ete supprimes ou renommes",
+        )
