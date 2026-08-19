@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_meal_subscription_list" model="ir.ui.view">
+        <field name="name">his.meal.subscription.list</field>
+        <field name="model">his.meal.subscription</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('expired', 'cancelled')"
+                  decoration-warning="state == 'exhausted'"
+                  decoration-success="state == 'active'">
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="credits_total"/>
+                <field name="credits_used"/>
+                <field name="credits_remaining" sum="Remaining"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'exhausted'"
+                       decoration-danger="state in ('expired', 'cancelled')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_meal_subscription_form" model="ir.ui.view">
+        <field name="name">his.meal.subscription.form</field>
+        <field name="model">his.meal.subscription</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state == 'cancelled'"
+                            confirm="Cancel this subscription? Its remaining credits stop being usable immediately."/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Student">
+                            <field name="partner_id" readonly="1"/>
+                            <field name="product_id" readonly="1"/>
+                            <field name="pos_order_id" readonly="1" invisible="not pos_order_id"/>
+                        </group>
+                        <group string="Validity">
+                            <field name="date_start" readonly="1"/>
+                            <field name="date_end" readonly="1"/>
+                        </group>
+                        <group string="Credits">
+                            <field name="credits_total"/>
+                            <field name="credits_used"/>
+                            <field name="credits_remaining"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="History" name="history">
+                            <field name="transaction_ids" readonly="1">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="type"/>
+                                    <field name="credits"/>
+                                    <field name="balance_after"/>
+                                    <field name="user_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_meal_subscription_search" model="ir.ui.view">
+        <field name="name">his.meal.subscription.search</field>
+        <field name="model">his.meal.subscription</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <filter name="filter_active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="filter_exhausted" string="Exhausted" domain="[('state', '=', 'exhausted')]"/>
+                <filter name="filter_expired" string="Expired" domain="[('state', '=', 'expired')]"/>
+                <separator/>
+                <filter name="filter_expiring" string="Expiring this week"
+                        domain="[('state', '=', 'active'), ('date_end', '&lt;=', (context_today() + datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter name="group_partner" string="Student" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_product" string="Plan" domain="[]" context="{'group_by': 'product_id'}"/>
+                    <filter name="group_state" string="Status" domain="[]" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_meal_subscription" model="ir.actions.act_window">
+        <field name="name">Subscriptions</field>
+        <field name="res_model">his.meal.subscription</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No subscriptions yet</p>
+            <p>Subscriptions appear here when a student buys a plan at the point of sale.</p>
+        </field>
+    </record>
+
+</odoo>

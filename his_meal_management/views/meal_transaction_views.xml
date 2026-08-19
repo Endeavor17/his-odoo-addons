@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_meal_transaction_list" model="ir.ui.view">
+        <field name="name">his.meal.transaction.list</field>
+        <field name="model">his.meal.transaction</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false"
+                  decoration-success="credits &gt; 0" decoration-muted="credits &lt; 0">
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="type"/>
+                <field name="product_id" optional="show"/>
+                <field name="credits" sum="Net"/>
+                <field name="balance_after"/>
+                <field name="card_id" optional="hide"/>
+                <field name="user_id" string="Operator"/>
+                <field name="config_id" optional="show"/>
+                <field name="session_id" optional="hide"/>
+                <field name="pos_order_id" optional="hide"/>
+                <field name="note" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_meal_transaction_form" model="ir.ui.view">
+        <field name="name">his.meal.transaction.form</field>
+        <field name="model">his.meal.transaction</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        This is a permanent record. It cannot be edited or deleted -
+                        post a correction instead.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="card_id"/>
+                            <field name="subscription_id"/>
+                            <field name="product_id"/>
+                        </group>
+                        <group>
+                            <field name="type"/>
+                            <field name="credits"/>
+                            <field name="balance_after"/>
+                            <field name="date"/>
+                        </group>
+                        <group string="Where">
+                            <field name="config_id"/>
+                            <field name="session_id"/>
+                            <field name="pos_order_id"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group string="Note">
+                            <field name="note" nolabel="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_meal_transaction_search" model="ir.ui.view">
+        <field name="name">his.meal.transaction.search</field>
+        <field name="model">his.meal.transaction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="card_id"/>
+                <field name="user_id"/>
+                <filter name="filter_consume" string="Meals Served" domain="[('type', '=', 'consume')]"/>
+                <filter name="filter_purchase" string="Plan Purchases" domain="[('type', '=', 'purchase')]"/>
+                <filter name="filter_adjust" string="Corrections" domain="[('type', '=', 'adjust')]"/>
+                <separator/>
+                <filter name="filter_today" string="Today"
+                        domain="[('date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <group>
+                    <filter name="group_partner" string="Student" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_type" string="Type" domain="[]" context="{'group_by': 'type'}"/>
+                    <filter name="group_user" string="Operator" domain="[]" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_config" string="Point of Sale" domain="[]" context="{'group_by': 'config_id'}"/>
+                    <filter name="group_date" string="Date" domain="[]" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_meal_transaction" model="ir.actions.act_window">
+        <field name="name">Meal Ledger</field>
+        <field name="res_model">his.meal.transaction</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing recorded yet</p>
+            <p>Every credit granted and every meal served lands here, with the
+               student, card, plan, operator and the balance it left behind.</p>
+        </field>
+    </record>
+
+</odoo>

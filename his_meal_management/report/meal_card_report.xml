@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_meal_card" model="ir.actions.report">
+        <field name="name">Student Meal Card</field>
+        <field name="model">his.meal.card</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">his_meal_management.report_meal_card</field>
+        <field name="report_file">his_meal_management.report_meal_card</field>
+        <field name="print_report_name">'Card - %s' % object.code</field>
+        <field name="binding_model_id" ref="model_his_meal_card"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_meal_card">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="card">
+                <t t-call="web.basic_layout">
+                    <div class="page">
+                        <div style="border: 2px solid #333; border-radius: 8px; padding: 16px; width: 340px;">
+                            <h4 style="margin: 0 0 12px 0; letter-spacing: 2px;">HIS CARD</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div><strong t-field="card.partner_id.name"/></div>
+                                    <div style="font-size: 11px; color: #666;" t-field="card.code"/>
+                                </div>
+                                <img t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=120&amp;height=120' % card.code"
+                                     style="width: 120px; height: 120px;" alt="Card QR code"/>
+                            </div>
+                            <div style="margin-top: 12px; font-size: 10px; color: #666;">
+                                This card carries no credits. It identifies the person only.
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

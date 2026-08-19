@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- This single record is the whole POS scanning integration.
+
+             A rule whose pattern carries no {N} placeholder is matched as a
+             plain prefix, and the parser hands the full scanned string to the
+             'client' handler, which looks up res.partner.barcode. Since an
+             active meal card mirrors its code onto the student, scanning a card
+             sets the customer on the order using Odoo's own code paths - no
+             custom JavaScript is involved in identifying the student. -->
+        <!-- RFID cards. The reader types the card's 10-digit UID followed by
+             Enter, exactly like a barcode scanner, so this one record is the
+             whole hardware integration.
+
+             SEQUENCE 15 IS DELIBERATE. Rules are tried in sequence order and
+             the first match wins. The stock nomenclature has a Lot rule at 80
+             matching the prefix '10', and a catch-all Product rule at 90
+             matching '.*' - which is what currently swallows every UID and
+             makes the POS hunt for a product that does not exist. Sitting at 15
+             we beat both, while the Price/Weight rules at 14 and 36 are
+             untouched because they require ean13 encoding and a 10-digit code
+             fails their length check.
+
+             THE PATTERN IS WRITTEN OUT LONGHAND ON PURPOSE. Do not "tidy" it to
+             \d{10}$ or [0-9]{10}$ - both are broken, in opposite directions.
+             Odoo parses barcodes twice with two different implementations:
+
+               Python  barcode_nomenclature.py  re.match(pattern, code[:len(pattern)])
+               JS      barcode_parser.js        code.match('^' + pattern)
+
+             The Python side truncates the code to the pattern's own length
+             first. \d{10}$ is 7 characters, so Python only ever compares the
+             first 7 digits and never matches. [0-9]{10}$ is 10 characters, so
+             Python truncates a 13-digit EAN to its first ten digits and matches
+             it - hijacking real product barcodes. Spelled out, the pattern is 21
+             characters, longer than any barcode, so the truncation is a no-op
+             and the trailing $ correctly rejects 8- and 13-digit codes. -->
+        <record id="barcode_rule_rfid_card" model="barcode.rule">
+            <field name="name">Student RFID Card (10-digit UID)</field>
+            <field name="barcode_nomenclature_id" ref="barcodes.default_barcode_nomenclature"/>
+            <field name="sequence">15</field>
+            <field name="type">client</field>
+            <field name="encoding">any</field>
+            <field name="pattern">\d\d\d\d\d\d\d\d\d\d$</field>
+        </record>
+
+        <!-- Fallback for printed cards, kept because it cannot overlap with a
+             purely numeric UID. -->
+        <record id="barcode_rule_student_card" model="barcode.rule">
+            <field name="name">Student Meal Card (printed)</field>
+            <field name="barcode_nomenclature_id" ref="barcodes.default_barcode_nomenclature"/>
+            <field name="sequence">39</field>
+            <field name="type">client</field>
+            <field name="encoding">any</field>
+            <field name="pattern">HIS</field>
+        </record>
+
+    </data>
+</odoo>
