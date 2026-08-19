@@ -197,3 +197,23 @@ class TestPersonLink(TransactionCase):
             employee.matricule_institutionnel.startswith('HIS-2021-'),
             employee.matricule_institutionnel,
         )
+
+    # --- Regle 4 : ce module affiche ses propres champs ---------------------
+
+    def test_module_ships_its_own_employee_view(self):
+        """Les champs poses par ce module doivent etre visibles sans autre module.
+
+        Ils dependaient auparavant de la vue de maintenance_university : les
+        desinstaller rendait le matricule invisible sur la fiche employe.
+        """
+        view = self.env.ref(
+            'his_hr_base.view_employee_form_inherit_his_hr_base',
+            raise_if_not_found=False,
+        )
+        self.assertTrue(view, "his_hr_base n'expose aucune vue de ses champs")
+        arch = self.env['hr.employee'].get_view(view_type='form')['arch']
+        self.assertEqual(
+            arch.count('name="matricule_institutionnel"'), 1,
+            "matricule_institutionnel affiche zero ou plusieurs fois",
+        )
+        self.assertIn('name="person_id"', arch)

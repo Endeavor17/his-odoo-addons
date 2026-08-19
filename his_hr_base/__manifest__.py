@@ -19,7 +19,9 @@ rattaches a des fiches his.person portant exactement la meme valeur.
         'hr',
         'his_person_core',
     ],
-    'data': [],
+    'data': [
+        'views/hr_employee_views.xml',
+    ],
     'pre_init_hook': 'pre_init_hook',
     'post_init_hook': 'post_init_hook',
     'installable': True,

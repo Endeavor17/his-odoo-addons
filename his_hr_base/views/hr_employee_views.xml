@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Ce module pose person_id et matricule_institutionnel sur hr.employee :
+         c'est donc a lui de les afficher. Auparavant il s'appuyait sans le dire
+         sur la vue de maintenance_university, et les deux champs devenaient
+         invisibles des que ce module n'etait pas installe. -->
+    <record id="view_employee_form_inherit_his_hr_base" model="ir.ui.view">
+        <field name="name">hr.employee.form.his.identite</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='job_title']" position="after">
+                <field name="matricule_institutionnel"/>
+                <!-- Modifiable : rattacher un employe a une fiche existante est
+                     le seul moyen d'eviter un doublon quand la personne est
+                     deja au referentiel (ancien etudiant embauche, candidat
+                     devenu employe). Laisser vide a la creation suffit dans
+                     tous les autres cas : la fiche est creee automatiquement. -->
+                <field name="person_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
