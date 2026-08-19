@@ -5,7 +5,7 @@ import os
 
 from odoo.tests import TransactionCase, tagged
 
-HEADER = "matricule,nom_latin,nom_arabe,email_personnel,telephone,external_ref"
+HEADER = "matricule,nom latin,nom arabe,email personnel,telephone,external ref"
 
 
 @tagged('post_install', '-at_install')
@@ -25,7 +25,7 @@ class TestSheetsImport(TransactionCase):
 
     def _person(self, **vals):
         return self.env['his.person'].create({
-            'nom_latin': "Personne Test",
+            'name': "Personne Test",
             'type_personne': 'etudiant',
             'source_system': 'google_sheets',
             **vals,
@@ -35,7 +35,7 @@ class TestSheetsImport(TransactionCase):
 
     def test_exact_matricule_updates_without_reissuing(self):
         existing = self._person(
-            matricule_institutionnel='HIS-2023-000090-6', nom_latin="Amina Haddad",
+            matricule_institutionnel='HIS-2023-000090-6', name="Amina Haddad",
         )
         wizard = self._run("HIS-2023-000090-6,Amina Haddad,,amina@ex.ma,0600000001,R-1")
         line = wizard.line_ids
@@ -56,7 +56,7 @@ class TestSheetsImport(TransactionCase):
     def test_conflicting_matricule_is_reported_not_merged(self):
         employee_person = self._person(
             matricule_institutionnel='HIS-2020-000012-5',
-            nom_latin="Said Bennani",
+            name="Said Bennani",
             type_personne='employe',
             source_system='odoo_hr',
         )
@@ -71,7 +71,7 @@ class TestSheetsImport(TransactionCase):
     def test_conflict_is_traced_in_the_log(self):
         self._person(
             matricule_institutionnel='HIS-2020-000013-7',
-            nom_latin="Nadia Fassi", type_personne='employe', source_system='odoo_hr',
+            name="Nadia Fassi", type_personne='employe', source_system='odoo_hr',
         )
         self._run("HIS-2020-000013-7,Nadia Fassi,,nadia@ex.ma,0600000004,R-4")
         log = self.env['his.person.sync.log'].search([('external_ref', '=', 'R-4')])
@@ -83,9 +83,9 @@ class TestSheetsImport(TransactionCase):
 
     def test_probabilistic_match_is_flagged_not_linked(self):
         existing = self._person(
-            nom_latin="Youssef Idrissi",
+            name="Youssef Idrissi",
             email_personnel='youssef@ex.ma',
-            telephone='0600000005',
+            phone='0600000005',
             external_ref='ANCIEN-1',
         )
         wizard = self._run(",Youssef Idrissi,,youssef@ex.ma,0600000005,R-5")
@@ -101,9 +101,9 @@ class TestSheetsImport(TransactionCase):
 
     def test_confirming_a_flagged_match_records_who_and_when(self):
         existing = self._person(
-            nom_latin="Salma Cherkaoui",
+            name="Salma Cherkaoui",
             email_personnel='salma@ex.ma',
-            telephone='0600000006',
+            phone='0600000006',
             external_ref='ANCIEN-2',
         )
         wizard = self._run(",Salma Cherkaoui,,salma@ex.ma,0600000006,R-6")
@@ -116,8 +116,8 @@ class TestSheetsImport(TransactionCase):
 
     def test_rejecting_a_flagged_match_creates_a_distinct_person(self):
         existing = self._person(
-            nom_latin="Omar Tazi", email_personnel='omar@ex.ma',
-            telephone='0600000007', external_ref='ANCIEN-3',
+            name="Omar Tazi", email_personnel='omar@ex.ma',
+            phone='0600000007', external_ref='ANCIEN-3',
         )
         wizard = self._run(",Omar Tazi,,omar@ex.ma,0600000007,R-7")
         wizard.line_ids.action_reject_match()
@@ -169,6 +169,24 @@ class TestSheetsImport(TransactionCase):
             ), 1,
         )
 
+    def test_new_student_gets_exactly_one_partner(self):
+        """La delegation cree un partenaire, un seul, par etudiant importe."""
+        before = self.env['res.partner'].search_count([])
+        wizard = self._run(",Souad Belkacem,,souad@ex.ma,0600000020,R-20")
+        person = wizard.line_ids.person_id
+        self.assertTrue(person.partner_id)
+        self.assertEqual(person.partner_id.name, "Souad Belkacem")
+        self.assertEqual(
+            self.env['res.partner'].search_count([]), before + 1,
+            "l'import a cree plus d'un contact pour une seule personne",
+        )
+
+    def test_imported_partner_carries_the_identity_tag(self):
+        """L'etiquette permettra aux Ventes d'ecarter les etudiants plus tard."""
+        category = self.env.ref('his_person_core.categ_partner_identite')
+        wizard = self._run(",Karim Belhadj,,karim.b@ex.ma,0600000021,R-21")
+        self.assertIn(category, wizard.line_ids.person_id.partner_id.category_id)
+
     # --- Regle 6 : le fichier source n'est jamais reecrit -------------------
 
     def test_import_is_one_way(self):
@@ -195,15 +213,15 @@ class TestSampleExport(TransactionCase):
         # Ligne 1 : la personne existe deja sous ce matricule.
         self.env['his.person'].create({
             'matricule_institutionnel': 'HIS-2023-000090-6',
-            'nom_latin': "Amina Haddad",
+            'name': "Amina Haddad",
             'type_personne': 'etudiant',
             'source_system': 'google_sheets',
         })
         # Ligne 2 : la personne existe, sans matricule dans la feuille.
         self.env['his.person'].create({
-            'nom_latin': "Youssef Idrissi",
+            'name': "Youssef Idrissi",
             'email_personnel': 'youssef.idrissi@example.ma',
-            'telephone': '0600000005',
+            'phone': '0600000005',
             'type_personne': 'candidat',
             'source_system': 'manual',
         })

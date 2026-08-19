@@ -37,7 +37,7 @@
                     <field name="line_ids" nolabel="1">
                         <list create="false" delete="false" edit="false">
                             <field name="external_ref"/>
-                            <field name="nom_latin"/>
+                            <field name="name"/>
                             <field name="matricule_institutionnel"/>
                             <field name="outcome" widget="badge"
                                    decoration-danger="outcome == 'conflict'"

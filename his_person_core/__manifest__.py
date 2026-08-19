@@ -21,6 +21,7 @@ module ne doit en creer une seconde ni ecrire directement dans le champ.
         'security/his_person_security.xml',
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
+        'data/res_partner_category_data.xml',
         'views/his_person_views.xml',
     ],
     'installable': True,

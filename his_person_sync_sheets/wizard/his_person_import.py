@@ -22,8 +22,8 @@ OUTCOME_SELECTION = [
 ]
 
 ROW_FIELDS = (
-    'matricule_institutionnel', 'nom_latin', 'nom_arabe',
-    'email_institutionnel', 'email_personnel', 'telephone', 'external_ref',
+    'matricule_institutionnel', 'name', 'nom_arabe',
+    'email', 'email_personnel', 'phone', 'external_ref',
 )
 
 # Plusieurs en-tetes possibles pour une meme colonne : l'export est produit a
@@ -32,13 +32,15 @@ COLUMN_ALIASES = {
     'matricule_institutionnel': (
         'matricule', 'matricule institutionnel', 'id institutionnel',
     ),
-    'nom_latin': ('nom latin', 'nom', 'name', 'nom complet'),
+    'name': ('nom latin', 'nom', 'nom complet'),
     'nom_arabe': ('nom arabe', 'nom ar', 'arabe'),
-    'email_institutionnel': (
-        'email institutionnel', 'email pro', 'mail institutionnel',
-    ),
+    # email_personnel AVANT email : une colonne intitulee simplement « email »
+    # dans un export d'admission est l'adresse propre de l'etudiant, pas une
+    # adresse institutionnelle — celle-ci doit etre libellee explicitement.
+    # L'ordre du dict decide qui reclame l'entete en premier.
     'email_personnel': ('email personnel', 'email', 'mail', 'e-mail'),
-    'telephone': ('telephone', 'tel', 'phone', 'gsm', 'mobile'),
+    'email': ('email institutionnel', 'email pro', 'mail institutionnel'),
+    'phone': ('telephone', 'tel', 'gsm', 'mobile'),
     'external_ref': ('external ref', 'reference', 'ref', 'id', 'identifiant', 'row id'),
 }
 
@@ -126,16 +128,22 @@ class HisPersonImport(models.TransientModel):
             return []
         headers = [_normalize_header(cell) for cell in raw_rows[0]]
         mapping = {}
+        claimed = set()
         for field, aliases in COLUMN_ALIASES.items():
             normalized = {_normalize_header(alias) for alias in aliases}
             normalized.add(_normalize_header(field))
             for index, header in enumerate(headers):
-                if header in normalized and field not in mapping:
+                # `claimed` : une colonne n'alimente qu'un seul champ. Sans
+                # cela, un entete « email » serait reclame a la fois par
+                # email_personnel (alias explicite) et par email (nom du
+                # champ), et la meme valeur atterrirait dans les deux.
+                if header in normalized and field not in mapping and index not in claimed:
                     mapping[field] = index
-        if 'nom_latin' not in mapping:
+                    claimed.add(index)
+        if 'name' not in mapping:
             raise UserError(
                 "Aucune colonne de nom reconnue dans l'en-tete du fichier. "
-                "Intitules acceptes : %s." % ", ".join(COLUMN_ALIASES['nom_latin'])
+                "Intitules acceptes : %s." % ", ".join(COLUMN_ALIASES['name'])
             )
         rows = []
         for position, raw in enumerate(raw_rows[1:], start=2):
@@ -143,7 +151,7 @@ class HisPersonImport(models.TransientModel):
                 field: (raw[index].strip() if index < len(raw) and raw[index] else '')
                 for field, index in mapping.items()
             }
-            if not row.get('nom_latin'):
+            if not row.get('name'):
                 continue  # ligne vide ou ligne de separation dans la feuille
             # Sans reference propre dans la source, la position sert de cle de
             # rejeu : reimporter le meme fichier doit retomber sur les memes
@@ -204,8 +212,8 @@ class HisPersonImport(models.TransientModel):
         return {
             field: row.get(field) or False
             for field in (
-                'nom_latin', 'nom_arabe', 'email_institutionnel',
-                'email_personnel', 'telephone', 'external_ref',
+                'name', 'nom_arabe', 'email',
+                'email_personnel', 'phone', 'external_ref',
             )
         }
 
@@ -249,7 +257,7 @@ class HisPersonImport(models.TransientModel):
                 'person_id': line.person_id.id or line.candidate_person_id.id or False,
                 'source_system': SOURCE_SYSTEM,
                 'external_ref': line.external_ref,
-                'nom_source': line.nom_latin,
+                'nom_source': line.name,
                 'matricule_source': line.matricule_institutionnel,
                 'outcome': line.outcome,
                 'score': line.score,
@@ -281,11 +289,11 @@ class HisPersonImportLine(models.TransientModel):
     import_id = fields.Many2one('his.person.import', required=True, ondelete='cascade')
 
     matricule_institutionnel = fields.Char(string="Matricule (source)", readonly=True)
-    nom_latin = fields.Char(string="Nom (latin)", readonly=True)
+    name = fields.Char(string="Nom (latin)", readonly=True)
     nom_arabe = fields.Char(string="Nom (arabe)", readonly=True)
-    email_institutionnel = fields.Char(string="Email institutionnel", readonly=True)
+    email = fields.Char(string="Email institutionnel", readonly=True)
     email_personnel = fields.Char(string="Email personnel", readonly=True)
-    telephone = fields.Char(string="Telephone", readonly=True)
+    phone = fields.Char(string="Telephone", readonly=True)
     external_ref = fields.Char(string="Reference source", readonly=True)
 
     outcome = fields.Selection(selection=OUTCOME_SELECTION, string="Resultat", readonly=True)

@@ -7,11 +7,11 @@
         <field name="arch" type="xml">
             <list string="Personnes">
                 <field name="matricule_institutionnel"/>
-                <field name="nom_latin"/>
+                <field name="name"/>
                 <field name="nom_arabe" optional="show"/>
                 <field name="type_personne"/>
-                <field name="email_institutionnel" optional="show"/>
-                <field name="telephone" optional="hide"/>
+                <field name="email" string="Email institutionnel" optional="show"/>
+                <field name="phone" string="Telephone" optional="hide"/>
                 <field name="source_system" optional="hide"/>
                 <field name="match_method" optional="hide"/>
             </list>
@@ -25,8 +25,8 @@
             <form string="Personne">
                 <sheet>
                     <div class="oe_title">
-                        <label for="nom_latin"/>
-                        <h1><field name="nom_latin" placeholder="Nom (latin)"/></h1>
+                        <label for="name" string="Nom (latin)"/>
+                        <h1><field name="name" placeholder="Nom (latin)"/></h1>
                         <h3><field name="matricule_institutionnel"/></h3>
                     </div>
                     <group>
@@ -36,11 +36,12 @@
                             <field name="active" widget="boolean_toggle"/>
                         </group>
                         <group string="Contact">
-                            <field name="email_institutionnel"/>
+                            <field name="email" string="Email institutionnel"/>
                             <field name="email_personnel"/>
-                            <field name="telephone"/>
+                            <field name="phone" string="Telephone"/>
                         </group>
                         <group string="Provenance">
+                            <field name="partner_id" readonly="1"/>
                             <field name="source_system"/>
                             <field name="external_ref"/>
                         </group>
@@ -62,9 +63,9 @@
         <field name="arch" type="xml">
             <search string="Personnes">
                 <field name="matricule_institutionnel"/>
-                <field name="nom_latin"/>
+                <field name="name"/>
                 <field name="nom_arabe"/>
-                <field name="email_institutionnel"/>
+                <field name="email" string="Email institutionnel"/>
                 <filter name="filter_employe" string="Employes" domain="[('type_personne','=','employe')]"/>
                 <filter name="filter_enseignant" string="Enseignants" domain="[('type_personne','=','enseignant')]"/>
                 <filter name="filter_etudiant" string="Etudiants" domain="[('type_personne','=','etudiant')]"/>

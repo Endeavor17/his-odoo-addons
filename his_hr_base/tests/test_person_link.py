@@ -1,6 +1,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 """hr.employee est un miroir du referentiel Personnes, jamais sa source."""
+from psycopg2 import IntegrityError
+
+from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
+from odoo.tools import mute_logger
 
 from odoo.addons.his_hr_base import BACKUP_TABLE, post_init_hook
 
@@ -12,8 +16,16 @@ class TestPersonLink(TransactionCase):
         return self.env['hr.employee'].create({'name': "Test Employe", **vals})
 
     def _make_legacy(self, employee, matricule):
-        """Ramene un employe a l'etat « avant reprise » : matricule brut, pas de fiche."""
+        """Ramene un employe a l'etat « avant reprise » : matricule brut, pas de fiche.
+
+        La fiche creee par create() est supprimee, pas seulement detachee : son
+        partenaire doit redevenir libre, sinon la reprise le verrait deja pris
+        et creerait un second contact — un artefact du test, pas le
+        comportement reel sur une base d'avant migration.
+        """
+        person = employee.person_id
         employee.person_id = False
+        person.unlink()
         self.env.cr.execute(
             "INSERT INTO %s (employee_id, matricule) VALUES (%%s, %%s) "
             "ON CONFLICT (employee_id) DO UPDATE SET matricule = EXCLUDED.matricule"
@@ -40,7 +52,7 @@ class TestPersonLink(TransactionCase):
 
     def test_explicit_person_id_is_not_overridden(self):
         person = self.env['his.person'].create({
-            'nom_latin': "Deja Enregistre",
+            'name': "Deja Enregistre",
             'type_personne': 'enseignant',
             'source_system': 'manual',
         })
@@ -51,6 +63,55 @@ class TestPersonLink(TransactionCase):
     def test_two_employees_get_distinct_matricules(self):
         first, second = self._employee(), self._employee()
         self.assertNotEqual(first.matricule_institutionnel, second.matricule_institutionnel)
+
+    # --- Regle 1 bis : un seul partenaire par humain ------------------------
+
+    def test_create_reuses_the_employee_work_contact(self):
+        """La fiche personne se pose sur le contact que l'employe a deja."""
+        before = self.env['res.partner'].search_count([])
+        employee = self._employee()
+        self.assertTrue(employee.work_contact_id, "hr n'a pas cree de contact")
+        self.assertEqual(
+            employee.person_id.partner_id, employee.work_contact_id,
+            "la fiche personne pointe un autre contact que celui de l'employe",
+        )
+        self.assertEqual(
+            self.env['res.partner'].search_count([]), before + 1,
+            "un second contact a ete cree pour le meme humain",
+        )
+
+    def test_shared_work_contact_is_refused(self):
+        """Deux employes sur un meme contact rendraient le matricule ambigu."""
+        first = self._employee()
+        with self.assertRaises(ValidationError):
+            self._employee(work_contact_id=first.work_contact_id.id)
+
+    def test_a_partner_carries_at_most_one_person(self):
+        employee = self._employee()
+        with self.assertRaises(IntegrityError), mute_logger('odoo.sql_db'):
+            with self.env.cr.savepoint():
+                self.env['his.person'].create({
+                    'partner_id': employee.work_contact_id.id,
+                    'type_personne': 'etudiant',
+                    'source_system': 'manual',
+                })
+
+    def test_partner_of_a_live_person_cannot_be_deleted(self):
+        """ondelete='restrict' : supprimer un contact ne detruit pas une identite.
+
+        Teste sur une personne sans employe : pour un employe, hr refuse deja
+        la suppression de son contact de travail (UserError) avant meme que la
+        contrainte n'entre en jeu. Le matricule est donc protege deux fois,
+        mais c'est bien `restrict` qui couvre les etudiants, que hr ignore.
+        """
+        person = self.env['his.person'].create({
+            'name': "Etudiante Test",
+            'type_personne': 'etudiant',
+            'source_system': 'manual',
+        })
+        with self.assertRaises(IntegrityError), mute_logger('odoo.sql_db'):
+            with self.env.cr.savepoint():
+                person.partner_id.unlink()
 
     # --- Regle 2 : la reprise ne perd ni ne remplace aucune valeur ----------
 
@@ -118,7 +179,7 @@ class TestPersonLink(TransactionCase):
         post_init_hook(self.env)
 
         newcomer = self.env['his.person'].create({
-            'nom_latin': "Nouvelle Recrue",
+            'name': "Nouvelle Recrue",
             'type_personne': 'employe',
             'source_system': 'odoo_hr',
             'matricule_sequence_date': '2022-06-01',

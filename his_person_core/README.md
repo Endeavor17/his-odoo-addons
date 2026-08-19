@@ -28,6 +28,68 @@ La règle est appliquée par des **contraintes serveur** (`create`/`write`
 surchargés, contrainte SQL d'unicité), jamais par de la validation côté vue :
 une règle contournable par import ou par API n'est pas une règle.
 
+## Une personne = un `res.partner`
+
+`his.person` est en **héritage par délégation** (`_inherits`) vers `res.partner` :
+chaque fiche porte un vrai contact Odoo, créé automatiquement.
+
+```
+his.person                          res.partner
+┌────────────────────────┐         ┌──────────────────────┐
+│ matricule_institutionnel│         │ name    (nom latin)  │
+│ nom_arabe               │────────►│ email   (institution)│
+│ email_personnel         │partner_ │ phone                │
+│ type_personne           │   id    │ active               │
+└────────────────────────┘         └──────────────────────┘
+```
+
+**Pourquoi pas un modèle autonome.** La carte RFID, le portefeuille repas et le
+POS travaillent tous sur `partner_id`. Sans partenaire dessous, il faudrait
+tenir deux fiches synchronisées par humain — exactement le problème de double
+source de vérité que ce module existe pour supprimer.
+
+**Pourquoi pas `_inherit` sur `res.partner`.** Cela poserait le matricule et le
+type de personne sur **tous** les contacts, et mêlerait des milliers
+d'étudiants aux contacts commerciaux dans chaque sélecteur, chaque portail et
+chaque règle de sécurité du système.
+
+La délégation évite les deux : `his.person` reste la surface de travail, avec
+ses vues, sa sécurité et ses règles ; un partenaire suit pour tout ce qui, en
+aval, en aura besoin.
+
+### Champs délégués
+
+| Sur `his.person` | Vient de |
+|---|---|
+| `name` | `res.partner.name` — le nom latin |
+| `email` | `res.partner.email` — **l'adresse institutionnelle** |
+| `phone` | `res.partner.phone` |
+| `active` | `res.partner.active` — archiver une personne archive son contact |
+
+`res.partner` n'a qu'un seul champ email, et **plus de `mobile` depuis 19.0**.
+L'adresse institutionnelle est l'adresse officielle — celle que liront le
+portail, les documents et le POS — elle occupe donc `email`. `email_personnel`
+et `nom_arabe` restent des champs propres au référentiel : le partenaire n'a
+pas d'équivalent.
+
+### Deux règles portées par le schéma
+
+- `partner_id` est `required=True, delegate=True, ondelete='restrict'`.
+  `delegate` est **exigé** par l'ORM en 19.0. `restrict` — et non `cascade` —
+  parce que supprimer un contact depuis l'application Contacts ne doit jamais
+  détruire une identité ni libérer un matricule déjà distribué.
+- `unique(partner_id)` : **un contact, une personne**.
+  `hr.employee.work_contact_id` peut être partagé entre plusieurs employés
+  (`res.partner.employee_ids` est un One2many, et le cœur d'Odoo teste
+  explicitement `len(employee_ids) <= 1`). Sans cette contrainte, deux fiches
+  pointeraient le même contact et l'ancrage d'identité cesserait d'être
+  un-par-humain.
+
+Chaque contact créé par une fiche personne reçoit l'étiquette
+**« HIS — Identité institutionnelle »**. Elle ne restreint rien : elle donnera
+aux Ventes et aux Achats de quoi écarter les étudiants de leurs sélecteurs de
+contacts par défaut, quand ces modules arriveront.
+
 ## Format du matricule
 
 ```
@@ -78,7 +140,7 @@ dérive, et deux fiches pour la même personne, c'est deux portefeuilles.
 - Déterministe : matricule identique. Si la fiche trouvée est d'un
   `type_personne` incompatible avec la source, la ligne est **rejetée en
   conflit**, jamais fusionnée.
-- Probabiliste : score pondéré nom (0,40) / email (0,35) / téléphone (0,25),
+- Probabiliste : score pondéré nom (0,40) / email (0,35) / téléphone (0,25), sur les champs délégués,
   seuil 0,75. Au-dessus du seuil, la fiche est **proposée** à un humain —
   `_find_or_flag_match` ne lie rien. La confirmation explicite renseigne
   `match_method`, `matched_by`, `matched_on`.

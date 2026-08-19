@@ -17,7 +17,7 @@ class TestMatricule(TransactionCase):
 
     def _person(self, **vals):
         return self.env['his.person'].create({
-            'nom_latin': "Test Personne",
+            'name': "Test Personne",
             'type_personne': 'etudiant',
             'source_system': 'manual',
             **vals,

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- noupdate="1" : l'etiquette peut etre renommee par l'administration
+         sans qu'une mise a jour du module ne la remette a son libelle
+         d'origine. -->
+    <data noupdate="1">
+        <!-- Posee sur chaque contact cree par une fiche personne. Ne restreint
+             rien par elle-meme : elle donne aux Ventes et aux Achats de quoi
+             ecarter les etudiants de leurs selecteurs de contacts par defaut,
+             quand ces modules arriveront. -->
+        <record id="categ_partner_identite" model="res.partner.category">
+            <field name="name">HIS — Identité institutionnelle</field>
+            <field name="color">4</field>
+        </record>
+    </data>
+</odoo>

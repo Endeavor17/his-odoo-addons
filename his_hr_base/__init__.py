@@ -18,6 +18,38 @@ BACKUP_TABLE = 'his_hr_base_matricule_backup'
 MATRICULE_NUMBER_RE = re.compile(r'^HIS-(\d{4})-(\d{6})')
 
 
+def _partner_vals(employee):
+    """Rattache la fiche personne au partenaire que l'employe a deja.
+
+    hr.employee.work_contact_id existe deja pour tout employe en base : la
+    reprise doit s'y rattacher, jamais creer un second partenaire pour le meme
+    humain. C'est verifie explicitement en recette (comptage de res_partner
+    identique avant et apres migration).
+
+    Si le partenaire est deja porte par une autre fiche, ou sert plusieurs
+    employes, on laisse la delegation en creer un neuf plutot que de rendre le
+    matricule ambigu : la collision est journalisee par l'appelant.
+    """
+    partner = employee.sudo().work_contact_id
+    if partner and len(partner.sudo().employee_ids) <= 1:
+        taken = employee.env['his.person'].sudo().with_context(
+            active_test=False,
+        ).search_count([('partner_id', '=', partner.id)])
+        if not taken:
+            return {'partner_id': partner.id}
+        _logger.warning(
+            "his_hr_base: le contact %s porte deja une fiche personne ; "
+            "l'employe %s recoit un contact distinct.", partner.id, employee.id,
+        )
+    elif partner:
+        _logger.warning(
+            "his_hr_base: le contact %s sert %s employes ; l'employe %s recoit "
+            "un contact distinct pour garder son matricule non ambigu.",
+            partner.id, len(partner.sudo().employee_ids), employee.id,
+        )
+    return {'name': employee.name or "Employe %s" % employee.id}
+
+
 def _advance_sequence_past_existing(env):
     """Cale la sequence commune au-dela des numeros deja consommes, par annee.
 
@@ -159,17 +191,17 @@ def post_init_hook(env):
             employee.person_id = existing
             relinked += 1
             continue
-        person = Person.create({
+        person = Person.create(dict(
+            _partner_vals(employee),
             # Valeur explicite : his_person_core.create() n'emet alors AUCUN
             # nouveau matricule et stocke celui-ci tel quel. C'est tout
             # l'objet de la reprise.
-            'matricule_institutionnel': matricule,
-            'nom_latin': employee.name or "Employe %s" % employee_id,
-            'type_personne': 'employe',
-            'source_system': 'odoo_hr',
-            'match_method': 'new',
-            'external_ref': 'hr.employee,%s' % employee_id,
-        })
+            matricule_institutionnel=matricule,
+            type_personne='employe',
+            source_system='odoo_hr',
+            match_method='new',
+            external_ref='hr.employee,%s' % employee_id,
+        ))
         employee.person_id = person
         migrated += 1
 
@@ -185,14 +217,14 @@ def post_init_hook(env):
     for employee in Employee.search([('person_id', '=', False)]):
         sequence_date = employee.date_start_working \
             if 'date_start_working' in employee._fields else False
-        employee.person_id = Person.create({
-            'nom_latin': employee.name or "Employe %s" % employee.id,
-            'type_personne': 'employe',
-            'source_system': 'odoo_hr',
-            'match_method': 'new',
-            'external_ref': 'hr.employee,%s' % employee.id,
-            'matricule_sequence_date': sequence_date,
-        })
+        employee.person_id = Person.create(dict(
+            _partner_vals(employee),
+            type_personne='employe',
+            source_system='odoo_hr',
+            match_method='new',
+            external_ref='hr.employee,%s' % employee.id,
+            matricule_sequence_date=sequence_date,
+        ))
         minted += 1
 
     _logger.info(

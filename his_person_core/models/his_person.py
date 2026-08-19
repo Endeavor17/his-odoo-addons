@@ -60,9 +60,43 @@ def normalize_text(value):
 class HisPerson(models.Model):
     _name = 'his.person'
     _description = "Personne (Groupe HIS-HTC-IRA)"
+    # Heritage par delegation : chaque personne porte un vrai res.partner.
+    #
+    # Pourquoi pas un modele autonome : la carte RFID, le portefeuille repas et
+    # le POS travaillent tous sur partner_id. Sans partenaire dessous, il
+    # faudrait tenir deux fiches synchronisees par humain — exactement le
+    # probleme de double source de verite que ce module existe pour supprimer.
+    #
+    # Pourquoi pas _inherit sur res.partner : cela poserait le matricule et le
+    # type de personne sur TOUS les contacts, et melerait des milliers
+    # d'etudiants aux contacts commerciaux dans chaque selecteur de contact,
+    # chaque portail et chaque regle de securite du systeme.
+    #
+    # La delegation evite les deux : his.person reste la surface de travail,
+    # avec ses vues, sa securite et ses regles, et un partenaire suit
+    # automatiquement pour tout ce qui, en aval, en aura besoin.
+    _inherits = {'res.partner': 'partner_id'}
     _inherit = ['mail.thread']
     _order = 'matricule_institutionnel'
-    _rec_name = 'nom_latin'
+
+    # delegate=True est exige par l'ORM en 19.0 (orm/model_classes.py) : sans
+    # lui le modele ne se charge pas.
+    #
+    # ondelete='restrict' et non 'cascade' (les deux sont acceptes) : supprimer
+    # un contact depuis l'application Contacts ne doit jamais detruire une
+    # identite ni liberer un matricule deja distribue.
+    #
+    # Pas d'auto_join : il court-circuite les regles d'enregistrement dans les
+    # recherches, ce qui n'a pas sa place sur un ancrage d'identite a acces
+    # restreint.
+    partner_id = fields.Many2one(
+        'res.partner',
+        string="Contact",
+        required=True,
+        delegate=True,
+        ondelete='restrict',
+        index=True,
+    )
 
     # readonly=True au niveau ORM : le matricule est emis a la creation et
     # jamais reemis. Le rendre editable, meme par un administrateur, casserait
@@ -74,11 +108,16 @@ class HisPerson(models.Model):
         index=True,
         tracking=True,
     )
-    nom_latin = fields.Char(string="Nom (latin)", required=True, tracking=True)
+    # Le nom latin, l'email institutionnel et le telephone viennent du
+    # partenaire par delegation : `name`, `email`, `phone`. Les redefinir ici
+    # recreerait la duplication que la delegation supprime.
+    #
+    # res.partner n'a qu'un seul champ email (et plus de `mobile` depuis
+    # 19.0). L'adresse institutionnelle est l'adresse officielle — celle que
+    # liront le portail, les documents et le POS — elle occupe donc `email`.
+    # L'adresse personnelle reste une donnee propre au referentiel.
     nom_arabe = fields.Char(string="Nom (arabe)", tracking=True)
-    email_institutionnel = fields.Char(string="Email institutionnel", tracking=True)
     email_personnel = fields.Char(string="Email personnel")
-    telephone = fields.Char(string="Telephone")
 
     # Selection et non un jeu de booleens : la liste des types s'allongera
     # (alumni, prestataire...) et doit pouvoir grandir sans migration de
@@ -96,7 +135,8 @@ class HisPerson(models.Model):
         required=True,
         tracking=True,
     )
-    active = fields.Boolean(string="Actif", default=True)
+    # Le champ actif vient du partenaire par delegation : archiver une
+    # personne archive son contact. Un seul etat, pas deux a tenir en phase.
 
     source_system = fields.Selection(
         selection=[
@@ -134,6 +174,15 @@ class HisPerson(models.Model):
         'unique(matricule_institutionnel)',
         "Ce matricule institutionnel est deja attribue a une autre personne.",
     )
+    # Un partenaire, une personne. hr.employee.work_contact_id peut etre
+    # partage entre plusieurs employes (res.partner.employee_ids est un
+    # One2many, et le coeur d'Odoo teste explicitement len(employee_ids) <= 1).
+    # Sans cette contrainte, deux fiches personne pourraient pointer le meme
+    # partenaire et l'ancrage d'identite cesserait d'etre un-par-humain.
+    _partner_id_unique = models.Constraint(
+        'unique(partner_id)',
+        "Ce contact porte deja une fiche personne.",
+    )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -162,7 +211,16 @@ class HisPerson(models.Model):
             vals['matricule_institutionnel'] = '%s-%s' % (
                 base, _compute_matricule_checksum(base[-6:]),
             )
-        return super().create(vals_list)
+        people = super().create(vals_list)
+        # Marque le partenaire cree par delegation. Ne bloque rien : c'est ce
+        # qui permettra plus tard aux Ventes et aux Achats d'ecarter les
+        # etudiants de leurs selecteurs de contacts par defaut.
+        category = self.env.ref(
+            'his_person_core.categ_partner_identite', raise_if_not_found=False,
+        )
+        if category:
+            people.partner_id.sudo().write({'category_id': [(4, category.id)]})
+        return people
 
     def write(self, vals):
         # readonly=True bloque l'UI mais pas un write() serveur ni un import.
@@ -195,8 +253,8 @@ class HisPerson(models.Model):
         """Score de similarite [0.0, 1.0] entre une ligne source et une fiche."""
         scores = {}
 
-        left = normalize_text(candidate_vals.get('nom_latin'))
-        right = normalize_text(person.nom_latin)
+        left = normalize_text(candidate_vals.get('name'))
+        right = normalize_text(person.name)
         if left and right and left == right:
             scores['nom'] = 1.0
         elif left and right:
@@ -214,18 +272,18 @@ class HisPerson(models.Model):
 
         candidate_emails = {
             (candidate_vals.get(field) or '').strip().lower()
-            for field in ('email_institutionnel', 'email_personnel')
+            for field in ('email', 'email_personnel')
         } - {''}
         person_emails = {
             (value or '').strip().lower()
-            for value in (person.email_institutionnel, person.email_personnel)
+            for value in (person.email, person.email_personnel)
         } - {''}
         scores['email'] = 1.0 if candidate_emails & person_emails else 0.0
 
         # Comparaison sur les 8 derniers chiffres : indicatif pays et
         # espaces varient d'une source a l'autre pour le meme numero.
-        candidate_phone = re.sub(r'\D', '', candidate_vals.get('telephone') or '')[-8:]
-        person_phone = re.sub(r'\D', '', person.telephone or '')[-8:]
+        candidate_phone = re.sub(r'\D', '', candidate_vals.get('phone') or '')[-8:]
+        person_phone = re.sub(r'\D', '', person.phone or '')[-8:]
         scores['telephone'] = 1.0 if candidate_phone and candidate_phone == person_phone else 0.0
 
         return sum(scores[key] * weight for key, weight in self.MATCH_WEIGHTS.items())
@@ -283,7 +341,36 @@ class HisPerson(models.Model):
                     'conflict': False,
                 }
 
-        domain = [('type_personne', 'in', list(types))] if types else []
+        # Ne scorer que des candidats plausibles. Scorer toutes les fiches en
+        # Python coutait une passe complete par ligne importee : tenable a
+        # trois fiches, pas a plusieurs milliers d'etudiants.
+        #
+        # Un candidat retenu par le seuil doit forcement partager au moins un
+        # email, un telephone ou un mot du nom — aucun sous-ensemble de poids
+        # ne franchit 0,75 sans cela. Preselectionner sur ces trois criteres ne
+        # peut donc pas ecarter une correspondance que le score aurait retenue.
+        #
+        # ponytail: filtre exact, sans index trigramme. Si les fautes de frappe
+        # dans les noms deviennent un probleme, activer pg_trgm et passer a une
+        # preselection par similarite.
+        criteria = []
+        for value in (candidate_vals.get('email'), candidate_vals.get('email_personnel')):
+            if value and value.strip():
+                criteria += [('email', '=ilike', value.strip()),
+                             ('email_personnel', '=ilike', value.strip())]
+        phone = re.sub(r'\D', '', candidate_vals.get('phone') or '')[-8:]
+        if phone:
+            criteria.append(('phone', 'like', phone))
+        for token in set(normalize_text(candidate_vals.get('name')).split()):
+            if len(token) > 2:
+                criteria.append(('name', 'ilike', token))
+        if not criteria:
+            return {'person': None, 'method': 'new', 'score': 0.0, 'conflict': False}
+
+        domain = ['|'] * (len(criteria) - 1) + criteria
+        if types:
+            domain = [('type_personne', 'in', list(types))] + domain
+
         best, best_score = None, 0.0
         for person in self.with_context(active_test=False).search(domain):
             score = self._score_candidate(candidate_vals, person)

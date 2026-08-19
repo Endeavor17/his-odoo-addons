@@ -107,3 +107,22 @@ numéro pour deux personnes**, et l'œil humain ne fait pas la différence.
 Le `post_init_hook` cale donc le compteur de chaque année au-delà du plus haut
 numéro repris, avant d'émettre le moindre matricule neuf. Constaté en répétition
 de migration : sans ce calage, le doublon se produit.
+
+## Un seul contact par humain
+
+`hr` crée déjà un `res.partner` pour chaque employé (`work_contact_id`). La
+fiche personne s'y **rattache** au lieu d'en créer un second — vérifié en
+répétition de migration : aucun `res.partner` n'est créé pendant la reprise, et
+`person_id.partner_id == work_contact_id` pour chaque employé migré.
+
+**L'ordre compte.** `hr.employee.create()` ne crée le `work_contact_id` qu'à sa
+**dernière ligne** (`employees.filtered(...)._create_work_contacts()`). La
+surcharge de ce module appelle donc `super()` **d'abord**, puis crée la fiche
+personne. Créer la fiche avant, c'est garantir un second contact pour le même
+humain.
+
+**Contact partagé.** `res.partner.employee_ids` est un One2many : deux employés
+peuvent légitimement partager un contact de travail. Un matricule, lui,
+identifie une seule personne — la création est donc **refusée** avec un message
+explicite, et la reprise donne un contact distinct en journalisant le cas.
+Jamais de partage silencieux.

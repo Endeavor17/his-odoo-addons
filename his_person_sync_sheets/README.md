@@ -43,9 +43,9 @@ normalisations différentes rendent les scores incomparables.
 
 | Critère | Poids |
 |---|---|
-| Nom (latin normalisé, ou arabe exact) | 0,40 |
-| Email (institutionnel ou personnel, l'un des deux suffit) | 0,35 |
-| Téléphone (8 derniers chiffres) | 0,25 |
+| Nom (`name` normalisé, ou `nom_arabe` exact) | 0,40 |
+| Email (`email` institutionnel ou `email_personnel`, l'un des deux suffit) | 0,35 |
+| Téléphone (`phone`, 8 derniers chiffres) | 0,25 |
 
 **Seuil de proposition : 0,75.** En dessous, la ligne crée une fiche neuve.
 Au-dessus, elle est proposée — **jamais liée automatiquement**, quel que soit le
@@ -102,3 +102,19 @@ pour que réimporter le même fichier retombe sur les mêmes fiches.
 docker compose run --rm odoo odoo -d <base> -u his_person_sync_sheets \
   --test-enable --test-tags /his_person_sync_sheets --stop-after-init
 ```
+
+## Contacts et performance
+
+Chaque étudiant importé reçoit un vrai `res.partner` par délégation (un seul,
+vérifié en test), étiqueté « HIS — Identité institutionnelle ».
+
+Une colonne intitulée simplement **`email`** est lue comme l'adresse
+*personnelle* de l'étudiant : dans un export d'admission c'est ce qu'elle est.
+L'adresse institutionnelle doit être libellée explicitement
+(`email institutionnel`, `email pro`).
+
+Le rapprochement probabiliste ne score plus toutes les fiches : il présélectionne
+en base sur email, téléphone ou mot du nom, puis ne score que ces candidats.
+Aucune correspondance n'est perdue — le seuil de 0,75 exige au minimum nom +
+email, donc un candidat retenu partage forcément l'un des critères de
+présélection.
