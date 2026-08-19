@@ -126,3 +126,35 @@ peuvent légitimement partager un contact de travail. Un matricule, lui,
 identifie une seule personne — la création est donc **refusée** avec un message
 explicite, et la reprise donne un contact distinct en journalisant le cas.
 Jamais de partage silencieux.
+
+## Types de contrat algériens — prérequis de configuration
+
+Le module charge quatre types de contrat du droit algérien (loi n° 90-11 du
+21 avril 1990), **à côté** de ceux livrés par Odoo, jamais à leur place :
+renommer ou archiver ces derniers casserait les fiches employé qui les
+utilisent déjà.
+
+| Code | Libellé |
+|---|---|
+| `CDI` | Contrat à Durée Indéterminée — forme normale de la relation de travail (art. 12) |
+| `CDD` | Contrat à Durée Déterminée — cas limitativement énumérés (art. 12 bis) |
+| `CTP` | Contrat à temps partiel |
+| `APP` | Contrat d'apprentissage |
+
+> **Le pays de la société doit être l'Algérie, sinon ces types n'apparaissent
+> nulle part.**
+
+Odoo pose une règle d'enregistrement sur `hr.contract.type` :
+
+```
+['|', ('country_id', '=', False), ('country_id', 'in', user.env.companies.country_id.ids)]
+```
+
+Les types qualifiés par pays sont donc invisibles tant que la société n'a pas
+ce pays. Les enregistrements existent bien en base — ils sont simplement
+filtrés. Symptôme : la liste déroulante « Type de contrat » ne montre que les
+types anglophones d'Odoo.
+
+Le module **ne force pas** le pays de la société : c'est un paramètre
+d'administration, pas une donnée de gouvernance. À régler dans
+*Paramètres → Sociétés → adresse*.
