@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
 import psycopg2
 
@@ -9,16 +9,29 @@ from odoo.tests import TransactionCase, tagged
 from odoo.tools import mute_logger
 
 
-def matricule(n):
-    """A well-formed matricule reserved for tests.
+def make_person(env, name, **vals):
+    """A person, created where identity now lives.
 
-    Fixtures must never depend on the database being empty: real people and
-    these tests share one table, and a hard-coded value collides with whatever
-    happens to be there. The final digit is arbitrary — the system stores the
-    check digit but does not verify it, because section 2 never says how it is
-    computed.
+    Fixtures create a `his.person` and hand back the partner underneath it,
+    because that is what the wallet hangs off: the card mirrors onto
+    `res.partner.barcode` and the POS sells to a partner. Every assertion about
+    credits therefore reads the same as before this module gave up owning
+    identity.
+
+    No matricule is passed: his_person_core mints one, and it is the only thing
+    allowed to. A test that invented one would be re-testing the socle's own
+    suite, badly.
+
+    sudo() because registering a person is a privileged act in this design and
+    the meal groups deliberately hold no write access to the referential — the
+    POS class below runs as a Meal Officer, who cannot create one. That is the
+    rule under test in `test_a_card_cannot_be_issued_to_an_unregistered_contact`,
+    not something to weaken here: this is fixture setup, and the officer's real
+    workflow is to receive people from HR or the student import.
     """
-    return f"HIS-{date.today().year}-{990000 + n:06d}-0"
+    vals.setdefault('type_personne', 'etudiant')
+    vals.setdefault('source_system', 'manual')
+    return env['his.person'].sudo().create({'name': name, **vals})
 
 
 def card_uid(n):
@@ -39,12 +52,9 @@ class TestMealCredits(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.student = cls.env['res.partner'].create({
-            'name': "Ahmed",
-            'nom_arabe': "أحمد",
-            'type_personne': 'etudiant',
-            'matricule_institutionnel': matricule(1),
-        })
+        cls.person = make_person(cls.env, "Ahmed", nom_arabe="أحمد")
+        # The wallet hangs off the partner; the person is the identity above it.
+        cls.student = cls.person.partner_id
         cls.monthly = cls.env['product.product'].create({
             'name': "Monthly Meal Plan",
             'type': 'service',
@@ -273,12 +283,8 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
             cls.env.ref('point_of_sale.group_pos_manager')
             | cls.env.ref('his_meal_management.group_meal_officer')
         )
-        cls.student = cls.env['res.partner'].create({
-            'name': "Ahmed",
-            'nom_arabe': "أحمد",
-            'type_personne': 'etudiant',
-            'matricule_institutionnel': matricule(2),
-        })
+        cls.person = make_person(cls.env, "Ahmed", nom_arabe="أحمد")
+        cls.student = cls.person.partner_id
         cls.monthly = cls.env['product.product'].create({
             'name': "Monthly Meal Plan",
             'type': 'service',
@@ -411,18 +417,24 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
 
 
 @tagged('post_install', '-at_install')
-class TestHisIdentity(TransactionCase):
-    """Sections 2 and 3 of the HIS data model.
+class TestMealPersonAttributes(TransactionCase):
+    """What this module still says about a person, now that the socle owns identity.
 
-    A matricule is assigned once and never reused, so these rules have to hold
-    before real people are imported: a wrong identifier cannot be quietly
-    corrected afterwards.
+    The matricule's format, uniqueness and write-once rules used to be tested
+    here. They are his_person_core's rules now, and its own suite tests them
+    more thoroughly than this one ever did — it verifies the check digit, which
+    this module deliberately refused to compute. Re-testing them here would
+    duplicate a contract we no longer own, and duplicated tests rot in exactly
+    the way duplicated code does.
+
+    What is left is what this module actually added: the academic attributes and
+    the faculty referential, plus the one rule that matters at the till — that
+    identity never gates a meal.
     """
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.Partner = cls.env['res.partner']
         cls.plan = cls.env['product.product'].create({
             'name': "Monthly Meal Plan",
             'type': 'service',
@@ -432,168 +444,45 @@ class TestHisIdentity(TransactionCase):
         })
 
     def _person(self, **vals):
-        base = {'name': "Test Person", 'nom_arabe': "شخص", 'type_personne': 'etudiant'}
-        base.update(vals)
-        return self.Partner.create(base)
+        name = vals.pop('name', "Test Person")
+        vals.setdefault('nom_arabe', "شخص")
+        return make_person(self.env, name, **vals)
 
-    # --- the identifier -------------------------------------------------
-    def test_a_correct_matricule_is_accepted(self):
-        person = self._person(matricule_institutionnel=matricule(10))
-        self.assertEqual(person.matricule_institutionnel, matricule(10))
+    # --- identity belongs to the socle now -------------------------------
+    def test_this_module_owns_no_identity_field(self):
+        """The fields moved to his.person; leaving copies behind is the bug.
 
-    def test_the_documents_own_examples_are_accepted(self):
-        """The check digit is stored, not second-guessed.
-
-        Section 2 never says how the digit is computed, and its two examples
-        carry the same one for different sequence numbers, so nothing can be
-        inferred. An earlier version enforced Luhn and rejected both of these —
-        which would have rejected HIS's real numbers too.
+        A second column holding the same fact is how a person ends up with two
+        matricules and, eventually, two wallets. This asserts the split stayed
+        clean rather than trusting that it did.
         """
-        for good in ("HIS-2026-000042-7", "HIS-2026-000125-7"):
-            with self.subTest(good=good):
-                with self.cr.savepoint():
-                    person = self._person(matricule_institutionnel=good)
-                    self.assertEqual(person.matricule_institutionnel, good)
+        partner_fields = self.env['res.partner']._fields
+        for name in ('matricule_institutionnel', 'nom_arabe', 'type_personne',
+                     'statut', 'email_institutionnel', 'email_personnel'):
+            self.assertNotIn(
+                name, partner_fields,
+                "%s is still on res.partner: identity belongs to his_person_core" % name,
+            )
 
-    def test_a_malformed_matricule_is_refused(self):
-        for bad in (
-            "HIS-2026-000042",       # no check digit
-            "HIS-26-000042-5",       # two-digit year
-            "HIS-2026-42-5",         # sequence not padded to six
-            "HIS-2026-ABCDEF-5",     # letters where digits belong
-            "XXX-2026-000042-5",     # wrong prefix
-            "his-2026-000042-5",     # lower case prefix
-            " HIS-2026-000042-5",    # stray whitespace
-        ):
-            with self.subTest(bad=bad), self.assertRaises(ValidationError):
-                with self.cr.savepoint():
-                    self._person(matricule_institutionnel=bad)
-
-    def test_a_matricule_is_assigned_once_and_never_changed(self):
-        person = self._person(matricule_institutionnel=matricule(10))
-        with self.assertRaises(UserError):
-            person.matricule_institutionnel = "HIS-2026-000043-3"
-        self.assertEqual(person.matricule_institutionnel, matricule(10))
-
-    def test_a_matricule_belongs_to_one_person_only(self):
-        self._person(matricule_institutionnel=matricule(10))
-        with self.assertRaises(psycopg2.errors.UniqueViolation), mute_logger('odoo.sql_db'):
-            with self.cr.savepoint():
-                self._person(matricule_institutionnel=matricule(10))
-                self.Partner.flush_model()
-
-    def test_this_system_never_invents_a_matricule(self):
-        """HIS issues them. An earlier version minted them from a 9xxxxx block.
-
-        Two systems allocating into one identifier space, with only a local
-        unique constraint between them, cannot end well — and the block matched
-        nothing in section 2, where NNNNNN is a plain sequential number.
-        """
+    def test_this_module_owns_no_matricule_sequence(self):
+        """One counter in the group. Two would collide on a lifetime identifier."""
         self.assertFalse(
-            hasattr(self.Partner, 'action_assign_matricule'),
-            "the Assign button is gone",
-        )
-        self.assertFalse(
-            self.env['ir.sequence'].search([('code', '=', 'his.matricule')]),
-            "the matricule sequence is gone",
+            self.env['ir.sequence'].sudo().search_count(
+                [('code', 'in', ('his.matricule', 'hr.employee.matricule.institutionnel'))]
+            ),
         )
 
-    # --- the matricule gates nothing -------------------------------------
-    def test_a_person_with_no_matricule_can_hold_a_card_and_eat(self):
-        """The whole point of the change: identity at the till is the card."""
-        plan = self.env['product.product'].create({
-            'name': "Monthly Meal Plan",
-            'type': 'service',
-            'meal_credits': 25,
-            'meal_validity_days': 30,
-        })
-        person = self.Partner.create({'name': "No Matricule"})
-        self.assertFalse(person.matricule_institutionnel)
+    def test_a_person_gets_a_matricule_from_the_socle(self):
+        person = self._person()
+        self.assertRegex(person.matricule_institutionnel, r'^HIS-\d{4}-\d{6}-[0-9X]$')
 
-        self.env['his.meal.card'].create({
-            'partner_id': person.id,
-            'code': card_uid(30),
-        })
-        self.assertEqual(person.barcode, card_uid(30))
-
-        person._grant_meal_credits(plan)
-        person._consume_meal_credit()
-        self.assertEqual(person.meal_credits_remaining, 24)
-
-    def test_a_bare_card_and_name_row_imports_into_a_usable_person(self):
-        """Exactly the shape of the real sheet: card number and name, nothing else.
-
-        No matricule, no type_personne, no Arabic name. `load()` is the engine
-        behind Odoo's CSV importer, so this is the real import path.
-        """
-        result = self.Partner.load(
-            ['name', 'meal_card_ids/code'],
-            [["IMPORTED Person", card_uid(31)]],
-        )
-        self.assertFalse(result['messages'], result['messages'])
-
-        person = self.Partner.browse(result['ids'])
-        self.assertFalse(person.matricule_institutionnel)
-        self.assertFalse(person.type_personne)
-        self.assertEqual(person.meal_card_ids.code, card_uid(31))
-        self.assertEqual(
-            self.Partner.search([('barcode', '=', card_uid(31))]), person,
-            "the imported row is immediately scannable at the till",
-        )
-
-    # --- the rest of Person ---------------------------------------------
-    def test_an_arabic_name_is_recorded_but_not_required(self):
-        """A deliberate, documented deviation from section 2.
-
-        The specification says the Latin and Arabic names coexist in every
-        observed source, "jamais l'un sans l'autre", and the constraint was
-        written and then relaxed on request: the real lists carry Latin names
-        only, and a rule that rejects every row of every import is worse than a
-        recorded gap. This test exists so the deviation stays a decision rather
-        than quietly becoming an accident — if the sources ever carry both, put
-        the constraint back and invert it.
-        """
-        latin_only = self.Partner.create({'name': "No Arabic", 'type_personne': 'etudiant'})
-        self.assertFalse(latin_only.nom_arabe)
-
-        both = self._person(name="Karim", nom_arabe="كريم")
-        self.assertEqual(both.nom_arabe, "كريم")
-
-    def test_a_plain_contact_is_not_forced_through_the_person_rules(self):
-        """A supplier or a company is not a HIS person and must stay creatable."""
-        company = self.Partner.create({'name': "Some Supplier", 'is_company': True})
-        self.assertFalse(company.type_personne)
-        self.assertFalse(company.nom_arabe)
-
+    # --- the academic attributes this module adds ------------------------
     def test_an_academic_rank_only_applies_to_a_teacher(self):
         with self.assertRaises(ValidationError):
             self._person(type_personne='etudiant', rang_academique='PROF')
         teacher = self._person(type_personne='enseignant', rang_academique='PROF')
         self.assertEqual(teacher.rang_academique, 'PROF')
 
-    def test_archiving_a_person_archives_the_contact(self):
-        person = self._person(statut='actif')
-        self.assertTrue(person.active)
-        person.statut = 'archive'
-        self.assertFalse(person.active)
-
-    def test_odoo_email_follows_the_specification_fields(self):
-        student = self._person(email_personnel="ahmed@gmail.com")
-        self.assertEqual(
-            student.email, "ahmed@gmail.com",
-            "a student has only a personal address",
-        )
-        teacher = self._person(
-            type_personne='enseignant',
-            email_institutionnel="a.b@his.edu.dz",
-            email_personnel="a.b@gmail.com",
-        )
-        self.assertEqual(
-            teacher.email, "a.b@his.edu.dz",
-            "the institutional address wins when there is one",
-        )
-
-    # --- faculties, section 3 -------------------------------------------
     def test_the_six_faculty_codes_are_seeded(self):
         codes = set(self.env['his.faculty'].search([]).mapped('code'))
         self.assertEqual(codes, {'MI', 'SEGC', 'DSP', 'SHS', 'ST', 'EDU'})
@@ -607,28 +496,73 @@ class TestHisIdentity(TransactionCase):
         """Section 3 requires many-to-many; a single field would lose this."""
         faculties = self.env['his.faculty'].search([('code', 'in', ('MI', 'ST'))])
         person = self._person(faculty_ids=[Command.set(faculties.ids)])
-        self.assertEqual(len(person.faculty_ids), 2)
         self.assertEqual(set(person.faculty_ids.mapped('code')), {'MI', 'ST'})
 
-    # --- the role coupling is gone ---------------------------------------
-    def test_a_teacher_can_hold_a_card_and_eat(self):
-        """The matricule is never tied to a role, so neither is the meal account."""
-        teacher = self._person(
-            name="Prof Karim",
-            type_personne='enseignant',
-            rang_academique='MCA',
-            matricule_institutionnel=matricule(12),
-        )
-        card = self.env['his.meal.card'].create({
-            'partner_id': teacher.id,
-            'code': "HIS-TEST-CARD-3",
-        })
-        self.assertEqual(teacher.barcode, card.code)
+    # --- no wallet without an identity -----------------------------------
+    def test_a_card_cannot_be_issued_to_an_unregistered_contact(self):
+        """The officer holds no rights on his.person, but core Odoo lets any
+        internal user create a plain contact. Without this guard that is a back
+        door to a card holder outside the referential."""
+        stranger = self.env['res.partner'].create({'name': "Walk-in"})
+        with self.assertRaises(ValidationError):
+            self.env['his.meal.card'].create({
+                'partner_id': stranger.id,
+                'code': card_uid(40),
+            })
 
-        teacher._grant_meal_credits(self.plan)
-        self.assertEqual(teacher.meal_credits_remaining, 25)
-        teacher._consume_meal_credit()
-        self.assertEqual(teacher.meal_credits_remaining, 24)
+    def test_credits_cannot_be_granted_to_an_unregistered_contact(self):
+        """Same gate from the POS side: selling a plan opens a balance too."""
+        stranger = self.env['res.partner'].create({'name': "Walk-in"})
+        with self.assertRaises(ValidationError):
+            stranger._grant_meal_credits(self.plan)
+
+    # --- identity gates nothing at the till ------------------------------
+    def test_a_teacher_can_hold_a_card_and_eat(self):
+        """Anyone holding a card eats, whatever their role."""
+        teacher = self._person(
+            name="Prof Karim", type_personne='enseignant', rang_academique='MCA',
+        )
+        partner = teacher.partner_id
+        card = self.env['his.meal.card'].create({
+            'partner_id': partner.id, 'code': card_uid(41),
+        })
+        self.assertEqual(partner.barcode, card.code)
+
+        partner._grant_meal_credits(self.plan)
+        partner._consume_meal_credit()
+        self.assertEqual(partner.meal_credits_remaining, 24)
+
+    def test_the_balance_reads_off_the_person_through_delegation(self):
+        """No mirrored field: the person sees the partner's wallet directly.
+
+        This is what buys the whole refactor — the wallet stayed on res.partner
+        where the barcode and the POS need it, and the person form still shows a
+        balance without a single duplicated field.
+        """
+        person = self._person()
+        self.env['his.meal.card'].create({
+            'partner_id': person.partner_id.id, 'code': card_uid(42),
+        })
+        person.partner_id._grant_meal_credits(self.plan)
+        self.assertEqual(person.meal_credits_remaining, 25)
+        self.assertEqual(person.meal_card_code, card_uid(42))
+
+    def test_archiving_a_person_archives_the_contact(self):
+        """One state, not two: `statut` is gone, `active` is delegated."""
+        person = self._person()
+        self.assertTrue(person.partner_id.active)
+        person.active = False
+        self.assertFalse(person.partner_id.active)
+
+    def test_a_plain_contact_is_not_forced_through_the_person_rules(self):
+        """A supplier is not a HIS person and must stay creatable.
+
+        This is why the socle uses delegation instead of putting identity on
+        res.partner: this contact carries no matricule and no person type, and
+        nothing in the system asks it to.
+        """
+        company = self.env['res.partner'].create({'name': "Some Supplier", 'is_company': True})
+        self.assertFalse(company.his_person_ids)
 
 
 @tagged('post_install', '-at_install')
@@ -691,11 +625,7 @@ class TestRfidScanning(TransactionCase):
 
     def test_a_uid_resolves_to_its_person_the_way_pos_resolves_it(self):
         """Reproduces `_barcodePartnerAction`: search res.partner on barcode."""
-        person = self.env['res.partner'].create({
-            'name': "CHABOUTI Abderrahim",
-            'type_personne': 'etudiant',
-            'matricule_institutionnel': matricule(20),
-        })
+        person = make_person(self.env, "CHABOUTI Abderrahim").partner_id
         uid = card_uid(1)
         self.env['his.meal.card'].create({'partner_id': person.id, 'code': uid})
 
@@ -704,11 +634,7 @@ class TestRfidScanning(TransactionCase):
 
     def test_leading_zeros_are_not_lost(self):
         """0001063810 is not 1063810. Losing a zero loses the person."""
-        person = self.env['res.partner'].create({
-            'name': "LAMLOUM Rayane",
-            'type_personne': 'etudiant',
-            'matricule_institutionnel': matricule(21),
-        })
+        person = make_person(self.env, "LAMLOUM Rayane").partner_id
         uid = card_uid(2)                     # 0000900002
         card = self.env['his.meal.card'].create({'partner_id': person.id, 'code': uid})
 
@@ -721,11 +647,7 @@ class TestRfidScanning(TransactionCase):
 
     def test_replacing_a_card_asks_for_a_tap_instead_of_inventing_a_code(self):
         """An RFID code cannot be minted: it has to be read off the new card."""
-        person = self.env['res.partner'].create({
-            'name': "CHABOUTI Abderrahim",
-            'type_personne': 'etudiant',
-            'matricule_institutionnel': matricule(23),
-        })
+        person = make_person(self.env, "CHABOUTI Abderrahim").partner_id
         card = self.env['his.meal.card'].create({
             'partner_id': person.id,
             'code': card_uid(3),
