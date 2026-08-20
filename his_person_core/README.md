@@ -199,13 +199,23 @@ maintenance : Odoo 19 normalise `=` en `in` (et `!=` en `not in`), avec un
 `OrderedSet` en valeur, **avant** d'appeler la méthode `search` d'un champ
 calculé — tester `operator == '='` ne s'y déclenche jamais.
 
-## Numéro de carte
+## Badge RFID
 
-`numero_carte` porte le numéro de la carte physique (RFID / badge). Saisissable
-à la main **et** importable : les cartes arrivent tantôt de l'export
-d'admission, tantôt du service qui les grave.
+`numero_carte` porte le numéro du badge RFID, tel que le lecteur le restitue.
+Saisissable à la main **et** importable : les badges arrivent tantôt de l'export
+d'admission, tantôt du service qui les encode.
 
-Unique en base — **une carte, une personne**. Sans cela, deux fiches pourraient
+**À ne pas confondre avec le « Badge ID » natif de la fiche employé**
+(`hr.employee.barcode`) : celui-là identifie le personnel auprès du terminal de
+pointage et connecte un caissier à la caisse. Ce n'est pas le badge repas, et
+les deux coexistent sur le formulaire employé.
+
+Le champ natif `res.partner.barcode` — hérité par délégation — n'est
+**délibérément pas** utilisé : la caisse du groupe lit des badges RFID, pas des
+codes-barres. Y recopier le numéro reviendrait à alimenter un champ que
+personne ne lit. Il reste disponible si un besoin de code-barres apparaît.
+
+Unique en base — **un badge, une personne**. Sans cela, deux fiches pourraient
 porter le même numéro et la caisse ne saurait pas qui débiter. C'est ce champ
 que le Point de Vente interrogera pour résoudre *carte → personne*, puis
 *personne → matricule*.

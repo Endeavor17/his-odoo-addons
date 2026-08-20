@@ -37,7 +37,7 @@ class HrEmployee(models.Model):
     # resolution carte -> personne. readonly=False : la carte se saisit ici
     # comme sur la fiche personne, elle est ecrite sur celle-ci.
     numero_carte = fields.Char(
-        string="Numero de carte",
+        string="Badge RFID",
         related='person_id.numero_carte',
         readonly=False,
     )
