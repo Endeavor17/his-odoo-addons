@@ -39,6 +39,7 @@
                             <field name="external_ref"/>
                             <field name="name"/>
                             <field name="matricule_institutionnel"/>
+                            <field name="numero_carte" optional="show"/>
                             <field name="outcome" widget="badge"
                                    decoration-danger="outcome == 'conflict'"
                                    decoration-warning="outcome == 'flagged'"

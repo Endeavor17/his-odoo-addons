@@ -198,3 +198,23 @@ lit ne trouverait rien, la base contenant la valeur avec sa clé. Attention en
 maintenance : Odoo 19 normalise `=` en `in` (et `!=` en `not in`), avec un
 `OrderedSet` en valeur, **avant** d'appeler la méthode `search` d'un champ
 calculé — tester `operator == '='` ne s'y déclenche jamais.
+
+## Numéro de carte
+
+`numero_carte` porte le numéro de la carte physique (RFID / badge). Saisissable
+à la main **et** importable : les cartes arrivent tantôt de l'export
+d'admission, tantôt du service qui les grave.
+
+Unique en base — **une carte, une personne**. Sans cela, deux fiches pourraient
+porter le même numéro et la caisse ne saurait pas qui débiter. C'est ce champ
+que le Point de Vente interrogera pour résoudre *carte → personne*, puis
+*personne → matricule*.
+
+> **Écart assumé : il n'y a pas de cycle de vie de carte.**
+> Un seul champ, pas de modèle `his.card`. Ce qui n'est **pas** couvert : perte,
+> réédition, désactivation. Une carte remplacée écrase la précédente et
+> l'historique disparaît — acceptable tant qu'aucun solde n'y est attaché.
+> À reprendre dans un modèle dédié (`person_id`, numéro, état, dates de
+> validité) **avant** que le portefeuille repas ne stocke de l'argent : sans
+> historique, on ne peut pas dire quelle carte était valide au moment d'une
+> transaction contestée. C'est le chantier RFID/portefeuille, pas celui-ci.

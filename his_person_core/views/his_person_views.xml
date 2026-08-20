@@ -12,6 +12,7 @@
                 <field name="type_personne"/>
                 <field name="email" string="Email institutionnel" optional="show"/>
                 <field name="phone" string="Telephone" optional="hide"/>
+                <field name="numero_carte" optional="show"/>
                 <field name="source_system" optional="hide"/>
                 <field name="match_method" optional="hide"/>
             </list>
@@ -39,6 +40,9 @@
                             <field name="email" string="Email institutionnel"/>
                             <field name="email_personnel"/>
                             <field name="phone" string="Telephone"/>
+                        </group>
+                        <group string="Carte">
+                            <field name="numero_carte"/>
                         </group>
                         <group string="Provenance">
                             <!-- invisible tant qu'il est vide : partner_id est
@@ -73,6 +77,7 @@
                 <field name="name"/>
                 <field name="nom_arabe"/>
                 <field name="email" string="Email institutionnel"/>
+                <field name="numero_carte"/>
                 <filter name="filter_employe" string="Employes" domain="[('type_personne','=','employe')]"/>
                 <filter name="filter_enseignant" string="Enseignants" domain="[('type_personne','=','enseignant')]"/>
                 <filter name="filter_etudiant" string="Etudiants" domain="[('type_personne','=','etudiant')]"/>
