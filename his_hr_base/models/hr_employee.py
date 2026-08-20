@@ -33,13 +33,30 @@ class HrEmployee(models.Model):
         related='person_id.matricule_affiche',
         readonly=True,
     )
-    # Le personnel a des cartes comme les etudiants : meme caisse, meme
-    # resolution carte -> personne. readonly=False : la carte se saisit ici
-    # comme sur la fiche personne, elle est ecrite sur celle-ci.
-    numero_carte = fields.Char(
-        string="Numero de carte",
+    # Une seule carte physique par personne, employe ou etudiant : pointage,
+    # acces aux locaux et repas. Le « Badge ID » natif d'Odoo DEVIENT donc le
+    # badge RFID, au lieu d'etre un second numero a tenir en phase.
+    #
+    # related stocke plutot qu'une synchronisation ecrite a la main : deux
+    # champs qu'on recopie l'un dans l'autre finissent toujours par diverger, et
+    # ici diverger voudrait dire une carte reconnue a la caisse mais refusee au
+    # pointage. readonly=False : la saisie reste possible des deux cotes, elle
+    # atterrit toujours sur la fiche personne.
+    #
+    # Consequence assumee : on ne peut plus donner a un employe un Badge ID
+    # different de son badge RFID. C'est le but.
+    #
+    # hr_attendance lit ce champ pour son lecteur de badge, et pos_hr pour
+    # connecter un caissier. La contrainte native reste active
+    # (alphanumerique, 18 caracteres max) : un numero non conforme echoue
+    # bruyamment au lieu d'etre ignore.
+    barcode = fields.Char(
         related='person_id.numero_carte',
+        store=True,
         readonly=False,
+        help="Badge RFID de la personne. Meme carte physique pour le pointage, "
+             "l'acces aux locaux et les repas. Se saisit sur la fiche personne "
+             "ou ici, indifféremment.",
     )
 
     @api.model_create_multi

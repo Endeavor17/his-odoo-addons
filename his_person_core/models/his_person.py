@@ -162,12 +162,17 @@ class HisPerson(models.Model):
     # etat, dates de validite) des que le portefeuille repas arrive. C'est le
     # chantier RFID/portefeuille, pas celui-ci.
     numero_carte = fields.Char(
-        string="Numero de carte",
+        string="Badge RFID",
         copy=False,
         index=True,
         tracking=True,
-        help="Numero de la carte physique (RFID). Sert a la caisse pour "
-             "retrouver la personne. Une carte n'appartient qu'a une personne.",
+        help="Numero du badge RFID, tel que le lecteur le restitue. C'est ce "
+             "champ que la caisse interroge pour retrouver la personne. Un "
+             "badge n'appartient qu'a une personne.\n\n"
+             "A ne pas confondre avec le « Badge ID » natif de la fiche "
+             "employe (hr.employee.barcode) : celui-la identifie le personnel "
+             "aupres du terminal de pointage et connecte un caissier a la "
+             "caisse. Ce n'est pas le badge repas.",
     )
 
     # Selection et non un jeu de booleens : la liste des types s'allongera
@@ -238,7 +243,7 @@ class HisPerson(models.Model):
     # numero et la caisse ne saurait pas qui debiter.
     _numero_carte_unique = models.Constraint(
         'unique(numero_carte)',
-        "Ce numero de carte est deja attribue a une autre personne.",
+        "Ce badge RFID est deja attribue a une autre personne.",
     )
 
     @api.depends('matricule_institutionnel')

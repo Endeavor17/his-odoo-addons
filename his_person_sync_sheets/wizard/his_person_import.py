@@ -328,7 +328,7 @@ class HisPersonImportLine(models.TransientModel):
     email = fields.Char(string="Email institutionnel", readonly=True)
     email_personnel = fields.Char(string="Email personnel", readonly=True)
     phone = fields.Char(string="Telephone", readonly=True)
-    numero_carte = fields.Char(string="Numero de carte", readonly=True)
+    numero_carte = fields.Char(string="Badge RFID", readonly=True)
     external_ref = fields.Char(string="Reference source", readonly=True)
 
     outcome = fields.Selection(selection=OUTCOME_SELECTION, string="Resultat", readonly=True)
