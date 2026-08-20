@@ -124,8 +124,8 @@ class HisPerson(models.Model):
 
     # Forme affichee : le matricule sans sa cle de controle.
     #
-    # La cle ne sert a rien a un humain — elle ne detecte une faute de frappe
-    # que pour qui la recopie, et l'equipe la lisait comme un chiffre parasite.
+    # Une cle de controle ne detecte une faute de frappe que pour qui la
+    # recopie : elle n'apporte rien a la lecture a l'ecran.
     # Elle reste stockee et transmise : c'est la carte RFID et la caisse qui
     # s'en serviront, en recalculant la cle a la lecture pour rejeter un scan
     # errone. Cachee a l'ecran, elle continue donc de proteger le chemin

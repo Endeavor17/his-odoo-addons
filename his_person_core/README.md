@@ -191,8 +191,7 @@ donc plus la saisie humaine — mais elle continue de protéger le **chemin
 machine**, celui où personne ne peut relire : la carte RFID encode la valeur
 complète, le lecteur recalcule la clé et rejette un scan erroné.
 
-Arbitrage assumé, décidé après retour de l'équipe qui lisait la clé comme un
-chiffre parasite.
+Arbitrage assumé, décidé après retour d'usage.
 
 **La recherche accepte les deux formes.** Sans cela, taper à l'écran ce qu'on y
 lit ne trouverait rien, la base contenant la valeur avec sa clé. Attention en
