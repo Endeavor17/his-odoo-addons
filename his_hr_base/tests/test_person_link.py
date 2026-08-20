@@ -259,3 +259,33 @@ class TestPersonLink(TransactionCase):
             self.env['hr.contract.type'].search_count([('name', 'ilike', 'Permanent')]),
             "les types livres par Odoo ont ete supprimes ou renommes",
         )
+
+    # --- Regle 6 : une seule carte physique, pointage et repas --------------
+
+    def test_badge_id_is_the_rfid_badge(self):
+        """Le Badge ID natif EST le badge RFID : un seul numero, pas deux."""
+        employee = self._employee()
+        employee.person_id.numero_carte = '0012345678'
+        self.assertEqual(
+            employee.barcode, '0012345678',
+            "le lecteur de pointage ne verrait pas la carte de la personne",
+        )
+
+    def test_badge_written_on_the_employee_lands_on_the_person(self):
+        """La saisie marche dans les deux sens, la fiche personne fait foi."""
+        employee = self._employee()
+        employee.barcode = '0087654321'
+        self.assertEqual(employee.person_id.numero_carte, '0087654321')
+
+    def test_badge_cannot_be_shared_by_two_people(self):
+        first, second = self._employee(), self._employee()
+        first.barcode = '0011112222'
+        with self.assertRaises(IntegrityError), mute_logger('odoo.sql_db'):
+            with self.env.cr.savepoint():
+                second.barcode = '0011112222'
+
+    def test_malformed_badge_fails_loudly(self):
+        """Odoo refuse un Badge ID non alphanumerique : on ne l'avale pas."""
+        employee = self._employee()
+        with self.assertRaises(ValidationError):
+            employee.person_id.numero_carte = '04:A2:B3:C4'

@@ -158,3 +158,36 @@ types anglophones d'Odoo.
 Le module **ne force pas** le pays de la société : c'est un paramètre
 d'administration, pas une donnée de gouvernance. À régler dans
 *Paramètres → Sociétés → adresse*.
+
+## Une seule carte physique par personne
+
+Employés et étudiants portent le **même type de badge RFID**, utilisé pour le
+pointage, l'accès aux locaux et les repas. Le modèle le reflète : un numéro,
+pas trois.
+
+`hr.employee.barcode` — le « Badge ID » natif d'Odoo — **devient** le badge
+RFID : c'est un `related` stocké vers `person_id.numero_carte`, pas une copie
+synchronisée à la main. Deux champs qu'on recopie l'un dans l'autre finissent
+toujours par diverger, et ici diverger voudrait dire *une carte reconnue à la
+caisse mais refusée au pointage*.
+
+La saisie fonctionne des deux côtés — fiche personne ou fiche employé — et
+atterrit toujours sur la personne.
+
+**Conséquence assumée :** on ne peut plus donner à un employé un Badge ID
+différent de son badge RFID. C'est le but.
+
+### Qui lit quoi
+
+| Usage | Champ | État |
+|---|---|---|
+| Repas (caisse) | `his.person.numero_carte` | prêt |
+| Pointage (`hr_attendance`) | `hr.employee.barcode` → même numéro | prêt |
+| Connexion caissier (`pos_hr`) | `hr.employee.barcode` → même numéro | prêt |
+| Accès aux locaux (tourniquets) | système externe | **hors Odoo, rien n'exporte encore** |
+
+Les étudiants n'ont pas de fiche employé : le pointage Odoo ne les concerne pas.
+S'ils badgent pour l'accès ou l'assiduité, cela passe par le système externe.
+
+La contrainte native d'Odoo reste active (alphanumérique, 18 caractères max) :
+un numéro non conforme **échoue bruyamment** au lieu d'être avalé.

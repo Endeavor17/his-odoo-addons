@@ -28,7 +28,7 @@
                      devenu employe). Laisser vide a la creation suffit dans
                      tous les autres cas : la fiche est creee automatiquement. -->
                 <field name="person_id"/>
-                <field name="numero_carte"/>
+                <field name="barcode" string="Badge RFID"/>
             </xpath>
         </field>
     </record>
