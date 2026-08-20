@@ -3,10 +3,20 @@ from odoo.exceptions import ValidationError
 
 
 class HisMealCard(models.Model):
-    """The physical student card. It carries an identifier and nothing else.
+    """The person's physical badge. It carries an identifier and nothing else.
 
-    Credits belong to the student, not to the card, which is what makes a lost
+    Credits belong to the person, not to the card, which is what makes a lost
     card replaceable without losing a balance.
+
+    Since his_person_core handed the badge over to this model, one row here is
+    the group's single physical card: attendance, door access and meals all
+    read the same number. `his.person.numero_carte` and the native
+    `hr.employee.barcode` are both fed from the active row.
+
+    # ponytail: the model is still called his.meal.card while it is now the
+    # group's card, not the restaurant's. Renaming a model means migrating
+    # ir_model_data, every XML id and every FK - not worth it today. Rename to
+    # his.card if a second module ever has to depend on it.
     """
 
     _name = 'his.meal.card'
@@ -80,11 +90,31 @@ class HisMealCard(models.Model):
                 ))
 
     def _sync_partner_barcode(self):
-        """Mirror the active card's code onto the student.
+        """Mirror the active card's code onto the person's contact.
 
         This is the entire bridge to POS: `res.partner.barcode` is what Odoo's
         own 'client' barcode rule looks up, so scanning a card sets the customer
         on the order with no custom JavaScript anywhere.
+
+        his_person_core's README states this field is "deliberately not used"
+        because it would be "un champ que personne ne lit". That is not what
+        core 19.0 does - it reads it in three places, and the third is the one
+        every scan in this module goes through:
+
+          point_of_sale/models/res_partner.py:73
+              _load_pos_data_fields() includes 'barcode' -> the till loads it
+          .../static/src/app/screens/partner_list/partner_list.js:160
+              _getSearchFields() returns 'barcode' for numeric AND text queries
+              -> typing a badge in the customer list finds the person
+          .../static/src/app/screens/product_screen/product_screen.js:285
+              _getPartnerByBarcode() -> models["res.partner"].getBy("barcode"),
+              then searchRead [('barcode','=',code)] -> a tapped badge resolves
+
+        An RFID reader that types digits and Enter IS a barcode scanner as far
+        as Odoo is concerned; that is the whole premise of data/barcode_rule.xml
+        and its tests. Feeding this field is what makes both scanning and typed
+        search work with no POS extension to maintain. his_person_core still
+        never writes it - this is the wallet module's own call.
         """
         for card in self:
             partner = card.partner_id
