@@ -44,6 +44,27 @@ class HisMealCard(models.Model):
 
     _code_unique = models.Constraint('UNIQUE(code)', "This card code is already in use.")
 
+    @api.constrains('partner_id')
+    def _check_meal_holder_is_registered(self):
+        """No wallet without an identity.
+
+        The Meal Officer deliberately holds no write access to his.person, but
+        core Odoo lets any internal user create an ordinary contact. Without
+        this, issuing a card to such a contact would create a card holder
+        outside the group referential - and a duplicate the day that human is
+        properly registered. Enforced here rather than by handing out rights:
+        the officer issues cards, the referential issues identities.
+        """
+        for card in self:
+            if not card.partner_id.sudo().his_person_ids:
+                raise ValidationError(_(
+                    "%s has no person record, so no card can be issued.\n\n"
+                    "A meal card belongs to a registered person. Ask for the person "
+                    "to be created in the Personnes referential first — by HR for an "
+                    "employee, or through the student import.",
+                    card.partner_id.display_name,
+                ))
+
     @api.constrains('state', 'partner_id')
     def _check_single_active_card(self):
         for card in self.filtered(lambda c: c.state == 'active'):

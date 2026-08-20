@@ -1,95 +1,32 @@
-import re
 from datetime import timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
-
-# HIS-AAAA-NNNNNN-C — data model section 2.
-#
-# The final character is the check digit. It is stored and its shape is checked,
-# but its VALUE is deliberately not verified: section 2 states that the digit
-# exists and never says how it is computed. Its own two examples,
-# HIS-2026-000042-7 and HIS-2026-000125-7, carry the same digit for different
-# sequence numbers, so no algorithm can be inferred from them either. Enforcing
-# a guessed one would reject every real matricule HIS eventually issues, which is
-# a far worse failure than accepting a typo in a field nothing depends on.
-MATRICULE_RE = re.compile(r'^HIS-(\d{4})-(\d{6})-(\d)$')
+from odoo.exceptions import UserError
 
 
 class ResPartner(models.Model):
-    """The Person of the HIS data model, section 2, plus the meal credit engine.
+    """The meal wallet. Identity lives in `his.person`, not here.
 
-    Person is mapped onto res.partner rather than a new model so that a person
-    is simultaneously an Odoo contact — POS customer, invoice recipient — without
-    a second identity to keep in step. Fields the specification names are added
-    explicitly; the two it already has (nom_latin, telephone) map onto Odoo's
-    own `name` and `phone` instead of being duplicated.
+    This module used to carry the Person of the HIS data model on res.partner
+    itself — matricule, nom arabe, type de personne, statut, the two emails.
+    All of that now belongs to `his_person_core`, which anchors a person on a
+    `his.person` record delegating to `res.partner`. One identity for the whole
+    group: employees, teachers, students, candidates.
+
+    What stays here is the wallet, and it stays on res.partner deliberately:
+    the card mirrors its code onto `res.partner.barcode`, Odoo's own 'client'
+    barcode rule resolves a partner, and the POS sells to a partner. Since
+    every `his.person` carries one, `person.meal_credits_remaining` resolves
+    through delegation with nothing extra to define — while a walk-in customer
+    with no identity still can't hold a balance, because a card and a
+    subscription both refuse a partner with no `his.person` (see
+    `_check_meal_holder_is_registered` on those models).
 
     Credits hang off the person, never off the card. Everything that moves a
     balance goes through `_grant_meal_credits` or `_consume_meal_credit`.
     """
 
     _inherit = 'res.partner'
-
-    # --- Person, data model section 2 -------------------------------------
-    matricule_institutionnel = fields.Char(
-        string="Matricule Institutionnel", copy=False, index=True,
-        help="HIS-AAAA-NNNNNN-C, issued by HIS. Assigned once and never reused. "
-             "Recorded here for later use — nothing in the meal system depends on "
-             "it: a person is identified at the till by the card they tap.",
-    )
-    nom_arabe = fields.Char(
-        string="Nom (arabe)",
-        help="Both scripts always coexist in the HIS sources, never one without the other.",
-    )
-    type_personne = fields.Selection(
-        [
-            ('etudiant', "Étudiant"),
-            ('enseignant', "Enseignant"),
-            ('candidat', "Candidat"),
-        ],
-        string="Type de personne", index=True,
-        help="Broad status. It does not replace tracking by engagement: the same "
-             "person can be a candidate on one track and active on another.",
-    )
-    rang_academique = fields.Selection(
-        [
-            ('PROF', "Professeur"),
-            ('MCA', "Maître de Conférences A"),
-            ('MCB', "Maître de Conférences B"),
-            ('MAA', "Maître Assistant A"),
-            ('MAB', "Maître Assistant B"),
-        ],
-        string="Rang académique",
-        help="Teachers only.",
-    )
-    specialite = fields.Char(
-        string="Spécialité",
-        help="Declarative free text, as it exists in the HIS referential.",
-    )
-    statut = fields.Selection(
-        [
-            ('actif', "Actif"),
-            ('inactif', "Inactif"),
-            ('archive', "Archivé"),
-        ],
-        string="Statut",
-        help="Distinguishes a person still in activity from namesakes and old files. "
-             "Setting it to Archivé also archives the contact in Odoo.",
-    )
-    email_institutionnel = fields.Char(
-        string="Email institutionnel",
-        help="prenom.nom@his.edu.dz. Students do not have one.",
-    )
-    email_personnel = fields.Char(
-        string="Email personnel",
-        help="The only address students have, until institutional accounts are provisioned.",
-    )
-    faculty_ids = fields.Many2many(
-        'his.faculty', 'his_person_faculty_rel', 'partner_id', 'faculty_id',
-        string="Facultés",
-        help="A person may legitimately belong to more than one faculty.",
-    )
 
     # --- Meal account ------------------------------------------------------
     meal_card_ids = fields.One2many('his.meal.card', 'partner_id', string="Meal Cards")
@@ -108,91 +45,11 @@ class ResPartner(models.Model):
         string="Current Plan", compute='_compute_meal_credits_remaining', compute_sudo=True,
     )
 
-    _matricule_unique = models.Constraint(
-        'UNIQUE(matricule_institutionnel)',
-        "This matricule institutionnel is already registered to someone else.",
-    )
-
-    # ------------------------------------------------------------------
-    # Identity
-    # ------------------------------------------------------------------
-    @api.constrains('matricule_institutionnel')
-    def _check_matricule(self):
-        """Check the shape only. See MATRICULE_RE for why not the check digit."""
-        for partner in self:
-            matricule = partner.matricule_institutionnel
-            if matricule and not MATRICULE_RE.match(matricule):
-                raise ValidationError(_(
-                    "“%(value)s” is not a valid matricule institutionnel.\n\n"
-                    "The format is HIS-AAAA-NNNNNN-C: the fixed prefix HIS, a four-digit "
-                    "year, a six-digit sequential number and one check digit — for "
-                    "example HIS-2026-000042-7.",
-                    value=matricule,
-                ))
-
-    # NOTE - deliberate deviation from section 2, which states that the Latin and
-    # Arabic names coexist in every observed source, "jamais l'un sans l'autre".
-    # The rule was enforced and then relaxed on request: the real lists carry
-    # Latin names only, and a constraint that rejects every row of every import
-    # is worse than a recorded gap. `nom_arabe` is kept and should be filled;
-    # nothing forces it. Restore the constraint here if the sources ever carry
-    # both.
-
-    @api.constrains('rang_academique', 'type_personne')
-    def _check_rang_academique(self):
-        for partner in self:
-            if partner.rang_academique and partner.type_personne != 'enseignant':
-                raise ValidationError(_(
-                    "An academic rank only applies to a teacher. %s is recorded as %s.",
-                    partner.display_name,
-                    dict(self._fields['type_personne'].selection).get(partner.type_personne)
-                    or _("nothing in particular"),
-                ))
-
-    # This system does NOT issue matricules. HIS does, and they arrive by import
-    # or by hand. An earlier version generated them from a sequence starting at
-    # 900000 - a block invented here to avoid colliding with HIS - which put
-    # fabricated identifiers on real people and matched nothing in section 2,
-    # where NNNNNN is simply "un numéro séquentiel sur 6 chiffres". Do not bring
-    # that back: two systems minting into one identifier space with only a local
-    # unique constraint between them cannot end well.
-
-    def _sync_identity_side_effects(self, vals):
-        """Keep Odoo's own fields in step with the specification's fields."""
-        for partner in self:
-            # Odoo's `email` drives invoicing and the portal. Institutional
-            # first, personal otherwise - students only ever have the latter.
-            if not partner.email:
-                fallback = partner.email_institutionnel or partner.email_personnel
-                if fallback:
-                    partner.email = fallback
-            if 'statut' in vals:
-                partner.active = partner.statut != 'archive'
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        partners = super().create(vals_list)
-        for partner, vals in zip(partners, vals_list):
-            partner._sync_identity_side_effects(vals)
-        return partners
-
-    def write(self, vals):
-        if 'matricule_institutionnel' in vals:
-            incoming = vals['matricule_institutionnel']
-            for partner in self:
-                current = partner.matricule_institutionnel
-                if current and current != incoming:
-                    raise UserError(_(
-                        "%(name)s already holds the matricule %(current)s.\n\n"
-                        "A matricule is assigned once and never reused, so it cannot be "
-                        "changed to %(new)s. If it is genuinely wrong, archive this person "
-                        "and register them again.",
-                        name=partner.display_name, current=current, new=incoming or _("nothing"),
-                    ))
-        res = super().write(vals)
-        if {'email_institutionnel', 'email_personnel', 'statut'} & vals.keys():
-            self._sync_identity_side_effects(vals)
-        return res
+    # The wallet's own gate: a partner may only carry meal records if a
+    # `his.person` anchors them. Resolved here once rather than in each
+    # constraint that needs it — his_person_core's unique(partner_id) makes
+    # this 0-or-1, so a One2many is the honest shape for it.
+    his_person_ids = fields.One2many('his.person', 'partner_id', string="Person Record")
 
     # ------------------------------------------------------------------
     # Meal account
@@ -347,10 +204,14 @@ class ResPartner(models.Model):
         """
         self.ensure_one()
         subs = self.sudo()._usable_subscriptions()
+        # The displayed matricule, not the stored one: his_person_core hides the
+        # check digit on screen because a check digit only helps whoever copies
+        # the number by hand, and nobody copies this one - it is read off a card.
+        person = self.sudo().his_person_ids[:1]
         return {
             'partner_id': self.id,
             'name': self.display_name,
-            'matricule': self.matricule_institutionnel or "",
+            'matricule': person.matricule_affiche or "",
             'credits': sum(subs.mapped('credits_remaining')),
             'plan': subs[:1].product_id.display_name or "",
             'expires': fields.Date.to_string(subs[:1].date_end) if subs else "",

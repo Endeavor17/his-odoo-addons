@@ -7,36 +7,6 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet/notebook" position="inside">
-                <page string="Identité HIS" name="his_identity">
-                    <group>
-                        <group string="Identité">
-                            <field name="matricule_institutionnel"
-                                   placeholder="HIS-2026-000042-7"/>
-                            <field name="nom_arabe" placeholder="الاسم بالعربية"/>
-                            <field name="type_personne"/>
-                            <field name="statut"/>
-                        </group>
-                        <group string="Contact">
-                            <field name="email_institutionnel" widget="email"
-                                   placeholder="prenom.nom@his.edu.dz"/>
-                            <field name="email_personnel" widget="email"/>
-                        </group>
-                        <group string="Rattachement">
-                            <field name="faculty_ids" widget="many2many_tags"/>
-                        </group>
-                        <group string="Enseignant" invisible="type_personne != 'enseignant'">
-                            <field name="rang_academique"/>
-                            <field name="specialite"/>
-                        </group>
-                    </group>
-                    <div class="alert alert-info" role="alert">
-                        The matricule is issued by HIS and recorded here for later use.
-                        Nothing in the meal system depends on it — at the till a person
-                        is identified by the card they tap. It is assigned once and
-                        never reused, so it cannot be edited after it is saved.
-                    </div>
-                </page>
-
                 <page string="Meal Account" name="meal_account"
                       invisible="not meal_card_ids">
                     <group>
@@ -82,13 +52,10 @@
         <field name="arch" type="xml">
             <field name="display_name" position="after">
                 <!-- The card is what identifies someone at the till, so it leads.
-                     The matricule is available but hidden by default: it is stored
-                     for later and plays no part in day-to-day work. -->
+                     Identity columns are not repeated here: they belong to the
+                     Personnes list, on his.person. -->
                 <field name="meal_card_code" optional="show" string="Card"/>
                 <field name="meal_credits_remaining" optional="show" string="Credits"/>
-                <field name="type_personne" optional="show"/>
-                <field name="matricule_institutionnel" optional="hide"/>
-                <field name="nom_arabe" optional="hide"/>
             </field>
         </field>
     </record>
@@ -103,25 +70,24 @@
                      printed on the sheet and read by the reader. -->
                 <field name="meal_card_ids" string="Card number"
                        filter_domain="[('meal_card_ids.code', 'ilike', self)]"/>
-                <field name="matricule_institutionnel"/>
-                <field name="nom_arabe"/>
             </field>
         </field>
     </record>
 
+    <!-- Card holders, on the group's own identity model. This module no longer
+         has a People screen of its own: the referential is his_person_core's,
+         and this action is only a filtered window onto it. -->
     <record id="action_his_person" model="ir.actions.act_window">
-        <field name="name">People</field>
-        <field name="res_model">res.partner</field>
+        <field name="name">Card Holders</field>
+        <field name="res_model">his.person</field>
         <field name="view_mode">list,form</field>
-        <!-- Holding a card is what makes someone a person here. It matches how
-             people actually arrive: one imported row of card number and name. -->
         <field name="domain">[('meal_card_ids', '!=', False)]</field>
-        <field name="context">{'default_statut': 'actif'}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Nobody holds a card yet</p>
-            <p>People appear here once they have been given a card. Import them as
-               card number and name together, or create the person and tap their
-               card on the Cards screen.</p>
+            <p>People appear here once they have been given a card. The people
+               themselves are created in the Personnes referential — by HR for an
+               employee, or through the student import — then a card is tapped on
+               the Cards screen.</p>
         </field>
     </record>
 

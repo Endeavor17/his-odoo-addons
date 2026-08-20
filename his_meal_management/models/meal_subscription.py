@@ -1,4 +1,5 @@
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class HisMealSubscription(models.Model):
@@ -56,6 +57,24 @@ class HisMealSubscription(models.Model):
         'CHECK (date_end >= date_start)',
         "A subscription cannot end before it starts.",
     )
+
+    @api.constrains('partner_id')
+    def _check_meal_holder_is_registered(self):
+        """Same gate as the card, from the other side.
+
+        A card is not the only way into the wallet: selling a plan at the POS
+        creates a subscription straight from the order's customer. Without this,
+        a cashier picking any contact would open a balance on someone outside
+        the referential - the hole the card constraint closes, reopened.
+        """
+        for sub in self:
+            if not sub.partner_id.sudo().his_person_ids:
+                raise ValidationError(_(
+                    "%s has no person record, so no meal credits can be held.\n\n"
+                    "Sell the plan to a registered person, or have them registered "
+                    "in the Personnes referential first.",
+                    sub.partner_id.display_name,
+                ))
 
     @api.depends('credits_total', 'credits_used')
     def _compute_credits_remaining(self):
