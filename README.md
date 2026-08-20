@@ -14,7 +14,7 @@ a donc aucun fork du code source Odoo à maintenir.
 | [`his_person_core`](his_person_core/) | Socle Identité — fiche personne et matricule institutionnel unique, délégué à `res.partner` | Développé, 13 tests |
 | [`his_hr_base`](his_hr_base/) | Socle RH — rattache `hr.employee` au référentiel Personnes, reprise des matricules et réutilisation des contacts | Développé, 16 tests |
 | [`his_person_sync_sheets`](his_person_sync_sheets/) | Import — export Google Sheets (Sales/Admission) vers le référentiel Personnes | Développé, 19 tests |
-| [`his_meal_management`](his_meal_management/) | Carte RFID, portefeuille repas, Restaurant — cartes étudiants et crédits repas prépayés consommés en caisse | Développé, 45 tests |
+| [`his_meal_management`](his_meal_management/) | Carte RFID, portefeuille repas, Restaurant — cartes étudiants et crédits repas prépayés consommés en caisse | Développé, 41 tests ; identité déléguée à `his_person_core` (v19.0.2.0.0) |
 | [`maintenance_university`](maintenance_university/) | Maintenance universitaire — demandes, inspections, constats, tableau de bord | Développé ; ne possède plus le matricule (v19.0.2.0.0) |
 | _(à venir)_ | Achats | Autre intervenant |
 | _(à venir)_ | Point de Vente avancé | Autre intervenant |
@@ -35,9 +35,9 @@ docker compose up -d
 Odoo écoute sur **http://localhost:8072** (le port 8069 est déjà occupé par un
 autre conteneur sur le poste de développement, cf. `docker-compose.yml` : le
 mapping est `8072:8069`, Odoo écoute toujours sur 8069 *dans* le conteneur).
-Le dépôt est monté dans le conteneur
-comme répertoire d'addons supplémentaires, donc **toute modification du code
-Python est prise en compte après un simple redémarrage** :
+Le dépôt est monté dans le conteneur comme répertoire d'addons supplémentaires,
+donc **toute modification du code Python est prise en compte après un simple
+redémarrage** :
 
 ```bash
 docker compose restart odoo
@@ -49,9 +49,9 @@ de données.
 
 ## Base de travail
 
-La base de recette s'appelle **`his`** : elle porte les trois modules installés
+La base de recette s'appelle **`his`** : elle porte les cinq modules installés
 et les données de démonstration (points de vente configurés, cartes réelles,
-historique de crédits repas, tournées de maintenance).
+historique de crédits repas, tournées de maintenance, référentiel Personnes).
 
 Elle provient d'un ancien poste de travail séparé (`D:\Point_of_sell`, base
 `meal_credits`, port 8071) qui ne contenait que `his_meal_management`. Ce poste
@@ -100,12 +100,26 @@ passe mal sur des matricules déjà distribués.
 docker compose run --rm odoo odoo -d <base> -i his_person_sync_sheets --stop-after-init
 ```
 
-`his_meal_management` n'a aucun prérequis de données ; il dépend en revanche du
-socle Identité, qui doit donc être installé avant lui :
+`his_meal_management` n'a aucun prérequis de données ; il dépend du socle
+Identité, qu'Odoo installe donc avant lui :
 
 ```bash
 docker compose run --rm odoo odoo -d <base> -i his_meal_management --stop-after-init
 ```
+
+Sur une base qui portait déjà `his_meal_management` en 19.0.1.1.0, l'identité
+migre dans la **même commande** que le socle, pour la raison donnée plus haut :
+
+```bash
+docker compose run --rm odoo odoo -d <base> \
+  -i his_person_core,his_hr_base \
+  -u maintenance_university,his_meal_management --stop-after-init
+```
+
+Sa migration `19.0.2.0.0` crée une fiche `his.person` pour chaque porteur de
+carte, déplace les liens Facultés et supprime les colonnes d'identité devenues
+orphelines sur `res.partner`. **Elle émet un matricule par personne migrée** :
+même avertissement que ci-dessus, la répéter d'abord contre une copie.
 
 > `maintenance_university` **désactive deux règles d'enregistrement du module
 > Maintenance natif** dans son `post_init_hook`, et retire Discuss / Employés /
@@ -141,6 +155,7 @@ consomme donc des numéros `INV-` réels.
   `his_hr_base`, `his_person_sync_sheets`) et correction de
   `maintenance_university`, partie de `maintenance`.
 - `meal` — carte RFID et portefeuille repas (`his_meal_management`).
+- `meal_identity` — reprise de `his_meal_management` sur le socle Identité.
 - Les autres chantiers (Achats, POS avancé) partent de `main` sur leur propre
   branche et fusionnent dans `main`.
 
