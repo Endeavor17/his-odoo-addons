@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- noupdate="1" est IMPERATIF : sans lui, chaque mise a jour du module
+         remettrait number_next a 1 et reattribuerait des matricules deja
+         emis. Un matricule est un identifiant a vie. -->
+    <data noupdate="1">
+        <record id="seq_his_person_matricule_institutionnel" model="ir.sequence">
+            <field name="name">Matricule institutionnel (Groupe)</field>
+            <field name="code">his.person.matricule.institutionnel</field>
+            <field name="prefix">HIS-%(year)s-</field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <!-- use_date_range : un compteur par annee, remis a 1 chaque
+                 janvier. L'annee du prefixe vient de sequence_date, pas de
+                 la date de creation de la fiche (embauche antidatee). -->
+            <field name="use_date_range" eval="True"/>
+            <!-- company_id vide = compteur unique et global. HIS, HTC et IRA
+                 partagent le meme matricule : il ne porte aucune information
+                 d'entite juridique, contrairement a hr.employee. -->
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

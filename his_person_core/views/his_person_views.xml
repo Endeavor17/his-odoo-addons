@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_his_person_list" model="ir.ui.view">
+        <field name="name">his.person.list</field>
+        <field name="model">his.person</field>
+        <field name="arch" type="xml">
+            <list string="Personnes">
+                <field name="matricule_affiche"/>
+                <field name="name"/>
+                <field name="nom_arabe" optional="show"/>
+                <field name="type_personne"/>
+                <field name="email" string="Email institutionnel" optional="show"/>
+                <field name="phone" string="Telephone" optional="hide"/>
+                <field name="source_system" optional="hide"/>
+                <field name="match_method" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_his_person_form" model="ir.ui.view">
+        <field name="name">his.person.form</field>
+        <field name="model">his.person</field>
+        <field name="arch" type="xml">
+            <form string="Personne">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Nom (latin)"/>
+                        <h1><field name="name" placeholder="Nom (latin)"/></h1>
+                        <h3><field name="matricule_affiche"/></h3>
+                    </div>
+                    <group>
+                        <group string="Identite">
+                            <field name="nom_arabe"/>
+                            <field name="type_personne"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Contact">
+                            <field name="email" string="Email institutionnel"/>
+                            <field name="email_personnel"/>
+                            <field name="phone" string="Telephone"/>
+                        </group>
+                        <group string="Provenance">
+                            <!-- invisible tant qu'il est vide : partner_id est
+                                 required, mais il n'est renseigne que par la
+                                 delegation au moment du create. Affiche et
+                                 vide, le client web refuserait la sauvegarde
+                                 sur un champ obligatoire que l'utilisateur ne
+                                 peut pas remplir. -->
+                            <field name="partner_id" readonly="1"
+                                   invisible="not partner_id"/>
+                            <field name="source_system"/>
+                            <field name="external_ref"/>
+                        </group>
+                        <group string="Rapprochement">
+                            <field name="match_method"/>
+                            <field name="matched_by"/>
+                            <field name="matched_on"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_his_person_search" model="ir.ui.view">
+        <field name="name">his.person.search</field>
+        <field name="model">his.person</field>
+        <field name="arch" type="xml">
+            <search string="Personnes">
+                <field name="matricule_affiche"/>
+                <field name="name"/>
+                <field name="nom_arabe"/>
+                <field name="email" string="Email institutionnel"/>
+                <filter name="filter_employe" string="Employes" domain="[('type_personne','=','employe')]"/>
+                <filter name="filter_enseignant" string="Enseignants" domain="[('type_personne','=','enseignant')]"/>
+                <filter name="filter_etudiant" string="Etudiants" domain="[('type_personne','=','etudiant')]"/>
+                <filter name="filter_candidat" string="Candidats" domain="[('type_personne','=','candidat')]"/>
+                <separator/>
+                <filter name="filter_inactive" string="Archives" domain="[('active','=',False)]"/>
+                <separator/>
+                <filter name="group_type" string="Type" context="{'group_by': 'type_personne'}"/>
+                <filter name="group_source" string="Systeme source" context="{'group_by': 'source_system'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_his_person" model="ir.actions.act_window">
+        <field name="name">Personnes</field>
+        <field name="res_model">his.person</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_his_person_root" name="Identite" sequence="85"/>
+    <menuitem id="menu_his_person" name="Personnes" parent="menu_his_person_root" action="action_his_person" sequence="10"/>
+
+</odoo>

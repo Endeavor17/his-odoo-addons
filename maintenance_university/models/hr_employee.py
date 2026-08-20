@@ -6,16 +6,6 @@ from odoo import api, models, fields
 class HrEmployee(models.Model):
     _inherit = "hr.employee"
 
-    # Not `required=True`: the value is generated in create(), so a NOT NULL
-    # constraint would only break the web client (a readonly field is empty in
-    # the form until the record is saved) and log a schema warning for the rows
-    # that existed before this module was installed.
-    matricule_institutionnel = fields.Char(
-        string="Institutional ID",
-        copy=False,
-        readonly=True,
-        index=True,
-    )
     # HR/the Administrator sets this — it may be backdated (a hire entered
     # late) or in the future (hired now, starting later). It's what the
     # institutional ID's year is generated from, not the record's create date.
@@ -53,22 +43,8 @@ class HrEmployee(models.Model):
     )
     login = fields.Char(related='user_id.login', string="Login", store=False)
 
-    _matricule_institutionnel_unique = models.Constraint(
-        'unique(matricule_institutionnel)',
-        "This institutional ID is already assigned to another employee.",
-    )
-
     @api.model_create_multi
     def create(self, vals_list):
-        sequence = self.env['ir.sequence'].sudo()
-        for vals in vals_list:
-            if not vals.get('matricule_institutionnel'):
-                start_date = fields.Date.to_date(vals.get('date_start_working')) \
-                    or fields.Date.context_today(self)
-                vals['matricule_institutionnel'] = sequence.next_by_code(
-                    'hr.employee.matricule.institutionnel',
-                    sequence_date=start_date,
-                )
         employees = super().create(vals_list)
         # An employee created outside the Create Workers wizard (e.g. the
         # standard Employees form) gets a user account with no maintenance

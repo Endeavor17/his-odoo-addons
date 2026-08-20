@@ -10,8 +10,10 @@
 
     <field name="arch" type="xml">
 
+        <!-- matricule_institutionnel n'est plus affiche ici : il appartient
+             a his_hr_base, qui pose desormais sa propre vue. L'afficher aussi
+             le ferait apparaitre deux fois sur le formulaire. -->
         <xpath expr="//field[@name='job_title']" position="after">
-            <field name="matricule_institutionnel"/>
             <field name="date_start_working"/>
         </xpath>
 

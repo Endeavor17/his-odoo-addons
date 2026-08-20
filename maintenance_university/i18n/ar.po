@@ -448,11 +448,6 @@ msgid "Inspection tour"
 msgstr "جولة تفتيش"
 
 #. module: maintenance_university
-#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__matricule_institutionnel
-msgid "Institutional ID"
-msgstr "الرقم المؤسسي"
-
-#. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_is_follower
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__message_is_follower
 msgid "Is Follower"
@@ -862,11 +857,6 @@ msgstr "هذا الشهر"
 #: code:addons/maintenance_university/models/maintenance_university_finding.py:0
 msgid "This finding has already been converted."
 msgstr "تم تحويل نتيجة التفتيش هذه بالفعل."
-
-#. module: maintenance_university
-#: model:ir.model.constraint,message:maintenance_university.constraint_hr_employee_matricule_institutionnel_unique
-msgid "This institutional ID is already assigned to another employee."
-msgstr "هذا الرقم المؤسسي معيَّن بالفعل لموظف آخر."
 
 #. module: maintenance_university
 #. odoo-python

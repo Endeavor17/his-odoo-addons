@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_his_person_user,his.person.user,model_his_person,base.group_user,1,0,0,0
+access_his_person_manager,his.person.manager,model_his_person,his_person_core.group_his_person_manager,1,1,1,0
