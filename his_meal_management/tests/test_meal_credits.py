@@ -665,3 +665,129 @@ class TestRfidScanning(TransactionCase):
         self.assertNotIn('res_id', action)
         self.assertEqual(action['context']['default_partner_id'], person.id)
         self.assertEqual(action['context']['default_replaced_card_id'], card.id)
+
+
+@tagged('post_install', '-at_install')
+class TestBadgeFromIdentity(TransactionCase):
+    """The badge is issued through the card, whichever screen writes it.
+
+    his_person_core declares `numero_carte` as a plain Char and its README says
+    that field must be replaced by a model with a lifecycle before the wallet
+    stores money. This module is that model, so the field is taken over here:
+    same name, same label, same unique constraint, computed from the person's
+    active card and writable through an inverse.
+
+    These tests pin both directions and the till's two lookups. His own suite
+    pins the rest — this one does not re-test his rules.
+    """
+
+    def _person(self, name="Badge Person", **vals):
+        return make_person(self.env, name, **vals)
+
+    def test_writing_a_badge_issues_a_card(self):
+        person = self._person()
+        person.numero_carte = card_uid(50)
+
+        card = person.partner_id.meal_card_ids
+        self.assertEqual(len(card), 1, "one badge, one card")
+        self.assertEqual(card.code, card_uid(50))
+        self.assertEqual(card.state, 'active')
+        self.assertEqual(
+            person.partner_id.barcode, card_uid(50),
+            "the till resolves a scan through the contact's barcode",
+        )
+
+    def test_changing_a_badge_replaces_the_card_and_keeps_the_old_one(self):
+        """The half a plain Char could not do.
+
+        Overwriting a text field loses the previous number. Here the old card is
+        retired and kept, which is what lets anyone answer which card was valid
+        when a disputed meal was served — the question his README says must be
+        answerable before the wallet holds money.
+        """
+        person = self._person()
+        person.numero_carte = card_uid(51)
+        first = person.partner_id.meal_card_ids
+
+        person.numero_carte = card_uid(52)
+
+        cards = person.partner_id.meal_card_ids
+        self.assertEqual(len(cards), 2, "the previous card must survive")
+        self.assertEqual(first.state, 'replaced')
+        active = cards.filtered(lambda c: c.state == 'active')
+        self.assertEqual(active.code, card_uid(52))
+        self.assertEqual(active.replaced_card_id, first, "the chain is recorded")
+        self.assertEqual(person.numero_carte, card_uid(52))
+        self.assertEqual(person.partner_id.barcode, card_uid(52))
+
+    def test_clearing_the_badge_stops_it_being_scannable(self):
+        person = self._person()
+        person.numero_carte = card_uid(53)
+        person.numero_carte = False
+
+        self.assertEqual(person.partner_id.meal_card_ids.state, 'blocked')
+        self.assertFalse(person.partner_id.barcode)
+        self.assertFalse(
+            self.env['res.partner'].search([('barcode', '=', card_uid(53))]),
+            "a cleared badge must not find anybody",
+        )
+
+    def test_a_badge_cannot_be_held_by_two_people(self):
+        self._person("First").numero_carte = card_uid(54)
+        second = self._person("Second")
+        with self.assertRaises(Exception), mute_logger('odoo.sql_db'):
+            with self.cr.savepoint():
+                second.numero_carte = card_uid(54)
+
+    def test_tapping_a_card_updates_the_person(self):
+        """The other direction: the Cards screen is the officer's entry point."""
+        person = self._person()
+        self.env['his.meal.card'].create({
+            'partner_id': person.partner_id.id, 'code': card_uid(55),
+        })
+        self.assertEqual(person.numero_carte, card_uid(55))
+
+    def test_the_employee_badge_id_follows_the_same_card(self):
+        """One physical card: attendance, door access and meals read one number.
+
+        hr.employee.barcode is a stored related to person_id.numero_carte, so
+        the chain is card -> person -> employee. If it ever broke, a badge the
+        till accepts would be refused at the attendance reader.
+
+        Skipped when his_hr_base is absent: this module has no business
+        depending on HR just to serve meals, so the employee half of the chain
+        only exists on a database that installed it.
+        """
+        if 'hr.employee' not in self.env:
+            self.skipTest("his_hr_base is not installed: no employee half to check")
+        employee = self.env['hr.employee'].sudo().create({'name': "Badge Employee"})
+        employee.person_id.numero_carte = card_uid(56)
+
+        self.assertEqual(employee.barcode, card_uid(56))
+        self.assertEqual(
+            employee.person_id.partner_id.meal_card_ids.code, card_uid(56),
+            "the employee's badge is a real card, not a loose string",
+        )
+
+    def test_the_till_finds_a_student_by_name_and_by_badge(self):
+        """Exactly the two queries the POS itself runs.
+
+        point_of_sale/.../partner_list.js `_getSearchFields` returns
+        complete_name and barcode for a typed query, and product_screen.js
+        `_getPartnerByBarcode` searches barcode for a tapped one. Both resolve
+        res.partner, which is why the badge is mirrored there.
+        """
+        person = self._person("Meriem Zerrouki")
+        person.numero_carte = card_uid(57)
+        partner = person.partner_id
+
+        self.assertIn(
+            partner,
+            self.env['res.partner'].search([('complete_name', 'ilike', "Zerrouki")]),
+            "typing a name at the till must find the person",
+        )
+        self.assertIn(
+            partner,
+            self.env['res.partner'].search([('barcode', '=', card_uid(57))]),
+            "typing or scanning a badge at the till must find the person",
+        )
