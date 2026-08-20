@@ -23,7 +23,7 @@ OUTCOME_SELECTION = [
 
 ROW_FIELDS = (
     'matricule_institutionnel', 'name', 'nom_arabe',
-    'email', 'email_personnel', 'phone', 'external_ref',
+    'email', 'email_personnel', 'phone', 'numero_carte', 'external_ref',
 )
 
 # Plusieurs en-tetes possibles pour une meme colonne : l'export est produit a
@@ -41,6 +41,7 @@ COLUMN_ALIASES = {
     'email_personnel': ('email personnel', 'email', 'mail', 'e-mail'),
     'email': ('email institutionnel', 'email pro', 'mail institutionnel'),
     'phone': ('telephone', 'tel', 'gsm', 'mobile'),
+    'numero_carte': ('numero carte', 'carte', 'card', 'rfid', 'badge', 'no carte', 'n carte'),
     'external_ref': ('external ref', 'reference', 'ref', 'id', 'identifiant', 'row id'),
 }
 
@@ -179,6 +180,15 @@ class HisPersonImport(models.TransientModel):
                 candidate_person_id=match['person'].id if match['person'] else False,
             )
 
+            # Une carte deja portee par quelqu'un d'autre arrete la ligne, au
+            # meme titre qu'un matricule incompatible : la caisse debiterait
+            # la mauvaise personne. On signale, on ne reassigne pas.
+            card_conflict = self._card_conflict(row, match['person'])
+            if card_conflict:
+                line_vals.update(outcome='conflict', message=card_conflict)
+                self._log_line(Line.create(line_vals))
+                continue
+
             if match['conflict']:
                 # Arret net sur la ligne. Ni fusion, ni ecrasement : deux
                 # personnes differentes derriere un meme matricule est un
@@ -208,12 +218,36 @@ class HisPersonImport(models.TransientModel):
         return self._reopen()
 
     @api.model
+    def _card_conflict(self, row, target):
+        """Message de conflit si la carte de la ligne appartient a quelqu'un d'autre.
+
+        `target` : la fiche que la ligne va mettre a jour, ou None si elle en
+        cree une. Une carte deja posee ailleurs n'est jamais deplacee en
+        silence — meme regle que pour un matricule incompatible.
+        """
+        card = (row.get('numero_carte') or '').strip()
+        if not card:
+            return False
+        holder = self.env['his.person'].with_context(active_test=False).search(
+            [('numero_carte', '=', card)], limit=1,
+        )
+        if not holder or holder == target:
+            return False
+        return (
+            "La carte %s est deja attribuee a %s (%s). Une carte n'identifie "
+            "qu'une personne : ligne rejetee, a arbitrer manuellement." % (
+                card, holder.display_name,
+                holder.matricule_affiche or holder.matricule_institutionnel,
+            )
+        )
+
+    @api.model
     def _person_vals(self, row):
         return {
             field: row.get(field) or False
             for field in (
                 'name', 'nom_arabe', 'email',
-                'email_personnel', 'phone', 'external_ref',
+                'email_personnel', 'phone', 'numero_carte', 'external_ref',
             )
         }
 
@@ -294,6 +328,7 @@ class HisPersonImportLine(models.TransientModel):
     email = fields.Char(string="Email institutionnel", readonly=True)
     email_personnel = fields.Char(string="Email personnel", readonly=True)
     phone = fields.Char(string="Telephone", readonly=True)
+    numero_carte = fields.Char(string="Numero de carte", readonly=True)
     external_ref = fields.Char(string="Reference source", readonly=True)
 
     outcome = fields.Selection(selection=OUTCOME_SELECTION, string="Resultat", readonly=True)

@@ -33,6 +33,14 @@ class HrEmployee(models.Model):
         related='person_id.matricule_affiche',
         readonly=True,
     )
+    # Le personnel a des cartes comme les etudiants : meme caisse, meme
+    # resolution carte -> personne. readonly=False : la carte se saisit ici
+    # comme sur la fiche personne, elle est ecrite sur celle-ci.
+    numero_carte = fields.Char(
+        string="Numero de carte",
+        related='person_id.numero_carte',
+        readonly=False,
+    )
 
     @api.model_create_multi
     def create(self, vals_list):

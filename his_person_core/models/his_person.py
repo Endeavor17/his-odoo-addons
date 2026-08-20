@@ -150,6 +150,26 @@ class HisPerson(models.Model):
     nom_arabe = fields.Char(string="Nom (arabe)", tracking=True)
     email_personnel = fields.Char(string="Email personnel")
 
+    # Numero de carte physique (RFID / badge). Saisissable a la main comme
+    # importe : les cartes arrivent tantot de l'export d'admission, tantot du
+    # service qui les grave.
+    #
+    # ponytail: un seul champ, pas de modele de carte. Suffit pour que la
+    # caisse resolve carte -> personne. Ce qu'il ne couvre PAS : le cycle de
+    # vie (perte, reedition, desactivation). Une carte remplacee ecrase la
+    # precedente et l'historique disparait — acceptable tant qu'aucun solde
+    # n'est attache, a reprendre dans un modele his.card (person_id, numero,
+    # etat, dates de validite) des que le portefeuille repas arrive. C'est le
+    # chantier RFID/portefeuille, pas celui-ci.
+    numero_carte = fields.Char(
+        string="Numero de carte",
+        copy=False,
+        index=True,
+        tracking=True,
+        help="Numero de la carte physique (RFID). Sert a la caisse pour "
+             "retrouver la personne. Une carte n'appartient qu'a une personne.",
+    )
+
     # Selection et non un jeu de booleens : la liste des types s'allongera
     # (alumni, prestataire...) et doit pouvoir grandir sans migration de
     # schema. Ce champ reflete le statut courant, il ne definit pas
@@ -213,6 +233,12 @@ class HisPerson(models.Model):
     _partner_id_unique = models.Constraint(
         'unique(partner_id)',
         "Ce contact porte deja une fiche personne.",
+    )
+    # Une carte, une personne. Sans cela deux fiches pourraient porter le meme
+    # numero et la caisse ne saurait pas qui debiter.
+    _numero_carte_unique = models.Constraint(
+        'unique(numero_carte)',
+        "Ce numero de carte est deja attribue a une autre personne.",
     )
 
     @api.depends('matricule_institutionnel')
