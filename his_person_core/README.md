@@ -179,3 +179,23 @@ docker compose run --rm odoo odoo -d <base> -i his_person_core --stop-after-init
 docker compose run --rm odoo odoo -d <base> -u his_person_core \
   --test-enable --test-tags /his_person_core --stop-after-init
 ```
+
+## Clé de contrôle : stockée, pas affichée
+
+Les écrans montrent **`HIS-AAAA-NNNNNN`** (champ `matricule_affiche`) ; la base
+stocke **`HIS-AAAA-NNNNNN-C`** (champ `matricule_institutionnel`).
+
+Une clé de contrôle ne détecte une faute de frappe que pour **qui la recopie** :
+elle voyage avec le numéro qu'elle protège. Cachée à l'écran, elle ne protège
+donc plus la saisie humaine — mais elle continue de protéger le **chemin
+machine**, celui où personne ne peut relire : la carte RFID encode la valeur
+complète, le lecteur recalcule la clé et rejette un scan erroné.
+
+Arbitrage assumé, décidé après retour de l'équipe qui lisait la clé comme un
+chiffre parasite.
+
+**La recherche accepte les deux formes.** Sans cela, taper à l'écran ce qu'on y
+lit ne trouverait rien, la base contenant la valeur avec sa clé. Attention en
+maintenance : Odoo 19 normalise `=` en `in` (et `!=` en `not in`), avec un
+`OrderedSet` en valeur, **avant** d'appeler la méthode `search` d'un champ
+calculé — tester `operator == '='` ne s'y déclenche jamais.

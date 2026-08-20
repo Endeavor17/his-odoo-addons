@@ -25,6 +25,14 @@ class HrEmployee(models.Model):
         readonly=True,
         index=True,
     )
+    # Forme affichee, sans la cle de controle : c'est ce que voit l'equipe RH.
+    # La valeur complete reste dans matricule_institutionnel, pour la carte
+    # RFID et la caisse. Cf. his_person_core pour le raisonnement.
+    matricule_affiche = fields.Char(
+        string="Matricule",
+        related='person_id.matricule_affiche',
+        readonly=True,
+    )
 
     @api.model_create_multi
     def create(self, vals_list):

@@ -6,7 +6,7 @@
         <field name="model">his.person</field>
         <field name="arch" type="xml">
             <list string="Personnes">
-                <field name="matricule_institutionnel"/>
+                <field name="matricule_affiche"/>
                 <field name="name"/>
                 <field name="nom_arabe" optional="show"/>
                 <field name="type_personne"/>
@@ -27,7 +27,7 @@
                     <div class="oe_title">
                         <label for="name" string="Nom (latin)"/>
                         <h1><field name="name" placeholder="Nom (latin)"/></h1>
-                        <h3><field name="matricule_institutionnel"/></h3>
+                        <h3><field name="matricule_affiche"/></h3>
                     </div>
                     <group>
                         <group string="Identite">
@@ -69,7 +69,7 @@
         <field name="model">his.person</field>
         <field name="arch" type="xml">
             <search string="Personnes">
-                <field name="matricule_institutionnel"/>
+                <field name="matricule_affiche"/>
                 <field name="name"/>
                 <field name="nom_arabe"/>
                 <field name="email" string="Email institutionnel"/>

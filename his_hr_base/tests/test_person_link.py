@@ -213,7 +213,7 @@ class TestPersonLink(TransactionCase):
         self.assertTrue(view, "his_hr_base n'expose aucune vue de ses champs")
         arch = self.env['hr.employee'].get_view(view_type='form')['arch']
         self.assertEqual(
-            arch.count('name="matricule_institutionnel"'), 1,
+            arch.count('name="matricule_affiche"'), 1,
             "matricule_institutionnel affiche zero ou plusieurs fois",
         )
         self.assertIn('name="person_id"', arch)

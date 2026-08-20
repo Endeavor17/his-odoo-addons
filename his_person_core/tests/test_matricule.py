@@ -150,3 +150,44 @@ class TestMatricule(TransactionCase):
         })
         self.assertTrue(person.partner_id, "la delegation n'a pas cree de contact")
         self.assertEqual(person.partner_id.name, "Saisie Manuelle")
+
+    # --- Regle 8 : la cle est stockee mais pas affichee ---------------------
+
+    def test_display_form_hides_the_checksum(self):
+        person = self._person()
+        self.assertRegex(person.matricule_institutionnel, r'^HIS-\d{4}-\d{6}-[0-9X]$')
+        self.assertRegex(person.matricule_affiche, r'^HIS-\d{4}-\d{6}$')
+        self.assertEqual(
+            person.matricule_affiche, person.matricule_institutionnel[:-2],
+            "la forme affichee doit etre la valeur complete moins sa cle",
+        )
+
+    def test_checksum_is_still_stored_and_valid(self):
+        """Cachee a l'ecran, la cle reste en base : c'est elle que lira le RFID."""
+        person = self._person()
+        sequential = person.matricule_institutionnel.split('-')[2]
+        self.assertEqual(
+            person.matricule_institutionnel[-1],
+            _compute_matricule_checksum(sequential),
+        )
+
+    def test_search_accepts_the_displayed_form(self):
+        """L'utilisateur tape ce qu'il voit : la recherche doit aboutir."""
+        person = self._person()
+        court = person.matricule_affiche
+        Person = self.env['his.person']
+        self.assertIn(person, Person.search([('matricule_affiche', '=', court)]))
+        self.assertIn(person, Person.search([('matricule_affiche', 'ilike', court)]))
+
+    def test_search_still_accepts_the_full_form(self):
+        """Une valeur complete, lue sur une carte ou un export, doit marcher aussi."""
+        person = self._person()
+        complet = person.matricule_institutionnel
+        Person = self.env['his.person']
+        self.assertIn(person, Person.search([('matricule_affiche', 'ilike', complet)]))
+        self.assertIn(person, Person.search([('matricule_institutionnel', '=', complet)]))
+
+    def test_display_form_leaves_legacy_values_untouched(self):
+        """Une valeur de reprise sans cle n'a rien a tronquer."""
+        person = self._person(matricule_institutionnel='HIS-2023-000015')
+        self.assertEqual(person.matricule_affiche, 'HIS-2023-000015')

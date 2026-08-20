@@ -4,6 +4,7 @@ import unicodedata
 
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.osv import expression
 
 MATRICULE_SEQUENCE_CODE = 'his.person.matricule.institutionnel'
 
@@ -41,6 +42,18 @@ def _compute_matricule_checksum(sequential_number):
     )
     remainder = total % 11
     return 'X' if remainder == 10 else str(remainder)
+
+
+def strip_matricule_checksum(matricule):
+    """Le matricule sans sa cle de controle : HIS-AAAA-NNNNNN-C -> HIS-AAAA-NNNNNN.
+
+    Fonction pure, comme le calcul de la cle. Retourne la valeur telle quelle si
+    elle n'a pas la forme attendue — une valeur de reprise anterieure a ce
+    module n'a pas forcement de cle a retirer.
+    """
+    if not matricule:
+        return matricule
+    return MATRICULE_RE.match(matricule) and matricule[:-2] or matricule
 
 
 def normalize_text(value):
@@ -108,6 +121,24 @@ class HisPerson(models.Model):
         index=True,
         tracking=True,
     )
+
+    # Forme affichee : le matricule sans sa cle de controle.
+    #
+    # La cle ne sert a rien a un humain — elle ne detecte une faute de frappe
+    # que pour qui la recopie, et l'equipe la lisait comme un chiffre parasite.
+    # Elle reste stockee et transmise : c'est la carte RFID et la caisse qui
+    # s'en serviront, en recalculant la cle a la lecture pour rejeter un scan
+    # errone. Cachee a l'ecran, elle continue donc de proteger le chemin
+    # machine, celui ou personne ne peut relire.
+    #
+    # store=False : un champ calcule stocke de plus serait une seconde copie
+    # d'un identifiant a vie, a tenir en phase. Le calcul est une troncature.
+    matricule_affiche = fields.Char(
+        string="Matricule",
+        compute='_compute_matricule_affiche',
+        search='_search_matricule_affiche',
+    )
+
     # Le nom latin, l'email institutionnel et le telephone viennent du
     # partenaire par delegation : `name`, `email`, `phone`. Les redefinir ici
     # recreerait la duplication que la delegation supprime.
@@ -183,6 +214,33 @@ class HisPerson(models.Model):
         'unique(partner_id)',
         "Ce contact porte deja une fiche personne.",
     )
+
+    @api.depends('matricule_institutionnel')
+    def _compute_matricule_affiche(self):
+        for person in self:
+            person.matricule_affiche = strip_matricule_checksum(
+                person.matricule_institutionnel,
+            )
+
+    def _search_matricule_affiche(self, operator, value):
+        """Rend la forme courte cherchable, alors que la base stocke la longue.
+
+        Indispensable : l'utilisateur voit HIS-AAAA-NNNNNN et le tape tel quel.
+        Sans cela sa recherche ne trouverait rien.
+
+        Odoo 19 normalise `=` en `in` (et `!=` en `not in`), avec un OrderedSet
+        en valeur, AVANT d'appeler cette methode : tester `operator == '='` ne
+        s'y declencherait jamais. Verifie en instrumentant l'appel.
+        """
+        if operator in ('in', 'not in'):
+            # Une egalite par valeur : chaque forme courte doit retrouver la
+            # valeur complete qui la prolonge d'un tiret et d'une cle.
+            domain = expression.OR([
+                [('matricule_institutionnel', '=like', str(item) + '%')]
+                for item in value
+            ]) if value else [expression.FALSE_LEAF]
+            return domain if operator == 'in' else ['!'] + domain
+        return [('matricule_institutionnel', operator, value)]
 
     @api.model_create_multi
     def create(self, vals_list):

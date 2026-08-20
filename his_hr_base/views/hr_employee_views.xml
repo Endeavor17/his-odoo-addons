@@ -21,7 +21,7 @@
             </xpath>
 
             <xpath expr="//field[@name='job_title']" position="after">
-                <field name="matricule_institutionnel"/>
+                <field name="matricule_affiche"/>
                 <!-- Modifiable : rattacher un employe a une fiche existante est
                      le seul moyen d'eviter un doublon quand la personne est
                      deja au referentiel (ancien etudiant embauche, candidat
