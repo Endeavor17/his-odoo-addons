@@ -12,10 +12,22 @@
                     one — either way, copy it out before closing this window, or look it up
                     again later from Worker Summary.
                 </p>
+                <p>
+                    If a name is already in the Personnes referential, the line says so.
+                    Pick that person, so they keep the one matricule they already have
+                    instead of being registered a second time.
+                </p>
                 <field name="line_ids">
                     <list editable="bottom">
                         <field name="name" readonly="employee_id"/>
                         <field name="login" readonly="employee_id"/>
+                        <field name="suggested_person_id" column_invisible="1"/>
+                        <field name="person_id" readonly="employee_id"
+                               options="{'no_create': True}"
+                               placeholder="Leave empty if not registered yet"/>
+                        <field name="confirmed_new" readonly="employee_id"
+                               invisible="person_id or not suggested_person_id"/>
+                        <field name="suggestion_message" string="Referential" readonly="1"/>
                         <field name="date_start_working" readonly="employee_id"/>
                         <field name="password" readonly="employee_id" placeholder="Leave blank to auto-generate"/>
                     </list>
