@@ -227,6 +227,58 @@ class TestSheetsImport(TransactionCase):
         self.assertEqual(second.line_ids.outcome, 'updated')
         self.assertEqual(second.line_ids.person_id.numero_carte, 'CARD-9003')
 
+    # --- Regle 5 bis : Nom + Badge suffit a reconnaitre quelqu'un ----------
+
+    def test_name_and_badge_recognise_an_existing_person(self):
+        """Le format annonce par les sources : deux colonnes, rien d'autre.
+
+        Avant, cette ligne repartait en creation — un nom seul pese 0,40 pour
+        un seuil a 0,75 — et la personne se retrouvait en double, avec un
+        second matricule.
+        """
+        known = self._person(name="Rachid Belkacem", numero_carte='CARD-9101')
+        wizard = self._run(",Rachid Belkacem,,,,CARD-9101,")
+        line = wizard.line_ids
+        self.assertEqual(line.outcome, 'updated')
+        self.assertEqual(line.person_id, known)
+        self.assertEqual(
+            self.env['his.person'].search_count([('name', '=', "Rachid Belkacem")]), 1,
+            "la personne a ete recreee au lieu d'etre reconnue",
+        )
+
+    def test_the_match_ignores_case_and_word_order(self):
+        """Les sources n'ecrivent pas le nom deux fois de la meme facon."""
+        known = self._person(name="Rachid Belkacem", numero_carte='CARD-9102')
+        wizard = self._run(",BELKACEM RACHID,,,,CARD-9102,")
+        self.assertEqual(wizard.line_ids.outcome, 'updated')
+        self.assertEqual(wizard.line_ids.person_id, known)
+
+    def test_a_badge_with_a_different_name_is_still_a_conflict(self):
+        """Une carte reeditee change de main : elle ne doit rien ecraser.
+
+        C'est la limite du rapprochement par badge. Le numero seul rapprocherait
+        ici, et la fiche du porteur precedent serait renommee en silence.
+        """
+        holder = self._person(name="Titulaire Initial", numero_carte='CARD-9103')
+        wizard = self._run(",Quelqu Un Dautre,,autre@ex.ma,0600000040,CARD-9103,R-40")
+        line = wizard.line_ids
+        self.assertEqual(line.outcome, 'conflict')
+        self.assertFalse(line.person_id)
+        self.assertEqual(holder.name, "Titulaire Initial", "la fiche a ete ecrasee")
+
+    def test_the_matricule_still_beats_the_badge(self):
+        """Le matricule est emis par l'institution : il reste la cle la plus forte."""
+        by_matricule = self._person(name="Personne Matricule")
+        self._person(name="Personne Badge", numero_carte='CARD-9104')
+        wizard = self._run(
+            "%s,Personne Matricule,,,,CARD-9104,R-41" % by_matricule.matricule_institutionnel
+        )
+        # Le badge appartient a quelqu'un d'autre que la fiche visee : rejet,
+        # exactement comme avant. Ce qui compte ici est qu'il n'ait pas pris le
+        # pas sur le matricule pour choisir la fiche.
+        self.assertEqual(wizard.line_ids.outcome, 'conflict')
+        self.assertIn('CARD-9104', wizard.line_ids.message)
+
     # --- Regle 6 : le fichier source n'est jamais reecrit -------------------
 
     def test_import_is_one_way(self):

@@ -59,6 +59,38 @@ class HrEmployee(models.Model):
              "ou ici, indifféremment.",
     )
 
+    # Une personne, un employe. Le formulaire employe laisse person_id
+    # modifiable pour rattacher un employe a une fiche existante, mais rien
+    # n'empechait DEUX employes de designer la meme fiche : le matricule
+    # cessait alors d'identifier un seul dossier, et l'assistant « Creer des
+    # travailleurs » de maintenance_university en produisait a chaque passage.
+    #
+    # active_test=False : un employe archive occupe toujours la fiche. Le
+    # desarchiver ne doit pas faire apparaitre un doublon apres coup.
+    #
+    # Consequence assumee : deux fiches employe simultanees pour un meme humain
+    # deviennent impossibles. C'est la regle « une personne, un enregistrement »
+    # appliquee telle quelle. A revoir si le groupe passe un jour en
+    # multi-societes, ou le coeur d'Odoo attend un employe par societe.
+    @api.constrains('person_id')
+    def _check_person_id_unique(self):
+        for employee in self.filtered('person_id'):
+            others = self.with_context(active_test=False).search_count([
+                ('person_id', '=', employee.person_id.id),
+                ('id', '!=', employee.id),
+            ])
+            if others:
+                raise ValidationError(
+                    "La fiche personne %s (%s) est deja rattachee a un autre "
+                    "employe. Un matricule identifie un seul dossier : "
+                    "rattachez cet employe a sa propre fiche, ou reprenez "
+                    "l'employe existant." % (
+                        employee.person_id.display_name,
+                        employee.person_id.matricule_affiche
+                        or employee.person_id.matricule_institutionnel,
+                    )
+                )
+
     @api.model_create_multi
     def create(self, vals_list):
         # super() D'ABORD, contrairement a la version precedente de ce fichier.
