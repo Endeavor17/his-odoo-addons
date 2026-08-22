@@ -1,6 +1,6 @@
 {
     'name': 'HIS Meal Management',
-    'version': '19.0.2.1.0',
+    'version': '19.0.2.2.0',
     'summary': 'HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS',
     'description': """
 HIS Meal Management
@@ -29,6 +29,8 @@ the plans, the restaurant consumes the credits.
   Python.
 * Every grant and every meal writes an append-only ledger line naming the
   student, card, plan, cashier, session and the balance it left behind.
+* The Restaurant point of sale is pointed at the student meal automatically
+  when his_stock_mdm created it, without either module depending on the other.
 """,
     'author': 'Abdo Chabouti',
     'category': 'Sales/Point of Sale',
@@ -68,6 +70,8 @@ the plans, the restaurant consumes the credits.
             'his_meal_management/static/src/app/**/*',
         ],
     },
+
+    'post_init_hook': 'post_init_hook',
 
     'installable': True,
     'application': True,

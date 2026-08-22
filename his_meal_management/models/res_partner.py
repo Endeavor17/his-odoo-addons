@@ -45,11 +45,12 @@ class ResPartner(models.Model):
         string="Current Plan", compute='_compute_meal_credits_remaining', compute_sudo=True,
     )
 
-    # The wallet's own gate: a partner may only carry meal records if a
-    # `his.person` anchors them. Resolved here once rather than in each
-    # constraint that needs it — his_person_core's unique(partner_id) makes
-    # this 0-or-1, so a One2many is the honest shape for it.
-    his_person_ids = fields.One2many('his.person', 'partner_id', string="Person Record")
+    # The wallet's gate — a partner may only carry meal records if a
+    # `his.person` anchors them — reads `his_person_ids`, which belongs to
+    # his_person_core (models/res_partner.py) and is not redeclared here. It
+    # was, briefly: a second declaration of the same field on the same model
+    # adds nothing but a relabelling, and the socle owns the label. Its
+    # unique(partner_id) is what makes this 0-or-1 and safe to read as [:1].
 
     # ------------------------------------------------------------------
     # Meal account

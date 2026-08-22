@@ -8,6 +8,8 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import mute_logger
 
+from odoo.addons.his_meal_management import post_init_hook
+
 
 def make_person(env, name, **vals):
     """A person, created where identity now lives.
@@ -791,3 +793,46 @@ class TestBadgeFromIdentity(TransactionCase):
             self.env['res.partner'].search([('barcode', '=', card_uid(57))]),
             "typing or scanning a badge at the till must find the person",
         )
+
+
+@tagged('post_install', '-at_install')
+class TestRestaurantWiring(TransactionCase):
+    """The one field joining this module to his_stock_mdm's POS configs.
+
+    Neither module depends on the other and neither should, so the link is made
+    by post_init_hook rather than by a <record>. That makes it worth testing:
+    a hook has no XML id to fail loudly on, it just quietly does nothing.
+    """
+
+    def _restaurant(self):
+        return self.env.ref(
+            'his_stock_mdm.pos_config_restaurant', raise_if_not_found=False,
+        )
+
+    def test_the_restaurant_serves_the_student_meal(self):
+        config = self._restaurant()
+        if not config:
+            self.skipTest("his_stock_mdm is not installed: no Restaurant to wire")
+        self.assertEqual(
+            config.meal_product_id,
+            self.env.ref('his_meal_management.product_daily_meal').product_variant_id,
+            "the Student Meal button would report 'Not configured' at the till",
+        )
+
+    def test_the_hook_never_overwrites_a_choice_made_at_the_till(self):
+        """Re-running it after a failed deployment must not undo a manager."""
+        config = self._restaurant()
+        if not config:
+            self.skipTest("his_stock_mdm is not installed: no Restaurant to wire")
+        other = self.env['product.product'].create({
+            'name': "Autre Repas", 'type': 'consu', 'available_in_pos': True,
+        })
+        config.meal_product_id = other
+        post_init_hook(self.env)
+        self.assertEqual(config.meal_product_id, other)
+
+    def test_the_hook_is_silent_without_his_stock_mdm(self):
+        """The meal module has to install on a database that has no stock module."""
+        if self._restaurant():
+            self.skipTest("his_stock_mdm is installed: the absent case cannot be run here")
+        post_init_hook(self.env)  # must not raise
