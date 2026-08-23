@@ -19,8 +19,12 @@
         <field name="name">Pipeline Admissions</field>
         <field name="res_model">crm.lead</field>
         <field name="view_mode">kanban,list,form,activity</field>
-        <field name="domain">[('team_id', 'in', [%(his_crm_pipeline.crm_team_ventes)d, %(his_crm_pipeline.crm_team_orientation)d])]</field>
-        <field name="context">{'default_team_id': %(his_crm_pipeline.crm_team_ventes)d, 'default_type': 'opportunity'}</field>
+        <!-- eval et non %(xmlid)d : la substitution %(...)d n'a lieu que dans
+             les champs de type xml (les vues). Sur domain et context, qui sont
+             de simples char, le texte serait stocke tel quel et le client web
+             echouerait a l'evaluer. C'est la forme qu'Odoo utilise lui-meme. -->
+        <field name="domain" eval="[('team_id', 'in', [ref('his_crm_pipeline.crm_team_ventes'), ref('his_crm_pipeline.crm_team_orientation')])]"/>
+        <field name="context" eval="{'default_team_id': ref('his_crm_pipeline.crm_team_ventes'), 'default_type': 'opportunity'}"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Aucune candidature dans votre pipeline.</p>
             <p>Si cette liste est vide alors qu'il existe des candidatures, c'est que vous
@@ -45,8 +49,8 @@
         <field name="name">Demandes de contenu</field>
         <field name="res_model">crm.lead</field>
         <field name="view_mode">kanban,list,form,activity</field>
-        <field name="domain">[('team_id', '=', %(his_crm_pipeline.crm_team_contenu)d)]</field>
-        <field name="context">{'default_team_id': %(his_crm_pipeline.crm_team_contenu)d, 'default_type': 'opportunity'}</field>
+        <field name="domain" eval="[('team_id', '=', ref('his_crm_pipeline.crm_team_contenu'))]"/>
+        <field name="context" eval="{'default_team_id': ref('his_crm_pipeline.crm_team_contenu'), 'default_type': 'opportunity'}"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Aucune demande de contenu.</p>
             <p>Si cette liste est vide alors qu'il existe des demandes, c'est que vous

@@ -5,6 +5,7 @@ from datetime import timedelta
 from odoo import fields
 from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
+from odoo.tools.safe_eval import safe_eval
 
 
 @tagged('post_install', '-at_install')
@@ -73,6 +74,31 @@ class TestPipeline(TransactionCase):
         })
         with self.assertRaises(ValidationError):
             lead.write({'besoin_video': True, 'statut_video': 'en_cours'})
+
+    # --- Les actions doivent etre lisibles par le client web -----------------
+
+    def test_les_actions_ont_un_domaine_et_un_contexte_evaluables(self):
+        """Le piege %(xmlid)d, verrouille.
+
+        La substitution %(xmlid)d n'a lieu QUE dans les champs de type xml —
+        les arch de vues. Sur `domain` et `context` d'une action, qui sont de
+        simples char, le texte est stocke tel quel : rien n'echoue au chargement,
+        et le client web casse au premier clic sur le menu avec un
+        « Token cannot be parsed » que rien ne relie a sa cause.
+
+        Ce test relit ce qui est REELLEMENT en base, pas ce que le XML voulait
+        dire.
+        """
+        actions = self.env['ir.actions.act_window'].search([]).filtered(
+            lambda a: a.get_external_id().get(a.id, '').startswith('his_crm_pipeline.'),
+        )
+        self.assertTrue(actions, "Aucune action trouvee : le test ne verifie rien.")
+        contexte = {'uid': self.env.uid, 'context': {}, 'active_id': 1, 'active_ids': []}
+        for action in actions:
+            self.assertNotIn('%(', action.domain or '', action.display_name)
+            self.assertNotIn('%(', action.context or '', action.display_name)
+            safe_eval(action.domain or '[]', dict(contexte))
+            safe_eval(action.context or '{}', dict(contexte))
 
     # --- Cloisonnement des deux pipelines -----------------------------------
 

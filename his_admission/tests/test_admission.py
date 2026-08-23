@@ -2,6 +2,7 @@
 """Un test par regle du dossier d'admission. Il echoue si une regle saute."""
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
+from odoo.tools.safe_eval import safe_eval
 
 
 @tagged('post_install', '-at_install')
@@ -309,3 +310,16 @@ class TestAdmission(TransactionCase):
         self.assertNotEqual(
             lead.stage_id, self.env.ref('his_crm_pipeline.stage_vente_frais_payes'),
         )
+
+    def test_les_actions_ont_un_domaine_et_un_contexte_evaluables(self):
+        """Le piege %(xmlid)d, verrouille — cf. his_crm_pipeline pour le detail."""
+        actions = self.env['ir.actions.act_window'].search([]).filtered(
+            lambda a: a.get_external_id().get(a.id, '').startswith('his_admission.'),
+        )
+        self.assertTrue(actions, "Aucune action trouvee : le test ne verifie rien.")
+        contexte = {'uid': self.env.uid, 'context': {}, 'active_id': 1, 'active_ids': []}
+        for action in actions:
+            self.assertNotIn('%(', action.domain or '', action.display_name)
+            self.assertNotIn('%(', action.context or '', action.display_name)
+            safe_eval(action.domain or '[]', dict(contexte))
+            safe_eval(action.context or '{}', dict(contexte))
