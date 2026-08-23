@@ -2,3 +2,4 @@
 
 from . import his_person
 from . import res_partner
+from . import his_engagement
