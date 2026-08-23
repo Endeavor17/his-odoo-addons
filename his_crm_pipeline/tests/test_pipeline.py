@@ -170,6 +170,32 @@ class TestPipeline(TransactionCase):
         ])
         self.assertEqual(visibles_contenu, lead_contenu)
 
+    def test_la_file_d_attente_ne_deborde_pas_sur_l_autre_equipe(self):
+        """Un lead sans proprietaire reste dans SON equipe.
+
+        La regle native « mes leads » montre a chaque commercial ses leads et
+        tous ceux sans proprietaire. Nos leads captes arrivant sans
+        proprietaire par construction, la file des Admissions serait visible de
+        toute la Production Contenu sans le resserrement pose ici.
+        """
+        capture = self.env['crm.lead'].create({
+            'name': "Capture Admissions", 'team_id': self.team_ventes.id,
+        })
+        self.assertFalse(capture.user_id)
+
+        user_contenu = self._user('monteur_file', self.team_contenu)
+        self.assertFalse(
+            self.env['crm.lead'].with_user(user_contenu).search([('id', '=', capture.id)]),
+            "La file des Admissions ne doit pas etre visible a la Production Contenu.",
+        )
+
+        user_vente = self._user('conseillere_file_visible', self.team_ventes)
+        self.assertEqual(
+            self.env['crm.lead'].with_user(user_vente).search([('id', '=', capture.id)]),
+            capture,
+            "La file doit rester visible a son equipe, sinon personne n'affecte.",
+        )
+
     def test_lead_sans_equipe_reste_visible(self):
         """Un lead entrant sans equipe ne doit disparaitre pour personne."""
         lead = self.env['crm.lead'].create({'name': "Formulaire web", 'team_id': False})
@@ -250,6 +276,41 @@ class TestPipeline(TransactionCase):
         ])
         leads.write({'user_id': conseiller.id})
         self.assertEqual(leads.mapped('user_id'), conseiller)
+
+    def test_un_lead_capture_arrive_sans_commercial(self):
+        """Sinon la file d'affectation est vide en permanence.
+
+        crm.lead.user_id porte `default=lambda self: self.env.user`. Le
+        Marketing capturant les leads, chacun naissait affecte au Marketing et
+        la file — qui filtre sur les leads sans commercial — ne se remplissait
+        jamais. Le geste d'arbitrage du responsable n'existait pas.
+        """
+        lead = self.env['crm.lead'].create({
+            'name': "Capture marketing",
+            'team_id': self.team_ventes.id,
+        })
+        self.assertEqual(lead.stage_id, self.env.ref('his_crm_pipeline.stage_vente_nouveau'))
+        self.assertFalse(lead.user_id, "Un lead capture ne doit appartenir a personne.")
+
+    def test_un_lead_cree_directement_en_prise_en_charge_garde_son_commercial(self):
+        """La regle vaut pour la file, pas pour un lead deja pris en charge."""
+        conseillere = self._user('conseillere_directe', self.team_ventes)
+        lead = self.env['crm.lead'].create({
+            'name': "Lead deja affecte",
+            'team_id': self.team_ventes.id,
+            'stage_id': self.stage_pris_en_charge.id,
+            'user_id': conseillere.id,
+        })
+        self.assertEqual(lead.user_id, conseillere)
+
+    def test_affecter_un_lead_de_la_file_reste_possible(self):
+        """La regle ne joue qu'a la creation : elle ne doit rien bloquer ensuite."""
+        conseillere = self._user('conseillere_file', self.team_ventes)
+        lead = self.env['crm.lead'].create({
+            'name': "A affecter", 'team_id': self.team_ventes.id,
+        })
+        lead.user_id = conseillere
+        self.assertEqual(lead.user_id, conseillere)
 
     def test_file_d_affectation_triee_par_score_decroissant(self):
         """Le tri appartient a la vue, pas aux donnees.

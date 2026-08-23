@@ -90,6 +90,40 @@ class CrmLead(models.Model):
         string="Marque",
     )
 
+    # --- La file d'attente d'affectation -------------------------------------
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Un lead qui naît en « Nouveau (score) » n'a pas de proprietaire.
+
+        crm.lead.user_id porte `default=lambda self: self.env.user` : Odoo
+        affecte tout lead a son createur. Le Marketing capture, donc chaque
+        lead naissait affecte au Marketing — et la file « Leads a affecter »,
+        qui filtre sur les leads SANS commercial, restait vide en permanence.
+        Le geste d'arbitrage du responsable n'existait tout simplement pas.
+
+        La regle vaut a la CREATION seulement, et elle dit exactement ce que
+        les deux premieres etapes signifient deja : « Nouveau (score) » est la
+        file d'attente, « Pris en charge » est la prise en charge. Qui veut
+        creer un lead deja affecte le cree directement en « Pris en charge » —
+        c'est le sens de l'etape, pas un contournement.
+
+        Poser la regle ici et non dans le contexte de l'action la rend vraie
+        pour toutes les entrees : l'interface, l'import, et demain le
+        formulaire de candidature qui arrivera par n8n.
+        """
+        leads = super().create(vals_list)
+        etape = self.env.ref(
+            'his_crm_pipeline.stage_vente_nouveau', raise_if_not_found=False,
+        )
+        if etape:
+            # Apres super() et non sur les vals : crm.lead.stage_id est un champ
+            # calcule stocke. Un lead cree depuis un formulaire n'apporte aucun
+            # stage_id dans ses vals, Odoo le deduit de l'equipe apres coup —
+            # filtrer les vals aurait laisse passer le cas le plus courant.
+            leads.filtered(lambda l: l.stage_id == etape and l.user_id).user_id = False
+        return leads
+
     # --- Verrou d'approbation ----------------------------------------------
 
     @api.constrains(

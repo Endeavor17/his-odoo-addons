@@ -33,4 +33,22 @@
         <field name="domain_force">['|', ('team_id', '=', False), ('team_id', 'in', user.crm_team_ids.ids)]</field>
     </record>
 
+    <!-- La regle « mes leads » doit etre resserree aussi, pour une raison qui
+         n'apparait qu'une fois la file d'affectation en place.
+
+         Son domaine natif est ['|', ('user_id','=',user.id), ('user_id','=',False)] :
+         il montre a chaque commercial ses leads ET tous les leads sans
+         proprietaire. Or nos leads captes arrivent justement sans proprietaire,
+         par construction — c'est ce qui fait la file. Sans ce resserrement, la
+         file d'attente des Admissions serait visible par toute la Production
+         Contenu, et reciproquement.
+
+         Les deux regles etant combinees en OU, resserrer l'une sans l'autre ne
+         sert a rien : la plus large gagne. Elles portent donc toutes deux la
+         meme condition d'equipe. -->
+    <record id="crm.crm_rule_personal_lead" model="ir.rule">
+        <field name="name">Personal Leads (limites aux equipes de l'utilisateur)</field>
+        <field name="domain_force">['&amp;', '|', ('team_id', '=', False), ('team_id', 'in', user.crm_team_ids.ids), '|', ('user_id', '=', user.id), ('user_id', '=', False)]</field>
+    </record>
+
 </odoo>
