@@ -252,11 +252,17 @@ class TestPipeline(TransactionCase):
         self.assertEqual(leads.mapped('user_id'), conseiller)
 
     def test_file_d_affectation_triee_par_score_decroissant(self):
-        leads = self.env['crm.lead'].create([
-            {'name': "Faible", 'team_id': self.team_ventes.id, 'score_academique': 10},
-            {'name': "Fort", 'team_id': self.team_ventes.id, 'score_academique': 90},
-        ])
-        tries = self.env['crm.lead'].search(
-            [('id', 'in', leads.ids)], order='score_academique desc',
-        )
-        self.assertEqual(tries[0].name, "Fort")
+        """Le tri appartient a la vue, pas aux donnees.
+
+        Ce test ne pose PAS de score a la main, deliberement. Ce module livre
+        score_academique en saisie libre pour rester installable seul, mais
+        his_admission le redefinit en champ calcule des que le referentiel
+        academique est la — une valeur ecrite ici serait alors ignoree, et le
+        test mesurerait quel module est installe plutot que ce que ce
+        module-ci garantit.
+
+        Ce qu'il garantit, c'est que la file d'affectation presente les leads
+        du meilleur score au moins bon.
+        """
+        vue = self.env.ref('his_crm_pipeline.view_crm_lead_list_non_affectes')
+        self.assertIn('score_academique desc', vue.arch)

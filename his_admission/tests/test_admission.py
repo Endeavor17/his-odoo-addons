@@ -323,3 +323,105 @@ class TestAdmission(TransactionCase):
             self.assertNotIn('%(', action.context or '', action.display_name)
             safe_eval(action.domain or '[]', dict(contexte))
             safe_eval(action.context or '{}', dict(contexte))
+
+    # --- HIS Lead Score ------------------------------------------------------
+
+    def _lead_score(self, **vals):
+        return self.env['crm.lead'].create({
+            'name': "Candidature scoree",
+            'team_id': self.env.ref('his_crm_pipeline.crm_team_ventes').id,
+            **vals,
+        })
+
+    def test_score_maximal(self):
+        """BAC 16, maths 15 en informatique, motivation remplie : 6 + 3 + 1."""
+        lead = self._lead_score(
+            specialite_id=self.spec_licence.id,
+            bac_moyenne=16.0, note_math=15.0,
+            motivation_his="Reputation de l'ecole.",
+        )
+        self.assertEqual(lead.score_academique, 10)
+
+    def test_les_trois_paliers_du_bac(self):
+        for moyenne, attendu in ((15.0, 6), (13.0, 4), (10.0, 2)):
+            lead = self._lead_score(
+                specialite_id=self.spec_licence.id,
+                bac_moyenne=moyenne, note_math=15.0,
+            )
+            # 3 pts de ponderee (moyenne >= 12 sauf dernier cas) + 0 motivation
+            ponderee = (moyenne + 15.0) / 2
+            self.assertEqual(
+                lead.score_academique,
+                attendu + (3 if ponderee >= 12 else 2),
+                "BAC %s" % moyenne,
+            )
+
+    def test_la_moyenne_ponderee_suit_la_majeure(self):
+        """Deux formules, deduites des notes que le domaine pondere."""
+        info = self._lead_score(
+            specialite_id=self.spec_licence.id, bac_moyenne=10.0, note_math=14.0,
+        )
+        # (10 + 14) / 2 = 12 -> 3 pts, plus 2 pts de BAC
+        self.assertEqual(info.score_academique, 5)
+
+        electronique = self._lead_score(
+            specialite_id=self.spec_st.id,
+            bac_moyenne=10.0, note_math=14.0, note_physique=6.0,
+        )
+        # (10 + 14 + 6) / 3 = 10 -> 2 pts, plus 2 pts de BAC
+        self.assertEqual(electronique.score_academique, 4)
+
+    def test_psychologie_et_droit_n_ont_pas_de_moyenne_ponderee(self):
+        """Zero point, pas deux : le bareme saute l'etape pour ces majeures.
+
+        Consequence a connaitre : ces candidats plafonnent a 7 sur 10 et se
+        classent donc systematiquement sous les autres dans la file
+        d'affectation. C'est le bareme fourni, pas un effet de bord du code.
+        """
+        lead = self._lead_score(
+            specialite_id=self.env.ref('his_admission.spec_ss_psycho').id,
+            bac_moyenne=18.0, motivation_his="Vocation.",
+        )
+        self.assertEqual(lead.score_academique, 7)
+        self.assertIn("non applicable", lead.score_detail)
+
+    def test_une_note_exigee_manquante_ne_rapporte_pas_de_ponderee(self):
+        lead = self._lead_score(
+            specialite_id=self.spec_st.id, bac_moyenne=18.0, note_math=15.0,
+        )
+        # Physique exigee en electronique, non saisie : ponderee incalculable.
+        self.assertEqual(lead.score_academique, 6)
+
+    def test_la_motivation_vaut_un_point_si_l_une_des_deux_est_remplie(self):
+        base = {'specialite_id': self.spec_licence.id, 'bac_moyenne': 16.0,
+                'note_math': 16.0}
+        self.assertEqual(self._lead_score(**base).score_academique, 9)
+        self.assertEqual(
+            self._lead_score(motivation_majeure="Passion.", **base).score_academique, 10,
+        )
+        self.assertEqual(
+            self._lead_score(motivation_his="   ", **base).score_academique, 9,
+            "Un champ rempli d'espaces n'est pas une motivation.",
+        )
+
+    def test_le_score_n_est_pas_saisissable(self):
+        """Il ordonne la file d'affectation : il doit venir des notes."""
+        lead = self._lead_score(
+            specialite_id=self.spec_licence.id, bac_moyenne=16.0, note_math=16.0,
+            score_academique=99,
+        )
+        self.assertEqual(lead.score_academique, 9)
+
+    def test_le_dossier_reprend_les_donnees_de_capture(self):
+        lead = self._lead_score(
+            contact_name="Ines Ferhat",
+            email_from="ines.ferhat@example.com",
+            specialite_id=self.spec_st.id,
+            bac_moyenne=13.0, note_math=14.0, note_physique=12.0,
+            stage_id=self.env.ref('his_crm_pipeline.stage_vente_contact_etabli').id,
+        )
+        dossier = lead._his_engagement()
+        self.assertEqual(dossier.specialite_id, self.spec_st)
+        self.assertEqual(dossier.cycle, 'licence')
+        self.assertAlmostEqual(dossier.bac_moyenne, 13.0, places=2)
+        self.assertAlmostEqual(dossier.note_physique, 12.0, places=2)

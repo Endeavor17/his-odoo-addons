@@ -14,9 +14,9 @@ a donc aucun fork du code source Odoo à maintenir.
 | [`his_person_core`](his_person_core/) | Socle Identité — fiche personne et matricule institutionnel unique, délégué à `res.partner` | Développé, 13 tests |
 | [`his_hr_base`](his_hr_base/) | Socle RH — rattache `hr.employee` au référentiel Personnes, reprise des matricules et réutilisation des contacts | Développé, 16 tests |
 | [`his_person_sync_sheets`](his_person_sync_sheets/) | Import — export Google Sheets (Sales/Admission) vers le référentiel Personnes | Développé, 19 tests |
-| [`his_crm_pipeline`](his_crm_pipeline/) | CRM — pipeline Ventes/Admissions et pipeline Production Contenu, cloisonnés par équipe et par étapes (remplace GoHighLevel) | Développé, 15 tests |
+| [`his_crm_pipeline`](his_crm_pipeline/) | CRM — pipeline Ventes/Admissions et pipeline Production Contenu, cloisonnés par équipe et par étapes (remplace GoHighLevel) | Développé, 16 tests |
 | [`his_crm_identity_bridge`](his_crm_identity_bridge/) | Pont CRM → Identité — crée la fiche personne du candidat au premier contact | Développé, 12 tests |
-| [`his_admission`](his_admission/) | Admission — dossier candidat, pièces justificatives, éligibilité et transmissions Ministère / service national (remplace le classeur Excel) | Développé, 18 tests |
+| [`his_admission`](his_admission/) | Admission — dossier candidat, pièces justificatives, éligibilité et transmissions Ministère / service national (remplace le classeur Excel) | Développé, 32 tests |
 | [`maintenance_university`](maintenance_university/) | Maintenance universitaire — demandes, inspections, constats, tableau de bord | Développé ; ne possède plus le matricule (v19.0.2.0.0) |
 | _(à venir)_ | Achats | Autre intervenant |
 | _(à venir)_ | Point de Vente avancé | Autre intervenant |

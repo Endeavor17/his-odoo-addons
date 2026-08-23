@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': "Admission - Dossier candidat",
-    'version': '19.0.1.1.0',
+    'version': '19.0.1.2.0',
     'category': 'Education',
     'summary': "Dossier d'admission, pieces justificatives, eligibilite et exports",
     'description': """

@@ -92,6 +92,61 @@ Un coefficient à zéro retire simplement la note du calcul.
 > visés. Le mécanisme existe et il est testé ; seules les valeurs sont à zéro,
 > donc sans effet. Les renseigner est une saisie, pas une livraison.
 
+## Le HIS Lead Score
+
+Barème fourni par la Direction, repris du script qui tournait dans GoHighLevel.
+Sur 10 :
+
+| Composante | Points |
+|---|---|
+| Moyenne du BAC ≥ 14 / ≥ 12 / < 12 | 6 / 4 / 2 |
+| Moyenne pondérée ≥ 12 / < 12 / non applicable | 3 / 2 / **0** |
+| « Pourquoi cette spécialité ? » **ou** « Pourquoi HIS ? » rempli | 1 |
+
+**Ce n'est pas le barème d'éligibilité**, et les deux ne doivent pas être
+confondus. Le score commercial fait la moyenne *simple* des notes ; l'éligibilité
+pondère le BAC double. Ils répondent à deux questions différentes — « qui
+rappeler en premier ? » et « ce dossier tient-il ? » — à deux moments différents.
+
+### Une seule table pour les deux
+
+Le barème donne deux formules pondérées — `(BAC + Math) / 2` pour
+l'informatique, l'économie et le commerce, `(BAC + Math + Physique) / 3` pour
+l'électronique — et aucune pour la psychologie clinique et le droit public.
+
+Les trois cas se ramènent à un seul : **la moyenne simple des notes que le
+domaine pondère**. `his.domaine` encode déjà cette distinction dans ses
+coefficients d'éligibilité (`coef_math`, `coef_physique`) ; en déduire une
+seconde table serait se donner deux vérités à tenir en phase. Ouvrir une
+spécialité dans un domaine existant lui donne donc le bon scoring sans rien
+ajouter — et les mêmes coefficients décident quelles notes le formulaire exige.
+
+### Conséquences à connaître
+
+- **Psychologie clinique et droit public plafonnent à 7 sur 10.** L'étape
+  pondérée y vaut 0, pas 2. Comme le score ordonne la file d'affectation, ces
+  candidats se classent systématiquement sous les autres. C'est le barème
+  fourni, pas un effet de bord du code — mais c'est une décision commerciale,
+  pas académique, et elle mérite d'être confirmée (**A11**).
+- **Une note exigée non saisie fait perdre 2 à 3 points**, puisque la moyenne
+  pondérée devient incalculable. C'est pourquoi les notes sont `required` dès
+  que le domaine les utilise.
+- **`score_academique` n'est plus saisissable** une fois ce module installé.
+  `his_crm_pipeline` le livre en saisie libre pour rester installable seul ;
+  ici il devient calculé et stocké. Les scores saisis à la main avant
+  l'installation seront recalculés depuis les notes — donc remis à zéro si les
+  notes sont vides.
+- `score_detail` explique le calcul en clair sur le lead. Le score ordonne la
+  file : il doit pouvoir s'expliquer à la conseillère qui reçoit le lead.
+- Les deux masters (cybersécurité, MBA) ne figurent pas dans le barème fourni.
+  Ils héritent du barème de leur domaine — supposition, à confirmer (**A11**).
+
+Les seuils et les points sont des **constantes** dans `models/crm_lead.py`, pas
+un modèle de configuration : trois seuils et quatre valeurs de points, donnés
+une fois comme une règle établie. Marqué d'un commentaire `ponytail:` — si la
+Direction se met à les réviser d'une rentrée à l'autre, en faire des données se
+fait en une passe.
+
 ## Où vit quelle donnée
 
 | Donnée | Modèle | Pourquoi |
