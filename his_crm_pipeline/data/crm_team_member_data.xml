@@ -16,6 +16,21 @@
              noupdate="1" : une mise a jour du module ne doit pas ecraser un
              email corrige a la main. -->
 
+        <!-- Deux niveaux de visibilite, et la difference est voulue.
+
+             Asma porte « Tous les leads » : elle arbitre la file et affecte,
+             elle doit voir l'ensemble de son equipe.
+
+             Les conseilleres portent « Mes leads ». Combine a la regle
+             d'equipe de security/his_crm_security.xml, cela leur montre leurs
+             propres dossiers ET la file d'attente non affectee de leur
+             equipe — ce qu'il faut pour travailler, rien de plus.
+
+             Contrepartie a connaitre : une conseillere absente devient un
+             angle mort. Ses dossiers ne sont visibles que d'Asma, qui doit
+             les reaffecter pour qu'une collegue les reprenne. C'est le prix du
+             cloisonnement, et c'est un geste explicite plutot qu'un dossier
+             qui traine sans que personne ne s'en apercoive. -->
         <record id="user_asma" model="res.users">
             <field name="name">Asma</field>
             <field name="login">asma</field>
@@ -27,14 +42,14 @@
             <field name="name">Aicha</field>
             <field name="login">aicha</field>
             <field name="email">aicha@example.com</field>
-            <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
+            <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
         </record>
 
         <record id="user_rahma" model="res.users">
             <field name="name">Rahma</field>
             <field name="login">rahma</field>
             <field name="email">rahma@example.com</field>
-            <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
+            <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
         </record>
 
         <!-- Asma est responsable de l'equipe : c'est elle, et elle seule, qui

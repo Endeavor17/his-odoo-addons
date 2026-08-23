@@ -37,7 +37,14 @@ ROLES = [
 ]
 
 # Les trois conseilleres existent deja (his_crm_pipeline), sans mot de passe.
-EXISTANTS = ['asma', 'aicha', 'rahma']
+# Leur groupe est REPOSE ici : sur une base ou elles ont ete creees avant que
+# la distinction manager / conseillere existe, les donnees du module ne les
+# corrigent pas (noupdate).
+EXISTANTS = {
+    'asma': 'sales_team.group_sale_salesman_all_leads',
+    'aicha': 'sales_team.group_sale_salesman',
+    'rahma': 'sales_team.group_sale_salesman',
+}
 
 Users = env['res.users']
 Membre = env['crm.team.member']
@@ -73,14 +80,29 @@ for login, nom, groupes, equipes, responsable_de in ROLES:
         if not equipe.user_id:
             equipe.user_id = user
 
-for login in EXISTANTS:
+tous_leads = groupe('sales_team.group_sale_salesman_all_leads')
+for login, groupe_voulu in EXISTANTS.items():
     user = Users.search([('login', '=', login)], limit=1)
-    if user:
-        user.password = MOT_DE_PASSE
+    if not user:
+        continue
+    voulu = groupe(groupe_voulu)
+    # Retirer « Tous les leads » quand il n'est pas voulu : l'ajout seul ne
+    # suffirait pas, le groupe large l'emporterait.
+    if voulu != tous_leads:
+        user.write({'group_ids': [(3, tous_leads)]})
+    user.write({'group_ids': [(4, voulu)]})
+    user.password = MOT_DE_PASSE
 
 env.cr.commit()
 
 print("\n=== COMPTES DE RECETTE (mot de passe : %s) ===" % MOT_DE_PASSE)
-for user in Users.search([('login', 'in', EXISTANTS + [r[0] for r in ROLES])], order='login'):
+logins = list(EXISTANTS) + [r[0] for r in ROLES]
+for user in Users.search([('login', 'in', logins)], order='login'):
     equipes = ", ".join(user.crm_team_ids.mapped('name')) or "-"
-    print("  %-12s %-32s equipes: %s" % (user.login, user.name, equipes))
+    portee = (
+        "tous les leads" if user.has_group('sales_team.group_sale_salesman_all_leads')
+        else "mes leads" if user.has_group('sales_team.group_sale_salesman')
+        else "-"
+    )
+    print("  %-12s %-32s portee: %-14s equipes: %s" % (
+        user.login, user.name, portee, equipes))

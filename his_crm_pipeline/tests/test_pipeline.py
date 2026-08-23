@@ -196,6 +196,49 @@ class TestPipeline(TransactionCase):
             "La file doit rester visible a son equipe, sinon personne n'affecte.",
         )
 
+    def test_l_orientation_voit_les_candidats_qu_elle_doit_evaluer(self):
+        """Sans quoi la derivation « Evaluation psychologique » est inutilisable.
+
+        Le lead reste porte par les Ventes pendant l'evaluation — c'est leur
+        candidat, leur conseillere. Seule l'ETAPE appartient aux deux equipes.
+        La visibilite suit donc l'etape, et se referme quand le lead en sort.
+        """
+        equipe_orientation = self.env.ref('his_crm_pipeline.crm_team_orientation')
+        psychologue = self._user('psychologue', equipe_orientation)
+        lead = self.env['crm.lead'].create({
+            'name': "Candidat a evaluer",
+            'team_id': self.team_ventes.id,
+            'stage_id': self.stage_pris_en_charge.id,
+        })
+        Lead = self.env['crm.lead'].with_user(psychologue)
+        self.assertFalse(
+            Lead.search([('id', '=', lead.id)]),
+            "Avant la derivation, la Cellule n'a rien a voir.",
+        )
+
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_evaluation_psy')
+        self.assertEqual(
+            Lead.search([('id', '=', lead.id)]), lead,
+            "Pendant l'evaluation, la Cellule doit voir le candidat.",
+        )
+
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_dossier')
+        self.assertFalse(
+            Lead.search([('id', '=', lead.id)]),
+            "Sorti de l'etape, le lead se referme sur son equipe.",
+        )
+
+    def test_l_etape_partagee_n_ouvre_pas_l_autre_pipeline(self):
+        """La clause d'etape ne doit pas rouvrir ce que le cloisonnement ferme."""
+        user_contenu = self._user('monteur_etape', self.team_contenu)
+        lead_vente = self.env['crm.lead'].create({
+            'name': "Candidat", 'team_id': self.team_ventes.id,
+            'stage_id': self.env.ref('his_crm_pipeline.stage_vente_evaluation_psy').id,
+        })
+        self.assertFalse(
+            self.env['crm.lead'].with_user(user_contenu).search([('id', '=', lead_vente.id)]),
+        )
+
     def test_lead_sans_equipe_reste_visible(self):
         """Un lead entrant sans equipe ne doit disparaitre pour personne."""
         lead = self.env['crm.lead'].create({'name': "Formulaire web", 'team_id': False})

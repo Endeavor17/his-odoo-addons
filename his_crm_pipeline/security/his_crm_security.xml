@@ -28,9 +28,26 @@
          equipe ne voit plus que les leads sans equipe. Quelqu'un qui doit
          suivre les deux processus est membre des deux equipes — c'est le geste
          attendu, pas un contournement. -->
+    <!-- Troisieme clause : une equipe voit aussi les leads qui se trouvent
+         dans une etape QU'ELLE POSSEDE, meme s'ils appartiennent a une autre
+         equipe.
+
+         C'est ce qui rend la Cellule d'Orientation utilisable. L'evaluation
+         psychologique est une derivation : le lead reste porte par les Ventes
+         — c'est leur candidat, leur conseillere, leur dossier — mais l'etape,
+         elle, appartient aux deux equipes (crm.stage.team_ids). Sans cette
+         clause, la Cellule ne voyait jamais les candidats qu'elle doit
+         evaluer, et toute la branche etait inutilisable.
+
+         L'alternative aurait ete de faire changer le lead d'equipe le temps de
+         l'evaluation. Elle a ete ecartee : la conseillere aurait perdu son
+         propre candidat de vue en cours de route, et un aller-retour d'equipe
+         a chaque derivation invite aux etats incoherents si quelqu'un
+         interrompt le parcours. Ici rien ne bouge — la visibilite suit
+         l'etape, et se referme d'elle-meme quand le lead en sort. -->
     <record id="crm.crm_rule_all_lead" model="ir.rule">
-        <field name="name">All Leads (limites aux equipes de l'utilisateur)</field>
-        <field name="domain_force">['|', ('team_id', '=', False), ('team_id', 'in', user.crm_team_ids.ids)]</field>
+        <field name="name">All Leads (equipes de l'utilisateur, et etapes qu'elles possedent)</field>
+        <field name="domain_force">['|', '|', ('team_id', '=', False), ('team_id', 'in', user.crm_team_ids.ids), ('stage_id.team_ids', 'in', user.crm_team_ids.ids)]</field>
     </record>
 
     <!-- La regle « mes leads » doit etre resserree aussi, pour une raison qui
