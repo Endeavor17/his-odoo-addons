@@ -190,9 +190,41 @@ class TestAdmission(TransactionCase):
 
     # --- Passation Ventes -> Admission ---------------------------------------
 
-    def test_pre_admission_fait_passer_l_engagement_a_admis(self):
-        conseillere = self.env.ref('his_crm_pipeline.user_aicha')
-        lead = self.env['crm.lead'].create({
+    def _conseillere(self):
+        """Une vraie conseillere, avec ses droits reels.
+
+        Les tests tournent en superuser, qui contourne toute regle d'acces :
+        un parcours joue ainsi ne prouve rien sur ce qu'une conseillere peut
+        reellement faire. Celui-ci passe par with_user(), parce que les deux
+        gestes qu'il verifie declenchent des ecritures sur le dossier — dont
+        elle n'a QUE la lecture.
+        """
+        equipe = self.env.ref('his_crm_pipeline.crm_team_ventes')
+        user = self.env['res.users'].create({
+            'name': "Conseillere parcours",
+            'login': "conseillere_parcours",
+            'group_ids': [(6, 0, [
+                self.env.ref('base.group_user').id,
+                self.env.ref('sales_team.group_sale_salesman').id,
+            ])],
+        })
+        self.env['crm.team.member'].create({
+            'crm_team_id': equipe.id, 'user_id': user.id,
+        })
+        return user
+
+    def test_le_parcours_des_ventes_tient_avec_les_droits_d_une_conseillere(self):
+        """Contact etabli puis pre-admission, joues par la conseillere elle-meme.
+
+        Ses deux gestes creent une fiche personne et font avancer un dossier :
+        deux ecritures sur des modeles ou elle n'a pas le droit d'ecrire. Ce
+        sont des consequences de sa decision, pas des modifications qu'elle
+        s'autorise — d'ou le sudo() cote serveur. Sans lui, le seul geste
+        legitime des Ventes leve une erreur de droits.
+        """
+        conseillere = self._conseillere()
+        Lead = self.env['crm.lead'].with_user(conseillere)
+        lead = Lead.create({
             'name': "Candidature Licence",
             'contact_name': "Nadir Bouzid",
             'email_from': "nadir.bouzid@example.com",
@@ -200,7 +232,8 @@ class TestAdmission(TransactionCase):
             'stage_id': self.env.ref('his_crm_pipeline.stage_vente_contact_etabli').id,
             'user_id': conseillere.id,
         })
-        engagement = lead.his_person_id.engagement_ids
+        self.assertTrue(lead.his_person_id, "Le premier contact doit creer la fiche.")
+        engagement = lead.his_person_id.sudo().engagement_ids
         self.assertEqual(engagement.etat, 'prospect')
 
         lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_pre_admis')
@@ -208,6 +241,20 @@ class TestAdmission(TransactionCase):
         self.assertEqual(engagement.etat, 'admis')
         self.assertEqual(engagement.conseiller_id, conseillere)
         self.assertEqual(engagement.lead_id, lead)
+
+    def test_la_conseillere_ne_peut_toujours_pas_ecrire_le_dossier(self):
+        """Le sudo du parcours ne lui ouvre pas le dossier pour autant."""
+        conseillere = self._conseillere()
+        lead = self.env['crm.lead'].with_user(conseillere).create({
+            'name': "Candidature bis",
+            'contact_name': "Sami Larbi",
+            'email_from': "sami.larbi@example.com",
+            'team_id': self.env.ref('his_crm_pipeline.crm_team_ventes').id,
+            'stage_id': self.env.ref('his_crm_pipeline.stage_vente_contact_etabli').id,
+        })
+        dossier = lead._his_engagement()
+        with self.assertRaises(AccessError):
+            dossier.with_user(conseillere).write({'numero_etudiant': "123"})
 
     def test_un_dossier_deja_inscrit_ne_redescend_pas(self):
         dossier = self._dossier_pret()

@@ -241,6 +241,12 @@ class CrmLead(models.Model):
             )[:1]
             if not engagement:
                 continue
+            # sudo() : la conseillere prononce la pre-admission, mais elle n'a
+            # que la LECTURE sur le dossier — c'est l'Admission qui l'instruit.
+            # Le passage a « admis » est une consequence de sa decision, pas
+            # une modification qu'elle s'autorise. Sans cela, le seul geste
+            # legitime des Ventes leve une erreur de droits.
+            engagement = engagement.sudo()
             engagement.write({
                 'etat': 'admis',
                 'conseiller_id': lead.user_id.id,
