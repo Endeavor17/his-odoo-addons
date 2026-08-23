@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Les pieces du dossier, reprises des 21 colonnes a cocher de la
+             feuille ADMISSIONS, apres tri.
+
+             Ce qui a ete RETIRE, et pourquoi :
+
+             - trois doublons purs. « كشف البكالوريا » (col 34) et « كشف نقاط
+               البكالوريا » (col 46) sont le meme releve BAC ; « صورة » (36) et
+               « صورة 2 » (49) la meme photo ; « كشف نقاط الجامعي » (37) et
+               « كشف نقاط الجامعي 2 » (48) le meme releve universitaire. Le
+               classeur a grandi par ajout de colonnes sans nettoyage : garder
+               les doublons aurait fige la confusion dans le schema.
+
+             - cinq colonnes qui ne sont PAS des pieces mais des jalons du
+               process (inscription initiale, lettre d'acceptation, inscription
+               definitive, lettre definitive) : champs dedies sur le dossier.
+
+             - trois colonnes de paiement (frais d'inscription, frais de
+               scolarite, droits du programme qualifiant) : champs dedies aussi.
+               Un droit encaisse n'est pas une piece a fournir.
+
+             TODO Endeavor (A8) : le caractere obligatoire de chaque piece est
+             deduit du classeur, ou les cases sont remplies de facon inegale.
+             Aucun document de reference ne le fixe. A relire avant la mise en
+             service : une piece marquee obligatoire a tort bloque une
+             inscription reelle. -->
+
+        <!-- === Pieces exigees de tous === -->
+
+        <record id="doc_piece_identite" model="his.document.type">
+            <field name="name">Piece d'identite</field>
+            <field name="name_arabe">بطاقة التعريف</field>
+            <field name="code">CNI</field>
+            <field name="sequence">10</field>
+            <field name="obligatoire" eval="True"/>
+        </record>
+
+        <record id="doc_photo" model="his.document.type">
+            <field name="name">Photo d'identite</field>
+            <field name="name_arabe">صورة</field>
+            <field name="code">PHOTO</field>
+            <field name="sequence">20</field>
+            <field name="obligatoire" eval="True"/>
+        </record>
+
+        <record id="doc_certificat_medical" model="his.document.type">
+            <field name="name">Certificat medical</field>
+            <field name="name_arabe">شهادة طبية</field>
+            <field name="code">MED</field>
+            <field name="sequence">30</field>
+            <field name="obligatoire" eval="True"/>
+        </record>
+
+        <record id="doc_dossier_administratif" model="his.document.type">
+            <field name="name">Papiers administratifs</field>
+            <field name="name_arabe">اوراق الادارية</field>
+            <field name="code">ADMIN</field>
+            <field name="sequence">40</field>
+            <field name="obligatoire" eval="True"/>
+        </record>
+
+        <record id="doc_reglement_interieur" model="his.document.type">
+            <field name="name">Reglement interieur signe</field>
+            <field name="name_arabe">نظام الداخلي</field>
+            <field name="code">RI</field>
+            <field name="sequence">50</field>
+            <field name="obligatoire" eval="True"/>
+        </record>
+
+        <record id="doc_contrat" model="his.document.type">
+            <field name="name">Contrat d'admission signe</field>
+            <field name="name_arabe">العقد</field>
+            <field name="code">CONTRAT</field>
+            <field name="sequence">60</field>
+            <field name="obligatoire" eval="True"/>
+        </record>
+
+        <!-- === Selon la filiere d'origine === -->
+
+        <!-- Le releve BAC ne concerne pas un dossier en equivalence, qui
+             fournit un certificat d'equivalence a la place. C'est precisement
+             ce que le classeur ne savait pas exprimer : la case restait vide
+             sans qu'on puisse dire si la piece manquait ou ne s'appliquait
+             pas. Une piece par filiere, chacune obligatoire dans son cas. -->
+
+        <record id="doc_releve_bac" model="his.document.type">
+            <field name="name">Releve de notes du BAC</field>
+            <field name="name_arabe">كشف نقاط البكالوريا</field>
+            <field name="code">BAC</field>
+            <field name="sequence">70</field>
+            <field name="obligatoire" eval="True"/>
+        </record>
+
+        <record id="doc_equivalence" model="his.document.type">
+            <field name="name">Certificat d'equivalence</field>
+            <field name="name_arabe">شهادة المعادلة</field>
+            <field name="code">EQUIV</field>
+            <field name="sequence">80</field>
+            <field name="obligatoire" eval="True"/>
+            <field name="bac_filiere">equivalence</field>
+        </record>
+
+        <!-- === Cycle Master === -->
+
+        <record id="doc_releve_universitaire" model="his.document.type">
+            <field name="name">Releve de notes universitaire</field>
+            <field name="name_arabe">كشف نقاط الجامعي</field>
+            <field name="code">RELEVE-UNIV</field>
+            <field name="sequence">90</field>
+            <field name="obligatoire" eval="True"/>
+            <field name="cycle">master</field>
+        </record>
+
+        <record id="doc_attestation_licence" model="his.document.type">
+            <field name="name">Attestation de licence</field>
+            <field name="name_arabe">شهادة اليسانس</field>
+            <field name="code">LIC</field>
+            <field name="sequence">100</field>
+            <field name="obligatoire" eval="True"/>
+            <field name="cycle">master</field>
+        </record>
+
+        <!-- === Cas particuliers, suivis sans bloquer === -->
+
+        <record id="doc_transfert" model="his.document.type">
+            <field name="name">Dossier de transfert</field>
+            <field name="name_arabe">تحويل</field>
+            <field name="code">TRANSFERT</field>
+            <field name="sequence">110</field>
+            <field name="obligatoire" eval="False"/>
+        </record>
+
+        <record id="doc_contrat_prog_qualifiant" model="his.document.type">
+            <field name="name">Contrat du programme qualifiant</field>
+            <field name="name_arabe">عقد برنامج التاهيلي</field>
+            <field name="code">CONTRAT-PREP</field>
+            <field name="sequence">120</field>
+            <field name="obligatoire" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

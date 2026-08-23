@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le formulaire d'engagement de his_person_core est minimal : il portait
+         un parcours, il porte maintenant un dossier d'admission. On l'etend
+         plutot que d'en creer un second, sinon deux formulaires du meme modele
+         divergeraient. -->
+    <record id="view_his_engagement_form_admission" model="ir.ui.view">
+        <field name="name">his.engagement.form.admission</field>
+        <field name="model">his.engagement</field>
+        <field name="inherit_id" ref="his_person_core.view_his_engagement_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <field name="etat" widget="statusbar" options="{'clickable': 1}"
+                           statusbar_visible="prospect,candidat_soumis,admis,inscrit"/>
+                    <button name="action_generer_documents" type="object"
+                            string="Actualiser les pieces attendues" class="btn-secondary"
+                            groups="his_admission.group_his_admission"/>
+                </header>
+            </xpath>
+
+            <!-- L'etat passe en barre d'etat : le laisser aussi dans le groupe
+                 donnerait deux commandes pour la meme valeur. -->
+            <xpath expr="//sheet//field[@name='etat']" position="replace"/>
+
+            <field name="person_id" position="after">
+                <field name="numero_etudiant"/>
+                <field name="conseiller_id"/>
+                <field name="lead_id" readonly="1" invisible="not lead_id"/>
+            </field>
+
+            <field name="date_debut" position="after">
+                <field name="type_inscription"/>
+                <field name="date_inscription"/>
+            </field>
+
+            <!-- Le champ notes libre devient un onglet parmi d'autres. -->
+            <field name="notes" position="replace">
+                <notebook>
+
+                    <page string="Inscription" name="inscription">
+                        <group>
+                            <group string="Cursus">
+                                <field name="cycle"/>
+                                <field name="specialite_id"
+                                       domain="[('cycle', '=', cycle)]"
+                                       options="{'no_create': True}"/>
+                                <field name="domaine_id" readonly="1"/>
+                                <field name="niveau"/>
+                                <field name="langue_etude"/>
+                                <field name="programme_qualifiant"/>
+                            </group>
+                            <group string="Jalons">
+                                <field name="inscription_initiale"/>
+                                <field name="lettre_acceptation"/>
+                                <field name="inscription_definitive"/>
+                                <field name="lettre_definitive"/>
+                            </group>
+                        </group>
+                    </page>
+
+                    <page string="Dossier academique" name="academique">
+                        <group>
+                            <group string="Baccalaureat">
+                                <field name="bac_numero"/>
+                                <field name="bac_session"/>
+                                <field name="bac_filiere"/>
+                                <field name="type_lycee"/>
+                            </group>
+                            <group string="Notes">
+                                <field name="bac_moyenne"/>
+                                <field name="note_math"/>
+                                <field name="note_physique"/>
+                            </group>
+                        </group>
+                        <group string="Eligibilite">
+                            <!-- Calculee depuis le bareme du domaine, jamais
+                                 saisie : c'est ce qui remplace la feuille
+                                 CALCULATEUR et sa formule recopiee a la main. -->
+                            <field name="moyenne_ponderee" readonly="1"/>
+                            <field name="eligibilite" readonly="1" widget="badge"
+                                   decoration-success="eligibilite == 'eligible'"
+                                   decoration-warning="eligibilite == 'a_verifier'"/>
+                            <field name="eligibilite_motif" readonly="1"
+                                   invisible="not eligibilite_motif"/>
+                        </group>
+                    </page>
+
+                    <page string="Pieces" name="pieces">
+                        <div class="alert alert-info" role="status"
+                             invisible="not documents_manquants">
+                            Pieces obligatoires manquantes :
+                            <field name="documents_manquants" readonly="1" class="oe_inline"/>
+                        </div>
+                        <field name="document_ids">
+                            <list editable="bottom" create="0">
+                                <field name="type_id" readonly="1"/>
+                                <field name="obligatoire" readonly="1" optional="show"/>
+                                <field name="fourni" widget="boolean_toggle"/>
+                                <field name="date_fourniture"/>
+                                <field name="note"/>
+                            </list>
+                        </field>
+                        <field name="documents_complets" invisible="1"/>
+                    </page>
+
+                    <page string="Finance" name="finance">
+                        <group string="Droits encaisses">
+                            <field name="frais_inscription_payes"/>
+                            <field name="frais_scolarite_payes"/>
+                            <field name="droits_prog_qualifiant_payes"
+                                   invisible="programme_qualifiant == 'aucun'"/>
+                        </group>
+                        <p class="text-muted">
+                            Paye ou non paye seulement : les montants restent dans l'outil
+                            de caisse. L'Admission coche ce que le guichet a encaisse.
+                        </p>
+                    </page>
+
+                    <page string="Carte etudiant" name="carte">
+                        <group>
+                            <field name="carte_recue_it"/>
+                            <field name="carte_etudiant_informe"/>
+                            <field name="carte_date_remise"/>
+                        </group>
+                    </page>
+
+                    <page string="Notes" name="notes">
+                        <field name="notes" placeholder="Remarques sur ce dossier..."/>
+                    </page>
+
+                </notebook>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="view_his_engagement_list_admission" model="ir.ui.view">
+        <field name="name">his.engagement.list.admission</field>
+        <field name="model">his.engagement</field>
+        <field name="inherit_id" ref="his_person_core.view_his_engagement_list"/>
+        <field name="arch" type="xml">
+            <field name="person_id" position="before">
+                <field name="numero_etudiant" optional="show"/>
+            </field>
+            <field name="etat" position="after">
+                <field name="cycle" optional="show"/>
+                <field name="specialite_id" optional="show"/>
+                <field name="niveau" optional="show"/>
+                <field name="conseiller_id" optional="hide"/>
+                <field name="eligibilite" optional="hide" widget="badge"/>
+                <field name="documents_complets" optional="show" readonly="1"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_his_engagement_search_admission" model="ir.ui.view">
+        <field name="name">his.engagement.search.admission</field>
+        <field name="model">his.engagement</field>
+        <field name="inherit_id" ref="his_person_core.view_his_engagement_search"/>
+        <field name="arch" type="xml">
+            <field name="person_id" position="after">
+                <field name="numero_etudiant"/>
+                <field name="specialite_id"/>
+                <field name="conseiller_id"/>
+            </field>
+            <filter name="filter_inscrit" position="after">
+                <filter name="filter_admis" string="Admis"
+                        domain="[('etat', '=', 'admis')]"/>
+                <filter name="filter_blocage" string="Blocages administratifs"
+                        domain="[('etat', '=', 'blocage_administratif')]"/>
+                <separator/>
+                <filter name="filter_dossier_incomplet" string="Dossier incomplet"
+                        domain="[('documents_complets', '=', False)]"/>
+                <filter name="filter_a_verifier" string="Eligibilite a verifier"
+                        domain="[('eligibilite', '=', 'a_verifier')]"/>
+                <separator/>
+                <filter name="filter_reinscription" string="Reinscriptions"
+                        domain="[('type_inscription', '=', 'reinscription')]"/>
+            </filter>
+            <filter name="group_etat" position="after">
+                <filter name="group_cycle" string="Cycle" context="{'group_by': 'cycle'}"/>
+                <filter name="group_specialite" string="Specialite"
+                        context="{'group_by': 'specialite_id'}"/>
+                <filter name="group_conseiller" string="Conseillere"
+                        context="{'group_by': 'conseiller_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="action_his_engagement_admission" model="ir.actions.act_window">
+        <field name="name">Dossiers d'admission</field>
+        <field name="res_model">his.engagement</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun dossier d'admission.</p>
+            <p>Les dossiers naissent du CRM : au premier contact commercial pour le
+               parcours, a la pre-admission pour l'instruction du dossier.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_admission_dossiers" name="Dossiers"
+              parent="menu_admission_root" action="action_his_engagement_admission"
+              sequence="10"/>
+
+</odoo>

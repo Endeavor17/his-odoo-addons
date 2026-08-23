@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_crm_lead_form_admission" model="ir.ui.view">
+        <field name="name">crm.lead.form.admission</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="his_crm_identity_bridge.view_crm_lead_form_identity"/>
+        <field name="arch" type="xml">
+            <field name="his_person_id" position="after">
+                <!-- La conseillere suit son candidat apres la passation, sans
+                     pouvoir cocher a la place de l'Admission : ses droits sur
+                     his.engagement sont en lecture seule (ir.model.access.csv). -->
+                <button name="action_ouvrir_dossier_admission" type="object"
+                        string="Ouvrir le dossier d'admission" class="btn-link"
+                        icon="fa-folder-open-o"
+                        invisible="not his_person_id"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

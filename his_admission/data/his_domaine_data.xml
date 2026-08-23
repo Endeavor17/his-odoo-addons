@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Baremes d'eligibilite, repris de la feuille CALCULATEUR du
+             classeur. noupdate : une revision de bareme saisie par l'Admission
+             ne doit pas etre ecrasee a la mise a jour du module.
+
+             Deux baremes seulement sont lisibles dans le classeur :
+
+               MI : (BAC x 2 + Math) / 3,          seuil 11
+               ST : (BAC x 2 + Math + Phys) / 4,   seuil 11
+
+             Le classeur porte aussi, en annotation libre, des planchers de note
+             de maths : « Bac = 10, Math = 12/20 » en face de G.E,
+             « Bac = 10, Math = 10/20 » en face de SE + M + MT. Ils ne sont PAS
+             repris ici, pour une raison verifiable : l'exemple MI du classeur
+             lui-meme (BAC 13,37 / Math 8,5) est declare ELIGIBLE alors qu'une
+             note de maths de 8,5 tomberait sous les deux planchers. Ces
+             annotations designent donc vraisemblablement des filieres BAC
+             d'origine et non des domaines vises — leur portee reelle nous
+             echappe, et inventer une valeur ici recalerait de vrais dossiers.
+
+             Le mecanisme existe (min_bac, min_math) et il est teste ; seules
+             les valeurs sont laissees a zero, donc sans effet. Les renseigner
+             est une saisie de configuration, pas une livraison de code.
+
+             TODO Endeavor (A7) : les quatre autres domaines n'ont AUCUN bareme
+             dans le classeur. Ils reprennent ici le bareme MI par defaut, ce
+             qui est une supposition et non une regle. A confirmer avant la
+             mise en service — un seuil faux laisse passer ou recale de vrais
+             dossiers. -->
+
+        <record id="domaine_mi" model="his.domaine">
+            <field name="name">Informatique</field>
+            <field name="name_arabe">إعلام آلي</field>
+            <field name="code">MI</field>
+            <field name="sequence">10</field>
+            <field name="coef_bac">2.0</field>
+            <field name="coef_math">1.0</field>
+            <field name="coef_physique">0.0</field>
+            <field name="seuil_eligibilite">11.0</field>
+            <field name="min_bac">10.0</field>
+            <field name="min_math">0.0</field>
+        </record>
+
+        <record id="domaine_st" model="his.domaine">
+            <field name="name">Sciences et Technologies</field>
+            <field name="name_arabe">علوم و تكنولوجيا</field>
+            <field name="code">ST</field>
+            <field name="sequence">20</field>
+            <field name="coef_bac">2.0</field>
+            <field name="coef_math">1.0</field>
+            <field name="coef_physique">1.0</field>
+            <field name="seuil_eligibilite">11.0</field>
+            <field name="min_bac">10.0</field>
+            <field name="min_math">0.0</field>
+        </record>
+
+        <!-- TODO Endeavor (A7) : bareme suppose, a confirmer. -->
+        <record id="domaine_segc" model="his.domaine">
+            <field name="name">Sciences economiques</field>
+            <field name="name_arabe">علوم اقتصادية</field>
+            <field name="code">SEGC</field>
+            <field name="sequence">30</field>
+            <field name="coef_bac">2.0</field>
+            <field name="coef_math">1.0</field>
+            <field name="coef_physique">0.0</field>
+            <field name="seuil_eligibilite">11.0</field>
+            <field name="min_bac">10.0</field>
+            <field name="min_math">0.0</field>
+        </record>
+
+        <!-- TODO Endeavor (A7) : bareme suppose, a confirmer. -->
+        <record id="domaine_com" model="his.domaine">
+            <field name="name">Sciences commerciales</field>
+            <field name="name_arabe">علوم تجارية</field>
+            <field name="code">COM</field>
+            <field name="sequence">40</field>
+            <field name="coef_bac">2.0</field>
+            <field name="coef_math">1.0</field>
+            <field name="coef_physique">0.0</field>
+            <field name="seuil_eligibilite">11.0</field>
+            <field name="min_bac">10.0</field>
+            <field name="min_math">0.0</field>
+        </record>
+
+        <!-- TODO Endeavor (A7) : bareme suppose. Les maths ne pesent
+             vraisemblablement pas sur un cursus de psychologie clinique. -->
+        <record id="domaine_ss" model="his.domaine">
+            <field name="name">Sciences sociales</field>
+            <field name="name_arabe">علوم اجتماعية</field>
+            <field name="code">SS</field>
+            <field name="sequence">50</field>
+            <field name="coef_bac">1.0</field>
+            <field name="coef_math">0.0</field>
+            <field name="coef_physique">0.0</field>
+            <field name="seuil_eligibilite">11.0</field>
+            <field name="min_bac">10.0</field>
+            <field name="min_math">0.0</field>
+        </record>
+
+        <!-- TODO Endeavor (A7) : bareme suppose. -->
+        <record id="domaine_dr" model="his.domaine">
+            <field name="name">Droit</field>
+            <field name="name_arabe">حقوق</field>
+            <field name="code">DR</field>
+            <field name="sequence">60</field>
+            <field name="coef_bac">1.0</field>
+            <field name="coef_math">0.0</field>
+            <field name="coef_physique">0.0</field>
+            <field name="seuil_eligibilite">11.0</field>
+            <field name="min_bac">10.0</field>
+            <field name="min_math">0.0</field>
+        </record>
+
+    </data>
+</odoo>

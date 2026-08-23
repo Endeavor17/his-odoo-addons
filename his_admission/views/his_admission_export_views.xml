@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les six feuilles secondaires du classeur ne deviennent PAS des
+         modeles : ce sont des vues de la meme ligne d'admission, avec des
+         colonnes differentes pour des destinataires differents. Un modele par
+         feuille aurait duplique la donnee et cree six copies a tenir en phase
+         — exactement le probleme que le classeur avait, ou changer un numero de
+         telephone demandait de le corriger dans quatre onglets.
+
+         L'export XLSX natif d'Odoo (selection > Exporter) rend le fichier
+         attendu par chaque destinataire, avec ces colonnes et dans cet ordre. -->
+
+    <!-- ===================== Pedagogie ===================== -->
+
+    <record id="view_engagement_list_pedagogie" model="ir.ui.view">
+        <field name="name">his.engagement.list.pedagogie</field>
+        <field name="model">his.engagement</field>
+        <field name="priority">40</field>
+        <field name="arch" type="xml">
+            <list string="Transmission Pedagogie" create="0" export_xlsx="1">
+                <field name="etat"/>
+                <field name="numero_etudiant"/>
+                <field name="person_id" string="Personne"/>
+                <field name="date_inscription"/>
+                <field name="specialite_id"/>
+                <field name="langue_etude"/>
+                <field name="niveau"/>
+                <field name="programme_qualifiant"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_engagement_pedagogie" model="ir.actions.act_window">
+        <field name="name">Transmission Pedagogie</field>
+        <field name="res_model">his.engagement</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_engagement_list_pedagogie"/>
+        <field name="domain">[('etat', 'in', ['admis', 'inscrit'])]</field>
+    </record>
+
+    <!-- ============ Ministere de l'Enseignement Superieur ============ -->
+
+    <record id="view_engagement_list_mesrs" model="ir.ui.view">
+        <field name="name">his.engagement.list.mesrs</field>
+        <field name="model">his.engagement</field>
+        <field name="priority">41</field>
+        <field name="arch" type="xml">
+            <list string="Transmission Ministere" create="0" export_xlsx="1">
+                <field name="etat"/>
+                <field name="numero_etudiant"/>
+                <field name="person_id" string="Personne"/>
+                <field name="cycle"/>
+                <field name="type_inscription"/>
+                <field name="bac_session"/>
+                <field name="bac_filiere"/>
+                <field name="bac_moyenne"/>
+                <field name="niveau"/>
+                <field name="specialite_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_engagement_mesrs" model="ir.actions.act_window">
+        <field name="name">Transmission Ministere</field>
+        <field name="res_model">his.engagement</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_engagement_list_mesrs"/>
+        <field name="domain">[('etat', '=', 'inscrit')]</field>
+    </record>
+
+    <!-- ================== Service national ================== -->
+
+    <record id="view_engagement_list_service_national" model="ir.ui.view">
+        <field name="name">his.engagement.list.service.national</field>
+        <field name="model">his.engagement</field>
+        <field name="priority">42</field>
+        <field name="arch" type="xml">
+            <list string="Transmission Service national" create="0" export_xlsx="1">
+                <field name="etat"/>
+                <field name="numero_etudiant"/>
+                <field name="person_id" string="Personne"/>
+                <field name="cycle"/>
+                <field name="type_inscription"/>
+                <field name="bac_session"/>
+                <field name="bac_filiere"/>
+                <field name="specialite_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Le service national ne concerne que les etudiants de sexe masculin :
+         le filtre porte sur la fiche personne, ou vit le genre. -->
+    <record id="action_engagement_service_national" model="ir.actions.act_window">
+        <field name="name">Transmission Service national</field>
+        <field name="res_model">his.engagement</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_engagement_list_service_national"/>
+        <field name="domain">[('etat', '=', 'inscrit'), ('person_id.genre', '=', 'male')]</field>
+    </record>
+
+    <!-- ===================== Carte etudiant ===================== -->
+
+    <record id="view_engagement_list_carte" model="ir.ui.view">
+        <field name="name">his.engagement.list.carte</field>
+        <field name="model">his.engagement</field>
+        <field name="priority">43</field>
+        <field name="arch" type="xml">
+            <list string="Cartes etudiant" create="0" editable="bottom" export_xlsx="1">
+                <field name="etat" readonly="1"/>
+                <field name="numero_etudiant" readonly="1"/>
+                <field name="person_id" string="Personne" readonly="1"/>
+                <field name="specialite_id" readonly="1"/>
+                <field name="carte_recue_it" widget="boolean_toggle"/>
+                <field name="carte_etudiant_informe" widget="boolean_toggle"/>
+                <field name="carte_date_remise"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_engagement_carte" model="ir.actions.act_window">
+        <field name="name">Cartes etudiant</field>
+        <field name="res_model">his.engagement</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_engagement_list_carte"/>
+        <field name="domain">[('etat', '=', 'inscrit')]</field>
+    </record>
+
+    <!-- ======================== Finance ======================== -->
+
+    <record id="view_engagement_list_finance" model="ir.ui.view">
+        <field name="name">his.engagement.list.finance</field>
+        <field name="model">his.engagement</field>
+        <field name="priority">44</field>
+        <field name="arch" type="xml">
+            <list string="Suivi des droits" create="0" editable="bottom" export_xlsx="1">
+                <field name="etat" readonly="1"/>
+                <field name="numero_etudiant" readonly="1"/>
+                <field name="person_id" string="Personne" readonly="1"/>
+                <field name="cycle" readonly="1"/>
+                <field name="type_inscription" readonly="1"/>
+                <field name="specialite_id" readonly="1"/>
+                <field name="programme_qualifiant" readonly="1"/>
+                <field name="frais_inscription_payes" widget="boolean_toggle"/>
+                <field name="frais_scolarite_payes" widget="boolean_toggle"/>
+                <field name="droits_prog_qualifiant_payes" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_engagement_finance" model="ir.actions.act_window">
+        <field name="name">Suivi des droits</field>
+        <field name="res_model">his.engagement</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_engagement_list_finance"/>
+        <field name="domain">[('etat', 'in', ['admis', 'inscrit', 'blocage_administratif'])]</field>
+    </record>
+
+    <!-- ==================== Parents et tuteurs ==================== -->
+
+    <!-- Sur his.person et non sur l'engagement : les parents ne changent pas
+         d'une reinscription a l'autre. Le classeur les recopiait sur chaque
+         ligne, avec la divergence que toute recopie finit par produire. -->
+    <record id="view_person_list_parents" model="ir.ui.view">
+        <field name="name">his.person.list.parents</field>
+        <field name="model">his.person</field>
+        <field name="priority">40</field>
+        <field name="arch" type="xml">
+            <list string="Parents et tuteurs" create="0" editable="bottom" export_xlsx="1">
+                <field name="name" readonly="1"/>
+                <field name="nom_arabe" readonly="1" optional="show"/>
+                <field name="genre"/>
+                <field name="pere_nom"/>
+                <field name="pere_profession"/>
+                <field name="pere_telephone"/>
+                <field name="pere_email"/>
+                <field name="mere_prenom"/>
+                <field name="mere_nom"/>
+                <field name="mere_profession"/>
+                <field name="tuteur_nom"/>
+                <field name="tuteur_relation"/>
+                <field name="tuteur_telephone"/>
+                <field name="tuteur_email"/>
+                <field name="tuteur_adresse" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_person_parents" model="ir.actions.act_window">
+        <field name="name">Parents et tuteurs</field>
+        <field name="res_model">his.person</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_person_list_parents"/>
+        <field name="domain">[('type_personne', 'in', ['etudiant', 'candidat'])]</field>
+    </record>
+
+    <!-- ======================= Menus ======================= -->
+
+    <menuitem id="menu_admission_finance" name="Suivi des droits"
+              parent="menu_admission_root" action="action_engagement_finance" sequence="20"/>
+    <menuitem id="menu_admission_carte" name="Cartes etudiant"
+              parent="menu_admission_root" action="action_engagement_carte" sequence="30"/>
+    <menuitem id="menu_admission_parents" name="Parents et tuteurs"
+              parent="menu_admission_root" action="action_person_parents" sequence="40"/>
+
+    <menuitem id="menu_admission_transmissions" name="Transmissions"
+              parent="menu_admission_root" sequence="50"/>
+    <menuitem id="menu_admission_pedagogie" name="Pedagogie"
+              parent="menu_admission_transmissions" action="action_engagement_pedagogie"
+              sequence="10"/>
+    <menuitem id="menu_admission_mesrs" name="Ministere"
+              parent="menu_admission_transmissions" action="action_engagement_mesrs"
+              sequence="20"/>
+    <menuitem id="menu_admission_service_national" name="Service national"
+              parent="menu_admission_transmissions" action="action_engagement_service_national"
+              sequence="30"/>
+
+</odoo>
