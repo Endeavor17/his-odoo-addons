@@ -25,9 +25,25 @@ ROLES = [
      ['sales_team.group_sale_salesman_all_leads'],
      ['his_crm_pipeline.crm_team_orientation'], 'his_crm_pipeline.crm_team_orientation'),
 
-    ('contenu', "Production Contenu",
+    # Le pool de production, tel que le BPMN le decrit : un redacteur, un
+    # designer, un video, un approbateur final. Quatre comptes distincts et non
+    # un seul : une demande de contenu porte trois livrables qui avancent en
+    # parallele, et c'est precisement ce qu'une demonstration doit montrer.
+    ('contenu', "Redaction (copywriting)",
      ['sales_team.group_sale_salesman_all_leads'],
      ['his_crm_pipeline.crm_team_contenu'], 'his_crm_pipeline.crm_team_contenu'),
+
+    ('design', "Design",
+     ['sales_team.group_sale_salesman_all_leads'],
+     ['his_crm_pipeline.crm_team_contenu'], None),
+
+    ('video', "Video",
+     ['sales_team.group_sale_salesman_all_leads'],
+     ['his_crm_pipeline.crm_team_contenu'], None),
+
+    ('direction', "Direction (approbation finale)",
+     ['sales_team.group_sale_salesman_all_leads'],
+     ['his_crm_pipeline.crm_team_contenu'], None),
 
     ('admission', "Admission (back-office)",
      ['his_admission.group_his_admission'], [], None),
