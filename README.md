@@ -14,6 +14,8 @@ a donc aucun fork du code source Odoo à maintenir.
 | [`his_person_core`](his_person_core/) | Socle Identité — fiche personne et matricule institutionnel unique, délégué à `res.partner` | Développé, 13 tests |
 | [`his_hr_base`](his_hr_base/) | Socle RH — rattache `hr.employee` au référentiel Personnes, reprise des matricules et réutilisation des contacts | Développé, 16 tests |
 | [`his_person_sync_sheets`](his_person_sync_sheets/) | Import — export Google Sheets (Sales/Admission) vers le référentiel Personnes | Développé, 19 tests |
+| [`his_crm_pipeline`](his_crm_pipeline/) | CRM — pipeline Ventes/Admissions et pipeline Production Contenu, cloisonnés par équipe (remplace GoHighLevel) | Développé, 12 tests |
+| [`his_crm_identity_bridge`](his_crm_identity_bridge/) | Pont CRM → Identité — crée la fiche personne du candidat au premier contact | Développé, 12 tests |
 | [`maintenance_university`](maintenance_university/) | Maintenance universitaire — demandes, inspections, constats, tableau de bord | Développé ; ne possède plus le matricule (v19.0.2.0.0) |
 | _(à venir)_ | Achats | Autre intervenant |
 | _(à venir)_ | Point de Vente avancé | Autre intervenant |
@@ -78,6 +80,27 @@ passe mal sur des matricules déjà distribués.
 ```bash
 docker compose run --rm odoo odoo -d <base> -i his_person_sync_sheets --stop-after-init
 ```
+
+### CRM — Ventes/Admissions et Production Contenu
+
+`his_crm_pipeline` ne dépend que de `crm` et s'installe seul :
+
+```bash
+docker compose run --rm odoo odoo -d <base> -i his_crm_pipeline --stop-after-init
+```
+
+Le pont vers le référentiel Personnes est un module distinct, à installer
+seulement si le socle Identité est en place :
+
+```bash
+docker compose run --rm odoo odoo -d <base> -i his_crm_identity_bridge --stop-after-init
+```
+
+**Avant la mise en service** : renseigner les membres des trois équipes créées
+(Ventes / Admissions, Cellule d'Orientation, Production Contenu) et le
+responsable de l'équipe Ventes — la visibilité des leads et les relances SLA en
+dépendent. Les équipes sont livrées vides, cf.
+[`his_crm_pipeline/README.md`](his_crm_pipeline/README.md).
 
 ## Lancer les tests
 
