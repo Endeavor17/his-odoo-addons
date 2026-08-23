@@ -16,6 +16,7 @@ a donc aucun fork du code source Odoo à maintenir.
 | [`his_person_sync_sheets`](his_person_sync_sheets/) | Import — export Google Sheets (Sales/Admission) vers le référentiel Personnes | Développé, 19 tests |
 | [`his_crm_pipeline`](his_crm_pipeline/) | CRM — pipeline Ventes/Admissions et pipeline Production Contenu, cloisonnés par équipe et par étapes (remplace GoHighLevel) | Développé, 15 tests |
 | [`his_crm_identity_bridge`](his_crm_identity_bridge/) | Pont CRM → Identité — crée la fiche personne du candidat au premier contact | Développé, 12 tests |
+| [`his_admission`](his_admission/) | Admission — dossier candidat, pièces justificatives, éligibilité et transmissions Ministère / service national (remplace le classeur Excel) | Développé, 18 tests |
 | [`maintenance_university`](maintenance_university/) | Maintenance universitaire — demandes, inspections, constats, tableau de bord | Développé ; ne possède plus le matricule (v19.0.2.0.0) |
 | _(à venir)_ | Achats | Autre intervenant |
 | _(à venir)_ | Point de Vente avancé | Autre intervenant |
@@ -106,6 +107,24 @@ des comptes en double sont créés. Les membres de la Cellule d'Orientation et d
 Production Contenu restent à renseigner. La visibilité des leads et les relances
 SLA dépendent de ces appartenances, cf.
 [`his_crm_pipeline/README.md`](his_crm_pipeline/README.md).
+
+### Admission — dossier candidat
+
+Le dossier d'admission remplace le classeur Excel de suivi. Il dépend du socle
+Identité et du pont CRM :
+
+```bash
+docker compose run --rm odoo odoo -d <base> -i his_admission --stop-after-init
+```
+
+Un menu **Admission** apparaît, réservé au groupe du même nom : dossiers, suivi
+des droits, cartes étudiant, parents et transmissions (Pédagogie, Ministère,
+service national). Les conseillères Ventes y ont un accès en lecture seule.
+
+**Avant la mise en service** : relire les barèmes d'éligibilité et le caractère
+obligatoire de chaque pièce — les deux sont déduits du classeur, aucun document
+de référence ne les fixe, cf.
+[`his_admission/README.md`](his_admission/README.md).
 
 ## Lancer les tests
 
