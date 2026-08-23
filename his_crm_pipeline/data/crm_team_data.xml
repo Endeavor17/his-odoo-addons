@@ -4,6 +4,21 @@
          doit pas ecraser les membres que l'administrateur y aura mis. -->
     <data noupdate="1">
 
+        <!-- Le Marketing appartient a DEUX equipes : il capte et score les
+             leads d'admission, et il produit le contenu. C'etait son double
+             role dans GoHighLevel.
+
+             Odoo autorise cela au niveau du modele, mais son interface le
+             cache : sans ce parametre, un utilisateur deja membre d'une equipe
+             n'apparait plus dans la liste deroulante « ajouter un membre » des
+             autres. Le modele accepterait l'ecriture, l'administrateur ne
+             trouverait simplement pas le nom. Ce parametre rend visible ce qui
+             etait deja permis. -->
+        <record id="config_membership_multi" model="ir.config_parameter">
+            <field name="key">sales_team.membership_multi</field>
+            <field name="value">True</field>
+        </record>
+
         <!-- TODO Endeavor (A3) : renseigner les membres reels de chaque equipe
              avant la mise en service. Les equipes sont creees vides
              volontairement — inventer des noms produirait des droits d'acces
