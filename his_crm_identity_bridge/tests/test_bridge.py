@@ -178,8 +178,20 @@ class TestBridge(TransactionCase):
         self.assertTrue(lead.his_person_id)
 
     def test_aucune_transition_au_dela_de_prospect(self):
-        """Le pont ouvre l'engagement, il ne le fait pas avancer."""
+        """Le pont ouvre l'engagement a prospect, et n'y touche plus.
+
+        Le test s'arrete a l'etape declencheuse, deliberement. Faire avancer le
+        dossier au-dela appartient a l'Admission (his_admission fait passer a
+        « admis » a la pre-admission) : verifier ici l'etat apres pre-admission
+        reviendrait a tester un module dont celui-ci ne depend pas, et le
+        resultat changerait selon les modules installes.
+        """
         lead = self._lead()
         lead.stage_id = self.stage_contact
-        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_pre_admis')
-        self.assertEqual(lead.his_person_id.engagement_ids.etat, 'prospect')
+        engagement = lead.his_person_id.engagement_ids
+        self.assertEqual(engagement.etat, 'prospect')
+
+        # Traverser les etapes intermediaires ne bouge pas l'engagement : seule
+        # l'etape declencheuse le cree, rien dans ce module ne le fait avancer.
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_dossier')
+        self.assertEqual(engagement.etat, 'prospect')
