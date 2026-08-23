@@ -104,10 +104,4 @@
         </field>
     </record>
 
-    <menuitem id="menu_crm_lead_non_affectes"
-              name="Leads a affecter"
-              parent="crm.crm_menu_root"
-              action="action_crm_lead_non_affectes"
-              sequence="4"/>
-
 </odoo>

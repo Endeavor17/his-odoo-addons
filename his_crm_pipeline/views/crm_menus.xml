@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Deux processus sans rapport, donc deux entrees de menu distinctes. Le
+         pipeline natif « Sales > My Pipeline » melange toutes les equipes de
+         l'utilisateur : ouvrir le sien depuis un menu nomme evite d'y tomber
+         par accident.
+
+         Les deux menus restent visibles de tous. Le cloisonnement est dans les
+         donnees, pas dans l'affichage : la regle d'enregistrement
+         (security/his_crm_security.xml) fait qu'un membre de Production
+         Contenu qui ouvre Admissions voit une liste VIDE. Une seule source de
+         verite — l'appartenance a l'equipe — plutot qu'un groupe a tenir en
+         phase avec elle. -->
+
+    <!-- ======================= Admissions ======================= -->
+
+    <record id="action_crm_lead_admissions" model="ir.actions.act_window">
+        <field name="name">Pipeline Admissions</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="domain">[('team_id', 'in', [%(his_crm_pipeline.crm_team_ventes)d, %(his_crm_pipeline.crm_team_orientation)d])]</field>
+        <field name="context">{'default_team_id': %(his_crm_pipeline.crm_team_ventes)d, 'default_type': 'opportunity'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune candidature dans votre pipeline.</p>
+            <p>Si cette liste est vide alors qu'il existe des candidatures, c'est que vous
+               n'etes membre ni de l'equipe Ventes / Admissions ni de la Cellule d'Orientation.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_admissions_root" name="Admissions"
+              parent="crm.crm_menu_root" sequence="3"/>
+
+    <menuitem id="menu_admissions_pipeline" name="Pipeline"
+              parent="menu_admissions_root"
+              action="action_crm_lead_admissions" sequence="10"/>
+
+    <menuitem id="menu_crm_lead_non_affectes" name="Leads a affecter"
+              parent="menu_admissions_root"
+              action="action_crm_lead_non_affectes" sequence="20"/>
+
+    <!-- =================== Production Contenu =================== -->
+
+    <record id="action_crm_lead_contenu" model="ir.actions.act_window">
+        <field name="name">Demandes de contenu</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="domain">[('team_id', '=', %(his_crm_pipeline.crm_team_contenu)d)]</field>
+        <field name="context">{'default_team_id': %(his_crm_pipeline.crm_team_contenu)d, 'default_type': 'opportunity'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune demande de contenu.</p>
+            <p>Si cette liste est vide alors qu'il existe des demandes, c'est que vous
+               n'etes pas membre de l'equipe Production Contenu.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_contenu_root" name="Production Contenu"
+              parent="crm.crm_menu_root" sequence="4"/>
+
+    <menuitem id="menu_contenu_demandes" name="Demandes"
+              parent="menu_contenu_root"
+              action="action_crm_lead_contenu" sequence="10"/>
+
+</odoo>

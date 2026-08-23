@@ -76,6 +76,49 @@ class TestPipeline(TransactionCase):
 
     # --- Cloisonnement des deux pipelines -----------------------------------
 
+    def _etapes_visibles(self, team):
+        """Les etapes qu'Odoo proposera sur un lead de cette equipe.
+
+        Reproduit le domaine natif de crm.lead.stage_id — c'est lui, et non nos
+        vues, qui decide ce que la barre d'etat affiche.
+        """
+        return self.env['crm.stage'].search(
+            ['|', ('team_ids', '=', False), ('team_ids', 'in', team.ids)],
+        )
+
+    def test_aucune_etape_sans_equipe_ne_fuit_dans_les_pipelines(self):
+        """Le defaut qui melangeait les deux pipelines, verrouille.
+
+        crm.lead.stage_id porte le domaine natif
+        ['|', ('team_ids','=',False), ('team_ids','in',team_id)] : une etape
+        SANS equipe apparait dans TOUS les pipelines. Odoo en livre quatre
+        (New, Qualified, Proposition, Won), qui se retrouvaient melees aux
+        etapes Admissions comme aux etapes Production Contenu.
+        """
+        orphelines = self.env['crm.stage'].search([('team_ids', '=', False)])
+        self.assertFalse(
+            orphelines,
+            "Etapes sans equipe, donc visibles dans les deux pipelines : %s"
+            % orphelines.mapped('name'),
+        )
+
+    def test_chaque_pipeline_ne_voit_que_ses_etapes(self):
+        etapes_ventes = self._etapes_visibles(self.team_ventes)
+        etapes_contenu = self._etapes_visibles(self.team_contenu)
+
+        self.assertFalse(etapes_ventes & etapes_contenu)
+        self.assertIn(self.env.ref('his_crm_pipeline.stage_vente_contact_etabli'), etapes_ventes)
+        self.assertIn(self.stage_approbation, etapes_contenu)
+        self.assertNotIn(self.stage_approbation, etapes_ventes)
+        self.assertNotIn(
+            self.env.ref('his_crm_pipeline.stage_vente_contact_etabli'), etapes_contenu,
+        )
+
+    def test_l_orientation_ne_voit_que_son_etape_d_exception(self):
+        """La Cellule d'Orientation possede l'evaluation psychologique, rien d'autre."""
+        etapes = self._etapes_visibles(self.env.ref('his_crm_pipeline.crm_team_orientation'))
+        self.assertEqual(etapes, self.env.ref('his_crm_pipeline.stage_vente_evaluation_psy'))
+
     def test_les_equipes_ne_voient_pas_les_leads_de_l_autre(self):
         """Odoo ne cloisonne PAS par equipe nativement : la regle est a nous.
 

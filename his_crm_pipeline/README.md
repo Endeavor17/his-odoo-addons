@@ -27,7 +27,38 @@ Le jour où la production de contenu réclame des dépendances entre livrables, 
 calendrier éditorial propre ou du suivi de temps, elle aura mérité son modèle.
 Pas avant.
 
-## Cloisonnement : ce qu'Odoo ne fait PAS
+## Cloisonnement : deux verrous, deux défauts d'Odoo
+
+Séparer les deux processus a demandé **deux** corrections, pour deux raisons
+différentes. Aucune des deux n'est native.
+
+### 1. Les étapes — le piège de l'étape sans équipe
+
+`crm.lead.stage_id` porte ce domaine, écrit par Odoo lui-même
+(`crm/models/crm_lead.py:134`) :
+
+```
+['|', ('team_ids', '=', False), ('team_ids', 'in', team_id)]
+```
+
+Une étape **sans équipe apparaît dans TOUS les pipelines**. Or Odoo en livre
+quatre — New, Qualified, Proposition, Won — sans équipe. Résultat observé sur la
+première version : la barre d'état d'une demande de contenu affichait
+`New › Qualified › Proposition › Won › Demande/Idée › Priorisation › …`, les
+deux processus mêlés sur la même ligne.
+
+`data/crm_stage_native_data.xml` les rattache à l'équipe **Sales** que le noyau
+crée lui-même. Elles gardent un pipeline cohérent là où Odoo les attend, et
+disparaissent des deux nôtres — personne chez nous n'est membre de cette équipe.
+
+Pourquoi les déplacer plutôt que les supprimer : `crm.lead.stage_id` est en
+`ondelete='restrict'`. Un seul lead posé dessus et la mise à jour casse.
+Déplacer est réversible, supprimer ne l'est pas.
+
+Un test échoue si une étape sans équipe réapparaît, et un autre vérifie que les
+jeux d'étapes des deux pipelines sont **disjoints**.
+
+### 2. Les leads — ce qu'Odoo ne fait PAS non plus
 
 **Odoo 19 n'a aucune règle de visibilité par équipe sur `crm.lead`.**
 `crm/security/crm_security.xml` ne connaît que deux niveaux :
@@ -58,6 +89,43 @@ Conséquences à connaître :
   équipe. Quelqu'un qui suit les deux processus est membre des deux équipes ;
 - `team_id = False` reste visible, sinon un lead entrant par formulaire web ou
   import disparaîtrait de toutes les vues dès sa création.
+
+### Les menus : séparés, mais pas cachés
+
+Deux entrées distinctes sous CRM — **Admissions** et **Production Contenu** —
+chacune filtrée sur son équipe. Le pipeline natif « Sales › My Pipeline »
+mélange toutes les équipes de l'utilisateur ; ouvrir le sien depuis un menu
+nommé évite d'y tomber par accident.
+
+Les deux menus restent **visibles de tous**. Le cloisonnement est dans les
+données, pas dans l'affichage : un membre de Production Contenu qui ouvre
+Admissions voit une liste vide, avec un message qui dit pourquoi. Une seule
+source de vérité — l'appartenance à l'équipe — plutôt qu'un groupe de sécurité
+à tenir en phase avec elle, qui dériverait au premier changement d'équipe.
+
+## Qui est dans quelle équipe
+
+| Équipe | Membres | Rôle |
+|---|---|---|
+| Ventes / Admissions | **Asma** (responsable), Aicha, Rahma | Traite les leads scorés par le Marketing |
+| Cellule d'Orientation | *TODO Endeavor* | Évaluation psychologique — unité distincte des Ventes |
+| Production Contenu | *TODO Endeavor* | Priorisateur, copywriter, designer(s), vidéaste, approbateur |
+
+Asma est responsable d'équipe : c'est elle, et elle seule, qui reçoit les
+relances SLA de premier contact.
+
+**Le Marketing est membre des deux équipes.** Il fait la capture et le scoring
+(pipeline Admissions, étape 1) *et* la production de contenu — c'était le double
+rôle qu'il tenait dans GHL. Un utilisateur Odoo peut appartenir à plusieurs
+équipes ; aucun code n'est nécessaire pour cela. Conséquence assumée : le
+Marketing voit les candidatures après la passation aux Ventes. Les conseillères
+Ventes, elles, ne voient pas les demandes de contenu.
+
+**`data/crm_team_member_data.xml` crée trois comptes** (`asma`, `aicha`,
+`rahma`) avec des emails d'espace réservé et sans mot de passe. **Si ces
+personnes ont déjà un compte Odoo, retirez ce fichier du manifeste avant
+d'installer** — il créerait des doublons — et rattachez les comptes existants
+depuis CRM › Configuration › Équipes commerciales.
 
 ## Pipeline Ventes / Admissions
 
