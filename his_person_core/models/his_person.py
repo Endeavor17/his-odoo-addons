@@ -414,50 +414,6 @@ class HisPerson(models.Model):
                 }
             return {'person': existing, 'method': 'deterministic', 'score': 1.0, 'conflict': False}
 
-        # Deuxieme cle deterministe : le badge, MAIS seulement quand le nom
-        # concorde aussi.
-        #
-        # Le besoin : une feuille Nom + Badge — le format annonce par les
-        # sources — ne reconnaissait personne et recreait tout le monde. Le
-        # numero n'etait lu que par _card_conflict (his_person_sync_sheets), et
-        # seulement pour REJETER une ligne, jamais pour retrouver son porteur.
-        # Un nom seul ne peut pas y suffire : il pese 0,40 pour un seuil a 0,75
-        # (cf. MATCH_WEIGHTS), donc sans le badge la ligne repart en creation.
-        #
-        # Pourquoi le badge seul ne suffit pas non plus : une carte est un objet
-        # physique, elle peut etre reeditee et changer de main. Rapprocher sur
-        # le seul numero laisserait une ligne au nom different ecraser
-        # silencieusement la fiche du porteur precedent. Nom different =
-        # on ne rapproche pas ici, et _card_conflict rejette la ligne comme
-        # avant. Les deux ensemble, en revanche, ne laissent aucun doute.
-        #
-        # Place avant la reference source : le badge est unique en base et
-        # confirme par le nom, il prime sur une simple cle de rejeu.
-        numero_carte = (candidate_vals.get('numero_carte') or '').strip()
-        if numero_carte:
-            holder = self.with_context(active_test=False).search(
-                [('numero_carte', '=', numero_carte)], limit=1,
-            )
-            candidate_name = set(normalize_text(candidate_vals.get('name')).split())
-            if holder and candidate_name                     and candidate_name == set(normalize_text(holder.name).split()):
-                if types and holder.type_personne not in types:
-                    # Meme classe de probleme qu'un matricule incompatible : on
-                    # signale, on ne reassigne pas une carte en silence.
-                    return {
-                        'person': holder, 'method': 'deterministic', 'score': 1.0,
-                        'conflict': (
-                            "Le badge %s est deja porte par une personne de type "
-                            "« %s », incompatible avec cette source. Ligne rejetee : "
-                            "a arbitrer manuellement, aucune fusion automatique." % (
-                                numero_carte, holder.type_personne,
-                            )
-                        ),
-                    }
-                return {
-                    'person': holder, 'method': 'deterministic', 'score': 1.0,
-                    'conflict': False,
-                }
-
         # Second cle deterministe : la reference source. Rejouer un import a
         # l'identique doit retomber sur la meme fiche, pas en proposer un
         # rapprochement. Generique a tout adaptateur, d'ou sa place ici.

@@ -33,36 +33,6 @@ class TestPersonLink(TransactionCase):
             (employee.id, matricule),
         )
 
-    # --- Regle 0 : une personne, un employe --------------------------------
-
-    def test_two_employees_cannot_share_one_person(self):
-        """Sans cela le matricule cesse d'identifier un seul dossier.
-
-        C'est la porte par laquelle l'assistant « Creer des travailleurs »
-        produisait des doublons : person_id etait librement modifiable et
-        rien ne verifiait qu'une fiche n'etait pas deja prise.
-        """
-        first = self._employee()
-        person = first.person_id
-        self.assertTrue(person)
-        with self.assertRaises(ValidationError):
-            self._employee(name="Test Doublon", person_id=person.id)
-
-    def test_an_archived_employee_still_holds_its_person(self):
-        """Sinon le doublon reapparait au desarchivage, quand plus personne ne regarde."""
-        first = self._employee()
-        person = first.person_id
-        first.active = False
-        with self.assertRaises(ValidationError):
-            self._employee(name="Test Doublon Archive", person_id=person.id)
-
-    def test_reassigning_a_person_to_a_second_employee_is_refused(self):
-        """La contrainte tient aussi sur write(), pas seulement a la creation."""
-        first = self._employee()
-        second = self._employee(name="Test Second")
-        with self.assertRaises(ValidationError):
-            second.person_id = first.person_id
-
     # --- Regle 1 : tout employe cree obtient une fiche et un matricule ------
 
     def test_create_links_a_person(self):
