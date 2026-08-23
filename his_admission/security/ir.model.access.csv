@@ -9,3 +9,6 @@ access_his_admission_document_sales,his.admission.document.sales,model_his_admis
 access_his_admission_document_admission,his.admission.document.admission,model_his_admission_document,his_admission.group_his_admission,1,1,1,1
 access_his_engagement_sales,his.engagement.sales,his_person_core.model_his_engagement,sales_team.group_sale_salesman,1,0,0,0
 access_his_engagement_admission,his.engagement.admission,his_person_core.model_his_engagement,his_admission.group_his_admission,1,1,1,1
+access_his_engagement_finance,his.engagement.finance,his_person_core.model_his_engagement,his_admission.group_his_finance,1,0,0,0
+access_his_admission_document_finance,his.admission.document.finance,model_his_admission_document,his_admission.group_his_finance,1,0,0,0
+access_his_specialite_finance,his.specialite.finance,model_his_specialite,his_admission.group_his_finance,1,0,0,0

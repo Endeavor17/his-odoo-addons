@@ -24,5 +24,23 @@
             <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 
+        <!-- Le guichet Finance. Il n'a AUCUN droit d'ecriture sur le dossier :
+             ses seules actions sont les boutons d'encaissement, qui ecrivent un
+             champ et un seul. Ce n'est pas une politesse d'interface, c'est la
+             regle d'acces qui le tient — un guichetier ne peut pas cocher
+             « contrat signe » ni corriger une note de BAC, meme par import ou
+             par API.
+
+             Provisoire dans sa forme, pas dans son principe : quand le module
+             Finance existera, c'est lui qui appellera les memes methodes
+             d'encaissement, et ce groupe deviendra celui du service plutot que
+             celui des personnes qui saisissent a sa place. -->
+        <record id="group_his_finance" model="res.groups">
+            <field name="name">Finance - Guichet</field>
+            <field name="sequence">30</field>
+            <field name="privilege_id" ref="res_groups_privilege_his_admission"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
     </data>
 </odoo>

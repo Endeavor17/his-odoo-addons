@@ -4,7 +4,8 @@
     <!-- ===================== Menu racine Admission ===================== -->
 
     <menuitem id="menu_admission_root" name="Admission"
-              groups="his_admission.group_his_admission" sequence="86"/>
+              groups="his_admission.group_his_admission,his_admission.group_his_finance"
+              sequence="86"/>
 
     <!-- ========================= Domaines ========================= -->
 
@@ -94,7 +95,8 @@
     </record>
 
     <menuitem id="menu_admission_config" name="Configuration"
-              parent="menu_admission_root" sequence="90"/>
+              parent="menu_admission_root"
+              groups="his_admission.group_his_admission" sequence="90"/>
     <menuitem id="menu_admission_config_specialite" name="Specialites"
               parent="menu_admission_config" action="action_his_specialite" sequence="10"/>
     <menuitem id="menu_admission_config_domaine" name="Domaines et baremes"

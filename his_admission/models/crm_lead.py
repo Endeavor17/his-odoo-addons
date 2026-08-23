@@ -1,9 +1,55 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from odoo import _, api, models
+from odoo.exceptions import ValidationError
 
 
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
+
+    def _his_engagement(self):
+        """Le dossier rattache a ce lead, s'il y en a un."""
+        self.ensure_one()
+        if not self.his_person_id:
+            return self.env['his.engagement']
+        propre = self.his_person_id.engagement_ids.filtered(
+            lambda e: e.lead_id == self,
+        )
+        # Avant la pre-admission, lead_id n'est pas encore pose : on retombe
+        # sur le parcours ouvert de la personne, celui que le pont a cree.
+        return propre[:1] or self.his_person_id.engagement_ids[:1]
+
+    @api.constrains('stage_id')
+    def _check_gagne_seulement_si_encaisse(self):
+        """On n'entre pas en gagne sans encaissement.
+
+        C'est la regle demandee : un lead n'est gagne qu'au paiement des frais
+        d'inscription non remboursables. La poser en contrainte serveur et non
+        en droit d'acces a une consequence utile — meme un administrateur, meme
+        un import, meme l'API ne peuvent pas gonfler le pipeline. Le chiffre
+        commercial ne peut mentir que si l'argent est entre.
+
+        Le passage en gagne se fait tout seul, depuis l'encaissement
+        (his.engagement._his_gagner_le_lead). Personne n'a a l'y mettre a la
+        main : cette contrainte n'attrape donc qu'une tentative de raccourci.
+        """
+        etape = self.env.ref(
+            'his_crm_pipeline.stage_vente_frais_payes', raise_if_not_found=False,
+        )
+        if not etape:
+            return
+        for lead in self:
+            if lead.stage_id != etape:
+                continue
+            engagement = lead._his_engagement()
+            if not engagement or not engagement.frais_inscription_payes:
+                raise ValidationError(_(
+                    "« %(lead)s » ne peut pas etre gagne : les frais d'inscription "
+                    "ne sont pas encaisses.\n\n"
+                    "Le lead y passera de lui-meme quand le guichet enregistrera "
+                    "l'encaissement. Un candidat pre-admis qui ne paie pas se perd "
+                    "avec le motif « Paiement non confirme ».",
+                    lead=lead.display_name,
+                ))
 
     def write(self, vals):
         res = super().write(vals)

@@ -107,15 +107,45 @@
                     </page>
 
                     <page string="Finance" name="finance">
+                        <!-- Un encaissement ne se coche pas, il s'enregistre.
+                             Les champs sont readonly cote serveur : le bouton
+                             est le seul chemin, pour le guichet comme pour
+                             l'Admission, et demain pour le module Finance qui
+                             appellera la meme methode. -->
                         <group string="Droits encaisses">
-                            <field name="frais_inscription_payes"/>
-                            <field name="frais_scolarite_payes"/>
-                            <field name="droits_prog_qualifiant_payes"
+                            <label for="frais_inscription_payes"/>
+                            <div>
+                                <field name="frais_inscription_payes" class="oe_inline"/>
+                                <button name="action_encaisser_frais_inscription"
+                                        type="object" class="btn-link"
+                                        string="Enregistrer l'encaissement"
+                                        invisible="frais_inscription_payes"
+                                        groups="his_admission.group_his_admission,his_admission.group_his_finance"/>
+                            </div>
+                            <label for="frais_scolarite_payes"/>
+                            <div>
+                                <field name="frais_scolarite_payes" class="oe_inline"/>
+                                <button name="action_encaisser_frais_scolarite"
+                                        type="object" class="btn-link"
+                                        string="Enregistrer l'encaissement"
+                                        invisible="frais_scolarite_payes"
+                                        groups="his_admission.group_his_admission,his_admission.group_his_finance"/>
+                            </div>
+                            <label for="droits_prog_qualifiant_payes"
                                    invisible="programme_qualifiant == 'aucun'"/>
+                            <div invisible="programme_qualifiant == 'aucun'">
+                                <field name="droits_prog_qualifiant_payes" class="oe_inline"/>
+                                <button name="action_encaisser_droits_prog_qualifiant"
+                                        type="object" class="btn-link"
+                                        string="Enregistrer l'encaissement"
+                                        invisible="droits_prog_qualifiant_payes"
+                                        groups="his_admission.group_his_admission,his_admission.group_his_finance"/>
+                            </div>
                         </group>
                         <p class="text-muted">
                             Paye ou non paye seulement : les montants restent dans l'outil
-                            de caisse. L'Admission coche ce que le guichet a encaisse.
+                            de caisse. Enregistrer les frais d'inscription fait passer le
+                            lead d'origine en gagne — c'est le seul geste qui le gagne.
                         </p>
                     </page>
 
@@ -202,7 +232,8 @@
     </record>
 
     <menuitem id="menu_admission_dossiers" name="Dossiers"
-              parent="menu_admission_root" action="action_his_engagement_admission"
+              parent="menu_admission_root" groups="his_admission.group_his_admission"
+              action="action_his_engagement_admission"
               sequence="10"/>
 
 </odoo>

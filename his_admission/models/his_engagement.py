@@ -5,12 +5,20 @@ from odoo.exceptions import ValidationError
 from .his_document_type import BAC_FILIERE, TYPE_INSCRIPTION
 from .his_specialite import CYCLE
 
-# Les droits exiges avant l'inscription definitive. (champ, libelle) — une
-# seule source pour le verrou et pour ses messages d'erreur.
-PAIEMENTS = [
-    ('frais_inscription_payes', "Frais d'inscription"),
-    ('frais_scolarite_payes', "Frais de scolarite"),
-]
+LIBELLES_PAIEMENT = {
+    'frais_inscription_payes': "Frais d'inscription",
+    'frais_scolarite_payes': "Frais de scolarite",
+    'droits_prog_qualifiant_payes': "Droits du programme qualifiant",
+}
+
+# Les deux droits exiges avant l'inscription definitive. Les droits du
+# programme qualifiant n'en font pas partie : tous les etudiants n'en suivent
+# pas, et le classeur ne montre aucun dossier bloque pour cette raison. Les
+# ajouter au verrou serait inventer une regle.
+PAIEMENTS_REQUIS_POUR_INSCRIPTION = (
+    'frais_inscription_payes',
+    'frais_scolarite_payes',
+)
 
 
 class HisEngagement(models.Model):
@@ -123,12 +131,24 @@ class HisEngagement(models.Model):
 
     # --- Paiements -----------------------------------------------------------
     # Paye / non paye seulement, comme le classeur. Aucun montant, aucun raccord
-    # a la comptabilite : la caisse encaisse dans son propre outil, l'Admission
-    # coche. Le jour ou les montants comptent, c'est un chantier account, pas
-    # trois champs de plus ici.
-    frais_inscription_payes = fields.Boolean(string="Frais d'inscription payes")
-    frais_scolarite_payes = fields.Boolean(string="Frais de scolarite payes")
-    droits_prog_qualifiant_payes = fields.Boolean(string="Droits programme qualifiant payes")
+    # a la comptabilite : la caisse encaisse dans son propre outil, le guichet
+    # enregistre. Le jour ou les montants comptent, c'est un chantier account,
+    # pas trois champs de plus ici.
+    #
+    # readonly=True n'est pas cosmetique : depuis Odoo 16 le serveur REFUSE une
+    # ecriture cliente sur un champ readonly. Un encaissement ne se coche donc
+    # pas, il s'enregistre par _encaisser() — le seul chemin, pour le guichet
+    # comme pour l'Admission, et demain pour le module Finance qui appellera la
+    # meme methode. Un chemin unique est ce qui rend la trace fiable.
+    frais_inscription_payes = fields.Boolean(
+        string="Frais d'inscription payes", readonly=True, copy=False, tracking=True,
+    )
+    frais_scolarite_payes = fields.Boolean(
+        string="Frais de scolarite payes", readonly=True, copy=False, tracking=True,
+    )
+    droits_prog_qualifiant_payes = fields.Boolean(
+        string="Droits programme qualifiant payes", readonly=True, copy=False, tracking=True,
+    )
 
     # --- Pieces --------------------------------------------------------------
 
@@ -265,6 +285,62 @@ class HisEngagement(models.Model):
         """Rattrapage, pour un dossier cree avant l'ouverture d'une nouvelle piece."""
         self._sync_documents()
 
+    # --- Encaissements -------------------------------------------------------
+
+    def _encaisser(self, champ):
+        """Enregistre un encaissement. Seul chemin vers les champs de paiement.
+
+        sudo() : le guichet Finance n'a que la LECTURE sur le dossier
+        (ir.model.access.csv). C'est voulu — il enregistre un encaissement, il
+        ne corrige pas une note de BAC ni ne coche « contrat signe ». Cette
+        methode est la porte etroite par laquelle il agit, et elle n'ecrit
+        qu'un champ.
+
+        C'est aussi le point d'entree que le futur module Finance appellera :
+        quand la caisse notifiera un paiement, elle passera par ici et tout le
+        reste — le chatter, le passage du lead en gagne — suivra sans etre
+        reecrit ailleurs.
+        """
+        for eng in self:
+            if eng[champ]:
+                continue
+            eng.sudo().write({champ: True})
+            eng.sudo().message_post(body=_(
+                "%(droit)s : encaissement enregistre par %(user)s.",
+                droit=LIBELLES_PAIEMENT.get(champ, champ),
+                user=self.env.user.display_name,
+            ))
+
+    def action_encaisser_frais_inscription(self):
+        """Les frais non remboursables. C'est CE geste qui gagne le lead."""
+        self._encaisser('frais_inscription_payes')
+        self._his_gagner_le_lead()
+
+    def action_encaisser_frais_scolarite(self):
+        self._encaisser('frais_scolarite_payes')
+
+    def action_encaisser_droits_prog_qualifiant(self):
+        self._encaisser('droits_prog_qualifiant_payes')
+
+    def _his_gagner_le_lead(self):
+        """Pousse le lead d'origine a l'etape gagnante.
+
+        La conversion commerciale n'est pas declaree par les Ventes : elle est
+        la consequence d'un encaissement enregistre par une autre equipe. Le
+        chiffre du pipeline reflete donc de l'argent recu, pas des intentions,
+        et il n'y a rien a surveiller pour que cela reste vrai.
+        """
+        etape = self.env.ref(
+            'his_crm_pipeline.stage_vente_frais_payes', raise_if_not_found=False,
+        )
+        if not etape:
+            return
+        for eng in self:
+            if eng.lead_id and eng.lead_id.stage_id != etape:
+                # sudo() : c'est le guichet qui declenche, et il n'a aucun droit
+                # sur le CRM. Le fait est acquis, l'ecriture doit aboutir.
+                eng.lead_id.sudo().stage_id = etape
+
     # --- Le verrou -----------------------------------------------------------
 
     @api.constrains(
@@ -287,7 +363,10 @@ class HisEngagement(models.Model):
             griefs = []
             if eng.documents_manquants:
                 griefs.append(_("pieces manquantes : %s", eng.documents_manquants))
-            impayes = [libelle for champ, libelle in PAIEMENTS if not eng[champ]]
+            impayes = [
+                LIBELLES_PAIEMENT[champ]
+                for champ in PAIEMENTS_REQUIS_POUR_INSCRIPTION if not eng[champ]
+            ]
             if impayes:
                 griefs.append(_("droits non encaisses : %s", ", ".join(impayes)))
             if griefs:

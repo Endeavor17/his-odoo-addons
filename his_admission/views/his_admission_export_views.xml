@@ -133,17 +133,29 @@
         <field name="model">his.engagement</field>
         <field name="priority">44</field>
         <field name="arch" type="xml">
-            <list string="Suivi des droits" create="0" editable="bottom" export_xlsx="1">
-                <field name="etat" readonly="1"/>
-                <field name="numero_etudiant" readonly="1"/>
-                <field name="person_id" string="Personne" readonly="1"/>
-                <field name="cycle" readonly="1"/>
-                <field name="type_inscription" readonly="1"/>
-                <field name="specialite_id" readonly="1"/>
-                <field name="programme_qualifiant" readonly="1"/>
-                <field name="frais_inscription_payes" widget="boolean_toggle"/>
-                <field name="frais_scolarite_payes" widget="boolean_toggle"/>
-                <field name="droits_prog_qualifiant_payes" widget="boolean_toggle"/>
+            <!-- Le guichet travaille ici. Pas de case a cocher : trois boutons,
+                 qui sont le seul chemin vers les champs de paiement. Le guichet
+                 n'a que la lecture sur le dossier — il enregistre un
+                 encaissement, il ne corrige pas une note de BAC. -->
+            <list string="Suivi des droits" create="0" edit="0" export_xlsx="1">
+                <field name="etat"/>
+                <field name="numero_etudiant"/>
+                <field name="person_id" string="Personne"/>
+                <field name="cycle" optional="show"/>
+                <field name="specialite_id" optional="show"/>
+                <field name="programme_qualifiant" optional="hide"/>
+                <field name="frais_inscription_payes"/>
+                <button name="action_encaisser_frais_inscription" type="object"
+                        string="Encaisser inscription" icon="fa-money"
+                        invisible="frais_inscription_payes"/>
+                <field name="frais_scolarite_payes"/>
+                <button name="action_encaisser_frais_scolarite" type="object"
+                        string="Encaisser scolarite" icon="fa-money"
+                        invisible="frais_scolarite_payes"/>
+                <field name="droits_prog_qualifiant_payes" optional="show"/>
+                <button name="action_encaisser_droits_prog_qualifiant" type="object"
+                        string="Encaisser programme qualifiant" icon="fa-money"
+                        invisible="droits_prog_qualifiant_payes or programme_qualifiant == 'aucun'"/>
             </list>
         </field>
     </record>
@@ -197,14 +209,18 @@
     <!-- ======================= Menus ======================= -->
 
     <menuitem id="menu_admission_finance" name="Suivi des droits"
-              parent="menu_admission_root" action="action_engagement_finance" sequence="20"/>
+              parent="menu_admission_root"
+              groups="his_admission.group_his_admission,his_admission.group_his_finance" action="action_engagement_finance" sequence="20"/>
     <menuitem id="menu_admission_carte" name="Cartes etudiant"
-              parent="menu_admission_root" action="action_engagement_carte" sequence="30"/>
+              parent="menu_admission_root" groups="his_admission.group_his_admission"
+              action="action_engagement_carte" sequence="30"/>
     <menuitem id="menu_admission_parents" name="Parents et tuteurs"
-              parent="menu_admission_root" action="action_person_parents" sequence="40"/>
+              parent="menu_admission_root" groups="his_admission.group_his_admission"
+              action="action_person_parents" sequence="40"/>
 
     <menuitem id="menu_admission_transmissions" name="Transmissions"
-              parent="menu_admission_root" sequence="50"/>
+              parent="menu_admission_root" groups="his_admission.group_his_admission"
+              sequence="50"/>
     <menuitem id="menu_admission_pedagogie" name="Pedagogie"
               parent="menu_admission_transmissions" action="action_engagement_pedagogie"
               sequence="10"/>

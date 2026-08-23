@@ -74,10 +74,8 @@ class TestAdmission(TransactionCase):
     def _dossier_pret(self):
         dossier = self._dossier()
         dossier.document_ids.filtered(lambda d: d.type_id.obligatoire).fourni = True
-        dossier.write({
-            'frais_inscription_payes': True,
-            'frais_scolarite_payes': True,
-        })
+        dossier.action_encaisser_frais_inscription()
+        dossier.action_encaisser_frais_scolarite()
         return dossier
 
     def test_inscrit_refuse_si_une_piece_obligatoire_manque(self):
@@ -95,11 +93,18 @@ class TestAdmission(TransactionCase):
         self.assertEqual(dossier.etat, 'inscrit')
 
     def test_inscrit_refuse_si_les_droits_ne_sont_pas_encaisses(self):
-        dossier = self._dossier_pret()
-        dossier.frais_inscription_payes = False
+        dossier = self._dossier()
+        dossier.document_ids.filtered(lambda d: d.type_id.obligatoire).fourni = True
+        dossier.action_encaisser_frais_inscription()
+        # La scolarite reste due : le classeur ne montre aucune ligne Inscrit
+        # sans ces deux droits regles.
 
         with self.assertRaises(ValidationError):
             dossier.etat = 'inscrit'
+
+        dossier.action_encaisser_frais_scolarite()
+        dossier.etat = 'inscrit'
+        self.assertEqual(dossier.etat, 'inscrit')
 
     def test_une_piece_facultative_ne_bloque_pas(self):
         dossier = self._dossier_pret()
@@ -233,4 +238,74 @@ class TestAdmission(TransactionCase):
         self.assertTrue(dossier.with_user(conseillere).read(['etat']))
 
         with self.assertRaises(AccessError):
-            dossier.with_user(conseillere).write({'frais_inscription_payes': True})
+            dossier.with_user(conseillere).write({'numero_etudiant': "999"})
+
+    def test_le_guichet_encaisse_mais_ne_touche_a_rien_d_autre(self):
+        """Le guichet n'a que la lecture : le bouton est sa seule action.
+
+        C'est ce qui separe « enregistrer un encaissement » de « modifier un
+        dossier ». Un guichetier ne corrige pas une note de BAC, meme par API.
+        """
+        dossier = self._dossier()
+        guichetier = self.env['res.users'].create({
+            'name': "Guichet test",
+            'login': "guichet_test",
+            'group_ids': [(6, 0, [
+                self.env.ref('base.group_user').id,
+                self.env.ref('his_admission.group_his_finance').id,
+            ])],
+        })
+
+        with self.assertRaises(AccessError):
+            dossier.with_user(guichetier).write({'bac_moyenne': 20.0})
+
+        dossier.with_user(guichetier).action_encaisser_frais_inscription()
+        self.assertTrue(dossier.frais_inscription_payes)
+
+    # --- Le gagne suit l'encaissement, pas la decision -----------------------
+
+    def _lead_pre_admis(self):
+        lead = self.env['crm.lead'].create({
+            'name': "Candidature a convertir",
+            'contact_name': "Lyes Merabet",
+            'email_from': "lyes.merabet@example.com",
+            'team_id': self.env.ref('his_crm_pipeline.crm_team_ventes').id,
+            'stage_id': self.env.ref('his_crm_pipeline.stage_vente_contact_etabli').id,
+        })
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_pre_admis')
+        return lead
+
+    def test_la_pre_admission_ne_gagne_pas_le_lead(self):
+        """Une decision des Ventes n'est pas une conversion."""
+        lead = self._lead_pre_admis()
+        self.assertFalse(lead.stage_id.is_won)
+
+    def test_l_encaissement_gagne_le_lead(self):
+        lead = self._lead_pre_admis()
+        dossier = lead._his_engagement()
+        self.assertEqual(dossier.etat, 'admis')
+
+        dossier.action_encaisser_frais_inscription()
+
+        self.assertEqual(
+            lead.stage_id, self.env.ref('his_crm_pipeline.stage_vente_frais_payes'),
+        )
+        self.assertTrue(lead.stage_id.is_won)
+
+    def test_les_ventes_ne_peuvent_pas_gagner_un_lead_a_la_main(self):
+        """Meme un administrateur, meme par API : sans encaissement, pas de gagne."""
+        lead = self._lead_pre_admis()
+
+        with self.assertRaises(ValidationError):
+            lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_frais_payes')
+
+    def test_la_scolarite_seule_ne_gagne_pas_le_lead(self):
+        """Seuls les frais d'inscription non remboursables convertissent."""
+        lead = self._lead_pre_admis()
+        dossier = lead._his_engagement()
+
+        dossier.action_encaisser_frais_scolarite()
+
+        self.assertNotEqual(
+            lead.stage_id, self.env.ref('his_crm_pipeline.stage_vente_frais_payes'),
+        )
