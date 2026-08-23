@@ -205,7 +205,7 @@ class TestAdmission(TransactionCase):
             'login': "conseillere_parcours",
             'group_ids': [(6, 0, [
                 self.env.ref('base.group_user').id,
-                self.env.ref('sales_team.group_sale_salesman').id,
+                self.env.ref('his_crm_pipeline.group_admissions_conseiller').id,
             ])],
         })
         self.env['crm.team.member'].create({
@@ -279,7 +279,7 @@ class TestAdmission(TransactionCase):
             'login': "conseillere_admission_test",
             'group_ids': [(6, 0, [
                 self.env.ref('base.group_user').id,
-                self.env.ref('sales_team.group_sale_salesman').id,
+                self.env.ref('his_crm_pipeline.group_admissions_conseiller').id,
             ])],
         })
 

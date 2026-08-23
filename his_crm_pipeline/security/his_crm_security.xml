@@ -68,4 +68,31 @@
         <field name="domain_force">['&amp;', '|', ('team_id', '=', False), ('team_id', 'in', user.crm_team_ids.ids), '|', ('user_id', '=', user.id), ('user_id', '=', False)]</field>
     </record>
 
+    <!-- ================= Regles des roles Production Contenu =================
+
+         Les roles Contenu ne portent AUCUN groupe commercial : aucune regle
+         native ne s'applique donc a eux. Le piege a ne pas manquer : dans
+         Odoo, une regle absente n'est pas une regle restrictive — c'est
+         l'acces total. Sans les deux regles ci-dessous, un graphiste verrait
+         l'integralite des candidatures d'admission. -->
+
+    <record id="rule_lead_contenu_equipe" model="ir.rule">
+        <field name="name">Demandes de contenu : equipe de l'utilisateur</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">[('team_id', 'in', user.crm_team_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_contenu_production'))]"/>
+    </record>
+
+    <!-- Le demandeur n'est PAS membre de l'equipe Contenu : il vient des RH,
+         de la Pedagogie, des Ventes. Sa portee ne peut donc pas s'appuyer sur
+         l'equipe. Elle s'appuie sur demandeur_id, et non sur user_id : ce
+         dernier change de main a la priorisation, et le demandeur perdrait sa
+         demande de vue au moment ou elle commence a avancer. -->
+    <record id="rule_lead_contenu_demandeur" model="ir.rule">
+        <field name="name">Demandes de contenu : les miennes</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">[('demandeur_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_contenu_demandeur'))]"/>
+    </record>
+
 </odoo>

@@ -35,6 +35,7 @@
                       invisible="team_id != %(his_crm_pipeline.crm_team_contenu)d">
                     <group>
                         <group string="Demande">
+                            <field name="demandeur_id" readonly="1"/>
                             <field name="departement_demandeur"/>
                             <field name="marque"/>
                         </group>
@@ -101,6 +102,30 @@
             <p class="o_view_nocontent_smiling_face">Aucun lead en attente d'affectation.</p>
             <p>Les leads scores par le Marketing apparaissent ici, du meilleur score au moins bon.
                Selectionnez-en plusieurs et modifiez le commercial pour les affecter d'un coup.</p>
+        </field>
+    </record>
+
+    <!-- ============ Boutons de cloture, par role ============
+
+         Les boutons « Gagne » et « Perdu » du formulaire natif ne portent
+         aucun groupe : Odoo les montre a quiconque peut ecrire sur le lead.
+         C'est ainsi qu'un graphiste pouvait clore une demande de contenu.
+
+         Les masquer ne suffit pas — le kanban, l'import et l'API les
+         contournent. La regle tient dans models/crm_capacites.py ; ce qui suit
+         ne fait que retirer de l'ecran un geste que le serveur refusera de
+         toute facon. -->
+    <record id="view_crm_lead_form_cloture" model="ir.ui.view">
+        <field name="name">crm.lead.form.cloture.par.role</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <button name="action_set_won_rainbowman" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager,his_crm_pipeline.group_admissions_conseiller,his_crm_pipeline.group_contenu_approbation</attribute>
+            </button>
+            <xpath expr="//header/button[@name='%(crm.crm_lead_lost_action)d']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager,his_crm_pipeline.group_admissions_conseiller,his_crm_pipeline.group_contenu_approbation</attribute>
+            </xpath>
         </field>
     </record>
 

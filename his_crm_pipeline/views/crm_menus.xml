@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Deux processus sans rapport, donc deux entrees de menu distinctes. Le
-         pipeline natif « Sales > My Pipeline » melange toutes les equipes de
-         l'utilisateur : ouvrir le sien depuis un menu nomme evite d'y tomber
-         par accident.
-
-         Les deux menus restent visibles de tous. Le cloisonnement est dans les
-         donnees, pas dans l'affichage : la regle d'enregistrement
-         (security/his_crm_security.xml) fait qu'un membre de Production
-         Contenu qui ouvre Admissions voit une liste VIDE. Une seule source de
-         verite — l'appartenance a l'equipe — plutot qu'un groupe a tenir en
-         phase avec elle. -->
-
-    <!-- ======================= Admissions ======================= -->
+    <!-- ======================= Admissions =======================
+         Reste dans l'application CRM : ce sont de vrais commerciaux, qui
+         utilisent aussi le calendrier, les activites et le chatter. -->
 
     <record id="action_crm_lead_admissions" model="ir.actions.act_window">
         <field name="name">Pipeline Admissions</field>
@@ -33,17 +23,35 @@
     </record>
 
     <menuitem id="menu_admissions_root" name="Admissions"
-              parent="crm.crm_menu_root" sequence="3"/>
+              parent="crm.crm_menu_root" sequence="3"
+              groups="his_crm_pipeline.group_admissions_acquisition,his_crm_pipeline.group_admissions_orientation"/>
 
     <menuitem id="menu_admissions_pipeline" name="Pipeline"
               parent="menu_admissions_root"
               action="action_crm_lead_admissions" sequence="10"/>
 
+    <!-- La file d'affectation est l'outil du responsable : c'est lui qui
+         arbitre, et lui seul qui peut y ecrire le commercial. La montrer a une
+         conseillere lui proposerait un geste que le serveur refusera. -->
     <menuitem id="menu_crm_lead_non_affectes" name="Leads a affecter"
               parent="menu_admissions_root"
-              action="action_crm_lead_non_affectes" sequence="20"/>
+              action="action_crm_lead_non_affectes" sequence="20"
+              groups="his_crm_pipeline.group_admissions_responsable"/>
 
-    <!-- =================== Production Contenu =================== -->
+    <!-- =================== Production Contenu ===================
+         APPLICATION DISTINCTE, hors du CRM.
+
+         Ce n'est pas une preference d'ergonomie. Le menu CRM d'Odoo est ouvert
+         aux groupes commerciaux (sales_team.group_sale_salesman) : y loger la
+         production de contenu obligeait a donner un groupe commercial a un
+         graphiste, donc l'ecriture sur les contacts, la fusion de leads et le
+         calendrier commercial par la meme occasion.
+
+         Ici les roles Contenu ne portent aucun groupe commercial. Le module
+         apporte ses propres droits sur crm.lead
+         (security/ir.model.access.csv) et ses propres regles
+         d'enregistrement. Un graphiste n'a donc simplement pas d'application
+         CRM. -->
 
     <record id="action_crm_lead_contenu" model="ir.actions.act_window">
         <field name="name">Demandes de contenu</field>
@@ -53,13 +61,14 @@
         <field name="context" eval="{'default_team_id': ref('his_crm_pipeline.crm_team_contenu'), 'default_type': 'opportunity'}"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Aucune demande de contenu.</p>
-            <p>Si cette liste est vide alors qu'il existe des demandes, c'est que vous
-               n'etes pas membre de l'equipe Production Contenu.</p>
+            <p>Deposez une demande : precisez la marque, le departement demandeur et
+               les livrables attendus — texte, design, video.</p>
         </field>
     </record>
 
     <menuitem id="menu_contenu_root" name="Production Contenu"
-              parent="crm.crm_menu_root" sequence="4"/>
+              sequence="26"
+              groups="his_crm_pipeline.group_contenu_demandeur"/>
 
     <menuitem id="menu_contenu_demandes" name="Demandes"
               parent="menu_contenu_root"

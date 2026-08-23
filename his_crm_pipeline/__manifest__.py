@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': "CRM Ventes/Admissions et Production Contenu",
-    'version': '19.0.1.3.0',
+    'version': '19.0.2.0.0',
     'category': 'Sales/CRM',
     'summary': "Deux pipelines CRM natifs : admissions candidats et production de contenu",
     'description': """
@@ -24,6 +24,8 @@ dans presque toutes les lignes reelles.
         'mail',
     ],
     'data': [
+        'security/his_crm_roles.xml',
+        'security/ir.model.access.csv',
         'security/his_crm_security.xml',
         'data/crm_team_data.xml',
         'data/crm_team_member_data.xml',

@@ -17,7 +17,7 @@
              l'ecriture reviendrait a supprimer la separation que le processus
              existant maintient. -->
         <record id="group_his_admission" model="res.groups">
-            <field name="name">Admission</field>
+            <field name="name">Dossier - Instruction</field>
             <field name="sequence">20</field>
             <field name="privilege_id" ref="res_groups_privilege_his_admission"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
@@ -36,7 +36,7 @@
              d'encaissement, et ce groupe deviendra celui du service plutot que
              celui des personnes qui saisissent a sa place. -->
         <record id="group_his_finance" model="res.groups">
-            <field name="name">Finance - Guichet</field>
+            <field name="name">Dossier - Guichet</field>
             <field name="sequence">30</field>
             <field name="privilege_id" ref="res_groups_privilege_his_admission"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>

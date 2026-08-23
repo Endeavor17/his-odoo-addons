@@ -35,21 +35,21 @@
             <field name="name">Asma</field>
             <field name="login">asma</field>
             <field name="email">asma@example.com</field>
-            <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
+            <field name="group_ids" eval="[(4, ref('group_admissions_responsable'))]"/>
         </record>
 
         <record id="user_aicha" model="res.users">
             <field name="name">Aicha</field>
             <field name="login">aicha</field>
             <field name="email">aicha@example.com</field>
-            <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="group_ids" eval="[(4, ref('group_admissions_conseiller'))]"/>
         </record>
 
         <record id="user_rahma" model="res.users">
             <field name="name">Rahma</field>
             <field name="login">rahma</field>
             <field name="email">rahma@example.com</field>
-            <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="group_ids" eval="[(4, ref('group_admissions_conseiller'))]"/>
         </record>
 
         <!-- Asma est responsable de l'equipe : c'est elle, et elle seule, qui

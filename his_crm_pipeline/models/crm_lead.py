@@ -81,6 +81,12 @@ class CrmLead(models.Model):
     assignee_design = fields.Many2one('res.users', string="Designer")
     assignee_video = fields.Many2one('res.users', string="Video")
 
+    demandeur_id = fields.Many2one(
+        'res.users', string="Demandeur", copy=False, index=True,
+        help="Qui a depose la demande. Distinct du commercial, qui change de "
+             "main a la priorisation — c'est ce champ, et non user_id, qui "
+             "determine ce qu'un demandeur voit de ses propres demandes.",
+    )
     marque = fields.Selection(
         selection=[
             ('his', "HIS"),
@@ -121,7 +127,11 @@ class CrmLead(models.Model):
             # calcule stocke. Un lead cree depuis un formulaire n'apporte aucun
             # stage_id dans ses vals, Odoo le deduit de l'equipe apres coup —
             # filtrer les vals aurait laisse passer le cas le plus courant.
-            leads.filtered(lambda l: l.stage_id == etape and l.user_id).user_id = False
+            # sudo() : c'est le systeme qui vide le proprietaire, pas celui qui
+            # cree. Sans cela le garde-fou « seul le responsable affecte »
+            # refuserait notre propre ecriture, et le Marketing ne pourrait plus
+            # rien capturer.
+            leads.filtered(lambda l: l.stage_id == etape and l.user_id).sudo().user_id = False
         return leads
 
     # --- Verrou d'approbation ----------------------------------------------
