@@ -16,6 +16,17 @@ oublier.
 | **Mot de passe** | `his2026` pour tous les comptes |
 | **Navigateur** | Une fenêtre privée par rôle, toutes ouvertes en même temps |
 
+> **« Fenêtre » = une fenêtre de navigation privée**, connectée avec un compte
+> donné, et qu'on laisse ouverte pendant toute la démo. Ce ne sont pas des
+> pages différentes d'Odoo : ce sont les mêmes écrans, vus par des personnes
+> différentes. Basculer d'une fenêtre à l'autre revient à changer de bureau.
+>
+> Dans Chrome et Edge, une seule fenêtre privée est partagée par tous les
+> onglets — deux onglets privés ne peuvent donc pas être connectés à deux
+> comptes. Utilisez plutôt les **profils** du navigateur (un profil par rôle),
+> ou **un navigateur différent par rôle** (Chrome, Firefox, Edge), ou les
+> **onglets de conteneur** de Firefox.
+
 | Fenêtre | Compte | Qui c'est |
 |---|---|---|
 | 1 | `marketing` | Dépose et priorise les demandes |
@@ -71,13 +82,26 @@ Passez en **Production**.
 
 ## Acte 3 — Trois rythmes différents *(le cœur de la démo)*
 
-Basculez d'une fenêtre à l'autre, en direct :
+**Ouvrez d'abord la même demande dans les trois fenêtres** `contenu`, `design`
+et `video` — *CRM › Production Contenu › Demandes*, puis la campagne de
+rentrée, onglet **Production contenu**. Les trois regardent le même dossier.
 
-**Fenêtre `contenu`** → *Statut copy* : **Approuvé**
-**Fenêtre `design`** → *Statut design* : **Révision interne**
-**Fenêtre `video`** → *Statut video* : **En cours**
+Puis, en basculant de l'une à l'autre devant le public :
 
-Revenez sur la demande.
+| Fenêtre | Champ | Valeur |
+|---|---|---|
+| `contenu` | Statut copy | **Approuve** |
+| `design` | Statut design | **Revision interne** |
+| `video` | Statut video | **En cours** |
+
+Enregistrez à chaque fois, puis rechargez une des fenêtres.
+
+> « Trois personnes, un seul dossier, et chacune ne touche que son livrable. »
+
+*Si jongler entre trois fenêtres vous gêne en public* : faites tout depuis la
+fenêtre `marketing`, qui est membre de l'équipe et peut modifier les trois
+statuts. Vous perdez la démonstration du travail en parallèle, mais le propos
+sur les trois rythmes tient toujours.
 
 > « Le texte est approuvé. Le design est en révision. La vidéo n'est pas
 > finie. Les trois sont vrais **en même temps** — et c'est exactement ce

@@ -14,7 +14,17 @@ GoHighLevel et le classeur Excel.
 |---|---|
 | **Adresse** | http://localhost:8069 — base `his_dev` |
 | **Mot de passe** | `his2026` pour tous les comptes |
-| **Navigateur** | Ouvrez **une fenêtre privée par rôle** et laissez-les ouvertes. Basculer d'onglet est plus fluide que se déconnecter à chaque acte. |
+| **Navigateur** | Ouvrez **une fenêtre par rôle** et laissez-les ouvertes. Basculer de fenêtre est plus fluide que se déconnecter à chaque acte. |
+
+> **« Fenêtre » = une session de navigateur connectée avec un compte donné.**
+> Ce ne sont pas des pages différentes d'Odoo : ce sont les mêmes écrans, vus
+> par des personnes différentes.
+>
+> Attention : dans Chrome et Edge, **tous les onglets privés partagent la même
+> session** — deux onglets ne peuvent donc pas être connectés à deux comptes.
+> Utilisez les **profils** du navigateur (un par rôle), **un navigateur
+> différent par rôle** (Chrome, Firefox, Edge), ou les **onglets de conteneur**
+> de Firefox.
 
 Comptes à préparer :
 
