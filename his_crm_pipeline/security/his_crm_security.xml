@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ATTENTION : Odoo 19 n'a AUCUNE regle de visibilite par equipe sur
+         crm.lead. crm/security/crm_security.xml ne connait que deux niveaux :
+         « mes leads » (group_sale_salesman, domaine sur user_id) et « tous les
+         leads » (group_sale_salesman_all_leads, domaine [(1,'=',1)]).
+
+         Faire cohabiter deux processus sans rapport sur le meme modele exige
+         donc une regle. Sans elle, tout utilisateur ayant « tous les leads » —
+         c'est le cas des responsables — verrait les candidatures d'admission ET
+         les demandes de contenu dans le meme pipeline.
+
+         On RESSERRE la regle native au lieu d'en ajouter une : deux regles
+         portant sur le meme groupe sont combinees en OU, pas en ET. Une regle
+         supplementaire aurait donc ete purement decorative, le [(1,'=',1)]
+         natif l'aurait annulee a chaque lecture. C'est le piege classique des
+         regles d'enregistrement Odoo.
+
+         res.users.crm_team_ids est cherchable nativement
+         (sales_team/models/res_users.py), le domaine tient donc en SQL.
+
+         team_id = False reste visible : un lead entrant sans equipe (formulaire
+         web, import) doit pouvoir etre vu et trie par quelqu'un, sinon il
+         disparait de toutes les vues des sa creation.
+
+         Consequence a connaitre : un responsable qui n'appartient a AUCUNE
+         equipe ne voit plus que les leads sans equipe. Quelqu'un qui doit
+         suivre les deux processus est membre des deux equipes — c'est le geste
+         attendu, pas un contournement. -->
+    <record id="crm.crm_rule_all_lead" model="ir.rule">
+        <field name="name">All Leads (limites aux equipes de l'utilisateur)</field>
+        <field name="domain_force">['|', ('team_id', '=', False), ('team_id', 'in', user.crm_team_ids.ids)]</field>
+    </record>
+
+</odoo>

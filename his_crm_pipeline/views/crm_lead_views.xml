@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================= Formulaire : deux blocs, une equipe ================= -->
+
+    <record id="view_crm_lead_form_his" model="ir.ui.view">
+        <field name="name">crm.lead.form.his</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+
+                <!-- Les deux blocs s'excluent par l'equipe. Un lead d'admission
+                     n'a rien a faire d'un statut video, et l'inverse. -->
+                <page string="Admissions" name="his_admissions"
+                      invisible="team_id != %(his_crm_pipeline.crm_team_ventes)d and team_id != %(his_crm_pipeline.crm_team_orientation)d">
+                    <group>
+                        <group string="Scoring">
+                            <field name="score_academique"/>
+                            <field name="score_opportunite"/>
+                        </group>
+                        <group string="Visite du campus">
+                            <field name="visite_campus_effectuee"/>
+                            <field name="date_visite_campus"
+                                   invisible="not visite_campus_effectuee"/>
+                        </group>
+                    </group>
+                    <group string="Motivation">
+                        <field name="motivation_notes" nolabel="1"
+                               placeholder="Ce que le candidat dit de son projet..."/>
+                    </group>
+                </page>
+
+                <page string="Production contenu" name="his_contenu"
+                      invisible="team_id != %(his_crm_pipeline.crm_team_contenu)d">
+                    <group>
+                        <group string="Demande">
+                            <field name="departement_demandeur"/>
+                            <field name="marque"/>
+                        </group>
+                    </group>
+                    <group string="Livrables">
+                        <!-- Un statut et un assigne par type : ils avancent
+                             independamment. Le statut n'apparait que si le
+                             livrable est demande. -->
+                        <group>
+                            <field name="besoin_copy"/>
+                            <field name="statut_copy" invisible="not besoin_copy"/>
+                            <field name="assignee_copy" invisible="not besoin_copy"/>
+                        </group>
+                        <group>
+                            <field name="besoin_design"/>
+                            <field name="statut_design" invisible="not besoin_design"/>
+                            <field name="assignee_design" invisible="not besoin_design"/>
+                        </group>
+                        <group>
+                            <field name="besoin_video"/>
+                            <field name="statut_video" invisible="not besoin_video"/>
+                            <field name="assignee_video" invisible="not besoin_video"/>
+                        </group>
+                    </group>
+                </page>
+
+            </notebook>
+        </field>
+    </record>
+
+    <!-- ================= File d'affectation (responsable) ================= -->
+
+    <record id="view_crm_lead_list_non_affectes" model="ir.ui.view">
+        <field name="name">crm.lead.list.non.affectes</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <!-- multi_edit : c'est tout le mecanisme d'affectation en masse.
+                 Le responsable coche plusieurs lignes, edite « Commercial » sur
+                 l'une d'elles, Odoo propage. Aucune logique cote serveur, aucun
+                 round-robin : l'affectation est un arbitrage humain, voulu tel
+                 quel par la Direction. -->
+            <list string="Leads a affecter" multi_edit="1" default_order="score_academique desc">
+                <field name="score_academique"/>
+                <field name="name"/>
+                <field name="partner_name" optional="show"/>
+                <field name="email_from" optional="show"/>
+                <field name="phone" optional="hide"/>
+                <field name="stage_id"/>
+                <field name="create_date" optional="hide"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="team_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_crm_lead_non_affectes" model="ir.actions.act_window">
+        <field name="name">Leads a affecter</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_crm_lead_list_non_affectes"/>
+        <field name="domain">[('user_id', '=', False), ('stage_id', 'in', [%(his_crm_pipeline.stage_vente_nouveau)d, %(his_crm_pipeline.stage_vente_pris_en_charge)d])]</field>
+        <field name="context">{'default_team_id': %(his_crm_pipeline.crm_team_ventes)d}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun lead en attente d'affectation.</p>
+            <p>Les leads scores par le Marketing apparaissent ici, du meilleur score au moins bon.
+               Selectionnez-en plusieurs et modifiez le commercial pour les affecter d'un coup.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_crm_lead_non_affectes"
+              name="Leads a affecter"
+              parent="crm.crm_menu_root"
+              action="action_crm_lead_non_affectes"
+              sequence="4"/>
+
+</odoo>
