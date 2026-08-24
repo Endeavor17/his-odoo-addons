@@ -4,15 +4,20 @@
     <t t-name="his_crm_pipeline.Dashboard">
         <Layout className="'o_his_dashboard'" display="{ controlPanel: {} }">
             <t t-set-slot="control-panel-additional-actions">
-                <select class="form-select form-select-sm w-auto"
-                        t-on-change="changerPeriode">
-                    <t t-foreach="Object.entries(periodes)" t-as="entree"
-                       t-key="entree[0]">
-                        <option t-att-value="entree[0]"
-                                t-att-selected="entree[0] === state.periode"
-                                t-esc="entree[1].label"/>
-                    </t>
-                </select>
+                <div class="d-flex align-items-center gap-2">
+                    <select class="form-select form-select-sm w-auto"
+                            t-on-change="changerPeriode">
+                        <t t-foreach="Object.entries(periodes)" t-as="entree"
+                           t-key="entree[0]">
+                            <option t-att-value="entree[0]"
+                                    t-att-selected="entree[0] === state.periode"
+                                    t-esc="entree[1].label"/>
+                        </t>
+                    </select>
+                    <!-- Les bornes reelles : « ce trimestre » ne laisse pas
+                         deviner s'il commence en juillet ou en aout. -->
+                    <span class="text-muted small" t-esc="intervalle"/>
+                </div>
             </t>
 
             <div class="o_his_dashboard_body p-3" t-if="state.spec">
