@@ -29,12 +29,19 @@ oublier.
 
 | Fenêtre | Compte | Qui c'est |
 |---|---|---|
-| 1 | `marketing` | Dépose et priorise les demandes |
-| 2 | `contenu` | Rédaction (copywriting) |
-| 3 | `design` | Design |
-| 4 | `video` | Vidéo |
-| 5 | `direction` | Approbation finale |
-| 6 | `aicha` | *Une conseillère Ventes — sert uniquement à l'acte 6* |
+| 1 | `marketing` | Dépose les demandes |
+| 2 | `cherif` | Priorisation — trie, affecte les livrables, arbitre |
+| 3 | `contenu` | Rédaction (copywriting) |
+| 4 | `design` | Design |
+| 5 | `video` | Vidéo |
+| 6 | `direction` | Direction — approuve, et regarde le cockpit |
+| 7 | `aicha` | *Une conseillère Ventes — sert uniquement à l'acte 6* |
+
+> **`marketing` dépose mais ne priorise pas.** Il porte les rôles *Acquisition*
+> et *Production*, pas *Priorisation* : affecter un livrable ou faire avancer
+> une demande avant la production appartient à `cherif`. Ce n'est pas une
+> limite d'écran, c'est le serveur qui refuse — et c'est précisément ce que
+> l'acte 6 démontre.
 
 ---
 
@@ -47,17 +54,23 @@ oublier.
 
 ## Acte 1 — La demande
 
-**Fenêtre `marketing`** · *CRM › Production Contenu › Demandes* · **Nouveau**
+**Fenêtre `marketing`** · *Production Contenu › Demandes* · **Nouveau**
 
 - Nom : `Campagne rentrée 2026 — Licence Informatique`
+- Date limite : **dans une semaine** *(elle sert au suivi des retards)*
 - Onglet **Production contenu** :
   - Département demandeur : **Ventes / Admissions**
   - Marque : **HIS**
-  - Cochez **Besoin copywriting**, **Besoin design**, **Besoin vidéo**
+  - Dans la liste **Livrables**, ajoutez trois lignes : **Copywriting**,
+    **Design**, **Video**
 
 > « N'importe quel département dépose ici : les Ventes, les RH, la Pédagogie, le
 > Marketing lui-même. Aujourd'hui ça arrive par message, par mail, de vive voix
 > — et ça se perd. »
+
+> « Une ligne par livrable, et **seulement** pour ceux qui sont demandés. Une
+> demande sans vidéo n'a pas de ligne vidéo — l'outil sait donc dire
+> *« pas concerné »*, et pas seulement *« pas encore fait »*. »
 
 Laissez la demande en **Demande / Idée**.
 
@@ -65,12 +78,14 @@ Laissez la demande en **Demande / Idée**.
 
 ## Acte 2 — La priorisation
 
-Toujours en `marketing`, passez la demande en **Priorisation**, puis affectez
-chaque livrable :
+**Fenêtre `cherif`** *(Priorisation)* · ouvrez la demande, passez-la en
+**Priorisation**, puis affectez chaque livrable dans la liste :
 
-- Copywriter → **Redaction (copywriting)**
-- Designer → **Design**
-- Vidéo → **Video**
+| Livrable | Assigné à |
+|---|---|
+| Copywriting | **Redaction (copywriting)** |
+| Design | **Design** |
+| Video | **Video** |
 
 Passez en **Production**.
 
@@ -78,30 +93,45 @@ Passez en **Production**.
 > craquait : une seule ligne, une seule colonne de statut, et trois métiers qui
 > ne vont pas au même rythme. »
 
+*Si vous voulez le montrer :* tentez la même affectation depuis la fenêtre
+`marketing` — refus. *« Affecter un livrable demande le rôle Priorisation. »*
+Le tri est un arbitrage, il a un propriétaire.
+
 ---
 
 ## Acte 3 — Trois rythmes différents *(le cœur de la démo)*
 
 **Ouvrez d'abord la même demande dans les trois fenêtres** `contenu`, `design`
-et `video` — *CRM › Production Contenu › Demandes*, puis la campagne de
-rentrée, onglet **Production contenu**. Les trois regardent le même dossier.
+et `video` — *Production Contenu › Demandes*, puis la campagne de rentrée,
+onglet **Production contenu**. Les trois regardent le même dossier.
 
-Puis, en basculant de l'une à l'autre devant le public :
+Puis, en basculant de l'une à l'autre devant le public, chacun change le statut
+**de sa propre ligne** :
 
-| Fenêtre | Champ | Valeur |
+| Fenêtre | Ligne | Statut |
 |---|---|---|
-| `contenu` | Statut copy | **Approuve** |
-| `design` | Statut design | **Revision interne** |
-| `video` | Statut video | **En cours** |
+| `contenu` | Copywriting | **Approuve** |
+| `design` | Design | **Revision interne** |
+| `video` | Video | **En cours** |
 
 Enregistrez à chaque fois, puis rechargez une des fenêtres.
 
 > « Trois personnes, un seul dossier, et chacune ne touche que son livrable. »
 
+**Montrez le refus** : en `design`, essayez de changer le statut de la ligne
+*Copywriting*.
+
+> *« Le livrable Copywriting n'est pas le vôtre. Seule la personne à qui il est
+> assigné fait avancer son statut, ou le rôle Priorisation qui arbitre. »*
+
+> « La règle ne tient pas à des groupes, elle tient à la donnée : c'est
+> l'assignation qui décide. Deux designers se partagent un livrable en changeant
+> l'assignation, pas les droits. »
+
 *Si jongler entre trois fenêtres vous gêne en public* : faites tout depuis la
-fenêtre `marketing`, qui est membre de l'équipe et peut modifier les trois
-statuts. Vous perdez la démonstration du travail en parallèle, mais le propos
-sur les trois rythmes tient toujours.
+fenêtre `cherif`, qui arbitre et peut modifier les trois statuts. Vous perdez la
+démonstration du travail en parallèle, mais le propos sur les trois rythmes
+tient toujours.
 
 > « Le texte est approuvé. Le design est en révision. La vidéo n'est pas
 > finie. Les trois sont vrais **en même temps** — et c'est exactement ce
@@ -152,31 +182,69 @@ Passez-la en **Planification et publication**.
 
 ## Acte 6 — Le cloisonnement
 
-**Fenêtre `aicha`** *(conseillère Ventes)* · *CRM › Production Contenu › Demandes*
+**Fenêtre `aicha`** *(conseillère Ventes)* : cherchez l'application
+**Production Contenu**.
 
-> « Rien. Le message explique pourquoi : elle n'est pas membre de l'équipe. »
+> « Elle n'existe pas. Ce n'est pas une liste vide avec un message poli : il n'y
+> a pas d'application du tout. »
 
-Puis dans sa fenêtre : *CRM › Admissions › Pipeline* → ses candidats.
+Et en `contenu` *(Design ou Vidéo font aussi bien)* : cherchez le **CRM**.
 
-Et en `contenu`, l'inverse : *CRM › Admissions › Pipeline* → vide.
+> « Pas de CRM non plus. Un graphiste n'a aucun accès aux candidatures — donc
+> aucun accès aux contacts, à la fusion de leads, au calendrier commercial. Ce
+> n'est pas un menu masqué : le rôle ne porte tout simplement aucun groupe
+> commercial. »
+
+Puis en `aicha` : *CRM › Admissions › Pipeline* → ses candidats.
 
 > « Deux processus sans rapport dans le même outil, et personne ne voit le
 > travail de l'autre. »
 
-**Fenêtre `marketing`** : les **deux** menus fonctionnent.
+**Fenêtre `marketing`** : les **deux** applications sont là.
 
 > « Le Marketing est la seule équipe présente des deux côtés : il capte les
 > candidatures **et** produit le contenu. C'était déjà son double rôle. »
 
 ---
 
-## Acte 7 — Ce que la Direction regarde *(2 minutes)*
+## Acte 7 — Ce que la Direction regarde *(3 minutes)*
 
-En `direction`, sur la liste des demandes : groupez par **Étape**, puis par
-**Marque**.
+**Fenêtre `direction`** · *Production Contenu › Cockpit*
 
-> « Combien de demandes en attente, par marque, par département demandeur. Sans
-> préparer de tableau. »
+Ce n'est pas une liste groupée : c'est l'écran qui répond avant qu'on demande.
+
+**Les tuiles** — demandes reçues, contenus publiés, livrables en retard, et
+**en attente d'approbation**.
+
+> « Cette dernière tuile, c'est ma propre file : ce qui attend ma signature.
+> Le tableau de bord ne me dit pas seulement comment va l'équipe, il me dit ce
+> que je bloque. »
+
+**Cliquez sur une tuile.** Elle ouvre exactement les demandes qu'elle compte.
+
+> « Un chiffre qu'on ne peut pas ouvrir, il faut le croire sur parole. Ici
+> chaque nombre mène aux lignes qui le composent. »
+
+**« À traiter »** — livrables non assignés, livrables en retard, demandes
+bloquées en production depuis plus de dix jours.
+
+> « Ce ne sont pas des moyennes, ce sont des exceptions. C'est la moitié de
+> l'écran qui fait travailler. »
+
+**« Explorer »** → *Charge par personne* : qui a combien de travail, en un
+clic.
+
+> « Cette question n'avait pas de réponse avant : le statut vivait dans trois
+> colonnes d'une même ligne, et trois colonnes ne se groupent pas entre elles.
+> Un livrable est devenu une ligne, et la question s'est résolue toute seule. »
+
+**Le sélecteur de période** en haut change tout l'écran d'un coup.
+
+> **Si un objectif a été saisi** *(Direction › Objectifs)*, la tuile
+> *Contenus publiés* affiche l'atteinte, le rythme qu'il reste à tenir et la
+> projection de fin de période. Sans objectif, elle n'affiche qu'un compteur —
+> **saisissez-en un avant la démo**, c'est ce qui fait la différence entre
+> constater et décider.
 
 ---
 
@@ -223,7 +291,8 @@ Non, et ce n'est pas prévu dans ce périmètre. **Ne le promettez pas.**
 
 - Publication automatique sur les réseaux sociaux
 - Calendrier éditorial et programmation des dates
-- Suivi du temps passé par livrable
+- Suivi du temps passé par livrable *(les dates de démarrage et de fin sont
+  posées, mais personne ne saisit d'heures)*
 - Dépendances entre livrables *(« la vidéo attend le texte »)*
 - Stockage des fichiers produits — le chatter accepte les pièces jointes, mais
   ce n'est pas une médiathèque

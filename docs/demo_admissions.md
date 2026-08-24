@@ -36,6 +36,7 @@ Comptes à préparer :
 | 4 | `orientation` | Cellule d'Orientation |
 | 5 | `admission` | Back-office Admission |
 | 6 | `finance` | Guichet paiements |
+| 7 | `direction` | Direction — voit les deux processus, et les cockpits |
 
 **Répétez la démo une fois avant de la jouer devant du monde.** Certains actes
 créent des données définitives (une fiche personne, un matricule) qu'on ne
@@ -286,6 +287,64 @@ Puis *Admission › Cartes étudiant* et *Parents et tuteurs*.
 
 ---
 
+## Acte 11 — Ce que la Direction regarde *(4 minutes)*
+
+**Fenêtre `direction`** · application **Direction** › *Vue d'ensemble*
+
+> « Jusqu'ici on a suivi une candidate. Voici le même processus vu de haut, et
+> c'est un autre métier : le directeur ne traite pas les dossiers, il décide où
+> mettre l'effort. »
+
+**Les tuiles.** Candidatures reçues, inscriptions, taux de conversion, dossiers
+complets, demandes de contenu. Chacune porte l'écart avec la période précédente.
+
+**Cliquez sur « Candidatures reçues ».** Elle ouvre exactement les candidatures
+qu'elle compte.
+
+> « Un chiffre qu'on ne peut pas ouvrir, il faut le croire sur parole. Ici
+> chaque nombre mène aux lignes qui le composent — et c'est aussi comme ça qu'on
+> attrape un indicateur qui se trompe. »
+
+**L'entonnoir.** Les huit étapes du parcours, avec le taux de passage de l'une à
+la suivante.
+
+> « Le taux se lit d'une marche à la suivante, pas depuis le début. C'est celui-là
+> qui désigne l'endroit où l'on perd les candidats. »
+
+**« À traiter ».** Candidatures non affectées, premier contact en retard,
+candidatures en sommeil, dossiers incomplets, lettres non émises.
+
+> « Ce ne sont pas des moyennes, ce sont des exceptions. Le retard du premier
+> contact, c'est **exactement** la même définition que la relance automatique
+> qui se pose dans les fiches — pas un second calcul qui dirait autre chose. »
+
+Passez ensuite sur *Direction › Admissions* puis *Direction › Production
+Contenu*.
+
+> « Le même écran, trois périmètres. Et le responsable des admissions retrouve
+> le sien directement dans son menu Admissions : chacun a ses indicateurs là où
+> il travaille. »
+
+**Le sélecteur de période** en haut change tout l'écran d'un coup.
+
+### L'objectif — à préparer avant la démo
+
+*Direction › Objectifs* → **Nouveau** : intitulé `Rentrée 2026`, axe
+**Candidatures reçues**, cible `300`, du `01/01/2026` au `31/12/2026`.
+
+Revenez sur la vue d'ensemble : la tuile affiche désormais l'atteinte, le rythme
+qu'il reste à tenir et la projection de fin de période.
+
+> « Sans cible, un tableau de bord ne fait que compter. Avec une cible, il dit
+> s'il faut accélérer, et de combien. C'est la différence entre constater et
+> décider. »
+
+> **Ne sautez pas cette préparation.** Sans objectif saisi, les tuiles
+> n'affichent que des compteurs nus — et c'est précisément l'effet qu'on veut
+> montrer qui manque.
+
+---
+
 ## Les trois phrases à retenir
 
 1. **« Le score classe la file, il ne se négocie pas. »**
@@ -333,6 +392,10 @@ Pas encore. Les champs sont prêts, le raccordement est un chantier à part.
 - L'édition automatique des lettres d'acceptation et attestations
 - Les soutenances et la fin de cursus
 - La reprise des données de GoHighLevel : **départ à neuf, aucun historique**
+- L'analyse historique et pluriannuelle : les cockpits répondent sur la
+  période en cours. Les cohortes, les comparaisons entre rentrées et les
+  croisements avec d'autres sources sont le travail de l'outil de BI (Metabase),
+  qui viendra ensuite
 
 ---
 
