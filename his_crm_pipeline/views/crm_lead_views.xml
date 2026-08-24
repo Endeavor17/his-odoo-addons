@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================= Formulaire : deux blocs, une equipe ================= -->
+
+    <record id="view_crm_lead_form_his" model="ir.ui.view">
+        <field name="name">crm.lead.form.his</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+
+                <!-- Les deux blocs s'excluent par l'equipe. Un lead d'admission
+                     n'a rien a faire d'un statut video, et l'inverse. -->
+                <page string="Admissions" name="his_admissions"
+                      invisible="team_id != %(his_crm_pipeline.crm_team_ventes)d and team_id != %(his_crm_pipeline.crm_team_orientation)d">
+                    <group>
+                        <group string="Scoring">
+                            <field name="score_academique"/>
+                            <field name="score_opportunite"/>
+                        </group>
+                        <group string="Visite du campus">
+                            <field name="visite_campus_effectuee"/>
+                            <field name="date_visite_campus"
+                                   invisible="not visite_campus_effectuee"/>
+                        </group>
+                    </group>
+                    <group string="Motivation">
+                        <field name="motivation_notes" nolabel="1"
+                               placeholder="Ce que le candidat dit de son projet..."/>
+                    </group>
+                </page>
+
+                <page string="Production contenu" name="his_contenu"
+                      invisible="team_id != %(his_crm_pipeline.crm_team_contenu)d">
+                    <group>
+                        <group string="Demande">
+                            <field name="demandeur_id" readonly="1"/>
+                            <field name="departement_demandeur"/>
+                            <field name="marque"/>
+                        </group>
+                    </group>
+                    <!-- Une ligne par livrable demande : ils avancent
+                         independamment. Une ligne n'existe que si le livrable
+                         est demande — c'est ce qui distingue « pas encore
+                         fait » de « pas concerne ». -->
+                    <field name="deliverable_ids" nolabel="1"
+                           context="{'default_statut': 'a_faire'}">
+                        <list editable="bottom" string="Livrables"
+                              decoration-danger="en_retard"
+                              decoration-muted="statut == 'approuve'">
+                            <field name="type_id"/>
+                            <field name="assignee_id"/>
+                            <field name="statut"/>
+                            <field name="date_echeance" optional="show"/>
+                            <field name="date_fin" optional="hide"/>
+                            <field name="en_retard" column_invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+
+            </notebook>
+        </field>
+    </record>
+
+    <!-- ================= File d'affectation (responsable) ================= -->
+
+    <record id="view_crm_lead_list_non_affectes" model="ir.ui.view">
+        <field name="name">crm.lead.list.non.affectes</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <!-- multi_edit : c'est tout le mecanisme d'affectation en masse.
+                 Le responsable coche plusieurs lignes, edite « Commercial » sur
+                 l'une d'elles, Odoo propage. Aucune logique cote serveur, aucun
+                 round-robin : l'affectation est un arbitrage humain, voulu tel
+                 quel par la Direction. -->
+            <list string="Leads a affecter" multi_edit="1" default_order="score_academique desc">
+                <field name="score_academique"/>
+                <field name="name"/>
+                <field name="partner_name" optional="show"/>
+                <field name="email_from" optional="show"/>
+                <field name="phone" optional="hide"/>
+                <field name="stage_id"/>
+                <field name="create_date" optional="hide"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="team_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_crm_lead_non_affectes" model="ir.actions.act_window">
+        <field name="name">Leads a affecter</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_crm_lead_list_non_affectes"/>
+        <field name="domain" eval="[('user_id', '=', False), ('stage_id', 'in', [ref('his_crm_pipeline.stage_vente_nouveau'), ref('his_crm_pipeline.stage_vente_pris_en_charge')])]"/>
+        <field name="context" eval="{'default_team_id': ref('his_crm_pipeline.crm_team_ventes')}"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun lead en attente d'affectation.</p>
+            <p>Les leads scores par le Marketing apparaissent ici, du meilleur score au moins bon.
+               Selectionnez-en plusieurs et modifiez le commercial pour les affecter d'un coup.</p>
+        </field>
+    </record>
+
+    <!-- ============ Boutons de cloture, par role ============
+
+         Les boutons « Gagne » et « Perdu » du formulaire natif ne portent
+         aucun groupe : Odoo les montre a quiconque peut ecrire sur le lead.
+         C'est ainsi qu'un graphiste pouvait clore une demande de contenu.
+
+         Les masquer ne suffit pas — le kanban, l'import et l'API les
+         contournent. La regle tient dans models/crm_capacites.py ; ce qui suit
+         ne fait que retirer de l'ecran un geste que le serveur refusera de
+         toute facon. -->
+    <record id="view_crm_lead_form_cloture" model="ir.ui.view">
+        <field name="name">crm.lead.form.cloture.par.role</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <button name="action_set_won_rainbowman" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager,his_crm_pipeline.group_admissions_conseiller,his_crm_pipeline.group_contenu_approbation</attribute>
+            </button>
+            <xpath expr="//header/button[@name='%(crm.crm_lead_lost_action)d']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager,his_crm_pipeline.group_admissions_conseiller,his_crm_pipeline.group_contenu_approbation</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

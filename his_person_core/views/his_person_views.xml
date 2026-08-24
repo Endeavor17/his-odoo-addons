@@ -62,6 +62,17 @@
                             <field name="matched_on"/>
                         </group>
                     </group>
+                    <notebook>
+                        <page string="Engagements" name="engagements">
+                            <field name="engagement_ids">
+                                <list editable="bottom">
+                                    <field name="etat"/>
+                                    <field name="date_debut"/>
+                                    <field name="notes" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
                 <chatter/>
             </form>

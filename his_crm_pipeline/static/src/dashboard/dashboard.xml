@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="his_crm_pipeline.Dashboard">
+        <Layout className="'o_his_dashboard'" display="{ controlPanel: {} }">
+            <t t-set-slot="control-panel-additional-actions">
+                <select class="form-select form-select-sm w-auto"
+                        t-on-change="changerPeriode">
+                    <t t-foreach="Object.entries(periodes)" t-as="entree"
+                       t-key="entree[0]">
+                        <option t-att-value="entree[0]"
+                                t-att-selected="entree[0] === state.periode"
+                                t-esc="entree[1].label"/>
+                    </t>
+                </select>
+            </t>
+
+            <div class="o_his_dashboard_body p-3" t-if="state.spec">
+
+                <!-- ============================ Tuiles ============================
+                     Chaque tuile est cliquable : un chiffre qu'on ne peut pas
+                     ouvrir doit etre cru sur parole. -->
+                <div class="his_tuiles">
+                    <div t-foreach="state.spec.tiles" t-as="tuile" t-key="tuile.cle"
+                         class="his_tuile"
+                         t-att-class="{ 'his_cliquable': tuile.action }"
+                         t-on-click="() => this.ouvrir(tuile.action)">
+
+                        <div class="his_tuile_label" t-esc="tuile.label"/>
+
+                        <div class="his_tuile_valeur">
+                            <span t-esc="tuile.valeur"/><span
+                                t-if="tuile.unite" class="his_unite"
+                                t-esc="tuile.unite"/>
+                        </div>
+
+                        <div t-if="tuile.ecart !== null and tuile.ecart !== undefined"
+                             class="his_ecart"
+                             t-att-class="classeEcart(tuile.ecart)">
+                            <t t-esc="tuile.ecart > 0 ? '▲' : '▼'"/>
+                            <t t-esc="Math.abs(tuile.ecart)"/>% vs periode precedente
+                        </div>
+
+                        <!-- L'objectif : atteinte, rythme requis, projection.
+                             C'est ce qui dit quoi faire, pas seulement ou on en est. -->
+                        <div t-if="tuile.cible" class="his_objectif">
+                            <div class="his_jauge">
+                                <div class="his_jauge_remplie"
+                                     t-att-class="tientLeRythme(tuile) ? 'his_ok' : 'his_retard'"
+                                     t-attf-style="width: {{ largeurJauge(tuile) }}%"/>
+                            </div>
+                            <div class="his_objectif_texte">
+                                <t t-esc="tuile.valeur"/> / <t t-esc="tuile.cible"/>
+                                · <t t-esc="tuile.atteinte"/>%
+                            </div>
+                            <div class="his_objectif_rythme">
+                                <t t-if="tuile.jours_restants > 0">
+                                    Reste <t t-esc="tuile.jours_restants"/> j ·
+                                    <t t-esc="tuile.rythme_requis"/>/j requis ·
+                                    projection <t t-esc="tuile.projection"/>
+                                </t>
+                                <t t-else="">Periode terminee</t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================== Entonnoir ===========================
+                     Cumulatif : chaque marche contient les suivantes, sinon le
+                     taux de passage ne veut rien dire. -->
+                <div t-if="state.spec.funnel.length" class="his_bloc">
+                    <h3 class="his_titre">Parcours des candidatures</h3>
+                    <div t-foreach="state.spec.funnel" t-as="marche"
+                         t-key="marche.label" class="his_marche his_cliquable"
+                         t-on-click="() => this.ouvrir(marche.action)">
+                        <div class="his_marche_nom" t-esc="marche.label"/>
+                        <div class="his_marche_barre">
+                            <div class="his_marche_remplie"
+                                 t-attf-style="width: {{ largeurMarche(marche) }}%"/>
+                        </div>
+                        <div class="his_marche_chiffres">
+                            <span class="his_marche_count" t-esc="marche.count"/>
+                            <span t-if="marche.conversion !== null"
+                                  class="his_marche_conversion">
+                                <t t-esc="marche.conversion"/>%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================== A traiter ===========================
+                     Des exceptions, pas des agregats : la moitie du cockpit qui
+                     fait travailler. -->
+                <div t-if="state.spec.attention.length" class="his_bloc">
+                    <h3 class="his_titre">A traiter</h3>
+                    <div class="his_files">
+                        <div t-foreach="state.spec.attention" t-as="file"
+                             t-key="file.label" class="his_file">
+                            <div class="his_file_entete his_cliquable"
+                                 t-on-click="() => this.ouvrir(file.action)">
+                                <span t-esc="file.label"/>
+                                <span class="his_badge"
+                                      t-att-class="{ 'his_badge_vide': !file.count }"
+                                      t-esc="file.count"/>
+                            </div>
+                            <ul class="his_file_apercu">
+                                <li t-foreach="file.apercu" t-as="ligne"
+                                    t-key="ligne.id" t-esc="ligne.nom"/>
+                            </ul>
+                            <div t-if="file.count > file.apercu.length"
+                                 class="his_voir_tout his_cliquable"
+                                 t-on-click="() => this.ouvrir(file.action)">
+                                Voir les <t t-esc="file.count"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================== Explorer ===========================
+                     La profondeur est deleguee aux vues pivot et graph natives :
+                     elles sont gratuites et infiniment explorables. -->
+                <div t-if="state.spec.explore.length" class="his_bloc">
+                    <h3 class="his_titre">Explorer</h3>
+                    <div class="his_explorer">
+                        <button t-foreach="state.spec.explore" t-as="lien"
+                                t-key="lien.label" class="btn btn-secondary btn-sm"
+                                t-on-click="() => this.ouvrir(lien.action)"
+                                t-esc="lien.label"/>
+                    </div>
+                </div>
+
+            </div>
+
+            <div t-else="" class="o_his_dashboard_vide p-5 text-center text-muted">
+                Chargement des indicateurs...
+            </div>
+        </Layout>
+    </t>
+
+</templates>

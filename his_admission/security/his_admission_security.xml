@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="res_groups_privilege_his_admission" model="res.groups.privilege">
+            <field name="name">Admission</field>
+            <field name="category_id" ref="his_person_core.module_category_his_person"/>
+        </record>
+
+        <!-- L'Admission est une unite distincte des Ventes : le BPMN la pose
+             ainsi, et c'est elle qui coche « frais payes » et « contrat
+             signe ». Ce groupe est le seul a pouvoir ecrire un dossier.
+
+             Les conseilleres Ventes lisent (cf. ir.model.access.csv) : elles
+             suivent leur candidat depuis le lead et repondent a ses questions,
+             sans pouvoir valider a la place du back-office. Leur donner
+             l'ecriture reviendrait a supprimer la separation que le processus
+             existant maintient. -->
+        <record id="group_his_admission" model="res.groups">
+            <field name="name">Dossier - Instruction</field>
+            <field name="sequence">20</field>
+            <field name="privilege_id" ref="res_groups_privilege_his_admission"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- Le guichet Finance. Il n'a AUCUN droit d'ecriture sur le dossier :
+             ses seules actions sont les boutons d'encaissement, qui ecrivent un
+             champ et un seul. Ce n'est pas une politesse d'interface, c'est la
+             regle d'acces qui le tient — un guichetier ne peut pas cocher
+             « contrat signe » ni corriger une note de BAC, meme par import ou
+             par API.
+
+             Provisoire dans sa forme, pas dans son principe : quand le module
+             Finance existera, c'est lui qui appellera les memes methodes
+             d'encaissement, et ce groupe deviendra celui du service plutot que
+             celui des personnes qui saisissent a sa place. -->
+        <record id="group_his_finance" model="res.groups">
+            <field name="name">Dossier - Guichet</field>
+            <field name="sequence">30</field>
+            <field name="privilege_id" ref="res_groups_privilege_his_admission"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+    </data>
+</odoo>

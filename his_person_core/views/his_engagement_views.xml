@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_his_engagement_list" model="ir.ui.view">
+        <field name="name">his.engagement.list</field>
+        <field name="model">his.engagement</field>
+        <field name="arch" type="xml">
+            <list string="Engagements">
+                <field name="person_id"/>
+                <field name="etat"/>
+                <field name="date_debut"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_his_engagement_form" model="ir.ui.view">
+        <field name="name">his.engagement.form</field>
+        <field name="model">his.engagement</field>
+        <field name="arch" type="xml">
+            <form string="Engagement">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="person_id"/>
+                            <field name="etat"/>
+                        </group>
+                        <group>
+                            <field name="date_debut"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_his_engagement_search" model="ir.ui.view">
+        <field name="name">his.engagement.search</field>
+        <field name="model">his.engagement</field>
+        <field name="arch" type="xml">
+            <search string="Engagements">
+                <field name="person_id"/>
+                <filter name="filter_prospect" string="Prospects" domain="[('etat','=','prospect')]"/>
+                <filter name="filter_soumis" string="Candidatures soumises" domain="[('etat','=','candidat_soumis')]"/>
+                <filter name="filter_inscrit" string="Inscrits" domain="[('etat','=','inscrit')]"/>
+                <separator/>
+                <filter name="group_etat" string="Etat" context="{'group_by': 'etat'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_his_engagement" model="ir.actions.act_window">
+        <field name="name">Engagements</field>
+        <field name="res_model">his.engagement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_his_engagement" name="Engagements" parent="menu_his_person_root"
+              action="action_his_engagement" sequence="20"/>
+
+</odoo>

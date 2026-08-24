@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Les neuf specialites relevees dans la feuille ADMISSIONS, avec leur
+             libelle arabe tel qu'il y figure. Le nombre entre parentheses est
+             le volume de dossiers observe sur la campagne 2026 — il ne sert
+             qu'a montrer que la liste est complete, il n'est pas stocke.
+
+             noupdate : ouvrir ou fermer une specialite est un geste de
+             l'Admission, pas une livraison de code. -->
+
+        <record id="spec_info_systemes" model="his.specialite">
+            <field name="name">Informatique - Systemes d'information</field>
+            <field name="name_arabe">إعلام آلي - أنظمة الإعلام الآلي</field>
+            <field name="code">INF-SI</field>
+            <field name="domaine_id" ref="domaine_mi"/>
+            <field name="cycle">licence</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="spec_info_securite" model="his.specialite">
+            <field name="name">Informatique - Securite des systemes</field>
+            <field name="name_arabe">إعلام آلي - أمن أنظمة معلوماتية</field>
+            <field name="code">INF-SEC</field>
+            <field name="domaine_id" ref="domaine_mi"/>
+            <field name="cycle">licence</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="spec_info_cyber_master" model="his.specialite">
+            <field name="name">Informatique - Master cybersecurite</field>
+            <field name="name_arabe">إعلام آلي - ماستر امن سيبيراني</field>
+            <field name="code">INF-CYB-M</field>
+            <field name="domaine_id" ref="domaine_mi"/>
+            <field name="cycle">master</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="spec_st_electronique" model="his.specialite">
+            <field name="name">Sciences et Technologies - Electronique</field>
+            <field name="name_arabe">علوم و تكنولوجيا - إلكترونيك</field>
+            <field name="code">ST-ELC</field>
+            <field name="domaine_id" ref="domaine_st"/>
+            <field name="cycle">licence</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="spec_eco_entreprises" model="his.specialite">
+            <field name="name">Sciences economiques - Economie et gestion des entreprises</field>
+            <field name="name_arabe">علوم اقتصادية - اقتصاد وتسيير المؤسسات</field>
+            <field name="code">ECO-GE</field>
+            <field name="domaine_id" ref="domaine_segc"/>
+            <field name="cycle">licence</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="spec_eco_mba_master" model="his.specialite">
+            <field name="name">Sciences economiques - Master administration des affaires</field>
+            <field name="name_arabe">علوم اقتصادية - ماستر إدارة الأعمال</field>
+            <field name="code">ECO-MBA-M</field>
+            <field name="domaine_id" ref="domaine_segc"/>
+            <field name="cycle">master</field>
+            <field name="sequence">60</field>
+        </record>
+
+        <record id="spec_com_ecommerce" model="his.specialite">
+            <field name="name">Sciences commerciales - Commerce electronique</field>
+            <field name="name_arabe">علوم تجارية - تجارة إلكترونية</field>
+            <field name="code">COM-ECOM</field>
+            <field name="domaine_id" ref="domaine_com"/>
+            <field name="cycle">licence</field>
+            <field name="sequence">70</field>
+        </record>
+
+        <record id="spec_ss_psycho" model="his.specialite">
+            <field name="name">Sciences sociales - Psychologie clinique</field>
+            <field name="name_arabe">علوم اجتماعية - علم النفس العيادي</field>
+            <field name="code">SS-PSY</field>
+            <field name="domaine_id" ref="domaine_ss"/>
+            <field name="cycle">licence</field>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="spec_droit_public" model="his.specialite">
+            <field name="name">Droit - Droit public</field>
+            <field name="name_arabe">حقوق - القانون العام</field>
+            <field name="code">DR-PUB</field>
+            <field name="domaine_id" ref="domaine_dr"/>
+            <field name="cycle">licence</field>
+            <field name="sequence">90</field>
+        </record>
+
+    </data>
+</odoo>

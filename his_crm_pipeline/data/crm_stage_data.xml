@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Les etapes sont rattachees a leur equipe par le champ natif
+             crm.stage.team_ids : une etape ainsi rattachee n'apparait que dans
+             le pipeline de cette equipe. C'est ce qui permet aux deux processus
+             de cohabiter sur crm.lead sans melanger leurs colonnes.
+
+             Les sequences des deux jeux ne se chevauchent pas (10..70 pour les
+             ventes, 110..150 pour le contenu) : deux etapes de meme sequence
+             s'ordonneraient par nom, ce qui rendrait l'ordre dependant du
+             libelle. -->
+
+        <!-- ============ Parcours candidat (Ventes / Admissions) ============ -->
+
+        <record id="stage_vente_nouveau" model="crm.stage">
+            <field name="name">Nouveau (score)</field>
+            <field name="sequence">10</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
+            <field name="requirements">Lead capte par le Marketing, score academique renseigne.</field>
+        </record>
+
+        <record id="stage_vente_pris_en_charge" model="crm.stage">
+            <field name="name">Pris en charge</field>
+            <field name="sequence">20</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
+            <field name="requirements">Lead affecte a un conseiller par le responsable, depuis la file triee par score decroissant. L'affectation est un geste manuel : aucun round-robin.</field>
+        </record>
+
+        <record id="stage_vente_contact_etabli" model="crm.stage">
+            <field name="name">Contact etabli</field>
+            <field name="sequence">30</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
+            <field name="requirements">Le conseiller a effectivement parle au candidat. Etape declencheuse de la creation de la fiche personne (his_crm_identity_bridge).</field>
+        </record>
+
+        <!-- Etapes 40 et 50 : deux derivations optionnelles depuis « Contact
+             etabli ». Un lead peut passer par l'une, l'autre, les deux ou
+             aucune avant d'atteindre le dossier. Rien a coder : c'est la
+             sequence qui les place, et le conseiller qui choisit. -->
+
+        <record id="stage_vente_accompagnement" model="crm.stage">
+            <field name="name">Accompagnement decision</field>
+            <field name="sequence">40</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
+            <field name="fold" eval="True"/>
+            <field name="requirements">Derivation optionnelle : candidat indecis sur son choix de programme. Reste porte par les Ventes.</field>
+        </record>
+
+        <record id="stage_vente_evaluation_psy" model="crm.stage">
+            <field name="name">Evaluation psychologique</field>
+            <field name="sequence">50</field>
+            <!-- Seule etape partagee entre deux equipes : la Cellule
+                 d'Orientation la possede, les Ventes doivent la voir pour
+                 savoir ou en est leur candidat. -->
+            <field name="team_ids" eval="[(4, ref('crm_team_ventes')), (4, ref('crm_team_orientation'))]"/>
+            <field name="fold" eval="True"/>
+            <field name="requirements">Derivation optionnelle, portee par la Cellule d'Orientation et non par les Ventes. Un refus prononce ici sort du quota commercial des Ventes.</field>
+        </record>
+
+        <record id="stage_vente_dossier" model="crm.stage">
+            <field name="name">Dossier et pre-admission</field>
+            <field name="sequence">60</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
+            <field name="requirements">Evaluation du dossier par les Ventes. Atteignable depuis « Contact etabli », « Accompagnement decision » ou une evaluation psychologique favorable.</field>
+        </record>
+
+        <!-- « Pre-admis » n'est PAS l'etape gagnante, deliberement. C'est une
+             DECISION, prononcee par les Ventes elles-memes. La compter comme
+             une conversion reviendrait a laisser l'equipe commerciale declarer
+             ses propres victoires : le pipeline afficherait des intentions, pas
+             de l'argent. Le gagne est a l'etape 80. -->
+        <record id="stage_vente_pre_admis" model="crm.stage">
+            <field name="name">Pre-admis</field>
+            <field name="sequence">70</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
+            <field name="is_won" eval="False"/>
+            <field name="requirements">Decision de pre-admission prononcee. Ouvre le dossier cote Admission et declenche l'appel des frais d'inscription non remboursables. Ce n'est ni l'etape qui cree la fiche personne, ni l'etape gagnante.</field>
+        </record>
+
+        <!-- L'etape gagnante, et la seule. Un lead y arrive quand les frais
+             d'inscription non remboursables sont encaisses — pas avant.
+             his_admission l'y pousse tout seul quand le guichet encaisse, et
+             refuse qu'on l'y mette a la main sans encaissement. La conversion
+             commerciale devient donc la consequence d'un fait enregistre par
+             une AUTRE equipe. -->
+        <record id="stage_vente_frais_payes" model="crm.stage">
+            <field name="name">Frais d'inscription payes</field>
+            <field name="sequence">80</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
+            <field name="is_won" eval="True"/>
+            <field name="requirements">Frais d'inscription non remboursables encaisses par le guichet. Seule etape gagnante du pipeline Admissions : les Ventes ne l'atteignent pas d'elles-memes. L'inscription pedagogique (dossier complet et scolarite reglee) est un jalon distinct et posterieur, suivi cote Admission.</field>
+        </record>
+
+        <!-- ==================== Production Contenu ==================== -->
+
+        <record id="stage_contenu_demande" model="crm.stage">
+            <field name="name">Demande / Idee</field>
+            <field name="sequence">110</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_contenu'))]"/>
+            <field name="requirements">Intake. N'importe quel departement peut deposer une demande ou une idee.</field>
+        </record>
+
+        <record id="stage_contenu_priorisation" model="crm.stage">
+            <field name="name">Priorisation</field>
+            <field name="sequence">120</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_contenu'))]"/>
+            <field name="requirements">Le strategiste trie et priorise, puis affecte les livrables demandes.</field>
+        </record>
+
+        <record id="stage_contenu_production" model="crm.stage">
+            <field name="name">Production</field>
+            <field name="sequence">130</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_contenu'))]"/>
+            <field name="requirements">Etape agregee. L'avancement se lit sur le statut de chaque livrable (copy, design, video), qui progressent independamment : le texte peut etre approuve pendant que le design est encore en revision. Pas de sous-etapes.</field>
+        </record>
+
+        <record id="stage_contenu_approbation" model="crm.stage">
+            <field name="name">Approbation</field>
+            <field name="sequence">140</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_contenu'))]"/>
+            <field name="requirements">Validation finale par le directeur. Inaccessible tant qu'un livrable demande n'est pas approuve : la contrainte est serveur, pas seulement dans la vue.</field>
+        </record>
+
+        <record id="stage_contenu_publication" model="crm.stage">
+            <field name="name">Planification et publication</field>
+            <field name="sequence">150</field>
+            <field name="team_ids" eval="[(4, ref('crm_team_contenu'))]"/>
+            <field name="is_won" eval="True"/>
+            <field name="requirements">Plan editorial, programmation puis publication sur la marque concernee (HIS, HTC ou IRA).</field>
+        </record>
+
+    </data>
+</odoo>

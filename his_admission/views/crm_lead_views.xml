@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_crm_lead_form_admission" model="ir.ui.view">
+        <field name="name">crm.lead.form.admission</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="his_crm_identity_bridge.view_crm_lead_form_identity"/>
+        <field name="arch" type="xml">
+
+            <field name="his_person_id" position="after">
+                <!-- La conseillere suit son candidat apres la passation, sans
+                     pouvoir cocher a la place de l'Admission : ses droits sur
+                     his.engagement sont en lecture seule (ir.model.access.csv). -->
+                <button name="action_ouvrir_dossier_admission" type="object"
+                        string="Ouvrir le dossier d'admission" class="btn-link"
+                        icon="fa-folder-open-o"
+                        invisible="not his_person_id"/>
+            </field>
+
+            <!-- Le score cesse d'etre une saisie. Les notes qui le composent
+                 remplacent le champ libre : ce sont elles que le formulaire de
+                 candidature envoie, et c'est d'elles que la conseillere a
+                 besoin pour mener son entretien. -->
+            <field name="score_academique" position="replace">
+                <field name="specialite_id" options="{'no_create': True}"/>
+                <field name="bac_moyenne"/>
+                <field name="note_math_utilisee" invisible="1"/>
+                <field name="note_physique_utilisee" invisible="1"/>
+                <!-- Quelles notes sont exigees depend de la majeure : le
+                     domaine dit deja lesquelles il pondere. -->
+                <field name="note_math"
+                       invisible="not note_math_utilisee"
+                       required="note_math_utilisee"/>
+                <field name="note_physique"
+                       invisible="not note_physique_utilisee"
+                       required="note_physique_utilisee"/>
+                <field name="score_academique"/>
+                <field name="score_detail" invisible="not score_detail"/>
+            </field>
+
+            <field name="motivation_notes" position="before">
+                <field name="motivation_majeure"
+                       placeholder="Pourquoi cette specialite ?"/>
+                <field name="motivation_his"
+                       placeholder="Pourquoi HIS ?"/>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>

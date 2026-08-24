@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- « Hors quota commercial » sert quand le refus vient de la Cellule
+             d'Orientation. Ces refus sont, par regle organisationnelle
+             existante, exclus des objectifs commerciaux des Ventes. Aucune
+             restriction ni validation n'est posee sur ce motif : la pratique
+             est connue et assumee, ce n'est pas a ce module de la policer. -->
+        <record id="lost_reason_hors_quota" model="crm.lost.reason">
+            <field name="name">Hors quota commercial</field>
+        </record>
+
+        <record id="lost_reason_dossier_non_retenu" model="crm.lost.reason">
+            <field name="name">Dossier non retenu</field>
+        </record>
+
+        <record id="lost_reason_dossier_incomplet" model="crm.lost.reason">
+            <field name="name">Dossier incomplet / non eligible</field>
+        </record>
+
+        <record id="lost_reason_paiement_non_confirme" model="crm.lost.reason">
+            <field name="name">Paiement non confirme</field>
+        </record>
+
+        <!-- Production Contenu : un refus d'approbation n'est pas une perte
+             seche, c'est un renvoi en production. -->
+        <record id="lost_reason_retour_production" model="crm.lost.reason">
+            <field name="name">Retour production necessaire</field>
+        </record>
+
+    </data>
+</odoo>

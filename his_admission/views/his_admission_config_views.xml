@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================== Menu racine Admission ===================== -->
+
+    <menuitem id="menu_admission_root" name="Admission"
+              groups="his_admission.group_his_admission,his_admission.group_his_finance"
+              sequence="86"/>
+
+    <!-- ========================= Domaines ========================= -->
+
+    <record id="view_his_domaine_list" model="ir.ui.view">
+        <field name="name">his.domaine.list</field>
+        <field name="model">his.domaine</field>
+        <field name="arch" type="xml">
+            <list string="Domaines" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="name_arabe" optional="show"/>
+                <field name="coef_bac"/>
+                <field name="coef_math"/>
+                <field name="coef_physique"/>
+                <field name="seuil_eligibilite"/>
+                <field name="min_bac" optional="show"/>
+                <field name="min_math" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_his_domaine" model="ir.actions.act_window">
+        <field name="name">Domaines et baremes</field>
+        <field name="res_model">his.domaine</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun domaine.</p>
+            <p>Le domaine porte le bareme d'eligibilite : combien pesent la moyenne du
+               BAC, la note de maths et celle de physique, et sous quel seuil un dossier
+               part en verification.</p>
+        </field>
+    </record>
+
+    <!-- ========================= Specialites ========================= -->
+
+    <record id="view_his_specialite_list" model="ir.ui.view">
+        <field name="name">his.specialite.list</field>
+        <field name="model">his.specialite</field>
+        <field name="arch" type="xml">
+            <list string="Specialites" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="name_arabe" optional="show"/>
+                <field name="domaine_id"/>
+                <field name="cycle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_his_specialite" model="ir.actions.act_window">
+        <field name="name">Specialites</field>
+        <field name="res_model">his.specialite</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ======================= Types de pieces ======================= -->
+
+    <record id="view_his_document_type_list" model="ir.ui.view">
+        <field name="name">his.document.type.list</field>
+        <field name="model">his.document.type</field>
+        <field name="arch" type="xml">
+            <list string="Pieces du dossier" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="name_arabe" optional="show"/>
+                <field name="obligatoire"/>
+                <field name="cycle" optional="show"/>
+                <field name="type_inscription" optional="show"/>
+                <field name="bac_filiere" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_his_document_type" model="ir.actions.act_window">
+        <field name="name">Pieces du dossier</field>
+        <field name="res_model">his.document.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune piece configuree.</p>
+            <p>Laisser un critere vide signifie « quelle que soit la valeur ». Le
+               certificat d'equivalence, par exemple, ne porte que la filiere BAC
+               « Equivalence » : il n'apparaitra que sur les dossiers concernes.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_admission_config" name="Configuration"
+              parent="menu_admission_root"
+              groups="his_admission.group_his_admission" sequence="90"/>
+    <menuitem id="menu_admission_config_specialite" name="Specialites"
+              parent="menu_admission_config" action="action_his_specialite" sequence="10"/>
+    <menuitem id="menu_admission_config_domaine" name="Domaines et baremes"
+              parent="menu_admission_config" action="action_his_domaine" sequence="20"/>
+    <menuitem id="menu_admission_config_document" name="Pieces du dossier"
+              parent="menu_admission_config" action="action_his_document_type" sequence="30"/>
+
+</odoo>

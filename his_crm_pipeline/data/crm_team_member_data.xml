@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- TODO Endeavor : si ces trois personnes ont DEJA un compte Odoo, ne
+             pas installer ce fichier tel quel — il creerait des comptes en
+             double. Rattacher les comptes existants a l'equipe depuis
+             CRM > Configuration > Equipes commerciales, et retirer ce fichier
+             du manifeste.
+
+             Les logins et les emails ci-dessous sont des espaces reserves :
+             aucune adresse reelle ne nous a ete communiquee. Les comptes
+             naissent sans mot de passe — leurs titulaires passent par
+             « mot de passe oublie » a la premiere connexion.
+
+             noupdate="1" : une mise a jour du module ne doit pas ecraser un
+             email corrige a la main. -->
+
+        <!-- Deux niveaux de visibilite, et la difference est voulue.
+
+             Asma porte « Tous les leads » : elle arbitre la file et affecte,
+             elle doit voir l'ensemble de son equipe.
+
+             Les conseilleres portent « Mes leads ». Combine a la regle
+             d'equipe de security/his_crm_security.xml, cela leur montre leurs
+             propres dossiers ET la file d'attente non affectee de leur
+             equipe — ce qu'il faut pour travailler, rien de plus.
+
+             Contrepartie a connaitre : une conseillere absente devient un
+             angle mort. Ses dossiers ne sont visibles que d'Asma, qui doit
+             les reaffecter pour qu'une collegue les reprenne. C'est le prix du
+             cloisonnement, et c'est un geste explicite plutot qu'un dossier
+             qui traine sans que personne ne s'en apercoive. -->
+        <record id="user_asma" model="res.users">
+            <field name="name">Asma</field>
+            <field name="login">asma</field>
+            <field name="email">asma@example.com</field>
+            <field name="group_ids" eval="[(4, ref('group_admissions_responsable'))]"/>
+        </record>
+
+        <record id="user_aicha" model="res.users">
+            <field name="name">Aicha</field>
+            <field name="login">aicha</field>
+            <field name="email">aicha@example.com</field>
+            <field name="group_ids" eval="[(4, ref('group_admissions_conseiller'))]"/>
+        </record>
+
+        <record id="user_rahma" model="res.users">
+            <field name="name">Rahma</field>
+            <field name="login">rahma</field>
+            <field name="email">rahma@example.com</field>
+            <field name="group_ids" eval="[(4, ref('group_admissions_conseiller'))]"/>
+        </record>
+
+        <!-- Asma est responsable de l'equipe : c'est elle, et elle seule, qui
+             recoit les relances SLA de premier contact. Aicha et Rahma sont
+             conseilleres. -->
+        <record id="crm_team_ventes" model="crm.team">
+            <field name="user_id" ref="user_asma"/>
+        </record>
+
+        <record id="crm_team_member_asma" model="crm.team.member">
+            <field name="crm_team_id" ref="crm_team_ventes"/>
+            <field name="user_id" ref="user_asma"/>
+        </record>
+        <record id="crm_team_member_aicha" model="crm.team.member">
+            <field name="crm_team_id" ref="crm_team_ventes"/>
+            <field name="user_id" ref="user_aicha"/>
+        </record>
+        <record id="crm_team_member_rahma" model="crm.team.member">
+            <field name="crm_team_id" ref="crm_team_ventes"/>
+            <field name="user_id" ref="user_rahma"/>
+        </record>
+
+    </data>
+</odoo>

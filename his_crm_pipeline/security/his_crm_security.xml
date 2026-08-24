@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ATTENTION : Odoo 19 n'a AUCUNE regle de visibilite par equipe sur
+         crm.lead. crm/security/crm_security.xml ne connait que deux niveaux :
+         « mes leads » (group_sale_salesman, domaine sur user_id) et « tous les
+         leads » (group_sale_salesman_all_leads, domaine [(1,'=',1)]).
+
+         Faire cohabiter deux processus sans rapport sur le meme modele exige
+         donc une regle. Sans elle, tout utilisateur ayant « tous les leads » —
+         c'est le cas des responsables — verrait les candidatures d'admission ET
+         les demandes de contenu dans le meme pipeline.
+
+         On RESSERRE la regle native au lieu d'en ajouter une : deux regles
+         portant sur le meme groupe sont combinees en OU, pas en ET. Une regle
+         supplementaire aurait donc ete purement decorative, le [(1,'=',1)]
+         natif l'aurait annulee a chaque lecture. C'est le piege classique des
+         regles d'enregistrement Odoo.
+
+         res.users.crm_team_ids est cherchable nativement
+         (sales_team/models/res_users.py), le domaine tient donc en SQL.
+
+         team_id = False reste visible : un lead entrant sans equipe (formulaire
+         web, import) doit pouvoir etre vu et trie par quelqu'un, sinon il
+         disparait de toutes les vues des sa creation.
+
+         Consequence a connaitre : un responsable qui n'appartient a AUCUNE
+         equipe ne voit plus que les leads sans equipe. Quelqu'un qui doit
+         suivre les deux processus est membre des deux equipes — c'est le geste
+         attendu, pas un contournement. -->
+    <!-- Troisieme clause : une equipe voit aussi les leads qui se trouvent
+         dans une etape QU'ELLE POSSEDE, meme s'ils appartiennent a une autre
+         equipe.
+
+         C'est ce qui rend la Cellule d'Orientation utilisable. L'evaluation
+         psychologique est une derivation : le lead reste porte par les Ventes
+         — c'est leur candidat, leur conseillere, leur dossier — mais l'etape,
+         elle, appartient aux deux equipes (crm.stage.team_ids). Sans cette
+         clause, la Cellule ne voyait jamais les candidats qu'elle doit
+         evaluer, et toute la branche etait inutilisable.
+
+         L'alternative aurait ete de faire changer le lead d'equipe le temps de
+         l'evaluation. Elle a ete ecartee : la conseillere aurait perdu son
+         propre candidat de vue en cours de route, et un aller-retour d'equipe
+         a chaque derivation invite aux etats incoherents si quelqu'un
+         interrompt le parcours. Ici rien ne bouge — la visibilite suit
+         l'etape, et se referme d'elle-meme quand le lead en sort. -->
+    <record id="crm.crm_rule_all_lead" model="ir.rule">
+        <field name="name">All Leads (equipes de l'utilisateur, et etapes qu'elles possedent)</field>
+        <field name="domain_force">['|', '|', ('team_id', '=', False), ('team_id', 'in', user.crm_team_ids.ids), ('stage_id.team_ids', 'in', user.crm_team_ids.ids)]</field>
+    </record>
+
+    <!-- La regle « mes leads » doit etre resserree aussi, pour une raison qui
+         n'apparait qu'une fois la file d'affectation en place.
+
+         Son domaine natif est ['|', ('user_id','=',user.id), ('user_id','=',False)] :
+         il montre a chaque commercial ses leads ET tous les leads sans
+         proprietaire. Or nos leads captes arrivent justement sans proprietaire,
+         par construction — c'est ce qui fait la file. Sans ce resserrement, la
+         file d'attente des Admissions serait visible par toute la Production
+         Contenu, et reciproquement.
+
+         Les deux regles etant combinees en OU, resserrer l'une sans l'autre ne
+         sert a rien : la plus large gagne. Elles portent donc toutes deux la
+         meme condition d'equipe. -->
+    <record id="crm.crm_rule_personal_lead" model="ir.rule">
+        <field name="name">Personal Leads (limites aux equipes de l'utilisateur)</field>
+        <field name="domain_force">['&amp;', '|', ('team_id', '=', False), ('team_id', 'in', user.crm_team_ids.ids), '|', ('user_id', '=', user.id), ('user_id', '=', False)]</field>
+    </record>
+
+    <!-- ================= Regles des roles Production Contenu =================
+
+         Les roles Contenu ne portent AUCUN groupe commercial : aucune regle
+         native ne s'applique donc a eux. Le piege a ne pas manquer : dans
+         Odoo, une regle absente n'est pas une regle restrictive — c'est
+         l'acces total. Sans les deux regles ci-dessous, un graphiste verrait
+         l'integralite des candidatures d'admission. -->
+
+    <record id="rule_lead_contenu_equipe" model="ir.rule">
+        <field name="name">Demandes de contenu : equipe de l'utilisateur</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">[('team_id', 'in', user.crm_team_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_contenu_production'))]"/>
+    </record>
+
+    <!-- Le demandeur n'est PAS membre de l'equipe Contenu : il vient des RH,
+         de la Pedagogie, des Ventes. Sa portee ne peut donc pas s'appuyer sur
+         l'equipe. Elle s'appuie sur demandeur_id, et non sur user_id : ce
+         dernier change de main a la priorisation, et le demandeur perdrait sa
+         demande de vue au moment ou elle commence a avancer. -->
+    <record id="rule_lead_contenu_demandeur" model="ir.rule">
+        <field name="name">Demandes de contenu : les miennes</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">[('demandeur_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_contenu_demandeur'))]"/>
+    </record>
+
+    <!-- ==================== Regles des livrables de contenu ====================
+
+         Les livrables suivent la portee de leur demande, sinon un demandeur
+         verrait par la bande les livrables des demandes des autres.
+
+         La LECTURE reste large a l'interieur de l'equipe : le plan de charge
+         collectif doit etre visible de tous ceux qui produisent, c'est ce qui
+         permet de voir qui est charge. Ce n'est pas une regle qui reserve
+         l'avancement d'un livrable a son assigne, c'est le garde-fou d'ecriture
+         de his.content.deliverable.write() — une regle porterait aussi sur la
+         lecture et casserait le plan de charge. -->
+
+    <record id="rule_deliverable_equipe" model="ir.rule">
+        <field name="name">Livrables : equipe de l'utilisateur</field>
+        <field name="model_id" ref="model_his_content_deliverable"/>
+        <field name="domain_force">[('team_id', 'in', user.crm_team_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_contenu_production'))]"/>
+    </record>
+
+    <record id="rule_deliverable_demandeur" model="ir.rule">
+        <field name="name">Livrables : ceux de mes demandes</field>
+        <field name="model_id" ref="model_his_content_deliverable"/>
+        <field name="domain_force">[('demandeur_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_contenu_demandeur'))]"/>
+    </record>
+
+    <record id="rule_deliverable_direction" model="ir.rule">
+        <field name="name">Direction : tous les livrables</field>
+        <field name="model_id" ref="model_his_content_deliverable"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_direction'))]"/>
+    </record>
+
+    <!-- ========================= Regle de la Direction =========================
+
+         Toutes les regles ci-dessus sont bornees aux equipes de l'utilisateur.
+         Un directeur n'est membre d'aucune equipe — et ne doit pas l'etre :
+         l'y inscrire le placerait dans la rotation d'affectation des leads, il
+         recevrait des candidatures a traiter. Sans cette regle, le role qui
+         voit tout ne verrait presque rien.
+
+         Les regles portees par des groupes differents se combinent en OU. Cette
+         regle permissive ouvre donc l'ensemble sans qu'il faille toucher aux
+         autres — et sans les affaiblir pour qui ne porte pas ce role. -->
+
+    <record id="rule_lead_direction" model="ir.rule">
+        <field name="name">Direction : toutes les demandes, tous les processus</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_direction'))]"/>
+    </record>
+
+</odoo>

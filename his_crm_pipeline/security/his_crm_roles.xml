@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ===================================================================
+             Les roles des deux processus.
+
+             Un role est un GROUPE, assignable a n'importe qui : on ne modelise
+             pas des personnes. Aicha n'est pas un role, « Conseiller » en est
+             un, et il peut etre porte par trois personnes ou par aucune.
+
+             Pourquoi ces groupes existent : jusqu'ici les deux processus
+             empruntaient les groupes commerciaux natifs d'Odoo, parce qu'ils
+             etaient le seul chemin vers crm.lead. Or
+             sales_team.group_sale_salesman ne donne pas que le CRM — il donne
+             aussi l'ecriture sur les contacts, la fusion de leads, le
+             calendrier commercial, les rapports d'activite. Un graphiste
+             recevait tout cela, et chaque version d'Odoo peut en ajouter sans
+             que nous l'ayons decide.
+             =================================================================== -->
+
+        <record id="module_category_his_crm" model="ir.module.category">
+            <field name="name">CRM Groupe HIS</field>
+            <field name="description">Roles des processus Admissions et Production Contenu.</field>
+            <field name="sequence">25</field>
+        </record>
+
+        <!-- ============================ ADMISSIONS ============================
+             Ce sont de vrais commerciaux : ils gardent les groupes natifs, qui
+             leur donnent l'application CRM, le calendrier et les activites.
+             Nos groupes n'ajoutent qu'une CAPACITE par-dessus une PORTEE
+             existante.
+
+             Les trois premiers forment une echelle — un seul choix dans la
+             fiche utilisateur, chacun contenant le precedent. -->
+
+        <record id="res_groups_privilege_admissions" model="res.groups.privilege">
+            <field name="name">Admissions</field>
+            <field name="category_id" ref="module_category_his_crm"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="group_admissions_acquisition" model="res.groups">
+            <field name="name">Acquisition</field>
+            <field name="sequence">10</field>
+            <field name="privilege_id" ref="res_groups_privilege_admissions"/>
+            <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="comment">Capture et score les candidatures. Ne fait pas avancer un lead au-dela de « Nouveau (score) » : la prise en charge appartient aux Ventes.</field>
+        </record>
+
+        <record id="group_admissions_conseiller" model="res.groups">
+            <field name="name">Conseiller</field>
+            <field name="sequence">20</field>
+            <field name="privilege_id" ref="res_groups_privilege_admissions"/>
+            <field name="implied_ids" eval="[(4, ref('group_admissions_acquisition'))]"/>
+            <field name="comment">Mene le candidat du premier contact a la pre-admission. Voit ses propres dossiers et la file d'attente de son equipe.</field>
+        </record>
+
+        <record id="group_admissions_responsable" model="res.groups">
+            <field name="name">Responsable</field>
+            <field name="sequence">30</field>
+            <field name="privilege_id" ref="res_groups_privilege_admissions"/>
+            <field name="implied_ids" eval="[(4, ref('group_admissions_conseiller')),
+                                             (4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
+            <field name="comment">Voit toute son equipe et arbitre la file. Seul a pouvoir affecter un lead a une conseillere.</field>
+        </record>
+
+        <!-- Unite distincte, pas un echelon : la Cellule d'Orientation ne
+             contient pas le role de conseillere et n'en est pas contenue. D'ou
+             son propre privilege, selectionnable independamment. -->
+        <record id="res_groups_privilege_orientation" model="res.groups.privilege">
+            <field name="name">Cellule d'Orientation</field>
+            <field name="category_id" ref="module_category_his_crm"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="group_admissions_orientation" model="res.groups">
+            <field name="name">Evaluateur</field>
+            <field name="sequence">10</field>
+            <field name="privilege_id" ref="res_groups_privilege_orientation"/>
+            <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
+            <field name="comment">Voit les candidats pendant leur evaluation psychologique, et eux seuls. N'agit que sur un lead se trouvant dans cette etape.</field>
+        </record>
+
+        <!-- ========================= PRODUCTION CONTENU =========================
+             AUCUN groupe commercial ici, deliberement. Le module porte ses
+             propres droits sur crm.lead (security/ir.model.access.csv) et ses
+             propres regles d'enregistrement. Un graphiste n'a donc ni menu CRM,
+             ni ecriture sur les contacts, ni assistant de fusion de leads.
+
+             Echelle a quatre echelons, du plus etroit au plus large. -->
+
+        <record id="res_groups_privilege_contenu" model="res.groups.privilege">
+            <field name="name">Production Contenu</field>
+            <field name="category_id" ref="module_category_his_crm"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="group_contenu_demandeur" model="res.groups">
+            <field name="name">Demandeur</field>
+            <field name="sequence">10</field>
+            <field name="privilege_id" ref="res_groups_privilege_contenu"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Depose une demande de contenu et suit UNIQUEMENT les siennes. Assignable a n'importe qui — RH, Pedagogie, une conseillere — sans l'ajouter a l'equipe Contenu ni lui ouvrir le plan de charge des autres.</field>
+        </record>
+
+        <record id="group_contenu_production" model="res.groups">
+            <field name="name">Production</field>
+            <field name="sequence">20</field>
+            <field name="privilege_id" ref="res_groups_privilege_contenu"/>
+            <field name="implied_ids" eval="[(4, ref('group_contenu_demandeur'))]"/>
+            <field name="comment">Redaction, design, video. Voit le plan de charge de l'equipe et fait avancer le statut du livrable qui lui est assigne — celui-la seulement.</field>
+        </record>
+
+        <record id="group_contenu_priorisation" model="res.groups">
+            <field name="name">Priorisation</field>
+            <field name="sequence">30</field>
+            <field name="privilege_id" ref="res_groups_privilege_contenu"/>
+            <field name="implied_ids" eval="[(4, ref('group_contenu_production'))]"/>
+            <field name="comment">Trie les demandes entrantes, affecte les livrables et arbitre leurs statuts. Mene la demande jusqu'a l'etape Production.</field>
+        </record>
+
+        <record id="group_contenu_approbation" model="res.groups">
+            <field name="name">Approbation</field>
+            <field name="sequence">40</field>
+            <field name="privilege_id" ref="res_groups_privilege_contenu"/>
+            <field name="implied_ids" eval="[(4, ref('group_contenu_priorisation'))]"/>
+            <field name="comment">Seul role pouvant sortir une demande de l'etape Production : approuver, publier, ou renvoyer en production.</field>
+        </record>
+
+        <!-- ============================== DIRECTION ==============================
+             Un role qui voit tout, sur les deux processus. Il n'ajoute aucune
+             capacite propre : il implique le sommet de chacune des trois
+             echelles, et herite ainsi de tout ce qu'elles autorisent deja.
+
+             Il NE porte PAS sales_team.group_sale_manager, deliberement. Ce
+             groupe donnerait l'unlink sur crm.lead — supprimer une candidature
+             plutot que la marquer perdue efface l'histoire — et tout ce
+             qu'Odoo y ajoutera aux prochaines versions sans nous demander.
+             C'est le meme raisonnement qui a sorti les roles Contenu des
+             groupes commerciaux. La configuration technique du CRM (etapes,
+             equipes de vente, motifs de perte) reste a l'administrateur Odoo :
+             ce n'est pas le travail d'un directeur.
+
+             Voir tout ne veut pas dire tout pouvoir : la contrainte
+             _check_gagne_seulement_si_encaisse refuse toujours qu'on mette un
+             lead en gagne a la main, y compris a lui. C'est une contrainte
+             serveur, pas un droit. -->
+
+        <record id="res_groups_privilege_direction" model="res.groups.privilege">
+            <field name="name">Direction</field>
+            <field name="category_id" ref="module_category_his_crm"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="group_direction" model="res.groups">
+            <field name="name">Direction</field>
+            <field name="sequence">10</field>
+            <field name="privilege_id" ref="res_groups_privilege_direction"/>
+            <field name="implied_ids" eval="[(4, ref('group_admissions_responsable')),
+                                             (4, ref('group_admissions_orientation')),
+                                             (4, ref('group_contenu_approbation'))]"/>
+            <field name="comment">Voit et arbitre les deux processus dans leur ensemble : admissions, orientation et production de contenu. Ne configure pas le CRM — cela reste a l'administrateur.</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ======================= Admissions =======================
+         Reste dans l'application CRM : ce sont de vrais commerciaux, qui
+         utilisent aussi le calendrier, les activites et le chatter. -->
+
+    <record id="action_crm_lead_admissions" model="ir.actions.act_window">
+        <field name="name">Pipeline Admissions</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <!-- eval et non %(xmlid)d : la substitution %(...)d n'a lieu que dans
+             les champs de type xml (les vues). Sur domain et context, qui sont
+             de simples char, le texte serait stocke tel quel et le client web
+             echouerait a l'evaluer. C'est la forme qu'Odoo utilise lui-meme. -->
+        <field name="domain" eval="[('team_id', 'in', [ref('his_crm_pipeline.crm_team_ventes'), ref('his_crm_pipeline.crm_team_orientation')])]"/>
+        <field name="context" eval="{'default_team_id': ref('his_crm_pipeline.crm_team_ventes'), 'default_type': 'opportunity'}"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune candidature dans votre pipeline.</p>
+            <p>Si cette liste est vide alors qu'il existe des candidatures, c'est que vous
+               n'etes membre ni de l'equipe Ventes / Admissions ni de la Cellule d'Orientation.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_admissions_root" name="Admissions"
+              parent="crm.crm_menu_root" sequence="3"
+              groups="his_crm_pipeline.group_admissions_acquisition,his_crm_pipeline.group_admissions_orientation"/>
+
+    <menuitem id="menu_admissions_pipeline" name="Pipeline"
+              parent="menu_admissions_root"
+              action="action_crm_lead_admissions" sequence="10"/>
+
+    <!-- La file d'affectation est l'outil du responsable : c'est lui qui
+         arbitre, et lui seul qui peut y ecrire le commercial. La montrer a une
+         conseillere lui proposerait un geste que le serveur refusera. -->
+    <menuitem id="menu_crm_lead_non_affectes" name="Leads a affecter"
+              parent="menu_admissions_root"
+              action="action_crm_lead_non_affectes" sequence="20"
+              groups="his_crm_pipeline.group_admissions_responsable"/>
+
+    <!-- =================== Production Contenu ===================
+         APPLICATION DISTINCTE, hors du CRM.
+
+         Ce n'est pas une preference d'ergonomie. Le menu CRM d'Odoo est ouvert
+         aux groupes commerciaux (sales_team.group_sale_salesman) : y loger la
+         production de contenu obligeait a donner un groupe commercial a un
+         graphiste, donc l'ecriture sur les contacts, la fusion de leads et le
+         calendrier commercial par la meme occasion.
+
+         Ici les roles Contenu ne portent aucun groupe commercial. Le module
+         apporte ses propres droits sur crm.lead
+         (security/ir.model.access.csv) et ses propres regles
+         d'enregistrement. Un graphiste n'a donc simplement pas d'application
+         CRM. -->
+
+    <record id="action_crm_lead_contenu" model="ir.actions.act_window">
+        <field name="name">Demandes de contenu</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="domain" eval="[('team_id', '=', ref('his_crm_pipeline.crm_team_contenu'))]"/>
+        <field name="context" eval="{'default_team_id': ref('his_crm_pipeline.crm_team_contenu'), 'default_type': 'opportunity'}"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune demande de contenu.</p>
+            <p>Deposez une demande : precisez la marque, le departement demandeur et
+               les livrables attendus — texte, design, video.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_contenu_root" name="Production Contenu"
+              sequence="26"
+              groups="his_crm_pipeline.group_contenu_demandeur"/>
+
+    <menuitem id="menu_contenu_demandes" name="Demandes"
+              parent="menu_contenu_root"
+              action="action_crm_lead_contenu" sequence="10"/>
+
+    <!-- ============= Les portes natives que nous ne voulons pas =============
+
+         Les roles Admissions portent sales_team.group_sale_salesman : ils
+         heritent donc du menu CRM natif en entier, pas seulement de la porte
+         « Admissions » que nous avons nommee ci-dessus.
+
+         La Configuration n'est PAS reprise ici, et ce n'est pas un oubli :
+         Odoo la reserve deja a sales_team.group_sale_manager, qu'aucun de nos
+         roles n'implique. Elle est close sans que nous touchions a rien — la
+         refermer une seconde fois n'ajouterait que du code a maintenir.
+
+         Restent trois entrees reellement ouvertes, plus l'Analyse. On les
+         referme sur l'administrateur commercial et la Direction.
+
+         Ces overrides tiennent sur -u : contrairement aux regles et aux etapes
+         de crm, qui sont en noupdate="1", son fichier de menus ne l'est pas. -->
+
+    <!-- Seconde porte sur crm.lead, sans le domaine d'equipe de la notre. Les
+         regles limitent ce qu'on y voit, pas ce qu'on y cree : un lead depose
+         la naitrait hors des deux processus. -->
+    <record id="crm.menu_crm_opportunities" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('sales_team.group_sale_manager'),
+                                               ref('his_crm_pipeline.group_direction')])]"/>
+    </record>
+
+    <!-- Expose le plan de charge de la Production Contenu a des commerciaux,
+         et l'inverse. C'est le cloisonnement que tout le reste du module
+         construit. -->
+    <record id="crm.sales_team_menu_team_pipeline" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('sales_team.group_sale_manager'),
+                                               ref('his_crm_pipeline.group_direction')])]"/>
+    </record>
+
+    <!-- Ouvre TOUT le carnet de contacts en ecriture — donc les fiches
+         etudiants, qui sont des res.partner (cf. his_person_core). C'est la
+         porte qui compte. -->
+    <record id="crm.res_partner_menu_customer" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('sales_team.group_sale_manager'),
+                                               ref('his_crm_pipeline.group_direction')])]"/>
+    </record>
+
+    <!-- L'Analyse reste ouverte au Responsable en plus : arbitrer la file sans
+         pouvoir la mesurer n'a pas de sens, et les regles la bornent a ses
+         equipes. -->
+    <record id="crm.crm_menu_report" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('sales_team.group_sale_manager'),
+                                               ref('his_crm_pipeline.group_direction'),
+                                               ref('his_crm_pipeline.group_admissions_responsable')])]"/>
+    </record>
+
+    <!-- « Mes activites » reste ouvert : c'est l'agenda propre de la
+         conseillere, deja limite a ses enregistrements. -->
+
+</odoo>

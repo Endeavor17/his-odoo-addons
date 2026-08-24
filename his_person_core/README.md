@@ -155,6 +155,36 @@ Les modules qui doivent créer des fiches (`his_hr_base` à l'embauche) le font 
 `sudo()` depuis leur logique serveur, **pas** en s'octroyant un droit de
 création large : créer une fiche, c'est émettre un matricule à vie.
 
+## Engagement : le parcours, pas l'identité
+
+`his.engagement` (v19.0.1.1.0) sépare **qui est la personne** de **ce qu'elle
+fait avec l'institution**. Une personne est un humain : une fiche, un matricule,
+à vie. Un engagement est une relation datée — une candidature, une inscription.
+Un candidat recalé qui repostule deux ans plus tard garde sa fiche et son
+matricule, et porte deux engagements. Sans ce modèle, un second parcours
+n'aurait eu d'autre place qu'un second `his.person`, donc un second matricule
+sur le même humain — exactement ce que ce module existe pour empêcher.
+
+| Champ | Rôle |
+|---|---|
+| `person_id` | La personne, `ondelete='cascade'` |
+| `etat` | `prospect` → `candidat_soumis` → `inscrit`, ou `abandonne` |
+| `date_debut` | Date d'ouverture du parcours |
+
+**Ce modèle porte l'état, pas les transitions.** Passer à `candidat_soumis` et
+au-delà appartient à Finance/Admission (confirmation du paiement des frais
+d'inscription non remboursables) : aucun code de ce dépôt ne déclenche ces
+transitions aujourd'hui. `his_crm_identity_bridge` crée l'engagement à
+`prospect` au premier contact commercial, et s'arrête là.
+
+Il n'y a **aucune contrainte « un seul engagement actif par personne »**. Tant
+qu'un seul parcours existe, le doublon se voit à l'œil nu ; la question se
+tranchera quand la réinscription arrivera. Marqué d'un commentaire `ponytail:`
+dans le code.
+
+La liste des quatre états est une **proposition** (hypothèse A6), pas une
+décision de la Direction.
+
 ## Hors périmètre (assumé)
 
 Cette branche pose le socle d'identité. Elle ne contient **volontairement** ni :

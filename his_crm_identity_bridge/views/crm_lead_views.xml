@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_crm_lead_form_identity" model="ir.ui.view">
+        <field name="name">crm.lead.form.identity</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="his_crm_pipeline.view_crm_lead_form_his"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='his_admissions']" position="inside">
+                <group string="Referentiel Identite">
+                    <field name="his_person_id"/>
+
+                    <!-- Le bloc n'apparait que sur un rapprochement en attente.
+                         Tant qu'il est la, RIEN n'est rattache : c'est le
+                         conseiller qui tranche, pas le systeme. -->
+                    <div colspan="2" class="alert alert-warning" role="status"
+                         invisible="not his_person_candidate_id">
+                        <p>
+                            Une fiche existante ressemble a ce candidat
+                            (<field name="his_person_match_score" widget="percentage" readonly="1" class="oe_inline"/>
+                            de similarite). Aucune fiche n'a ete rattachee tant que
+                            vous n'avez pas tranche.
+                        </p>
+                        <field name="his_person_candidate_id" readonly="1"/>
+                        <button name="action_confirm_person_match" type="object"
+                                string="C'est la meme personne" class="btn-primary"/>
+                        <button name="action_reject_person_match" type="object"
+                                string="Creer une fiche distincte" class="btn-secondary"/>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

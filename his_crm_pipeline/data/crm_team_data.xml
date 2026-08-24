@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate : ce sont des equipes reelles. Une mise a jour du module ne
+         doit pas ecraser les membres que l'administrateur y aura mis. -->
+    <data noupdate="1">
+
+        <!-- Le Marketing appartient a DEUX equipes : il capte et score les
+             leads d'admission, et il produit le contenu. C'etait son double
+             role dans GoHighLevel.
+
+             Odoo autorise cela au niveau du modele, mais son interface le
+             cache : sans ce parametre, un utilisateur deja membre d'une equipe
+             n'apparait plus dans la liste deroulante « ajouter un membre » des
+             autres. Le modele accepterait l'ecriture, l'administrateur ne
+             trouverait simplement pas le nom. Ce parametre rend visible ce qui
+             etait deja permis. -->
+        <record id="config_membership_multi" model="ir.config_parameter">
+            <field name="key">sales_team.membership_multi</field>
+            <field name="value">True</field>
+        </record>
+
+        <!-- TODO Endeavor (A3) : renseigner les membres reels de chaque equipe
+             avant la mise en service. Les equipes sont creees vides
+             volontairement — inventer des noms produirait des droits d'acces
+             faux, plus difficiles a reperer qu'une equipe manifestement vide.
+
+             La visibilite des leads depend de cette appartenance
+             (cf. security/his_crm_security.xml) : une equipe vide ne montre
+             rien a personne, ce qui est le defaut sur. -->
+
+        <record id="crm_team_ventes" model="crm.team">
+            <field name="name">Ventes / Admissions</field>
+            <field name="sequence">1</field>
+            <!-- TODO Endeavor : user_id = le responsable des admissions. C'est
+                 lui, et lui seul, qui recevra les relances SLA de premier
+                 contact. Sans responsable, aucune relance n'est posee. -->
+        </record>
+
+        <record id="crm_team_orientation" model="crm.team">
+            <field name="name">Cellule d'Orientation</field>
+            <field name="sequence">2</field>
+            <!-- Unite organisationnelle distincte des Ventes. Elle possede
+                 l'evaluation psychologique et peut prononcer un refus. Ce refus
+                 sort du quota commercial des Ventes : c'est une regle
+                 organisationnelle existante, pas une exception a arbitrer ici
+                 (cf. motif de perte « Hors quota commercial »). -->
+        </record>
+
+        <record id="crm_team_contenu" model="crm.team">
+            <field name="name">Production Contenu</field>
+            <field name="sequence">3</field>
+            <!-- TODO Endeavor : un priorisateur, un copywriter, un ou deux
+                 designers, un video, un approbateur final. -->
+        </record>
+
+    </data>
+</odoo>

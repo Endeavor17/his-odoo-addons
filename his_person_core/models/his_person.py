@@ -211,6 +211,13 @@ class HisPerson(models.Model):
              "cle Uniflow...). Sert a remonter a l'origine de la donnee.",
     )
 
+    engagement_ids = fields.One2many(
+        'his.engagement', 'person_id', string="Engagements",
+        help="Parcours dates de cette personne. L'identite ne change pas d'un "
+             "parcours a l'autre : une candidature refusee puis representee "
+             "donne deux engagements, jamais deux fiches.",
+    )
+
     match_method = fields.Selection(
         selection=[
             ('deterministic', "Deterministe"),
