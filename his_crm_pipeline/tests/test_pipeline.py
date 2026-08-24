@@ -19,6 +19,9 @@ class TestPipeline(TransactionCase):
         cls.stage_pris_en_charge = cls.env.ref('his_crm_pipeline.stage_vente_pris_en_charge')
         cls.stage_production = cls.env.ref('his_crm_pipeline.stage_contenu_production')
         cls.stage_approbation = cls.env.ref('his_crm_pipeline.stage_contenu_approbation')
+        cls.type_copy = cls.env.ref('his_crm_pipeline.deliverable_type_copy')
+        cls.type_design = cls.env.ref('his_crm_pipeline.deliverable_type_design')
+        cls.type_video = cls.env.ref('his_crm_pipeline.deliverable_type_video')
 
     def _user(self, login, team=None):
         user = self.env['res.users'].create({
@@ -43,37 +46,51 @@ class TestPipeline(TransactionCase):
             'name': "Campagne rentree",
             'team_id': self.team_contenu.id,
             'stage_id': self.stage_production.id,
-            'besoin_copy': True, 'statut_copy': 'approuve',
-            'besoin_design': True, 'statut_design': 'revision_interne',
+            'deliverable_ids': [
+                (0, 0, {'type_id': self.type_copy.id, 'statut': 'approuve'}),
+                (0, 0, {'type_id': self.type_design.id,
+                        'statut': 'revision_interne'}),
+            ],
         })
         with self.assertRaises(ValidationError):
             lead.stage_id = self.stage_approbation
 
-        lead.statut_design = 'approuve'
+        lead.deliverable_ids.filtered(
+            lambda d: d.type_id == self.type_design
+        ).statut = 'approuve'
         lead.stage_id = self.stage_approbation
         self.assertEqual(lead.stage_id, self.stage_approbation)
 
     def test_livrable_non_demande_ne_bloque_pas(self):
-        """Un statut « a faire » sur un livrable non demande n'est pas un blocage."""
+        """Un livrable non demande n'a pas de ligne, donc ne bloque rien.
+
+        C'est ce que les anciens booleens disaient laborieusement : une ligne
+        absente signifie « pas concerne », la ou un statut « a faire » sur un
+        besoin decoche obligeait a lire deux champs pour comprendre la meme
+        chose.
+        """
         lead = self.env['crm.lead'].create({
             'name': "Post simple",
             'team_id': self.team_contenu.id,
             'stage_id': self.stage_production.id,
-            'besoin_copy': True, 'statut_copy': 'approuve',
-            'besoin_video': False, 'statut_video': 'a_faire',
+            'deliverable_ids': [
+                (0, 0, {'type_id': self.type_copy.id, 'statut': 'approuve'}),
+            ],
         })
         lead.stage_id = self.stage_approbation
         self.assertEqual(lead.stage_id, self.stage_approbation)
 
-    def test_approbation_bloquee_si_le_besoin_est_ajoute_apres_coup(self):
-        """La contrainte tient aussi quand c'est le besoin, et non l'etape, qui change."""
+    def test_approbation_bloquee_si_le_livrable_est_ajoute_apres_coup(self):
+        """La contrainte tient aussi quand c'est le livrable, et non l'etape, qui change."""
         lead = self.env['crm.lead'].create({
             'name': "Campagne bis",
             'team_id': self.team_contenu.id,
             'stage_id': self.stage_approbation.id,
         })
         with self.assertRaises(ValidationError):
-            lead.write({'besoin_video': True, 'statut_video': 'en_cours'})
+            lead.write({'deliverable_ids': [
+                (0, 0, {'type_id': self.type_video.id, 'statut': 'en_cours'}),
+            ]})
 
     # --- Les actions doivent etre lisibles par le client web -----------------
 

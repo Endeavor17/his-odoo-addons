@@ -21,15 +21,11 @@ fichier est la ou la regle tient reellement.
 from odoo import _, api, models
 from odoo.exceptions import AccessError
 
-# Champs de livrable et role qui les gouverne, sous la forme
-# (champ statut, champ assigne, libelle).
-# Ajouter un livrable — podcast, affiche — se fait ici et nulle part ailleurs :
-# la regle « seul l'assigne fait avancer son livrable » en decoule.
-LIVRABLES_GOUVERNES = [
-    ('statut_copy', 'assignee_copy', "Copywriting"),
-    ('statut_design', 'assignee_design', "Design"),
-    ('statut_video', 'assignee_video', "Video"),
-]
+# La regle « un livrable n'avance que par la main de son assigne » ne vit plus
+# ici : elle a suivi les livrables dans his.content.deliverable.write(), ou
+# l'enregistrement EST le livrable et ou elle tient en une comparaison. Elle
+# devait auparavant balayer neuf champs pour deviner de quel livrable on
+# parlait.
 
 
 class CrmLead(models.Model):
@@ -99,32 +95,14 @@ class CrmLead(models.Model):
                 "votre livrable, pas de clore la demande."
             ))
 
-        # 2. Un livrable n'avance que par la main de son assigne. Regle portee
-        #    par la DONNEE et non par des groupes : un futur livrable en herite
-        #    sans code nouveau, et deux designers se partagent un livrable en
-        #    changeant l'assignation, pas les droits.
-        if not peut_prioriser:
-            for champ_statut, champ_assigne, libelle in LIVRABLES_GOUVERNES:
-                if champ_statut in vals and self[champ_assigne] != self.env.user:
-                    self._his_refus(_(
-                        "Le livrable « %(livrable)s » n'est pas le votre. Seule la "
-                        "personne a qui il est assigne fait avancer son statut, ou "
-                        "le role « Priorisation » qui arbitre.",
-                        livrable=libelle,
-                    ))
-
-        # 3. Affecter les livrables et faire avancer l'etape avant la production
-        #    appartient au tri, donc a la priorisation.
-        if not peut_prioriser:
-            affectations = {champ for _s, champ, _l in LIVRABLES_GOUVERNES}
-            if affectations & vals.keys():
-                self._his_refus(_(
-                    "Affecter un livrable demande le role « Priorisation »."
-                ))
-            if 'stage_id' in vals and not sortie:
-                self._his_refus(_(
-                    "Faire avancer une demande demande le role « Priorisation »."
-                ))
+        # 2. Faire avancer l'etape avant la production appartient au tri, donc a
+        #    la priorisation. L'avancement des livrables eux-memes est garde
+        #    dans his.content.deliverable.write(), aupres de l'enregistrement
+        #    qu'il concerne.
+        if not peut_prioriser and 'stage_id' in vals and not sortie:
+            self._his_refus(_(
+                "Faire avancer une demande demande le role « Priorisation »."
+            ))
 
     # --- Admissions ----------------------------------------------------------
 

@@ -40,26 +40,23 @@
                             <field name="marque"/>
                         </group>
                     </group>
-                    <group string="Livrables">
-                        <!-- Un statut et un assigne par type : ils avancent
-                             independamment. Le statut n'apparait que si le
-                             livrable est demande. -->
-                        <group>
-                            <field name="besoin_copy"/>
-                            <field name="statut_copy" invisible="not besoin_copy"/>
-                            <field name="assignee_copy" invisible="not besoin_copy"/>
-                        </group>
-                        <group>
-                            <field name="besoin_design"/>
-                            <field name="statut_design" invisible="not besoin_design"/>
-                            <field name="assignee_design" invisible="not besoin_design"/>
-                        </group>
-                        <group>
-                            <field name="besoin_video"/>
-                            <field name="statut_video" invisible="not besoin_video"/>
-                            <field name="assignee_video" invisible="not besoin_video"/>
-                        </group>
-                    </group>
+                    <!-- Une ligne par livrable demande : ils avancent
+                         independamment. Une ligne n'existe que si le livrable
+                         est demande — c'est ce qui distingue « pas encore
+                         fait » de « pas concerne ». -->
+                    <field name="deliverable_ids" nolabel="1"
+                           context="{'default_statut': 'a_faire'}">
+                        <list editable="bottom" string="Livrables"
+                              decoration-danger="en_retard"
+                              decoration-muted="statut == 'approuve'">
+                            <field name="type_id"/>
+                            <field name="assignee_id"/>
+                            <field name="statut"/>
+                            <field name="date_echeance" optional="show"/>
+                            <field name="date_fin" optional="hide"/>
+                            <field name="en_retard" column_invisible="1"/>
+                        </list>
+                    </field>
                 </page>
 
             </notebook>

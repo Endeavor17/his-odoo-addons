@@ -7,22 +7,6 @@ from odoo.exceptions import ValidationError
 # Delai de premier contact. Au-dela, le responsable d'equipe est relance.
 SLA_PREMIER_CONTACT_HEURES = 4
 
-STATUT_LIVRABLE = [
-    ('a_faire', "A faire"),
-    ('en_cours', "En cours"),
-    ('revision_interne', "Revision interne"),
-    ('approuve', "Approuve"),
-    ('rejete', "Rejete"),
-]
-
-# (besoin, statut, assigne, libelle) — une seule source pour la contrainte, la
-# vue et les messages d'erreur. Ajouter un type de livrable (podcast, affiche)
-# se fait ici plus trois champs, sans toucher a la logique.
-LIVRABLES = [
-    ('besoin_copy', 'statut_copy', 'assignee_copy', "Copywriting"),
-    ('besoin_design', 'statut_design', 'assignee_design', "Design"),
-    ('besoin_video', 'statut_video', 'assignee_video', "Video"),
-]
 
 
 class CrmLead(models.Model):
@@ -65,21 +49,17 @@ class CrmLead(models.Model):
         string="Departement demandeur",
     )
 
-    # Un booleen « besoin » et un statut par type de livrable, plutot que des
-    # sous-etapes : une meme demande peut exiger texte, design et video en
-    # parallele, et chacun avance a son rythme. Une etape unique ne peut pas
-    # representer « texte approuve, design en revision, video pas commencee ».
-    besoin_copy = fields.Boolean(string="Besoin copywriting")
-    besoin_design = fields.Boolean(string="Besoin design")
-    besoin_video = fields.Boolean(string="Besoin video")
-
-    statut_copy = fields.Selection(STATUT_LIVRABLE, string="Statut copy", default='a_faire')
-    statut_design = fields.Selection(STATUT_LIVRABLE, string="Statut design", default='a_faire')
-    statut_video = fields.Selection(STATUT_LIVRABLE, string="Statut video", default='a_faire')
-
-    assignee_copy = fields.Many2one('res.users', string="Copywriter")
-    assignee_design = fields.Many2one('res.users', string="Designer")
-    assignee_video = fields.Many2one('res.users', string="Video")
+    # Une ligne par livrable, plutot que des sous-etapes : une meme demande peut
+    # exiger texte, design et video en parallele, et chacun avance a son rythme.
+    # Une etape unique ne peut pas representer « texte approuve, design en
+    # revision, video pas commencee ».
+    #
+    # Une ligne plutot que trois triplets de champs : c'est ce qui rend la
+    # charge par personne et le delai par livrable groupables. Voir
+    # his_content_deliverable.py.
+    deliverable_ids = fields.One2many(
+        'his.content.deliverable', 'lead_id', string="Livrables",
+    )
 
     demandeur_id = fields.Many2one(
         'res.users', string="Demandeur", copy=False, index=True,
@@ -136,11 +116,7 @@ class CrmLead(models.Model):
 
     # --- Verrou d'approbation ----------------------------------------------
 
-    @api.constrains(
-        'stage_id',
-        'besoin_copy', 'besoin_design', 'besoin_video',
-        'statut_copy', 'statut_design', 'statut_video',
-    )
+    @api.constrains('stage_id', 'deliverable_ids', 'deliverable_ids.statut')
     def _check_livrables_approuves(self):
         """Interdit l'etape Approbation tant qu'un livrable demande n'est pas approuve.
 
@@ -159,10 +135,9 @@ class CrmLead(models.Model):
         for lead in self:
             if lead.stage_id != approbation:
                 continue
-            manquants = [
-                libelle for besoin, statut, _assignee, libelle in LIVRABLES
-                if lead[besoin] and lead[statut] != 'approuve'
-            ]
+            manquants = lead.deliverable_ids.filtered(
+                lambda d: d.statut != 'approuve'
+            ).type_id.mapped('name')
             if manquants:
                 raise ValidationError(_(
                     "« %(lead)s » ne peut pas passer en Approbation : "
