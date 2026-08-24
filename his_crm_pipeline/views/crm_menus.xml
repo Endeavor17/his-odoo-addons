@@ -74,4 +74,57 @@
               parent="menu_contenu_root"
               action="action_crm_lead_contenu" sequence="10"/>
 
+    <!-- ============= Les portes natives que nous ne voulons pas =============
+
+         Les roles Admissions portent sales_team.group_sale_salesman : ils
+         heritent donc du menu CRM natif en entier, pas seulement de la porte
+         « Admissions » que nous avons nommee ci-dessus.
+
+         La Configuration n'est PAS reprise ici, et ce n'est pas un oubli :
+         Odoo la reserve deja a sales_team.group_sale_manager, qu'aucun de nos
+         roles n'implique. Elle est close sans que nous touchions a rien — la
+         refermer une seconde fois n'ajouterait que du code a maintenir.
+
+         Restent trois entrees reellement ouvertes, plus l'Analyse. On les
+         referme sur l'administrateur commercial et la Direction.
+
+         Ces overrides tiennent sur -u : contrairement aux regles et aux etapes
+         de crm, qui sont en noupdate="1", son fichier de menus ne l'est pas. -->
+
+    <!-- Seconde porte sur crm.lead, sans le domaine d'equipe de la notre. Les
+         regles limitent ce qu'on y voit, pas ce qu'on y cree : un lead depose
+         la naitrait hors des deux processus. -->
+    <record id="crm.menu_crm_opportunities" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('sales_team.group_sale_manager'),
+                                               ref('his_crm_pipeline.group_direction')])]"/>
+    </record>
+
+    <!-- Expose le plan de charge de la Production Contenu a des commerciaux,
+         et l'inverse. C'est le cloisonnement que tout le reste du module
+         construit. -->
+    <record id="crm.sales_team_menu_team_pipeline" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('sales_team.group_sale_manager'),
+                                               ref('his_crm_pipeline.group_direction')])]"/>
+    </record>
+
+    <!-- Ouvre TOUT le carnet de contacts en ecriture — donc les fiches
+         etudiants, qui sont des res.partner (cf. his_person_core). C'est la
+         porte qui compte. -->
+    <record id="crm.res_partner_menu_customer" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('sales_team.group_sale_manager'),
+                                               ref('his_crm_pipeline.group_direction')])]"/>
+    </record>
+
+    <!-- L'Analyse reste ouverte au Responsable en plus : arbitrer la file sans
+         pouvoir la mesurer n'a pas de sens, et les regles la bornent a ses
+         equipes. -->
+    <record id="crm.crm_menu_report" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('sales_team.group_sale_manager'),
+                                               ref('his_crm_pipeline.group_direction'),
+                                               ref('his_crm_pipeline.group_admissions_responsable')])]"/>
+    </record>
+
+    <!-- « Mes activites » reste ouvert : c'est l'agenda propre de la
+         conseillere, deja limite a ses enregistrements. -->
+
 </odoo>

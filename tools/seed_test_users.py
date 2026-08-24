@@ -79,9 +79,20 @@ COMPTES = [
      ['his_crm_pipeline.group_contenu_production'],
      ['his_crm_pipeline.crm_team_contenu'], None),
 
-    ('direction', "Direction (approbation finale)",
+    # Le role Approbation SEUL, garde volontairement sur un compte a lui. Sans
+    # ce compte on cesserait de tester le cloisonnement : la Direction implique
+    # l'Approbation, donc la recette ne montrerait plus que le role etroit ne
+    # peut pas ce que le role large peut.
+    ('approbation', "Approbation contenu (role seul)",
      ['his_crm_pipeline.group_contenu_approbation'],
      ['his_crm_pipeline.crm_team_contenu'], None),
+
+    # --- Direction ---
+    # Membre d'AUCUNE equipe, deliberement : l'y inscrire le placerait dans la
+    # rotation d'affectation et il recevrait des candidatures a traiter. Sa
+    # portee vient de la regle rule_lead_direction, pas de l'appartenance.
+    ('direction', "Direction (Abanou)",
+     ['his_crm_pipeline.group_direction'], [], None),
 
     # Un demandeur venu d'ailleurs : ni membre de l'equipe Contenu, ni
     # commercial. Il depose une demande et ne voit QUE les siennes.
@@ -101,6 +112,7 @@ TOUS_LES_ROLES = [
     'his_crm_pipeline.group_contenu_production',
     'his_crm_pipeline.group_contenu_priorisation',
     'his_crm_pipeline.group_contenu_approbation',
+    'his_crm_pipeline.group_direction',
     'his_admission.group_his_admission',
     'his_admission.group_his_finance',
     # Les groupes commerciaux natifs : les roles Admissions les impliquent,
@@ -127,12 +139,20 @@ for login, nom, roles, equipes, responsable_de in COMPTES:
                               + [(4, env.ref(r).id) for r in roles]})
     user.password = MOT_DE_PASSE
 
-    for equipe_xmlid in equipes:
-        equipe = env.ref(equipe_xmlid)
+    # Les equipes sont reposees comme les roles : ce qui n'est plus dans la
+    # table est RETIRE. Sans cela, un compte qui change de metier garde ses
+    # anciennes appartenances — la Direction, qui ne doit etre membre d'aucune
+    # equipe pour rester hors de la rotation d'affectation, restait dans
+    # l'equipe Contenu et continuait de recevoir des demandes.
+    voulues = {env.ref(x).id for x in equipes}
+    Membre.search([
+        ('user_id', '=', user.id), ('crm_team_id', 'not in', list(voulues)),
+    ]).unlink()
+    for equipe_id in voulues:
         if not Membre.search_count([
-            ('crm_team_id', '=', equipe.id), ('user_id', '=', user.id),
+            ('crm_team_id', '=', equipe_id), ('user_id', '=', user.id),
         ]):
-            Membre.create({'crm_team_id': equipe.id, 'user_id': user.id})
+            Membre.create({'crm_team_id': equipe_id, 'user_id': user.id})
 
     # Sans responsable d'equipe, aucune relance SLA n'est posee.
     if responsable_de:

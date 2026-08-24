@@ -29,6 +29,9 @@ class TestRoles(TransactionCase):
         cls.st_dossier = cls.env.ref('his_crm_pipeline.stage_vente_dossier')
         cls.st_production = cls.env.ref('his_crm_pipeline.stage_contenu_production')
         cls.st_approbation = cls.env.ref('his_crm_pipeline.stage_contenu_approbation')
+        cls.type_copy = cls.env.ref('his_crm_pipeline.deliverable_type_copy')
+        cls.type_design = cls.env.ref('his_crm_pipeline.deliverable_type_design')
+        cls.type_video = cls.env.ref('his_crm_pipeline.deliverable_type_video')
 
     def _user(self, login, role, team=None):
         user = self.env['res.users'].create({
@@ -44,15 +47,26 @@ class TestRoles(TransactionCase):
             })
         return user
 
-    def _demande(self, **vals):
-        """Une demande de contenu prete a etre travaillee."""
+    def _demande(self, statut_copy='a_faire', statut_design='a_faire',
+                 assignee_copy=False, assignee_design=False, **vals):
+        """Une demande de contenu prete a etre travaillee : texte et design."""
         return self.env['crm.lead'].create({
             'name': "Campagne rentree",
             'team_id': self.team_contenu.id,
             'stage_id': self.st_production.id,
-            'besoin_copy': True, 'besoin_design': True,
+            'deliverable_ids': [
+                (0, 0, {'type_id': self.type_copy.id, 'statut': statut_copy,
+                        'assignee_id': assignee_copy}),
+                (0, 0, {'type_id': self.type_design.id, 'statut': statut_design,
+                        'assignee_id': assignee_design}),
+            ],
             **vals,
         })
+
+    def _livrable(self, demande, type_livrable):
+        return demande.deliverable_ids.filtered(
+            lambda d: d.type_id == type_livrable
+        )
 
     # =================== Cloisonnement entre les deux processus ===============
 
@@ -134,28 +148,32 @@ class TestRoles(TransactionCase):
         demande = self._demande(
             assignee_copy=redacteur.id, assignee_design=graphiste.id,
         )
+        copy = self._livrable(demande, self.type_copy)
+        design = self._livrable(demande, self.type_design)
 
-        demande.with_user(redacteur).statut_copy = 'approuve'
-        demande.with_user(graphiste).statut_design = 'approuve'
-        self.assertEqual(demande.statut_copy, 'approuve')
-        self.assertEqual(demande.statut_design, 'approuve')
+        copy.with_user(redacteur).statut = 'approuve'
+        design.with_user(graphiste).statut = 'approuve'
+        self.assertEqual(copy.statut, 'approuve')
+        self.assertEqual(design.statut, 'approuve')
 
         with self.assertRaises(AccessError):
-            demande.with_user(graphiste).statut_copy = 'rejete'
+            copy.with_user(graphiste).statut = 'rejete'
         with self.assertRaises(AccessError):
-            demande.with_user(redacteur).statut_design = 'rejete'
+            design.with_user(redacteur).statut = 'rejete'
 
     def test_la_priorisation_arbitre_tous_les_livrables(self):
         strategiste = self._user(
             'r_prio', 'his_crm_pipeline.group_contenu_priorisation', self.team_contenu,
         )
         demande = self._demande()
+        copy = self._livrable(demande, self.type_copy)
 
-        demande.with_user(strategiste).write({
-            'statut_copy': 'approuve', 'assignee_design': strategiste.id,
-        })
+        copy.with_user(strategiste).statut = 'approuve'
+        self._livrable(demande, self.type_design).with_user(
+            strategiste
+        ).assignee_id = strategiste.id
 
-        self.assertEqual(demande.statut_copy, 'approuve')
+        self.assertEqual(copy.statut, 'approuve')
 
     def test_la_production_n_affecte_pas_les_livrables(self):
         graphiste = self._user(
@@ -164,7 +182,50 @@ class TestRoles(TransactionCase):
         demande = self._demande()
 
         with self.assertRaises(AccessError):
-            demande.with_user(graphiste).assignee_video = graphiste.id
+            self._livrable(demande, self.type_design).with_user(
+                graphiste
+            ).assignee_id = graphiste.id
+
+    def test_les_dates_du_livrable_sont_posees_par_les_transitions(self):
+        """Ce que les anciens triplets de champs ne savaient pas dire.
+
+        Sans ces dates il n'y a ni delai de production, ni retard, ni debit —
+        donc aucun indicateur possible sur la Production Contenu.
+        """
+        redacteur = self._user(
+            'r_dates', 'his_crm_pipeline.group_contenu_production', self.team_contenu,
+        )
+        demande = self._demande(assignee_copy=redacteur.id)
+        copy = self._livrable(demande, self.type_copy)
+        self.assertFalse(copy.date_debut)
+        self.assertFalse(copy.date_fin)
+
+        copy.with_user(redacteur).statut = 'en_cours'
+        self.assertTrue(copy.date_debut)
+        self.assertFalse(copy.date_fin)
+
+        copy.with_user(redacteur).statut = 'approuve'
+        debut, fin = copy.date_debut, copy.date_fin
+        self.assertTrue(fin)
+
+        # Renvoye en revision : il n'est plus termine, mais il reste demarre.
+        copy.with_user(redacteur).statut = 'revision_interne'
+        self.assertFalse(copy.date_fin)
+        self.assertEqual(copy.date_debut, debut, "la date de demarrage est un fait")
+
+    def test_la_charge_par_personne_est_groupable(self):
+        """La raison d'etre du modele : une ligne par livrable se groupe."""
+        redacteur = self._user(
+            'r_charge', 'his_crm_pipeline.group_contenu_production', self.team_contenu,
+        )
+        self._demande(assignee_copy=redacteur.id)
+        self._demande(assignee_copy=redacteur.id)
+
+        groupes = self.env['his.content.deliverable']._read_group(
+            [('assignee_id', '=', redacteur.id)],
+            groupby=['statut'], aggregates=['__count'],
+        )
+        self.assertEqual(dict(groupes), {'a_faire': 2})
 
     def test_le_demandeur_ne_voit_que_ses_propres_demandes(self):
         rh = self._user('r_rh', 'his_crm_pipeline.group_contenu_demandeur')
@@ -297,3 +358,106 @@ class TestRoles(TransactionCase):
             lead.with_user(marketing).stage_id = self.st_pris
         lead.with_user(marketing).sudo().stage_id = self.st_pris
         self.assertEqual(lead.stage_id, self.st_pris)
+
+    # ============================== Direction ================================
+
+    def test_la_direction_voit_les_deux_processus(self):
+        """Le role large voit ce que chaque role etroit ne voit que chez lui.
+
+        Sans rule_lead_direction ce test echouerait : toutes les autres regles
+        sont bornees a user.crm_team_ids, et la Direction n'est membre d'aucune
+        equipe — volontairement, pour rester hors de la rotation d'affectation.
+        """
+        candidature = self.env['crm.lead'].create({
+            'name': "Candidat", 'team_id': self.team_ventes.id,
+        })
+        demande = self._demande()
+        directeur = self._user('r_direction_vue', 'his_crm_pipeline.group_direction')
+
+        self.assertFalse(directeur.crm_team_ids)
+        vus = self.env['crm.lead'].with_user(directeur).search([])
+        self.assertIn(candidature, vus)
+        self.assertIn(demande, vus)
+
+    def test_la_direction_herite_des_trois_echelles(self):
+        directeur = self._user('r_direction_roles', 'his_crm_pipeline.group_direction')
+
+        for role in (
+            'his_crm_pipeline.group_admissions_responsable',
+            'his_crm_pipeline.group_admissions_orientation',
+            'his_crm_pipeline.group_contenu_approbation',
+        ):
+            self.assertTrue(directeur.has_group(role), role)
+
+    def test_la_direction_ne_porte_pas_le_manager_commercial(self):
+        """Deliberement : ce groupe donne l'unlink sur crm.lead, et tout ce
+        qu'Odoo y ajoutera aux prochaines versions. Un directeur ne supprime
+        pas une candidature — il la marque perdue."""
+        directeur = self._user('r_direction_unlink', 'his_crm_pipeline.group_direction')
+        candidature = self.env['crm.lead'].create({
+            'name': "Candidat", 'team_id': self.team_ventes.id,
+        })
+
+        self.assertFalse(directeur.has_group('sales_team.group_sale_manager'))
+        with self.assertRaises(AccessError):
+            candidature.with_user(directeur).unlink()
+
+    # ===================== Les portes natives du CRM =========================
+
+    def _menus_visibles(self, user):
+        """Les menus que cet utilisateur verrait reellement.
+
+        _filter_visible_menus() filtre le recordset sur lequel il est appele —
+        l'appeler sur un recordset vide rend toute assertion « absent » vraie
+        pour rien. On part donc de tous les menus.
+        """
+        return self.env['ir.ui.menu'].with_user(user).search([])._filter_visible_menus()
+
+    def test_les_portes_natives_sont_fermees_aux_roles_admissions(self):
+        """Nos roles portent group_sale_salesman : ils heritent donc du menu
+        CRM natif en entier. « Clients » ouvre tout le carnet de contacts en
+        ecriture — donc les fiches etudiants, qui sont des res.partner."""
+        conseillere = self._user(
+            'r_conseil_menus', 'his_crm_pipeline.group_admissions_conseiller',
+            self.team_ventes,
+        )
+        visibles = self._menus_visibles(conseillere)
+
+        for xmlid in (
+            'crm.res_partner_menu_customer',
+            'crm.menu_crm_opportunities',
+            'crm.sales_team_menu_team_pipeline',
+            'crm.crm_menu_report',
+            # Odoo la reserve deja a group_sale_manager : close sans que nous
+            # y touchions. Le test la surveille quand meme — c'est une porte
+            # dont nous dependons sans la tenir.
+            'crm.crm_menu_config',
+        ):
+            self.assertNotIn(self.env.ref(xmlid), visibles, xmlid)
+
+        # Ce qui reste ouvert : sa porte a elle, et son propre agenda.
+        self.assertIn(self.env.ref('his_crm_pipeline.menu_admissions_pipeline'), visibles)
+        self.assertIn(self.env.ref('crm.crm_lead_menu_my_activities'), visibles)
+
+    def test_le_responsable_garde_l_analyse(self):
+        """Arbitrer la file sans pouvoir la mesurer n'a pas de sens."""
+        responsable = self._user(
+            'r_resp_menus', 'his_crm_pipeline.group_admissions_responsable',
+            self.team_ventes,
+        )
+        visibles = self._menus_visibles(responsable)
+
+        self.assertIn(self.env.ref('crm.crm_menu_report'), visibles)
+        self.assertNotIn(self.env.ref('crm.res_partner_menu_customer'), visibles)
+
+    def test_la_direction_garde_les_portes_natives(self):
+        directeur = self._user('r_direction_menus', 'his_crm_pipeline.group_direction')
+        visibles = self._menus_visibles(directeur)
+
+        for xmlid in (
+            'crm.res_partner_menu_customer',
+            'crm.menu_crm_opportunities',
+            'crm.sales_team_menu_team_pipeline',
+            'crm.crm_menu_report',
+        ):
+            self.assertIn(self.env.ref(xmlid), visibles, xmlid)

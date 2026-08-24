@@ -4,3 +4,10 @@ access_crm_lead_contenu_production,crm.lead.contenu.production,crm.model_crm_lea
 access_crm_lead_contenu_priorisation,crm.lead.contenu.priorisation,crm.model_crm_lead,his_crm_pipeline.group_contenu_priorisation,1,1,1,0
 access_crm_lead_lost_contenu_approbation,crm.lead.lost.contenu.approbation,crm.model_crm_lead_lost,his_crm_pipeline.group_contenu_approbation,1,1,1,0
 access_crm_tag_contenu,crm.tag.contenu,sales_team.model_crm_tag,his_crm_pipeline.group_contenu_production,1,0,0,0
+access_deliverable_type_all,his.content.deliverable.type.lecture,his_crm_pipeline.model_his_content_deliverable_type,base.group_user,1,0,0,0
+access_deliverable_type_priorisation,his.content.deliverable.type.priorisation,his_crm_pipeline.model_his_content_deliverable_type,his_crm_pipeline.group_contenu_priorisation,1,1,1,1
+access_deliverable_demandeur,his.content.deliverable.demandeur,his_crm_pipeline.model_his_content_deliverable,his_crm_pipeline.group_contenu_demandeur,1,0,0,0
+access_deliverable_production,his.content.deliverable.production,his_crm_pipeline.model_his_content_deliverable,his_crm_pipeline.group_contenu_production,1,1,0,0
+access_deliverable_priorisation,his.content.deliverable.priorisation,his_crm_pipeline.model_his_content_deliverable,his_crm_pipeline.group_contenu_priorisation,1,1,1,1
+access_objectif_lecture,his.objectif.lecture,his_crm_pipeline.model_his_objectif,his_crm_pipeline.group_admissions_responsable,1,0,0,0
+access_objectif_direction,his.objectif.direction,his_crm_pipeline.model_his_objectif,his_crm_pipeline.group_direction,1,1,1,1
