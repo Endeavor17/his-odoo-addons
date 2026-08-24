@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== Le socle d'un compte sans role ====================
+
+         Un utilisateur interne ne doit voir que la messagerie et l'agenda. Tout
+         le reste demande un role.
+
+         (3, ...) RETIRE et (4, ...) AJOUTE. Jamais (6, 0, [...]), qui REMPLACE :
+         il efface les groupes natifs — donc l'acces des vrais RH a leur propre
+         application — et il ne survit pas a une desinstallation, laissant le
+         menu sans aucun groupe, c'est-a-dire ouvert a tous. C'est exactement ce
+         qu'on observe aujourd'hui sur base.menu_management.
+
+         LIMITE, a ne pas se raconter autrement : ceci est un controle de
+         VISIBILITE, pas de DONNEE. res.partner et hr.employee restent lisibles
+         au niveau du modele, et doivent l'etre — le chatter, les activites et
+         les partenaires des leads en dependent ; fermer leur ACL casserait
+         Odoo. Fermer l'application retire l'exposition courante, pas l'acces
+         par un lien direct. -->
+
+    <record id="hr.menu_hr_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[(3, ref('base.group_user')),
+                                       (4, ref('his_access_base.group_annuaire'))]"/>
+    </record>
+
+    <record id="contacts.menu_contacts" model="ir.ui.menu">
+        <field name="group_ids" eval="[(3, ref('base.group_user')),
+                                       (4, ref('his_access_base.group_annuaire'))]"/>
+    </record>
+
+</odoo>

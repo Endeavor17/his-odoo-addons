@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Qui detient quoi, en un ecran. C'est la derniere etape de la boucle —
+         definir, attribuer, controler, REVOIR — et celle qu'on saute le plus
+         souvent. Une revue qui demande de cliquer trente fiches ne se fait
+         jamais. -->
+
+    <record id="view_users_revue_list" model="ir.ui.view">
+        <field name="name">res.users.revue.acces</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <list string="Revue des acces" create="false">
+                <field name="login"/>
+                <field name="name"/>
+                <field name="group_ids" widget="many2many_tags" string="Roles"/>
+                <field name="role_ids_du_poste" widget="many2many_tags"
+                       string="Dont issus du poste"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_revue_acces" model="ir.actions.act_window">
+        <field name="name">Revue des acces</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_users_revue_list"/>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+    <menuitem id="menu_revue_acces" name="Revue des acces"
+              parent="base.menu_users" action="action_revue_acces"
+              sequence="50" groups="base.group_system"/>
+
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_job_form_roles" model="ir.ui.view">
+        <field name="name">hr.job.form.roles</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Roles Odoo" groups="hr.group_hr_manager">
+                    <field name="group_ids" widget="many2many_tags"
+                           options="{'no_create': True}"/>
+                    <button name="action_appliquer_roles" type="object"
+                            string="Appliquer aux titulaires"
+                            class="btn-secondary"
+                            confirm="Les roles de ce poste seront reappliques a tous ceux qui l'occupent. Les roles poses a la main ne sont pas touches."/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ir_cron_reconcilier_roles" model="ir.cron">
+        <field name="name">Socle : ecarts entre roles et postes</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_reconcilier_roles()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="active" eval="True"/>
+    </record>
+
+</odoo>
