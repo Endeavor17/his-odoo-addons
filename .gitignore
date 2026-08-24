@@ -12,11 +12,33 @@ venv/
 # une conf locale deposee a la racine.
 /odoo.conf
 
+# Sauvegardes et dumps de base. Ils peuvent peser des centaines de Mo et
+# contenir des donnees reelles (candidats, matricules) : jamais dans le depot.
+*.sql
+*.dump
+*.zip
+/backups/
+/filestore/
+/data/
+
+# Secrets et surcharges locales
+.env
+.env.*
+/config/odoo.local.conf
+
 # Outils / IDE
 .idea/
 .vscode/
 *.swp
+*~
+*.bak
 .DS_Store
+.ruff_cache/
+.pytest_cache/
+
+# Assistants et agents (etat de session local, jamais partage)
+/.claude/
+/.plans/
 
 # Documents de travail locaux (non versionnes)
 /CLAUDE.md
