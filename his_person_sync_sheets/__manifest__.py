@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': "Synchronisation Personnes - Export Google Sheets",
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.1.0',
     'category': 'Technical',
     'summary': "Importe les etudiants de l'export Sales/Admission vers his.person",
     'description': """

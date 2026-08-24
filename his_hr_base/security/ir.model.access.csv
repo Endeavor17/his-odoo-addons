@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_his_person_hr,his.person.hr.lecture,his_person_core.model_his_person,hr.group_hr_user,1,0,0,0
+access_his_engagement_hr,his.engagement.hr.lecture,his_person_core.model_his_engagement,hr.group_hr_user,1,0,0,0

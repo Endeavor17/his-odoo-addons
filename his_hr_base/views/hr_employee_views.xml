@@ -21,13 +21,23 @@
             </xpath>
 
             <xpath expr="//field[@name='job_title']" position="after">
-                <field name="matricule_affiche"/>
+                <!-- Reserves aux RH, et pas seulement par discretion : ces deux
+                     champs traversent vers his.person, dont la lecture leur est
+                     desormais reservee. matricule_affiche est un related NON
+                     stocke — il lit la fiche personne a chaque affichage. Sans
+                     ce groupe, un salarie ouvrant la fiche d'un collegue
+                     obtiendrait une erreur de droits, et le formulaire entier
+                     resterait bloque.
+
+                     matricule_institutionnel, lui, est stocke : il ne traverse
+                     rien et reste lisible sans acces au referentiel. -->
+                <field name="matricule_affiche" groups="hr.group_hr_user"/>
                 <!-- Modifiable : rattacher un employe a une fiche existante est
                      le seul moyen d'eviter un doublon quand la personne est
                      deja au referentiel (ancien etudiant embauche, candidat
                      devenu employe). Laisser vide a la creation suffit dans
                      tous les autres cas : la fiche est creee automatiquement. -->
-                <field name="person_id"/>
+                <field name="person_id" groups="hr.group_hr_user"/>
                 <field name="barcode" string="Badge RFID"/>
             </xpath>
         </field>
