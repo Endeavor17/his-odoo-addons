@@ -7,3 +7,4 @@ from . import his_admission_document
 from . import his_person
 from . import his_engagement
 from . import crm_lead
+from . import his_dashboard

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ======================== Les cockpits ========================
+         Quatre actions, UN composant. Ce qui les distingue est le parametre
+         `kpi`, qui nomme la methode serveur a appeler. Ajouter un cockpit est
+         donc une action et une methode Python, sans une ligne de JavaScript. -->
+
+    <record id="action_dashboard_admissions" model="ir.actions.client">
+        <field name="name">Cockpit Admissions</field>
+        <field name="tag">his_dashboard</field>
+        <field name="params">{'kpi': 'admissions'}</field>
+    </record>
+
+    <record id="action_dashboard_contenu" model="ir.actions.client">
+        <field name="name">Cockpit Contenu</field>
+        <field name="tag">his_dashboard</field>
+        <field name="params">{'kpi': 'contenu'}</field>
+    </record>
+
+    <record id="action_dashboard_direction" model="ir.actions.client">
+        <field name="name">Vue d'ensemble</field>
+        <field name="tag">his_dashboard</field>
+        <field name="params">{'kpi': 'direction'}</field>
+    </record>
+
+    <!-- Chaque cockpit se trouve la ou le travail se fait : le responsable des
+         admissions n'a pas a changer d'application pour voir sa file. -->
+    <menuitem id="menu_admissions_cockpit" name="Cockpit"
+              parent="menu_admissions_root"
+              action="action_dashboard_admissions" sequence="1"
+              groups="his_crm_pipeline.group_admissions_responsable"/>
+
+    <menuitem id="menu_contenu_cockpit" name="Cockpit"
+              parent="menu_contenu_root"
+              action="action_dashboard_contenu" sequence="1"
+              groups="his_crm_pipeline.group_contenu_priorisation"/>
+
+    <!-- ========================= Application Direction ========================= -->
+
+    <menuitem id="menu_direction_root" name="Direction"
+              sequence="2"
+              groups="his_crm_pipeline.group_direction"/>
+
+    <menuitem id="menu_direction_vue" name="Vue d'ensemble"
+              parent="menu_direction_root"
+              action="action_dashboard_direction" sequence="10"/>
+
+    <menuitem id="menu_direction_admissions" name="Admissions"
+              parent="menu_direction_root"
+              action="action_dashboard_admissions" sequence="20"/>
+
+    <menuitem id="menu_direction_contenu" name="Production Contenu"
+              parent="menu_direction_root"
+              action="action_dashboard_contenu" sequence="30"/>
+
+    <!-- ============================== Objectifs ==============================
+         Sans cible, une tuile n'affiche qu'un compteur. Les cibles changent a
+         chaque rentree : c'est de la configuration, saisie par la Direction,
+         pas une constante de code. -->
+
+    <record id="view_objectif_list" model="ir.ui.view">
+        <field name="name">his.objectif.list</field>
+        <field name="model">his.objectif</field>
+        <field name="arch" type="xml">
+            <list string="Objectifs" editable="bottom">
+                <field name="name"/>
+                <field name="axe"/>
+                <field name="valeur_cible"/>
+                <field name="date_debut"/>
+                <field name="date_fin"/>
+                <field name="marque" optional="show"/>
+                <field name="team_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_objectif" model="ir.actions.act_window">
+        <field name="name">Objectifs</field>
+        <field name="res_model">his.objectif</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun objectif defini.</p>
+            <p>Sans cible, les cockpits affichent des compteurs. Avec une cible, ils
+               disent l'atteinte, le rythme qu'il reste a tenir et la projection de
+               fin de periode.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_direction_objectifs" name="Objectifs"
+              parent="menu_direction_root"
+              action="action_objectif" sequence="90"/>
+
+</odoo>

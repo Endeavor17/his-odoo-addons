@@ -1,0 +1,204 @@
+// Les cockpits. Aucune bibliotheque de graphiques : pour un entonnoir et une
+// jauge, des barres CSS se lisent mieux qu'un canvas et tiennent en moins de
+// lignes. La profondeur est deleguee aux vues pivot et graph natives.
+//
+// ponytail: barres CSS. Le jour ou une courbe temporelle est demandee,
+// Chart.js est deja livre avec Odoo (vue graph) — le charger plutot que de
+// dessiner des points a la main.
+
+.o_his_dashboard {
+    background-color: var(--o-view-background-color, #f9f9f9);
+    overflow: auto;
+}
+
+.his_tuiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.his_tuile {
+    background: var(--o-webclient-background-color, #fff);
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: .5rem;
+    padding: 1rem;
+
+    &.his_cliquable:hover {
+        border-color: var(--primary, #714b67);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+    }
+}
+
+.his_tuile_label {
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #6c757d;
+}
+
+.his_tuile_valeur {
+    font-size: 2.1rem;
+    font-weight: 500;
+    line-height: 1.2;
+
+    .his_unite {
+        font-size: 1.1rem;
+        margin-left: .15rem;
+        color: #6c757d;
+    }
+}
+
+.his_ecart {
+    font-size: .8rem;
+    color: #6c757d;
+
+    &.his_hausse { color: #1a7f4b; }
+    &.his_baisse { color: #b02a37; }
+}
+
+// --- Objectif ---------------------------------------------------------------
+
+.his_objectif { margin-top: .6rem; }
+
+.his_jauge {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, .08);
+    overflow: hidden;
+}
+
+.his_jauge_remplie {
+    height: 100%;
+    transition: width .3s ease;
+
+    &.his_ok { background: #1a7f4b; }
+    &.his_retard { background: #d18b1e; }
+}
+
+.his_objectif_texte {
+    font-size: .8rem;
+    margin-top: .3rem;
+}
+
+.his_objectif_rythme {
+    font-size: .72rem;
+    color: #6c757d;
+}
+
+// --- Entonnoir --------------------------------------------------------------
+
+.his_bloc {
+    background: var(--o-webclient-background-color, #fff);
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: .5rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.his_titre {
+    font-size: .85rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #6c757d;
+    margin-bottom: .75rem;
+}
+
+.his_marche {
+    display: grid;
+    grid-template-columns: 200px 1fr 120px;
+    align-items: center;
+    gap: .75rem;
+    padding: .25rem 0;
+
+    &:hover .his_marche_remplie { opacity: .85; }
+}
+
+.his_marche_nom {
+    font-size: .85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.his_marche_barre {
+    height: 20px;
+    background: rgba(0, 0, 0, .05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.his_marche_remplie {
+    height: 100%;
+    background: var(--primary, #714b67);
+    transition: width .3s ease;
+}
+
+.his_marche_chiffres {
+    font-size: .85rem;
+    text-align: right;
+
+    .his_marche_count { font-weight: 500; }
+
+    .his_marche_conversion {
+        color: #6c757d;
+        margin-left: .5rem;
+    }
+}
+
+// --- A traiter --------------------------------------------------------------
+
+.his_files {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.his_file_entete {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+    font-size: .9rem;
+}
+
+.his_badge {
+    background: #b02a37;
+    color: #fff;
+    border-radius: 10px;
+    padding: 0 .5rem;
+    font-size: .78rem;
+
+    &.his_badge_vide { background: #adb5bd; }
+}
+
+.his_file_apercu {
+    list-style: none;
+    padding: .35rem 0 0;
+    margin: 0;
+    font-size: .82rem;
+    color: #6c757d;
+
+    li {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: .1rem 0;
+    }
+}
+
+.his_voir_tout {
+    font-size: .78rem;
+    color: var(--primary, #714b67);
+    text-decoration: underline;
+}
+
+// --- Explorer ---------------------------------------------------------------
+
+.his_explorer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.his_cliquable { cursor: pointer; }
