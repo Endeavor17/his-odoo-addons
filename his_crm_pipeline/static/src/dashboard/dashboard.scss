@@ -6,24 +6,14 @@
 // Chart.js est deja livre avec Odoo (vue graph) — le charger plutot que de
 // dessiner des points a la main.
 
-// Cette classe atterrit sur le <main class="o_content"> de Layout, qui est un
-// enfant flex de .o_action — lui-meme en overflow:hidden.
+// Cette classe atterrit sur le <main class="o_content"> de Layout.
 //
-// min-height: 0 n'est pas cosmetique. Par defaut un element flex a
-// min-height:auto : il REFUSE de retrecir sous la hauteur de son contenu. La
-// barre de defilement n'apparait donc jamais, et le bas de la page est
-// simplement coupe par l'ancetre. C'est le piege flexbox classique, et c'est
-// exactement le symptome « je ne peux pas descendre ».
-//
-// Les vues natives d'Odoo y echappent sans le savoir : leur contenu est un
-// .o_view_controller en position:absolute, qui ne participe pas au calcul.
+// Aucune regle de hauteur ni de debordement ici, volontairement : Odoo pose
+// deja `.o_content { overflow: auto; height: 100% }` des lors que l'englobant
+// porte la classe o_action. C'est le template qui doit garantir cet englobant,
+// pas la feuille de style qui doit compenser son absence.
 .o_content.o_his_dashboard {
     background-color: var(--o-view-background-color, #f9f9f9);
-    flex: 1 1 auto;
-    min-height: 0;
-    height: auto;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
 .his_tuiles {

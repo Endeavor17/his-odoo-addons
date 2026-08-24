@@ -76,7 +76,16 @@ function enIso(date) {
 export class HisDashboard extends Component {
     static template = "his_crm_pipeline.Dashboard";
     static components = { Layout };
-    static props = { ...standardActionServiceProps };
+    static props = {
+        ...standardActionServiceProps,
+        // ActionContainer passe className="o_action" a TOUT composant d'action.
+        // Ce n'est pas decoratif : c'est cette classe qui recoit la colonne
+        // flex en hauteur pleine (.o_action_manager > .o_action), sans laquelle
+        // le .o_content interieur n'a pas de hauteur contrainte et ne peut donc
+        // pas defiler. Elle doit atterrir sur un element englobant le Layout —
+        // voir le template.
+        className: { type: String, optional: true },
+    };
 
     setup() {
         this.orm = useService("orm");

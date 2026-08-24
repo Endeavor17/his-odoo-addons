@@ -2,6 +2,14 @@
 <templates xml:space="preserve">
 
     <t t-name="his_crm_pipeline.Dashboard">
+        <!-- Ce div porte la classe o_action donnee par ActionContainer, et
+             c'est lui qui fait defiler la page. .o_action_manager > .o_action
+             en fait une colonne flex de hauteur pleine ; c'est de LUI que le
+             .o_content interieur tient sa hauteur contrainte, donc sa barre de
+             defilement. Sans cet englobant, le contenu deborde et l'ancetre le
+             coupe : on ne peut plus descendre. Toutes les vues natives
+             procedent ainsi (voir web.PivotView). -->
+        <div t-att-class="props.className" t-ref="root">
         <Layout className="'o_his_dashboard'" display="{ controlPanel: {} }">
             <t t-set-slot="control-panel-additional-actions">
                 <div class="d-flex align-items-center gap-2">
@@ -140,6 +148,7 @@
                 Chargement des indicateurs...
             </div>
         </Layout>
+        </div>
     </t>
 
 </templates>
