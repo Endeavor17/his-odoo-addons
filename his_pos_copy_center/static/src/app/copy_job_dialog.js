@@ -34,6 +34,16 @@ export class CopyJobDialog extends Component {
         });
     }
 
+    // Odoo portals dialogs to the document body, outside the .pos root — so a
+    // dialog inherits neither the theme's custom properties nor any rule scoped
+    // under .his-pos, and renders as a stock white modal with dark chips
+    // floating in it. Passing the theme classes down through contentClass puts
+    // the tokens back in scope.
+    get themeClass() {
+        const theme = this.pos.config.his_pos_theme;
+        return theme ? `his-pos his-theme-${theme}` : "";
+    }
+
     get copyProducts() {
         return this.pos.models["product.product"].filter((p) => p.copy_service);
     }

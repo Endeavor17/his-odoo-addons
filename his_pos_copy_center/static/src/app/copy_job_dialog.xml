@@ -2,7 +2,7 @@
 <templates id="template" xml:space="preserve">
 
     <t t-name="his_pos_copy_center.CopyJobDialog">
-        <Dialog title="'Copy job'" size="'lg'">
+        <Dialog title="'Copy job'" size="'lg'" contentClass="themeClass">
             <div class="his-copy-job">
 
                 <!-- Only worth a row when the till actually sells both. -->

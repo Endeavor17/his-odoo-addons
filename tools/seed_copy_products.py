@@ -84,6 +84,10 @@ if config:
     })
     if config.limit_categories and pos_categ not in config.iface_available_categ_ids:
         config.iface_available_categ_ids = [(4, pos_categ.id)]
+    # Une photocopie n'a pas de photo. Sans image, Odoo dessine une tuile grise
+    # par produit et la grille devient une rangee de rectangles vides plus
+    # bruyants que les prix.
+    config.show_product_images = False
 
 env.cr.commit()
 print("Produits de photocopie crees : %s" % created)

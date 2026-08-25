@@ -41,8 +41,11 @@
         flex-wrap: wrap;
     }
 
+    // The A3 sheet is the tallest thing in the dialog. Centring the row and
+    // reserving its height stops it bursting upward into the header.
     .his-row-formats {
-        align-items: flex-end;
+        align-items: center;
+        min-height: 160px;
     }
 
     // ------------------------------------------------------------ chips

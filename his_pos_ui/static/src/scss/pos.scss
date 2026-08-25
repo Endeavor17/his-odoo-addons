@@ -34,10 +34,22 @@
     // The left pane is paper. The right pane is the machine. That single
     // contrast is the whole design: what you are selling sits on a sheet, and
     // the sheet sits on the counter.
+    // The counter is dark; the ORDER is the sheet of paper on it. Painting the
+    // whole pane cream made an empty order a wall of beige — the metaphor only
+    // works when the paper has an edge and something darker around it.
     .leftpane {
-        --background-color: var(--his-paper);
-        border-right: 1px solid var(--his-paper-edge) !important;
+        --background-color: var(--his-ground-sunk);
+        border-right: 1px solid var(--his-line) !important;
+        color: var(--his-text);
+    }
+
+    .order-container {
+        background: var(--his-paper);
         color: var(--his-paper-ink);
+        margin: 0.5rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 2px 8px 2px 2px;   // one clipped corner: a sheet
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
     }
 
     .rightpane {
@@ -69,14 +81,11 @@
         }
     }
 
-    .order-container {
-        color: var(--his-paper-ink);
-    }
-
+    // Totals sit on the counter, not on the sheet, so they read light.
     .subtotal,
     .tax-info {
         font-family: var(--his-font-mono);
-        color: var(--his-paper-ink-muted) !important;
+        color: var(--his-text-muted) !important;
     }
 
     // The one number the customer leans in to read.
@@ -86,7 +95,7 @@
         font-size: 2rem;
         font-weight: 700;
         letter-spacing: -0.02em;
-        color: var(--his-paper-ink);
+        color: var(--his-text);
     }
 
     // ------------------------------------------------------------ the grid
@@ -101,6 +110,19 @@
         .product-name {
             color: var(--his-text);
             font-weight: 500;
+        }
+
+        // With no photo Odoo renders a light placeholder tile, and a grid of
+        // them is a row of grey rectangles shouting louder than any price.
+        // Sink it into the card instead of letting it glare.
+        .product-img {
+            background-color: var(--his-ground-sunk);
+            border-radius: 0.4rem 0.4rem 0 0;
+
+            img {
+                opacity: 0.25;
+                filter: grayscale(1);
+            }
         }
 
         // Price in the number face, in the accent: on a wall of dark slabs the
@@ -123,14 +145,25 @@
     }
 
     // ----------------------------------------------------- category selector
-    .category-list,
-    .categories {
-        .btn {
-            font: var(--his-font-label);
-            letter-spacing: var(--his-label-tracking);
-            text-transform: uppercase;
-            color: var(--his-text-muted);
-            border-color: var(--his-line);
+    // Odoo colours these from the category's o_colorlist_item_color_N class,
+    // which drops a pastel straight onto the blueprint. Three classes beat one,
+    // so the pastel loses without !important.
+    .category-list .category-button,
+    .categories .category-button {
+        --background-color: var(--his-ground-raised);
+        background-color: var(--his-ground-raised) !important;
+        font: var(--his-font-label);
+        font-size: 0.78rem;
+        letter-spacing: var(--his-label-tracking);
+        text-transform: uppercase;
+        color: var(--his-text) !important;
+        border: 1px solid var(--his-line) !important;
+
+        &.active,
+        &:active {
+            background-color: var(--his-accent-dim) !important;
+            border-color: var(--his-accent) !important;
+            color: var(--his-accent) !important;
         }
     }
 
@@ -193,27 +226,6 @@
         font-variant-numeric: tabular-nums;
     }
 
-    // ------------------------------------------------------------- dialogs
-    .modal-content {
-        background-color: var(--his-ground-raised);
-        color: var(--his-text);
-        border: 1px solid var(--his-line-strong);
-        border-radius: 0.75rem;
-    }
-
-    .modal-header,
-    .modal-footer {
-        border-color: var(--his-line);
-    }
-
-    .modal-header .modal-title {
-        font: var(--his-font-label);
-        font-size: 0.9rem;
-        letter-spacing: var(--his-label-tracking);
-        text-transform: uppercase;
-        color: var(--his-text-muted);
-    }
-
     // --------------------------------------------------------- quality floor
     :focus-visible {
         outline: 2px solid var(--his-accent);
@@ -224,5 +236,39 @@
 @media (prefers-reduced-motion: reduce) {
     .his-pos .product {
         transition: none;
+    }
+}
+
+// ---------------------------------------------------------------- dialogs
+//
+// Odoo portals dialogs to the document body, outside the .pos root. A theme
+// therefore cannot reach them by descent — the modal has to carry the theme
+// classes itself (Dialog's contentClass prop), which makes .modal-content the
+// themed element rather than a child of one. Hence the compound selector: this
+// is the same element, not a descendant.
+.modal-content.his-pos {
+    background-color: var(--his-ground-raised);
+    background-image: var(--his-texture);
+    color: var(--his-text);
+    border: 1px solid var(--his-line-strong);
+    border-radius: 0.75rem;
+
+    .modal-header,
+    .modal-footer {
+        border-color: var(--his-line);
+        background-color: transparent;
+    }
+
+    .modal-header .modal-title {
+        font: var(--his-font-label);
+        font-size: 0.85rem;
+        letter-spacing: var(--his-label-tracking);
+        text-transform: uppercase;
+        color: var(--his-text-muted);
+    }
+
+    // The close control is drawn dark-on-light by default and vanishes here.
+    .btn-close {
+        filter: invert(1) grayscale(1) brightness(1.6);
     }
 }
