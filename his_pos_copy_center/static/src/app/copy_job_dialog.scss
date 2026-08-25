@@ -1,99 +1,321 @@
-// Chips are the whole interaction, so they are sized for a fingertip and their
-// selected state is unmistakable from across a counter — border AND fill, not
-// a subtle tint, because the cashier is confirming four choices at a glance
-// while the customer is still talking.
+// The job builder: a machine panel with a receipt at the bottom.
 //
-// Every colour is a token from his_pos_ui with a literal fallback, so the
-// dialog stays legible even if it is somehow opened on an unthemed till.
+// Two ideas carry this screen, and both encode something true rather than
+// decorating:
+//
+//   1. The format buttons are drawn to real ISO 216 proportion (1:√2), and A3
+//      is √2 larger than A4 in each direction — because it is. The control is
+//      the same shape as the thing being sold, so the choice is legible before
+//      the label is read.
+//   2. Couleur carries a CMYK bar, the registration strip off a colour test
+//      page; N&B carries a grey ramp. The chips are inked the way the machine
+//      would ink them.
+//
+// Everything else stays quiet so those two land.
 
 .his-copy-job {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
+    padding: 0.25rem 0.25rem 0;
 
-    .his-copy-job-row {
+    // ------------------------------------------------------------ rows
+    .his-row {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem;
     }
 
-    .his-copy-job-label {
-        flex: 0 0 5.5rem;
-        color: var(--his-text-muted, #5b6470);
-        font-weight: 600;
+    .his-row-label {
+        flex: 0 0 5rem;
+        font: var(--his-font-label, 600 0.72rem/1.1 system-ui, sans-serif);
+        letter-spacing: var(--his-label-tracking, 0.09em);
+        text-transform: uppercase;
+        color: var(--his-text-muted, #8fa6b8);
     }
 
-    .his-copy-job-chips {
+    .his-row-options {
         display: flex;
-        gap: 0.5rem;
+        align-items: center;
+        gap: 0.6rem;
         flex-wrap: wrap;
     }
 
+    .his-row-formats {
+        align-items: flex-end;
+    }
+
+    // ------------------------------------------------------------ chips
     .his-chip {
-        min-height: 56px;
-        min-width: 6.5rem;
-        border: 2px solid var(--his-border, #d8dbe0);
-        border-radius: 0.75rem;
-        background: var(--his-surface-raised, #ffffff);
-        color: var(--his-text, #1c2024);
-        font-size: 1.05rem;
-        font-weight: 600;
-    }
-
-    .his-chip-on {
-        border-color: var(--his-accent, #2f6feb);
-        background: var(--his-accent, #2f6feb);
-        color: var(--his-accent-contrast, #ffffff);
-    }
-
-    .his-copy-job-stepper {
-        display: flex;
+        display: inline-flex;
         align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-height: 60px;
+        min-width: 7rem;
+        padding: 0 1.1rem;
+        border: 1px solid var(--his-line, #1e3448);
+        border-radius: 0.5rem;
+        background: var(--his-ground-raised, #12202f);
+        color: var(--his-text, #e8eef4);
+        font-size: 1rem;
+        font-weight: 600;
+        transition: border-color 0.12s ease, background-color 0.12s ease;
+    }
+
+    // Selection is stated twice — border and fill — because this is confirmed
+    // at a glance across a counter, not studied.
+    .his-on {
+        border-color: var(--his-accent, #38bdf8);
+        background: var(--his-accent-dim, #1b4a63);
+        color: var(--his-accent, #38bdf8);
+    }
+
+    // ------------------------------------------------- format, as paper
+    .his-sheets {
+        gap: 0.9rem;
+    }
+
+    .his-sheet {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-end;
+        gap: 0.1rem;
+        padding: 0.5rem 0.6rem;
+        background: var(--his-paper, #f4f0e6);
+        color: var(--his-paper-ink, #14212e);
+        border: 1px solid var(--his-paper-edge, #ded7c6);
+        border-radius: 2px 8px 2px 2px;   // one clipped corner: a sheet, not a card
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+        transition: transform 0.12s ease, box-shadow 0.12s ease, outline-color 0.12s ease;
+        outline: 2px solid transparent;
+    }
+
+    // ISO 216: A4 is 210 × 297, A3 is 297 × 420. The ratio between them is √2,
+    // and these two boxes hold it exactly.
+    .his-sheet-a4 {
+        width: 76px;
+        height: 107px;
+    }
+
+    .his-sheet-a3 {
+        width: 107px;
+        height: 151px;
+    }
+
+    .his-sheet.his-on {
+        background: var(--his-paper, #f4f0e6);
+        color: var(--his-paper-ink, #14212e);
+        outline-color: var(--his-accent, #38bdf8);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45);
+        transform: translateY(-2px);
+    }
+
+    .his-sheet-name {
+        font-family: var(--his-font-mono, monospace);
+        font-size: 1.35rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .his-sheet-mm {
+        font-family: var(--his-font-mono, monospace);
+        font-size: 0.62rem;
+        color: var(--his-paper-ink-muted, #5d6b78);
+    }
+
+    // ------------------------------------------------------ colour, as ink
+    .his-chip-ink {
+        padding-left: 0.7rem;
+    }
+
+    .his-ink {
+        width: 34px;
+        height: 12px;
+        border-radius: 2px;
+        flex: 0 0 auto;
+    }
+
+    .his-ink-bw {
+        background: linear-gradient(90deg, #ffffff 0%, #9aa4ad 50%, #14212e 100%);
+    }
+
+    // The registration strip off a colour test page.
+    .his-ink-cmyk {
+        background: linear-gradient(
+            90deg,
+            #00aeef 0 25%,
+            #ec008c 25% 50%,
+            #fff200 50% 75%,
+            #14212e 75% 100%
+        );
+    }
+
+    // ----------------------------------------------------------- copies
+    .his-stepper {
         gap: 0.5rem;
     }
 
     .his-step {
-        min-width: 56px;
-        min-height: 56px;
-        font-size: 1.5rem;
+        width: 60px;
+        height: 60px;
+        font-size: 1.6rem;
         line-height: 1;
-        border: 2px solid var(--his-border, #d8dbe0);
-        border-radius: 0.75rem;
-        background: var(--his-surface-raised, #ffffff);
+        border: 1px solid var(--his-line, #1e3448);
+        border-radius: 0.5rem;
+        background: var(--his-ground-raised, #12202f);
+        color: var(--his-text, #e8eef4);
     }
 
-    .his-copy-count {
-        width: 6rem;
-        height: 56px;
+    .his-count {
+        width: 7rem;
+        height: 60px;
         text-align: center;
-        font-size: 1.5rem;
+        font-family: var(--his-font-mono, monospace);
         font-variant-numeric: tabular-nums;
-        border: 2px solid var(--his-border, #d8dbe0);
-        border-radius: 0.75rem;
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: var(--his-text, #e8eef4);
+        background: var(--his-ground-sunk, #081120);
+        border: 1px solid var(--his-line-strong, #2c4a63);
+        border-radius: 0.5rem;
     }
 
-    .his-copy-job-total {
+    .his-quick {
+        display: flex;
+        gap: 0.35rem;
+        margin-left: 0.75rem;
+    }
+
+    .his-quick-btn {
+        min-width: 3.4rem;
+        height: 44px;
+        padding: 0 0.5rem;
+        font-family: var(--his-font-mono, monospace);
+        font-size: 0.95rem;
+        color: var(--his-text-muted, #8fa6b8);
+        background: transparent;
+        border: 1px dashed var(--his-line-strong, #2c4a63);
+        border-radius: 0.4rem;
+    }
+
+    // ------------------------------------------------------- the receipt
+    // The signature: everything above is the machine, this is the sheet the
+    // customer is handed. Warm paper, torn top edge, numbers in the mono face.
+    .his-ticket {
+        position: relative;
+        margin-top: 0.25rem;
+        padding: 1rem 1.1rem 0.9rem;
+        background: var(--his-paper, #f4f0e6);
+        color: var(--his-paper-ink, #14212e);
+        border-radius: 0 0 4px 4px;
+    }
+
+    // Perforation: the torn edge of a receipt, drawn rather than imaged.
+    .his-ticket::before {
+        content: '';
+        position: absolute;
+        top: -7px;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background: radial-gradient(
+            circle at 7px 8px,
+            transparent 0 7px,
+            var(--his-paper, #f4f0e6) 7px
+        );
+        background-size: 14px 8px;
+        background-repeat: repeat-x;
+    }
+
+    .his-ticket-line {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
-        border-top: 1px solid var(--his-border, #d8dbe0);
-        padding-top: 0.75rem;
+        gap: 1rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px dashed var(--his-paper-edge, #ded7c6);
     }
 
-    .his-copy-job-calc {
-        color: var(--his-text-muted, #5b6470);
-        font-variant-numeric: tabular-nums;
-    }
-
-    .his-copy-job-amount {
-        font-size: 1.75rem;
-        font-weight: 700;
-        font-variant-numeric: tabular-nums;
-    }
-
-    // A catalogue gap, stated where the price would have been.
-    .his-copy-job-missing {
-        color: #b42318;
+    .his-ticket-desc {
         font-weight: 600;
+    }
+
+    .his-ticket-calc,
+    .his-ticket-amount {
+        font-family: var(--his-font-mono, monospace);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .his-ticket-calc {
+        color: var(--his-paper-ink-muted, #5d6b78);
+        white-space: nowrap;
+    }
+
+    .his-ticket-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding-top: 0.6rem;
+    }
+
+    .his-ticket-label {
+        font: var(--his-font-label, 600 0.72rem/1.1 system-ui, sans-serif);
+        letter-spacing: var(--his-label-tracking, 0.09em);
+        text-transform: uppercase;
+        color: var(--his-paper-ink-muted, #5d6b78);
+    }
+
+    .his-ticket-amount {
+        font-size: 2.1rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    // A catalogue gap, stated on the paper where the price would have been.
+    .his-ticket-missing {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+
+        .his-ticket-label {
+            color: #b42318;
+        }
+
+        .his-ticket-desc {
+            font-weight: 400;
+            color: var(--his-paper-ink-muted, #5d6b78);
+        }
+    }
+}
+
+// ------------------------------------------------------------- footer
+.his-footer-btn {
+    min-height: 60px;
+    padding: 0 1.5rem;
+    border-radius: 0.5rem;
+    font: var(--his-font-label, 600 0.72rem/1.1 system-ui, sans-serif);
+    font-size: 0.82rem;
+    letter-spacing: var(--his-label-tracking, 0.09em);
+    text-transform: uppercase;
+    background: var(--his-ground-raised, #12202f);
+    border: 1px solid var(--his-line, #1e3448);
+    color: var(--his-text, #e8eef4);
+}
+
+.his-footer-primary {
+    background: var(--his-accent, #38bdf8);
+    border-color: var(--his-accent, #38bdf8);
+    color: var(--his-accent-ink, #04121d);
+    font-weight: 700;
+    margin-left: 0.6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .his-copy-job .his-chip,
+    .his-copy-job .his-sheet {
+        transition: none;
     }
 }

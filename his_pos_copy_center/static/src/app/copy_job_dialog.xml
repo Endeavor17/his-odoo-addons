@@ -2,90 +2,125 @@
 <templates id="template" xml:space="preserve">
 
     <t t-name="his_pos_copy_center.CopyJobDialog">
-        <Dialog title="'Copy job'" size="'md'">
+        <Dialog title="'Copy job'" size="'lg'">
             <div class="his-copy-job">
 
                 <!-- Only worth a row when the till actually sells both. -->
-                <div class="his-copy-job-row" t-if="availableServices.length > 1">
-                    <span class="his-copy-job-label">Service</span>
-                    <div class="his-copy-job-chips">
+                <div class="his-row" t-if="availableServices.length > 1">
+                    <span class="his-row-label">Service</span>
+                    <div class="his-row-options">
                         <button t-foreach="availableServices" t-as="service" t-key="service"
                             class="btn his-chip"
-                            t-att-class="{ 'his-chip-on': isPicked('service', service) }"
+                            t-att-class="{ 'his-on': isPicked('service', service) }"
                             t-on-click="() => this.pick('service', service)">
                             <t t-esc="serviceLabel[service] or service"/>
                         </button>
                     </div>
                 </div>
 
-                <div class="his-copy-job-row">
-                    <span class="his-copy-job-label">Format</span>
-                    <div class="his-copy-job-chips">
-                        <button class="btn his-chip js_copy_a4"
-                            t-att-class="{ 'his-chip-on': isPicked('format', 'a4') }"
-                            t-on-click="() => this.pick('format', 'a4')">A4</button>
-                        <button class="btn his-chip js_copy_a3"
-                            t-att-class="{ 'his-chip-on': isPicked('format', 'a3') }"
-                            t-on-click="() => this.pick('format', 'a3')">A3</button>
+                <!-- The two format buttons are drawn to true ISO 216 proportion,
+                     so the A3 target is literally larger than the A4 one. The
+                     control is the same shape as the thing it sells. -->
+                <div class="his-row his-row-formats">
+                    <span class="his-row-label">Format</span>
+                    <div class="his-row-options his-sheets">
+                        <button class="btn his-sheet his-sheet-a4 js_copy_a4"
+                            t-att-class="{ 'his-on': isPicked('format', 'a4') }"
+                            t-on-click="() => this.pick('format', 'a4')">
+                            <span class="his-sheet-name">A4</span>
+                            <span class="his-sheet-mm">210 × 297</span>
+                        </button>
+                        <button class="btn his-sheet his-sheet-a3 js_copy_a3"
+                            t-att-class="{ 'his-on': isPicked('format', 'a3') }"
+                            t-on-click="() => this.pick('format', 'a3')">
+                            <span class="his-sheet-name">A3</span>
+                            <span class="his-sheet-mm">297 × 420</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="his-copy-job-row">
-                    <span class="his-copy-job-label">Colour</span>
-                    <div class="his-copy-job-chips">
-                        <button class="btn his-chip js_copy_bw"
-                            t-att-class="{ 'his-chip-on': isPicked('color', 'bw') }"
-                            t-on-click="() => this.pick('color', 'bw')">N&amp;B</button>
-                        <button class="btn his-chip js_copy_color"
-                            t-att-class="{ 'his-chip-on': isPicked('color', 'color') }"
-                            t-on-click="() => this.pick('color', 'color')">Couleur</button>
+                <div class="his-row">
+                    <span class="his-row-label">Colour</span>
+                    <div class="his-row-options">
+                        <button class="btn his-chip his-chip-ink js_copy_bw"
+                            t-att-class="{ 'his-on': isPicked('color', 'bw') }"
+                            t-on-click="() => this.pick('color', 'bw')">
+                            <span class="his-ink his-ink-bw"/>
+                            <span>N&amp;B</span>
+                        </button>
+                        <button class="btn his-chip his-chip-ink js_copy_color"
+                            t-att-class="{ 'his-on': isPicked('color', 'color') }"
+                            t-on-click="() => this.pick('color', 'color')">
+                            <span class="his-ink his-ink-cmyk"/>
+                            <span>Couleur</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="his-copy-job-row">
-                    <span class="his-copy-job-label">Sides</span>
-                    <div class="his-copy-job-chips">
+                <div class="his-row">
+                    <span class="his-row-label">Sides</span>
+                    <div class="his-row-options">
                         <button class="btn his-chip js_copy_recto"
-                            t-att-class="{ 'his-chip-on': isPicked('sides', 'recto') }"
+                            t-att-class="{ 'his-on': isPicked('sides', 'recto') }"
                             t-on-click="() => this.pick('sides', 'recto')">Recto</button>
                         <button class="btn his-chip js_copy_duplex"
-                            t-att-class="{ 'his-chip-on': isPicked('sides', 'duplex') }"
+                            t-att-class="{ 'his-on': isPicked('sides', 'duplex') }"
                             t-on-click="() => this.pick('sides', 'duplex')">Recto-verso</button>
                     </div>
                 </div>
 
-                <div class="his-copy-job-row his-copy-job-copies">
-                    <span class="his-copy-job-label">Copies</span>
-                    <div class="his-copy-job-stepper">
+                <div class="his-row">
+                    <span class="his-row-label">Copies</span>
+                    <div class="his-row-options his-stepper">
                         <button class="btn his-step js_copy_less"
                             t-on-click="() => this.addCopies(-1)">−</button>
-                        <input type="number" min="1" class="his-copy-count"
+                        <input type="number" min="1" class="his-count"
                             t-att-value="state.copies" t-on-change="setCopies"/>
                         <button class="btn his-step js_copy_more"
                             t-on-click="() => this.addCopies(1)">+</button>
+                        <div class="his-quick">
+                            <button t-foreach="[10, 25, 50, 100]" t-as="n" t-key="n"
+                                class="btn his-quick-btn"
+                                t-on-click="() => this.setCopiesTo(n)">
+                                <t t-esc="n"/>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="his-copy-job-total">
+                <!-- The running total, on paper. Everything above is the
+                     machine; this is what the customer will be handed. -->
+                <div class="his-ticket">
                     <t t-if="matchedProduct">
-                        <span class="his-copy-job-calc">
-                            <t t-esc="state.copies"/> × <t t-esc="formattedUnitPrice"/>
-                        </span>
-                        <span class="his-copy-job-amount" t-esc="formattedTotal"/>
+                        <div class="his-ticket-line">
+                            <span class="his-ticket-desc" t-esc="matchedProduct.display_name"/>
+                            <span class="his-ticket-calc">
+                                <t t-esc="state.copies"/> × <t t-esc="formattedUnitPrice"/>
+                            </span>
+                        </div>
+                        <div class="his-ticket-total">
+                            <span class="his-ticket-label">Total</span>
+                            <span class="his-ticket-amount" t-esc="formattedTotal"/>
+                        </div>
                     </t>
                     <t t-else="">
-                        <span class="his-copy-job-missing">No product for this combination</span>
+                        <div class="his-ticket-missing">
+                            <span class="his-ticket-label">Not in the catalogue</span>
+                            <span class="his-ticket-desc">
+                                Nothing is configured for this combination yet.
+                            </span>
+                        </div>
                     </t>
                 </div>
 
             </div>
 
             <t t-set-slot="footer">
-                <button class="btn btn-secondary btn-lg js_copy_job_another"
+                <button class="btn his-footer-btn js_copy_job_another"
                     t-on-click="onAddAnother">
                     Add another document
                 </button>
-                <button class="btn btn-primary btn-lg js_copy_job_add"
+                <button class="btn his-footer-btn his-footer-primary js_copy_job_add"
                     t-on-click="onAddAndClose">
                     Add to order
                 </button>

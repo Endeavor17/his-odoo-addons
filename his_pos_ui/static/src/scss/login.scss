@@ -1,46 +1,77 @@
-// The entry screen is the one place a wallpaper belongs.
+// The entry screen: the till states which counter it is, in the dark, before
+// anyone touches it.
 //
 // point_of_sale's own login_screen.scss already draws .login-overlay from
 // --homeMenu-bg-color and --homeMenu-bg-image, and tokens.scss points both at
-// the theme. So the wallpaper arrives with no template override and no patched
-// component — the only thing left to add is a floor for the text to stand on.
-//
-// The scrim lives in CSS rather than baked into the image on purpose: contrast
-// stays tunable without re-exporting an asset, and the same photograph serves
-// any future light variant.
+// the theme — so the wallpaper arrives with no template override. What is added
+// here is the floor the text stands on and the machine-panel typography.
 
 .his-pos .login-overlay {
     position: relative;
+    color: var(--his-text);
 
+    // The scrim lives in CSS rather than baked into the image: contrast stays
+    // tunable without re-exporting an asset, and the same photograph serves any
+    // future light variant. With no image at all this reads as a clean vignette
+    // over the theme's ground colour, which is why a missing wallpaper looks
+    // deliberate instead of broken.
     &::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.35) 0%,
-            rgba(0, 0, 0, 0.68) 100%
-        );
+        background:
+            linear-gradient(180deg, rgba(4, 12, 20, 0.55) 0%, rgba(4, 12, 20, 0.88) 100%),
+            var(--his-texture);
         pointer-events: none;
     }
 
-    // Everything the cashier reads sits above the scrim.
     > * {
         position: relative;
         z-index: 1;
     }
 
-    color: #fff;
-
+    // The clock is the largest thing on an idle till, so it is set in the
+    // number face and given room.
     .timer-hours,
     .timer-minutes,
     .timer-seconds {
+        font-family: var(--his-font-mono);
         font-variant-numeric: tabular-nums;
+        letter-spacing: -0.02em;
     }
 
-    // The till's own name, so someone crossing the building knows which
-    // register they are standing at before they touch it.
-    .screen-login-header {
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    // Headings keep Odoo's own dark heading colour, which on this ground makes
+    // the till's name almost invisible. Inheriting the overlay's colour is not
+    // enough — the h1 is coloured explicitly upstream, so it is set explicitly
+    // here.
+    .screen-login-header,
+    h1, h2, h3 {
+        color: var(--his-text);
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    // Small tracked capitals: the vernacular of a machine panel, and the thing
+    // that most separates this screen from stock Odoo at a glance.
+    .screen-login-subtitle,
+    .cashier-name,
+    small {
+        font: var(--his-font-label);
+        letter-spacing: var(--his-label-tracking);
+        text-transform: uppercase;
+        color: var(--his-text-muted);
+    }
+
+    .btn-primary {
+        background-color: var(--his-accent);
+        border-color: var(--his-accent);
+        color: var(--his-accent-ink);
+        font-weight: 700;
+        letter-spacing: var(--his-label-tracking);
+        text-transform: uppercase;
     }
 }

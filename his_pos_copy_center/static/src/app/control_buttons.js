@@ -5,11 +5,20 @@ import { CopyJobDialog } from "./copy_job_dialog";
 // The same patch pattern his_meal_management already uses for its Student Meal
 // button. One house pattern for adding a POS control button, not two.
 patch(ControlButtons.prototype, {
-    // Hidden unless this till actually sells copies, so the button never opens
-    // onto an empty form. A Cafeteria register loads no copy products and
-    // therefore never sees it, without either module knowing about the other.
+    // Shown on any till declared a Copy Center, and on any till that actually
+    // loaded copy products.
+    //
+    // It used to require the products alone, which failed badly the first time
+    // it met a real database: the till had limit_categories set, no copy
+    // product reached the browser, and the button vanished. A missing button
+    // teaches the cashier the feature does not exist. An open dialog saying
+    // "nothing is configured for this combination" names the real problem and
+    // sends them to the person who can fix it.
     get hasCopyProducts() {
-        return this.pos.models["product.product"].some((p) => p.copy_service);
+        return (
+            this.pos.config.his_pos_theme === "copy_center" ||
+            this.pos.models["product.product"].some((p) => p.copy_service)
+        );
     },
 
     clickCopyJob() {

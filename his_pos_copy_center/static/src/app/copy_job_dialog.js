@@ -97,6 +97,12 @@ export class CopyJobDialog extends Component {
         this.state.copies = Number.isFinite(value) && value > 0 ? value : 1;
     }
 
+    // A copy job is rarely one sheet. The common run sizes are one tap instead
+    // of five on a stepper or a trip to the numpad.
+    setCopiesTo(n) {
+        this.state.copies = n;
+    }
+
     // Returns true when a line was actually added, so the caller knows whether
     // to close the dialog or leave it standing for a correction.
     async addLine() {

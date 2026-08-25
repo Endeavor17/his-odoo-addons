@@ -1,55 +1,228 @@
 // Styling only. Nothing in this file changes what a click does.
 //
-// Every selector here was read out of point_of_sale's own templates before it
-// was written — .product, .orderline, .numpad-button, .total, .pay-button all
-// exist upstream. A theme made of guessed selectors is dead CSS that looks like
-// it works because nobody notices the rules never matched.
+// Every selector was read out of point_of_sale's own templates before it was
+// written — .pos-topheader, .leftpane, .rightpane, .product-list, .product,
+// .orderline, .numpad-button, .actionpad, .total. A theme built on guessed
+// selectors is dead CSS that looks like it works because nobody notices the
+// rules never matched anything.
+//
+// Every rule is prefixed .his-pos, which also settles specificity: Odoo leans
+// on Bootstrap utilities (.bg-view, .bg-secondary, .text-muted) and a single
+// utility class loses to a two-class selector without a single !important.
 
 .his-pos {
-    background-color: var(--his-surface);
+    background-color: var(--his-ground);
+    background-image: var(--his-texture);
     color: var(--his-text);
 
-    // The accent is spent here and nowhere else, so "the blue one" is always
-    // the action the cashier means to take.
-    .btn-primary,
-    .pay-button.btn-primary {
-        background-color: var(--his-accent);
-        border-color: var(--his-accent);
-        color: var(--his-accent-contrast);
-    }
+    // ---------------------------------------------------------------- chrome
+    // Odoo's background utilities (.bg-view, .bg-100, .bg-secondary) are all
+    // generated with !important, so a plain rule loses to them. They resolve
+    // --background-color, though — so setting that variable wins cleanly, and
+    // this whole file needs no !important for backgrounds.
+    .pos-topheader {
+        --background-color: var(--his-ground-sunk);
+        border-bottom: 1px solid var(--his-line) !important;
+        color: var(--his-text);
 
-    // Money is read at a glance across a counter, often upside-down by the
-    // customer. Tabular figures keep the digits from shifting width as the
-    // total changes, which is what makes a changing number readable.
-    .total,
-    .subtotal,
-    .pay-button span {
-        font-variant-numeric: tabular-nums;
-    }
-
-    .total {
-        font-size: 1.6rem;
-        font-weight: 700;
-        letter-spacing: -0.01em;
-    }
-
-    .product {
-        background-color: var(--his-surface-raised);
-        border: 1px solid var(--his-border);
-        border-radius: 0.75rem;
-    }
-
-    .orderline {
-        border-bottom: 1px solid var(--his-border);
-
-        .line-details {
-            font-variant-numeric: tabular-nums;
+        .btn {
+            color: var(--his-text);
         }
     }
 
-    // The numpad is hit with a fingertip, repeatedly, at speed.
-    .numpad-button {
+    // -------------------------------------------------------- the two panes
+    // The left pane is paper. The right pane is the machine. That single
+    // contrast is the whole design: what you are selling sits on a sheet, and
+    // the sheet sits on the counter.
+    .leftpane {
+        --background-color: var(--his-paper);
+        border-right: 1px solid var(--his-paper-edge) !important;
+        color: var(--his-paper-ink);
+    }
+
+    .rightpane {
+        --background-color: transparent;
+    }
+
+    // .pos-content carries .bg-100, which otherwise paints over the ground and
+    // its blueprint texture and turns the entire right-hand side white.
+    .pos-content {
+        --background-color: transparent;
+    }
+
+    // ------------------------------------------------------ the order, on paper
+    .orderline {
+        border-bottom: 1px solid var(--his-paper-edge);
+        color: var(--his-paper-ink);
+
+        // Figures get the number face. Names do not: .product-name sits inside
+        // .line-details, so putting mono on the container set the product name
+        // in it too and the order read like a log file.
+        .line-details {
+            font-family: var(--his-font-mono);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .product-name {
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            font-weight: 600;
+        }
+    }
+
+    .order-container {
+        color: var(--his-paper-ink);
+    }
+
+    .subtotal,
+    .tax-info {
+        font-family: var(--his-font-mono);
+        color: var(--his-paper-ink-muted) !important;
+    }
+
+    // The one number the customer leans in to read.
+    .total {
+        font-family: var(--his-font-mono);
         font-variant-numeric: tabular-nums;
-        font-size: 1.35rem;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--his-paper-ink);
+    }
+
+    // ------------------------------------------------------------ the grid
+    .product {
+        --background-color: var(--his-ground-raised);
+        background-color: var(--his-ground-raised);
+        border: 1px solid var(--his-line);
+        border-radius: 0.5rem;
+        color: var(--his-text);
+        transition: border-color 0.12s ease, transform 0.12s ease;
+
+        .product-name {
+            color: var(--his-text);
+            font-weight: 500;
+        }
+
+        // Price in the number face, in the accent: on a wall of dark slabs the
+        // price is the only thing that needs to jump.
+        .product-price,
+        .price-tag {
+            font-family: var(--his-font-mono);
+            font-variant-numeric: tabular-nums;
+            color: var(--his-accent);
+            font-weight: 600;
+        }
+
+        &:hover {
+            border-color: var(--his-line-strong);
+        }
+
+        &:active {
+            transform: scale(0.985);
+        }
+    }
+
+    // ----------------------------------------------------- category selector
+    .category-list,
+    .categories {
+        .btn {
+            font: var(--his-font-label);
+            letter-spacing: var(--his-label-tracking);
+            text-transform: uppercase;
+            color: var(--his-text-muted);
+            border-color: var(--his-line);
+        }
+    }
+
+    // ------------------------------------------------------------- the keys
+    // Keys read as hardware: a sunken well, hairline separations, numbers in
+    // the mono face.
+    .numpad {
+        background-color: var(--his-ground-sunk);
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .numpad-button {
+        background-color: var(--his-ground-raised) !important;
+        color: var(--his-text) !important;
+        border: 1px solid var(--his-line) !important;
+        font-family: var(--his-font-mono);
+        font-variant-numeric: tabular-nums;
+        font-size: 1.4rem;
+        font-weight: 500;
+
+        &:active,
+        &.active {
+            background-color: var(--his-accent-dim) !important;
+            color: var(--his-accent) !important;
+        }
+    }
+
+    // ---------------------------------------------------------- the actions
+    .control-buttons .btn,
+    .actionpad .btn {
+        font: var(--his-font-label);
+        font-size: 0.8rem;
+        letter-spacing: var(--his-label-tracking);
+        text-transform: uppercase;
+        border-radius: 0.5rem;
+    }
+
+    // The accent is spent here and nowhere else, so "the bright one" is always
+    // the action the cashier means to take.
+    .btn-primary,
+    .pay-button.btn-primary {
+        background-color: var(--his-accent) !important;
+        border-color: var(--his-accent) !important;
+        color: var(--his-accent-ink) !important;
+        font-weight: 700;
+    }
+
+    .btn-secondary {
+        background-color: var(--his-ground-raised) !important;
+        border-color: var(--his-line) !important;
+        color: var(--his-text) !important;
+    }
+
+    // The pay button carries the amount; it is the second number on screen
+    // that matters, so it gets the number face too.
+    .pay-button span,
+    .fast-pay-button span {
+        font-family: var(--his-font-mono);
+        font-variant-numeric: tabular-nums;
+    }
+
+    // ------------------------------------------------------------- dialogs
+    .modal-content {
+        background-color: var(--his-ground-raised);
+        color: var(--his-text);
+        border: 1px solid var(--his-line-strong);
+        border-radius: 0.75rem;
+    }
+
+    .modal-header,
+    .modal-footer {
+        border-color: var(--his-line);
+    }
+
+    .modal-header .modal-title {
+        font: var(--his-font-label);
+        font-size: 0.9rem;
+        letter-spacing: var(--his-label-tracking);
+        text-transform: uppercase;
+        color: var(--his-text-muted);
+    }
+
+    // --------------------------------------------------------- quality floor
+    :focus-visible {
+        outline: 2px solid var(--his-accent);
+        outline-offset: 2px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .his-pos .product {
+        transition: none;
     }
 }
