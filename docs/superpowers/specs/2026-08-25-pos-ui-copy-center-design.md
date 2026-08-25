@@ -170,10 +170,23 @@ recto-verso. Stock POS makes the cashier click a product, answer a variant popup
 per attribute, then set quantity on the numpad — several popups per document,
 repeated for every document in a job.
 
-`his_stock_mdm` already models these dimensions as product attributes: the
-`Variante` attribute is already permitted on `categ_copy_impression` and
-`categ_copy_photocopie` (`data/product_attribute_data.xml`). **The pricing model
-therefore already exists.** What is missing is a face over it.
+**The dimensions cannot be product attributes here, and that is decided by
+`his_stock_mdm`, not by us.** Its MDM rule 6 is enforced as a hard
+`ValidationError` in `product_template_attribute_line._check_mdm_categ_eligible`:
+an attribute may only be used on the categories listed in its
+`allowed_categ_ids`. `Variante` is permitted on `categ_copy_impression` and
+`categ_copy_photocopie`; **`Format` is not permitted on any copy category** — it
+is restricted to café, restaurant and ménage. A Photocopie template carrying
+Format/Colour/Sides as three attributes would refuse to save.
+
+The MDM states the alternative in the text of that very error: *"une variation
+physique doit être portée par une fiche produit distincte."* So under this
+governance, **A4 N&B Recto and A3 Couleur Recto-verso are distinct product
+templates**, each with its own price and its own cost. That is the catalogue
+this design must serve, and arguing with it would mean amending another module's
+governance to satisfy a UI.
+
+The builder therefore resolves a **product**, not a variant.
 
 ### 5.2 What it is
 
@@ -198,16 +211,38 @@ to delete if it disappoints.
 Large chips, one tap per dimension, a stepper big enough for a finger, and the
 running total visible before anything is committed.
 
-### 5.3 What it does not do
+### 5.3 How a chip finds its product
 
-It resolves the chosen combination to an existing **product variant** and calls
-the same `addLineToCurrentOrder` any product click uses. Quantity is copies.
+Four selection fields on `product.template`, owned by `his_pos_copy_center`:
 
-The displayed price is read from the variant that POS already loaded. It is a
-preview of what the order line will say, not a calculation. If the two could
-ever disagree, the price would have two sources of truth and one of them would
-be JavaScript — precisely the mistake `his_meal_management` documents avoiding
-for credits.
+```python
+copy_service = fields.Selection([('photocopie', ...), ('impression', ...)])
+copy_format  = fields.Selection([('a4', "A4"), ('a3', "A3")])
+copy_color   = fields.Selection([('bw', "N&B"), ('color', "Couleur")])
+copy_sides   = fields.Selection([('recto', "Recto"), ('duplex', "Recto-verso")])
+```
+
+They tag an existing product with the dimensions it already represents. They add
+no attribute, create no variant, and touch no MDM rule — a product is simply
+labelled with what it is, so the till can find it by description instead of by
+name. A product carrying no `copy_service` is invisible to the builder and
+behaves exactly as it does today.
+
+This is deliberately a *lookup*, not a model: the four fields are how a Copy
+Center manager declares "this template is the A4 colour recto-verso photocopy",
+and the builder does nothing more than find the one product matching four
+chips.
+
+### 5.4 What it does not do
+
+It calls the same `addLineToCurrentOrder` any product click uses, with quantity
+set to the number of copies.
+
+The displayed price is read from the product POS already loaded. It is a preview
+of what the order line will say, not a calculation. If the two could ever
+disagree, the price would have two sources of truth and one of them would be
+JavaScript — precisely the mistake `his_meal_management` documents avoiding for
+credits.
 
 "Add another document" commits the current line and resets the form, so a job of
 five documents is five ordinary order lines. There is **no job model** in this
@@ -218,7 +253,7 @@ add `his.copy.job`, not before.
 Bureautique, Flexy top-ups and scan-only services stay ordinary product taps.
 They have no dimensions worth a builder.
 
-### 5.4 Language
+### 5.5 Language
 
 Source strings are written in English and wrapped in `_t()`, with a French
 `i18n/fr.po` shipped alongside. This matches `his_meal_management`, whose POS
@@ -235,10 +270,10 @@ pos.config.his_pos_theme ──► Chrome root class ──► CSS tokens       
 
 card scan ──► existing barcode rule ──► res.partner ──► order.setPartner  (optional)
 
-builder chips ──► attribute value ids ──► product.product variant
+builder chips ──► copy_service/format/color/sides ──► product.template
                                               │
                                               ▼
-                                   addLineToCurrentOrder(variant, qty)
+                                    addLineToCurrentOrder(product, copies)
                                               │
                                               ▼
                              stock POS order pipeline ──► server
@@ -253,8 +288,8 @@ models POS has already loaded into the browser.
 |---|---|
 | `his_pos_theme` unset | stock Odoo appearance, no error |
 | wallpaper file missing | falls back to `--homeMenu-bg-color` |
-| no variant for the chosen combination | dialog naming the exact missing combination, so it reads as the configuration gap it is, not as cashier error |
-| variant carries no price | refuse to add the line and say so; never add a zero-priced line by accident |
+| no product matches the chosen combination | dialog naming the exact missing combination, so it reads as the configuration gap it is, not as cashier error |
+| matched product carries no price | refuse to add the line and say so; never add a zero-priced line by accident |
 | service products absent from this till | builder button hidden entirely rather than opening onto an empty form |
 
 The theme cannot fail loudly by construction: it is CSS behind a class that may
@@ -262,11 +297,16 @@ be absent. The builder fails by refusing, never by guessing.
 
 ## 8. Testing
 
-- **Python** — `pos.config` field presence and default; the variant-resolution
-  helper if any part of it lands server-side. Follows the existing
-  `TransactionCase` style in `his_meal_management/tests/`.
+- **Python** — `pos.config.his_pos_theme`; the four `product.template` copy
+  fields; and the guarantee that tagging a copy product does **not** trip
+  `his_stock_mdm`'s MDM rule 6. Follows the existing `TransactionCase` style in
+  `his_meal_management/tests/`.
 - **JS tours** — Odoo's POS tour framework, two paths: a job built and added to
-  the order with the expected line and quantity, and the missing-variant refusal.
+  the order with the expected line and quantity, and the missing-product refusal.
+- **Demo data** — the copy categories are empty in `his_dev`; the tour cannot
+  run against an empty catalogue, so `his_pos_copy_center` ships `demo/` products
+  covering the eight photocopy combinations. Demo data only: the real catalogue
+  belongs to whoever runs the MDM, not to this module.
 - **Not tested** — appearance. No screenshot or snapshot suite. Contrast ratios
   are checked once, by hand, against the tokens.
 
