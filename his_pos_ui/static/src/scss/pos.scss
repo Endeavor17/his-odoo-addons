@@ -25,8 +25,95 @@
         border-bottom: 1px solid var(--his-line) !important;
         color: var(--his-text);
 
-        .btn {
+        // Every control up here ships as .btn-light, which is why the bar was
+        // half dark-on-dark and half glaring white. Bootstrap draws .btn from
+        // --btn-* variables, so redefining those retints the button, its
+        // hover and its active state in one place instead of chasing each rule.
+        .btn-light,
+        .btn-secondary {
+            --btn-bg: var(--his-ground-raised);
+            --btn-color: var(--his-text);
+            --btn-border-color: var(--his-line);
+            --btn-hover-bg: var(--his-line);
+            --btn-hover-color: var(--his-text);
+            --btn-hover-border-color: var(--his-line-strong);
+            --btn-active-bg: var(--his-accent-dim);
+            --btn-active-color: var(--his-accent);
+            --btn-active-border-color: var(--his-accent);
+        }
+
+        // Register / Orders are a tab strip, not two pills. Flat and quiet
+        // until selected, then named by an accent underline — so the cashier
+        // reads which mode the till is in from across the counter.
+        .navbar-menu {
+            gap: 0.25rem;
+
+            .register-label,
+            .orders-button {
+                --btn-bg: transparent;
+                --btn-border-color: transparent;
+                --btn-color: var(--his-text-muted);
+                --btn-hover-bg: var(--his-ground-raised);
+                --btn-hover-color: var(--his-text);
+                font: var(--his-font-label);
+                font-size: 0.82rem;
+                letter-spacing: var(--his-label-tracking);
+                text-transform: uppercase;
+                border-radius: 0.4rem 0.4rem 0 0;
+                border-bottom: 2px solid transparent;
+
+                &.active {
+                    --btn-bg: transparent;
+                    --btn-active-bg: transparent;
+                    --btn-color: var(--his-accent);
+                    --btn-active-color: var(--his-accent);
+                    // Underline only. Without this the tab inherits the accent
+                    // border set on .btn-light above and draws a full box.
+                    --btn-active-border-color: transparent;
+                    border-bottom-color: var(--his-accent);
+                }
+            }
+        }
+
+        .navbar-separator {
+            background-color: var(--his-line);
+            border-color: var(--his-line);
+        }
+
+        // An order tab is an order NUMBER, so it is set in the number face.
+        .floating-order-container .btn {
+            font-family: var(--his-font-mono);
+            font-variant-numeric: tabular-nums;
+
+            &.active {
+                --btn-bg: var(--his-accent-dim);
+                --btn-color: var(--his-accent);
+                --btn-border-color: var(--his-accent);
+            }
+        }
+
+        // The search field was the brightest thing on the screen. It is an
+        // input on a dark panel: dark well, hairline border, muted placeholder.
+        .input-container {
+            --background-color: var(--his-ground-raised);
+            background-color: var(--his-ground-raised) !important;
+            border: 1px solid var(--his-line) !important;
             color: var(--his-text);
+
+            .o_input,
+            .fa {
+                background-color: transparent;
+                color: var(--his-text) !important;
+            }
+
+            .o_input::placeholder {
+                color: var(--his-text-muted);
+                opacity: 1;
+            }
+        }
+
+        .cashier-name .avatar {
+            border: 1px solid var(--his-line-strong);
         }
     }
 
