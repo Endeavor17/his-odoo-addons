@@ -1,0 +1,55 @@
+// Styling only. Nothing in this file changes what a click does.
+//
+// Every selector here was read out of point_of_sale's own templates before it
+// was written — .product, .orderline, .numpad-button, .total, .pay-button all
+// exist upstream. A theme made of guessed selectors is dead CSS that looks like
+// it works because nobody notices the rules never matched.
+
+.his-pos {
+    background-color: var(--his-surface);
+    color: var(--his-text);
+
+    // The accent is spent here and nowhere else, so "the blue one" is always
+    // the action the cashier means to take.
+    .btn-primary,
+    .pay-button.btn-primary {
+        background-color: var(--his-accent);
+        border-color: var(--his-accent);
+        color: var(--his-accent-contrast);
+    }
+
+    // Money is read at a glance across a counter, often upside-down by the
+    // customer. Tabular figures keep the digits from shifting width as the
+    // total changes, which is what makes a changing number readable.
+    .total,
+    .subtotal,
+    .pay-button span {
+        font-variant-numeric: tabular-nums;
+    }
+
+    .total {
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+
+    .product {
+        background-color: var(--his-surface-raised);
+        border: 1px solid var(--his-border);
+        border-radius: 0.75rem;
+    }
+
+    .orderline {
+        border-bottom: 1px solid var(--his-border);
+
+        .line-details {
+            font-variant-numeric: tabular-nums;
+        }
+    }
+
+    // The numpad is hit with a fingertip, repeatedly, at speed.
+    .numpad-button {
+        font-variant-numeric: tabular-nums;
+        font-size: 1.35rem;
+    }
+}

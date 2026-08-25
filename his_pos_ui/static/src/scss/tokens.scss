@@ -1,0 +1,60 @@
+// One accent per point of sale, over a shared neutral surface.
+//
+// The wallpapers are dark, warm photographs. They earn their place on the entry
+// screen and nowhere else: behind a working product grid a photograph destroys
+// the legibility of every price on the screen, and a till is read at arm's
+// length by someone who is also talking to a customer. So the working surface
+// stays a calm near-neutral, and the accent is spent on exactly one thing —
+// the primary action.
+//
+// Everything below is a custom property rather than a SCSS variable on purpose.
+// Odoo compiles its own SCSS before ours and we cannot reach its variables, but
+// a custom property is resolved by the browser at paint time — so one class on
+// the root element re-themes the whole application, and the later Restaurant
+// and Cafeteria modules restyle nothing to get their own colour.
+
+.his-pos {
+    --his-surface: #f4f5f7;
+    --his-surface-raised: #ffffff;
+    --his-border: #d8dbe0;
+    --his-text: #1c2024;
+    --his-text-muted: #5b6470;
+    --his-accent: #2f6feb;
+    --his-accent-contrast: #ffffff;
+
+    // Overridden per theme below; the fallback keeps an unconfigured theme
+    // looking deliberate rather than broken.
+    --his-wallpaper: none;
+    --his-wallpaper-color: #1c2024;
+
+    // Odoo sizes every POS button from this one variable (pos_app.scss). Raising
+    // it IS the touch-target change: not one button rule is overridden.
+    --btn-height-size: 64px;
+
+    // Read by point_of_sale's own login_screen.scss. Pointing these at the theme
+    // is why the entry wallpaper needs no template override at all.
+    --homeMenu-bg-color: var(--his-wallpaper-color);
+    --homeMenu-bg-image: var(--his-wallpaper);
+}
+
+// Ink blue: the toner-and-paper register. Administrative, not appetising —
+// the one till here that sells no food.
+.his-theme-copy_center {
+    --his-accent: #2f6feb;
+    --his-wallpaper-color: #10233f;
+    --his-wallpaper: url('/his_pos_ui/static/src/img/copy_center.webp');
+}
+
+// Herb green: picks up the salad without competing with the food itself.
+.his-theme-restaurant {
+    --his-accent: #2f8f4e;
+    --his-wallpaper-color: #14301f;
+    --his-wallpaper: url('/his_pos_ui/static/src/img/restaurant.webp');
+}
+
+// Espresso amber: the crema in the cup.
+.his-theme-cafeteria {
+    --his-accent: #b3701c;
+    --his-wallpaper-color: #33220f;
+    --his-wallpaper: url('/his_pos_ui/static/src/img/cafeteria.webp');
+}

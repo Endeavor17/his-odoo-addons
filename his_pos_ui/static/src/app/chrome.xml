@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The single hook the whole theme hangs on.
+
+         Adding a class is the entire mechanism: every rule this module ships is
+         scoped under it, so a till with no theme keeps exactly the classes stock
+         Odoo gave it and cannot be affected by anything here. No component is
+         patched, so no styling decision can reach a transaction. -->
+    <t t-name="his_pos_ui.Chrome" t-inherit="point_of_sale.Chrome" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('pos')]" position="attributes">
+            <attribute name="t-attf-class">{{ pos.config.his_pos_theme ? 'his-pos his-theme-' + pos.config.his_pos_theme : '' }}</attribute>
+        </xpath>
+    </t>
+
+</templates>

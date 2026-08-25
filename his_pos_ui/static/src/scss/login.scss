@@ -1,0 +1,46 @@
+// The entry screen is the one place a wallpaper belongs.
+//
+// point_of_sale's own login_screen.scss already draws .login-overlay from
+// --homeMenu-bg-color and --homeMenu-bg-image, and tokens.scss points both at
+// the theme. So the wallpaper arrives with no template override and no patched
+// component — the only thing left to add is a floor for the text to stand on.
+//
+// The scrim lives in CSS rather than baked into the image on purpose: contrast
+// stays tunable without re-exporting an asset, and the same photograph serves
+// any future light variant.
+
+.his-pos .login-overlay {
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.35) 0%,
+            rgba(0, 0, 0, 0.68) 100%
+        );
+        pointer-events: none;
+    }
+
+    // Everything the cashier reads sits above the scrim.
+    > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    color: #fff;
+
+    .timer-hours,
+    .timer-minutes,
+    .timer-seconds {
+        font-variant-numeric: tabular-nums;
+    }
+
+    // The till's own name, so someone crossing the building knows which
+    // register they are standing at before they touch it.
+    .screen-login-header {
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    }
+}

@@ -30,7 +30,13 @@ The interface may be redesigned; the transaction may not.
 
     'assets': {
         'point_of_sale._assets_pos': [
-            'his_pos_ui/static/src/**/*',
+            # Listed rather than globbed: tokens must be compiled before the
+            # rules that consume them, and a glob would also sweep the image
+            # folder's README into the bundle.
+            'his_pos_ui/static/src/scss/tokens.scss',
+            'his_pos_ui/static/src/scss/pos.scss',
+            'his_pos_ui/static/src/scss/login.scss',
+            'his_pos_ui/static/src/app/*.xml',
         ],
     },
 
