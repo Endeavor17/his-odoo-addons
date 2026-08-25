@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_pos_config_form_his_theme" model="ir.ui.view">
+        <field name="name">pos.config.form.his.theme</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <!-- The first settings container of the Configuration page. Anchored
+                 on the page rather than on a named block: point_of_sale ships no
+                 id on this container, and inventing an xpath against a class
+                 deeper in the tree breaks on every Odoo restyle. -->
+            <xpath expr="//page[@name='configuration']/div[hasclass('o_settings_container')]" position="inside">
+                <setting string="HIS Theme"
+                         help="Branded appearance for this point of sale. Leave empty for the stock Odoo interface.">
+                    <field name="his_pos_theme"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
