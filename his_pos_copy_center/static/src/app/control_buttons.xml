@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="his_pos_copy_center.ControlButtons" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <xpath expr="//SelectPartnerButton" position="after">
+            <button t-if="hasCopyProducts and !props.showRemainingButtons"
+                class="btn btn-primary btn-lg border-0 js_copy_job"
+                t-on-click="() => this.clickCopyJob()">
+                <i class="fa fa-copy me-1" role="img" aria-label="Copy job" title="Copy job"/>
+                Copy job
+            </button>
+        </xpath>
+    </t>
+
+</templates>

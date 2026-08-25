@@ -1,0 +1,99 @@
+// Chips are the whole interaction, so they are sized for a fingertip and their
+// selected state is unmistakable from across a counter — border AND fill, not
+// a subtle tint, because the cashier is confirming four choices at a glance
+// while the customer is still talking.
+//
+// Every colour is a token from his_pos_ui with a literal fallback, so the
+// dialog stays legible even if it is somehow opened on an unthemed till.
+
+.his-copy-job {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .his-copy-job-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .his-copy-job-label {
+        flex: 0 0 5.5rem;
+        color: var(--his-text-muted, #5b6470);
+        font-weight: 600;
+    }
+
+    .his-copy-job-chips {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .his-chip {
+        min-height: 56px;
+        min-width: 6.5rem;
+        border: 2px solid var(--his-border, #d8dbe0);
+        border-radius: 0.75rem;
+        background: var(--his-surface-raised, #ffffff);
+        color: var(--his-text, #1c2024);
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+
+    .his-chip-on {
+        border-color: var(--his-accent, #2f6feb);
+        background: var(--his-accent, #2f6feb);
+        color: var(--his-accent-contrast, #ffffff);
+    }
+
+    .his-copy-job-stepper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .his-step {
+        min-width: 56px;
+        min-height: 56px;
+        font-size: 1.5rem;
+        line-height: 1;
+        border: 2px solid var(--his-border, #d8dbe0);
+        border-radius: 0.75rem;
+        background: var(--his-surface-raised, #ffffff);
+    }
+
+    .his-copy-count {
+        width: 6rem;
+        height: 56px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-variant-numeric: tabular-nums;
+        border: 2px solid var(--his-border, #d8dbe0);
+        border-radius: 0.75rem;
+    }
+
+    .his-copy-job-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        border-top: 1px solid var(--his-border, #d8dbe0);
+        padding-top: 0.75rem;
+    }
+
+    .his-copy-job-calc {
+        color: var(--his-text-muted, #5b6470);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .his-copy-job-amount {
+        font-size: 1.75rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+
+    // A catalogue gap, stated where the price would have been.
+    .his-copy-job-missing {
+        color: #b42318;
+        font-weight: 600;
+    }
+}

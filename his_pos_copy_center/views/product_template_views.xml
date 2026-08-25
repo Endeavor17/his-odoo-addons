@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_product_template_form_copy" model="ir.ui.view">
+        <field name="name">product.template.form.copy.center</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']" position="inside">
+                <group string="Copy Center" name="his_copy_center">
+                    <field name="copy_service"/>
+                    <!-- The three dimensions only mean anything once the
+                         product is declared a copy service, so they stay out of
+                         the way of every other product in the catalogue. -->
+                    <field name="copy_format" invisible="not copy_service"/>
+                    <field name="copy_color" invisible="not copy_service"/>
+                    <field name="copy_sides" invisible="not copy_service"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Demo only.
+
+             The real catalogue belongs to whoever runs the MDM, not to this
+             module: what ships here is the *shape* of a copy product, not a
+             price list anyone should sell from. The copy categories are empty
+             on a fresh database, and a tour cannot shop in an empty shop.
+
+             The full A4/A3 x N&B/Couleur x Recto/Recto-verso grid for
+             Photocopie, so every combination the builder can compose resolves
+             to exactly one product - and so the missing-combination path can be
+             exercised by asking for an Impression instead. -->
+
+        <record id="product_copy_a4_bw_recto" model="product.template">
+            <field name="name">Photocopie A4 N&amp;B Recto</field>
+            <field name="type">consu</field>
+            <field name="list_price">10.0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="copy_service">photocopie</field>
+            <field name="copy_format">a4</field>
+            <field name="copy_color">bw</field>
+            <field name="copy_sides">recto</field>
+        </record>
+
+        <record id="product_copy_a4_bw_duplex" model="product.template">
+            <field name="name">Photocopie A4 N&amp;B Recto-verso</field>
+            <field name="type">consu</field>
+            <field name="list_price">15.0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="copy_service">photocopie</field>
+            <field name="copy_format">a4</field>
+            <field name="copy_color">bw</field>
+            <field name="copy_sides">duplex</field>
+        </record>
+
+        <record id="product_copy_a4_color_recto" model="product.template">
+            <field name="name">Photocopie A4 Couleur Recto</field>
+            <field name="type">consu</field>
+            <field name="list_price">40.0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="copy_service">photocopie</field>
+            <field name="copy_format">a4</field>
+            <field name="copy_color">color</field>
+            <field name="copy_sides">recto</field>
+        </record>
+
+        <record id="product_copy_a4_color_duplex" model="product.template">
+            <field name="name">Photocopie A4 Couleur Recto-verso</field>
+            <field name="type">consu</field>
+            <field name="list_price">70.0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="copy_service">photocopie</field>
+            <field name="copy_format">a4</field>
+            <field name="copy_color">color</field>
+            <field name="copy_sides">duplex</field>
+        </record>
+
+        <record id="product_copy_a3_bw_recto" model="product.template">
+            <field name="name">Photocopie A3 N&amp;B Recto</field>
+            <field name="type">consu</field>
+            <field name="list_price">20.0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="copy_service">photocopie</field>
+            <field name="copy_format">a3</field>
+            <field name="copy_color">bw</field>
+            <field name="copy_sides">recto</field>
+        </record>
+
+        <record id="product_copy_a3_bw_duplex" model="product.template">
+            <field name="name">Photocopie A3 N&amp;B Recto-verso</field>
+            <field name="type">consu</field>
+            <field name="list_price">30.0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="copy_service">photocopie</field>
+            <field name="copy_format">a3</field>
+            <field name="copy_color">bw</field>
+            <field name="copy_sides">duplex</field>
+        </record>
+
+        <record id="product_copy_a3_color_recto" model="product.template">
+            <field name="name">Photocopie A3 Couleur Recto</field>
+            <field name="type">consu</field>
+            <field name="list_price">80.0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="copy_service">photocopie</field>
+            <field name="copy_format">a3</field>
+            <field name="copy_color">color</field>
+            <field name="copy_sides">recto</field>
+        </record>
+
+        <record id="product_copy_a3_color_duplex" model="product.template">
+            <field name="name">Photocopie A3 Couleur Recto-verso</field>
+            <field name="type">consu</field>
+            <field name="list_price">140.0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="copy_service">photocopie</field>
+            <field name="copy_format">a3</field>
+            <field name="copy_color">color</field>
+            <field name="copy_sides">duplex</field>
+        </record>
+
+    </data>
+</odoo>
