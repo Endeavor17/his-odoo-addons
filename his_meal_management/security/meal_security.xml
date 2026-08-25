@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="module_category_meal" model="ir.module.category">
+        <field name="name">Meal Management</field>
+        <field name="description">Student meal cards, plans and credits.</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="res_groups_privilege_meal" model="res.groups.privilege">
+        <field name="name">Meal Management</field>
+        <field name="sequence">25</field>
+        <field name="category_id" ref="module_category_meal"/>
+    </record>
+
+    <record id="group_meal_cashier" model="res.groups">
+        <field name="name">Restaurant Cashier</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_meal"/>
+        <field name="comment">Serves meals. Can look up a student and their balance,
+            but cannot create, edit or delete cards, subscriptions or ledger lines.
+            Credits move only through the point of sale, on the server.</field>
+    </record>
+
+    <record id="group_meal_officer" model="res.groups">
+        <field name="name">Meal Officer</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="res_groups_privilege_meal"/>
+        <field name="implied_ids" eval="[(4, ref('group_meal_cashier'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        <field name="comment">IT centre staff. Issues and replaces cards, manages plans
+            and subscriptions, and posts corrections. Still cannot edit or delete a
+            ledger line.</field>
+    </record>
+
+</odoo>

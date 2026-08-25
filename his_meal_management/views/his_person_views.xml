@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extends his_person_core's person form. The academic fields sit next to
+         the rest of the identity, and the meal account gets its own page.
+
+         No wallet field is declared anywhere in this file's model: they live on
+         res.partner and reach his.person through delegation, so they can simply
+         be named here. -->
+
+    <record id="view_his_person_form_meal" model="ir.ui.view">
+        <field name="name">his.person.form.meal</field>
+        <field name="model">his.person</field>
+        <field name="inherit_id" ref="his_person_core.view_his_person_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Anchored on a field name, not on the group's label. The groups
+                 in the parent view carry no `name`, and `string` cannot be used
+                 as a selector - neither as `<group string=... position=...>` nor
+                 inside an xpath `expr`: it is a translatable attribute, so the
+                 selector would stop matching in a translated database
+                 (ir_ui_view._valid_inheritance). `email_personnel` identifies
+                 the Contact group and is not translated. -->
+            <xpath expr="//group[field[@name='email_personnel']]" position="after">
+                <group string="Rattachement">
+                    <field name="faculty_ids" widget="many2many_tags"/>
+                </group>
+                <group string="Enseignant" invisible="type_personne != 'enseignant'">
+                    <field name="rang_academique"/>
+                    <field name="specialite"/>
+                </group>
+            </xpath>
+
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Meal Account" name="meal_account"
+                          invisible="not meal_card_ids">
+                        <group>
+                            <group string="Card">
+                                <field name="meal_card_code" string="Active Card"/>
+                            </group>
+                            <group string="Balance">
+                                <field name="meal_credits_remaining"/>
+                                <field name="meal_active_plan"/>
+                                <button name="action_open_meal_transactions" type="object"
+                                        string="Meal History" class="btn-link"
+                                        icon="fa-history"/>
+                            </group>
+                        </group>
+                        <separator string="Cards"/>
+                        <field name="meal_card_ids" readonly="1">
+                            <list>
+                                <field name="code"/>
+                                <field name="state"/>
+                                <field name="create_date"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_his_person_list_meal" model="ir.ui.view">
+        <field name="name">his.person.list.meal</field>
+        <field name="model">his.person</field>
+        <field name="inherit_id" ref="his_person_core.view_his_person_list"/>
+        <field name="arch" type="xml">
+            <field name="type_personne" position="after">
+                <field name="meal_card_code" optional="show" string="Card"/>
+                <field name="meal_credits_remaining" optional="show" string="Credits"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_his_person_search_meal" model="ir.ui.view">
+        <field name="name">his.person.search.meal</field>
+        <field name="model">his.person</field>
+        <field name="inherit_id" ref="his_person_core.view_his_person_search"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <!-- Searching by card number is the common case: it is the number
+                     the reader sends and the one printed on the sheet. -->
+                <field name="meal_card_ids" string="Card number"
+                       filter_domain="[('meal_card_ids.code', 'ilike', self)]"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

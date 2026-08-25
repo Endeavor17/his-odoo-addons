@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_meal_card_list" model="ir.ui.view">
+        <field name="name">his.meal.card.list</field>
+        <field name="model">his.meal.card</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state != 'active'" decoration-danger="state in ('blocked', 'lost')">
+                <field name="code"/>
+                <field name="partner_id"/>
+                <field name="credits_remaining"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-danger="state in ('blocked', 'lost')"/>
+                <field name="create_date" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_meal_card_form" model="ir.ui.view">
+        <field name="name">his.meal.card.form</field>
+        <field name="model">his.meal.card</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_block" type="object" string="Block"
+                            invisible="state != 'active'"
+                            confirm="Block this card? The person keeps every credit; only this piece of plastic stops working."/>
+                    <button name="action_activate" type="object" string="Re-activate"
+                            invisible="state == 'active'"/>
+                    <button name="action_replace" type="object" string="Replace" class="btn-primary"
+                            invisible="state == 'replaced'"
+                            confirm="Issue a new card for this person? The balance moves with them."/>
+                    <field name="state" widget="statusbar" statusbar_visible="active,blocked,lost,replaced"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_print_card" type="object" class="oe_stat_button" icon="fa-print">
+                            <span class="o_stat_text">Print Card</span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="code" string="Card"/>
+                        <h1><field name="code" placeholder="Tap the card here — e.g. 0007197786"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="code">
+                        Click in the field above and tap the card on the reader. It sends
+                        the card's own 10-digit number, which cannot be chosen or typed
+                        from memory.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="credits_remaining"/>
+                            <field name="replaced_card_id" invisible="not replaced_card_id"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        The card carries this code and nothing else. Credits and history
+                        live in Odoo, which is why a lost card costs the person nothing.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_meal_card_search" model="ir.ui.view">
+        <field name="name">his.meal.card.search</field>
+        <field name="model">his.meal.card</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="partner_id"/>
+                <filter name="filter_active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="filter_dead" string="Blocked or Lost" domain="[('state', 'in', ('blocked', 'lost'))]"/>
+                <group>
+                    <filter name="group_state" string="Status" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter name="group_partner" string="Person" domain="[]" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_meal_card" model="ir.actions.act_window">
+        <field name="name">Meal Cards</field>
+        <field name="res_model">his.meal.card</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Issue a first card</p>
+            <p>A card only identifies the person. Blocking or replacing one never
+               touches their meal credits.</p>
+        </field>
+    </record>
+
+</odoo>

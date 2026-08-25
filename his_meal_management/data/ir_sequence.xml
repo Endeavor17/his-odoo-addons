@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- There is deliberately NO sequence for the matricule institutionnel.
+             HIS issues those; this system only records them. See the note in
+             models/res_partner.py. -->
+
+        <!-- Fallback codes for printed cards. RFID cards do not use this: their
+             code is the UID burned into the card by its manufacturer, which is
+             read off the card and cannot be generated. -->
+        <record id="seq_meal_card" model="ir.sequence">
+            <field name="name">Printed Meal Card</field>
+            <field name="code">his.meal.card</field>
+            <field name="prefix">HIS-CARD-</field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+        </record>
+
+    </data>
+</odoo>

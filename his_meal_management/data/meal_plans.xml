@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- The three plans as sold by the IT centre. Prices are in the
+             company currency: set it to DZD before going live.
+
+             Taxes are cleared deliberately. A plan sold at 12 000 must land 25
+             credits and take exactly 12 000, and the student meal must stay at
+             zero when it is paid with a credit. -->
+
+        <record id="product_plan_weekly" model="product.template">
+            <field name="name">Weekly Meal Plan</field>
+            <field name="type">service</field>
+            <field name="list_price">3000.0</field>
+            <field name="meal_credits">6</field>
+            <field name="meal_validity_days">7</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[(5, 0, 0)]"/>
+            <field name="description_sale">5 paid meals + 1 free = 6 credits, valid 7 days.</field>
+        </record>
+
+        <record id="product_plan_monthly" model="product.template">
+            <field name="name">Monthly Meal Plan</field>
+            <field name="type">service</field>
+            <field name="list_price">12000.0</field>
+            <field name="meal_credits">25</field>
+            <field name="meal_validity_days">30</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[(5, 0, 0)]"/>
+            <field name="description_sale">20 paid meals + 5 free = 25 credits, valid 30 days.</field>
+        </record>
+
+        <record id="product_plan_semester" model="product.template">
+            <field name="name">Semester Meal Plan</field>
+            <field name="type">service</field>
+            <field name="list_price">36000.0</field>
+            <field name="meal_credits">80</field>
+            <field name="meal_validity_days">180</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[(5, 0, 0)]"/>
+            <field name="description_sale">60 paid meals + 20 free = 80 credits, valid 180 days.</field>
+        </record>
+
+        <!-- The meal itself. Sold at 600 to a walk-in customer, or added at 0
+             and paid with one credit when the student has a plan. -->
+        <record id="product_daily_meal" model="product.template">
+            <field name="name">Daily Meal</field>
+            <!-- 'consu' without is_storable: a meal is not tracked in stock.
+                 (is_storable lives in the stock module, which this one does not
+                 depend on, so it is deliberately not set here.) -->
+            <field name="type">consu</field>
+            <field name="list_price">600.0</field>
+            <field name="meal_credits">0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[(5, 0, 0)]"/>
+        </record>
+
+    </data>
+</odoo>
