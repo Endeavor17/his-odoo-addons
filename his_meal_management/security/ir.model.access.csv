@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_his_faculty_cashier,his.faculty.cashier,model_his_faculty,group_meal_cashier,1,0,0,0
+access_his_faculty_officer,his.faculty.officer,model_his_faculty,group_meal_officer,1,1,1,0
+access_meal_card_cashier,meal.card.cashier,model_his_meal_card,group_meal_cashier,1,0,0,0
+access_meal_card_officer,meal.card.officer,model_his_meal_card,group_meal_officer,1,1,1,0
+access_meal_subscription_cashier,meal.subscription.cashier,model_his_meal_subscription,group_meal_cashier,1,0,0,0
+access_meal_subscription_officer,meal.subscription.officer,model_his_meal_subscription,group_meal_officer,1,1,0,0
+access_meal_transaction_cashier,meal.transaction.cashier,model_his_meal_transaction,group_meal_cashier,1,0,0,0
+access_meal_transaction_officer,meal.transaction.officer,model_his_meal_transaction,group_meal_officer,1,0,0,0
+access_meal_adjust_wizard_officer,meal.adjust.wizard.officer,model_his_meal_adjust_wizard,group_meal_officer,1,1,1,1

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_meal_root" name="Meals" sequence="45"
+              groups="group_meal_cashier"/>
+
+    <menuitem id="menu_meal_people" name="People" parent="menu_meal_root"
+              action="action_his_person" sequence="10"/>
+
+    <menuitem id="menu_meal_cards" name="Cards" parent="menu_meal_root"
+              action="action_meal_card" sequence="20"/>
+
+    <menuitem id="menu_meal_subscriptions" name="Subscriptions" parent="menu_meal_root"
+              action="action_meal_subscription" sequence="30"/>
+
+    <menuitem id="menu_meal_ledger" name="Meal Ledger" parent="menu_meal_root"
+              action="action_meal_transaction" sequence="40"/>
+
+    <menuitem id="menu_meal_config" name="Configuration" parent="menu_meal_root"
+              sequence="90" groups="group_meal_officer"/>
+
+    <menuitem id="menu_meal_plans" name="Meal Plans" parent="menu_meal_config"
+              action="action_meal_plan" sequence="10"/>
+
+    <menuitem id="menu_his_faculty" name="Faculties" parent="menu_meal_config"
+              action="action_his_faculty" sequence="20"/>
+
+    <menuitem id="menu_meal_adjust" name="Correct Credits" parent="menu_meal_config"
+              action="action_meal_adjust_wizard" sequence="30"/>
+
+</odoo>

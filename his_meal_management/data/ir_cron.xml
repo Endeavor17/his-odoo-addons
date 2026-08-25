@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Cosmetic only. Consumption checks the dates directly, so a missed
+             run can never let an expired plan be eaten - it would only leave a
+             stale label in the list view. -->
+        <record id="cron_expire_subscriptions" model="ir.cron">
+            <field name="name">Meal: expire finished subscriptions</field>
+            <field name="model_id" ref="model_his_meal_subscription"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_expire_subscriptions()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

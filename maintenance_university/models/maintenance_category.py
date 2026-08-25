@@ -19,6 +19,23 @@ class MaintenanceCategory(models.Model):
         default=True
     )
 
+    # L'inverse que le coeur attend. maintenance.request.category_id est
+    # redirige vers CE modele (cf. maintenance_university_request.py), alors
+    # que le One2many qui le declare comme inverse vit sur
+    # maintenance.equipment.category :
+    #
+    #   maintenance/models/maintenance.py:43
+    #       maintenance_ids = fields.One2many('maintenance.request', 'category_id')
+    #
+    # L'ORM enregistre donc « l'inverse de category_id s'appelle
+    # maintenance_ids » et va le chercher sur le comodele — ici. Sans ce champ,
+    # _modified_triggers fait self['maintenance_ids'] et leve KeyError des
+    # qu'un onchange declenche modified() sur une categorie : le formulaire
+    # Categories devenait inouvrable.
+    maintenance_ids = fields.One2many(
+        'maintenance.request', 'category_id', string="Requests", copy=False,
+    )
+
     is_inspection = fields.Boolean(
         string="Is Inspection Category",
         default=False,

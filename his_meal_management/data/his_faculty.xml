@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- The six faculty codes observed in the real HIS data (section 3).
+             EDU is carried with an unconfirmed name because the source document
+             records that no catalogue was ever received for it - a gap to fill
+             before the referential can be called complete. -->
+
+        <record id="faculty_mi" model="his.faculty">
+            <field name="code">MI</field>
+            <field name="name">Faculté des Mathématiques &amp; Informatique</field>
+        </record>
+
+        <record id="faculty_segc" model="his.faculty">
+            <field name="code">SEGC</field>
+            <field name="name">Faculté des Sciences Économiques et des Affaires</field>
+        </record>
+
+        <record id="faculty_dsp" model="his.faculty">
+            <field name="code">DSP</field>
+            <field name="name">Faculté de Droit et des Sciences Politiques</field>
+        </record>
+
+        <record id="faculty_shs" model="his.faculty">
+            <field name="code">SHS</field>
+            <field name="name">Faculté des Sciences Sociales et Humaines (Psychologie)</field>
+        </record>
+
+        <record id="faculty_st" model="his.faculty">
+            <field name="code">ST</field>
+            <field name="name">Faculté des Sciences et de la Technologie (Électronique)</field>
+        </record>
+
+        <record id="faculty_edu" model="his.faculty">
+            <field name="code">EDU</field>
+            <field name="name">Éducation</field>
+            <field name="name_confirmed" eval="False"/>
+        </record>
+
+    </data>
+</odoo>
