@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_his_inventaire_annuel_stock_manager,his.inventaire.annuel.stock.manager,model_his_inventaire_annuel,stock.group_stock_manager,1,1,1,1

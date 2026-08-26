@@ -21,6 +21,7 @@ modifications posterieures a l'installation.
         'point_of_sale',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
         'data/mdm_bind_data.xml',
         'data/product_category_data.xml',
@@ -29,6 +30,7 @@ modifications posterieures a l'installation.
         'data/stock_scrap_reason_data.xml',
         'data/pos_config_data.xml',
         'views/mdm_views.xml',
+        'views/his_inventaire_annuel_views.xml',
     ],
     'installable': True,
 }

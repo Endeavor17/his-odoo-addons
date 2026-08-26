@@ -51,6 +51,45 @@ celle-ci échoue. À valider avec la comptabilité avant mise en production.
 | Valorisation FIFO / CUMP par catégorie | `data/product_category_data.xml` | Donnée |
 | Motif de perte obligatoire, commentaire si « Autre » | `models/stock_scrap.py` | Bloquant |
 | 3 points de vente à stock séparé | `data/stock_location_data.xml` + `pos_config_data.xml` | Chaque caisse décrémente son propre emplacement |
+| Séparation des tâches : Collaborateur propose, Manager valide | `models/stock_scrap.py` + `models/stock_quant.py` | Bloquant sur `do_scrap()` et `action_apply_inventory()` (natifs `stock.group_stock_user`/`stock.group_stock_manager`) |
+| Inventaire physique annuel : clôture bloquée si comptage non appliqué | `models/his_inventaire_annuel.py` | Bloquant à la clôture, quel que soit le chemin d'écriture |
+
+## Séparation des tâches (Manager / Collaborateur)
+
+Aucun rôle propre au module : réutilisation directe de `stock.group_stock_user`
+(Collaborateur) et `stock.group_stock_manager` (Manager, implique le premier)
+— l'échelle native correspond déjà exactement à l'organisation actuelle. Un
+rôle personnalisé n'apporterait aucune capacité supplémentaire tant que
+« peut valider un ajustement » et « peut configurer l'entrepôt » restent
+portés par la même personne ; à séparer plus tard si un vrai besoin apparaît.
+
+Un Collaborateur peut créer/modifier une perte en brouillon et saisir un
+comptage (`inventory_quantity`) ; seul un Manager peut la valider
+(`do_scrap()`) ou l'appliquer aux livres (`action_apply_inventory()`, ce qui
+couvre aussi bien le bouton « Appliquer » que l'assistant « Tout appliquer »).
+
+**À faire avant la mise en production :** ce contrôle change qui peut
+finaliser un ajustement dès l'installation. Vérifier dans Réglages ▸
+Utilisateurs que `stock.group_stock_manager` est bien porté par la ou les
+bonnes personnes — ça ne peut pas se déduire du code.
+
+## Inventaire physique annuel
+
+`his.inventaire.annuel` (Inventaire ▸ Configuration ▸ Inventaires annuels,
+Manager uniquement) formalise l'obligation légale d'un comptage physique
+annuel réconcilié aux livres avant clôture d'exercice. Pas de reprise de
+l'existant Odoo : `stock.quant` ne garde aucun lien stocké vers une
+« campagne », donc pas d'état brouillon distinct — la création EST
+l'ouverture, `create_uid`/`create_date` natifs suffisent pour savoir qui l'a
+ouvert et quand.
+
+La clôture (`action_cloturer()`, Manager uniquement) est bloquée tant qu'il
+reste un `stock.quant` de la société avec un comptage saisi mais non appliqué
+(`inventory_quantity_set = True`) sur un emplacement interne — la règle vit en
+`@api.constrains`, donc elle se déclenche aussi sur un import ou une écriture
+ORM directe, pas seulement via le bouton. Une fois clôturé, l'enregistrement
+est verrouillé (aucune modification ni suppression) : c'est une pièce d'audit,
+pas un document de travail.
 
 ## Phase 4 — Seuils minimums
 
@@ -90,7 +129,7 @@ ceux qui exigent des mouvements réels, à dérouler manuellement :
 |---|---|---|
 | 1 | Magasins multiples | Réception sur `WH/Stock`, transferts vers les 3 points, vente POS Cafétéria ⇒ `WH/Restaurant` inchangé |
 | 2 | Entrées/sorties | Réception fournisseur + vente POS, contrôle des mouvements |
-| 3 | Inventaires | Comptage cyclique, écart, validation de l'ajustement |
+| 3 | Inventaires | Comptage cyclique par le Collaborateur, application par le Manager (`do_scrap`/`action_apply_inventory` refusent au Collaborateur), clôture annuelle via Inventaire ▸ Configuration ▸ Inventaires annuels |
 | 4 | Seuils minimums | Stock sous seuil ⇒ suggestion de réapprovisionnement |
 | 5 | Traçabilité | Lot de viande avec péremption, vente, traçabilité amont/aval |
 | 6 | Mouvements historiques | Historique complet d'un produit |

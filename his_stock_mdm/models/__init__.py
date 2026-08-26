@@ -5,3 +5,5 @@ from . import product_template_attribute_line
 from . import product_template
 from . import product_product
 from . import stock_scrap
+from . import stock_quant
+from . import his_inventaire_annuel
