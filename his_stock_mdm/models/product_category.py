@@ -5,7 +5,7 @@ from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
-ROOT = "Retail & Consommables (Storable)"
+ROOT = "All / Retail & Consommables (Storable)"
 
 # XML ID -> complete_name de la categorie DEJA PRESENTE en base.
 # Le module ne cree aucune categorie : il se rattache a l'arborescence existante
