@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_university_besoin_achat_list" model="ir.ui.view">
+        <field name="name">university.besoin.achat.list</field>
+        <field name="model">university.besoin.achat</field>
+        <field name="arch" type="xml">
+            <list string="Besoins d'Achat" decoration-info="state == 'draft'" decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="demandeur_id"/>
+                <field name="type_besoin"/>
+                <field name="date_limite_reponse"/>
+                <field name="date_livraison"/>
+                <field name="client_id"/>
+                <field name="state" widget="badge"
+                    decoration-info="state == 'draft'"
+                    decoration-warning="state in ('confirmed', 'offer_selection')"
+                    decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_university_besoin_achat_form" model="ir.ui.view">
+        <field name="name">university.besoin.achat.form</field>
+        <field name="model">university.besoin.achat</field>
+        <field name="arch" type="xml">
+            <form string="Besoin d'Achat">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirmer"
+                        class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_select_offers" type="object" string="Sélection des offres"
+                        class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_create_rfq" type="object" string="Créer Demande de Prix"
+                        class="oe_highlight" invisible="state not in ('confirmed', 'offer_selection')"/>
+                    <button name="action_done" type="object" string="Marquer comme Fait"
+                        class="oe_highlight" invisible="state != 'offer_selection'"/>
+                    <button name="action_set_draft" type="object" string="Remettre en brouillon"
+                        invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,confirmed,offer_selection,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_purchase_orders" type="object"
+                            class="oe_stat_button" icon="fa-file-text-o"
+                            invisible="purchase_order_count == 0">
+                            <field name="purchase_order_count" widget="statinfo" string="Demandes de prix"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" string="Référence d'achat"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="condition" widget="radio"/>
+                            <field name="demandeur_id"/>
+                            <field name="structure"/>
+                            <field name="type_besoin"/>
+                        </group>
+                        <group>
+                            <field name="date_limite_reponse" required="state != 'draft'"/>
+                            <field name="date_livraison"/>
+                            <field name="fournisseur_ids" widget="many2many_tags"/>
+                            <field name="client_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Produits" name="products">
+                            <field name="line_ids">
+                                <list editable="bottom"
+                                    decoration-bf="is_pack_line"
+                                    decoration-muted="pack_origin_id">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="is_pack_line" column_invisible="True"/>
+                                    <field name="pack_origin_id" optional="hide"/>
+                                    <field name="product_id"/>
+                                    <field name="description"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_university_besoin_achat" model="ir.actions.act_window">
+        <field name="name">Besoin d'Achat</field>
+        <field name="res_model">university.besoin.achat</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smart_action">
+                Créer un nouveau besoin d'achat
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_university_besoin_achat"
+        name="Besoin d'achat"
+        parent="purchase.menu_purchase_root"
+        action="action_university_besoin_achat"
+        sequence="2"/>
+
+</odoo>

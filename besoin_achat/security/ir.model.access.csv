@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_university_besoin_achat_user,university.besoin.achat.user,model_university_besoin_achat,purchase.group_purchase_user,1,1,1,1
+access_university_besoin_achat_line_user,university.besoin.achat.line.user,model_university_besoin_achat_line,purchase.group_purchase_user,1,1,1,1
+access_product_pack_line_user,product.pack.line.user,model_product_pack_line,base.group_user,1,0,0,0
+access_product_pack_line_manager,product.pack.line.manager,model_product_pack_line,product.group_product_manager,1,1,1,1
