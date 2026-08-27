@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        5 DEMO candidates on the DEMO job (job_campus_enseignant_demo, see
+        campus_demo_job_enseignant.xml), spread across the recruitment
+        pipeline so the Kanban and every phase of the workflow can be
+        exercised immediately after install/upgrade:
+
+          - Ahmed Benali    : Nouveau (core "New" stage)
+          - Sara Mansouri   : Qualification (core stage)
+          - Mohamed Amine   : 1er Interview, interview scheduled (a real
+                              campus.interview.slot, booked, unconfirmed)
+          - Lina Haddad     : 1er Interview, interview done (hiring step
+                              "1st Interview Completed" - "Entretien
+                              terminé"; ready for the recruiter to move
+                              manually into Phase 2, by design - see
+                              hr_applicant.py's own docstring)
+          - Yacine Karim    : Contrat stage, contract signed, one subject
+                              assigned, and a Shooting Program with one
+                              completed + one upcoming recording session -
+                              covers Phase 3 (Planning/Tournage/Validé)
+                              end to end.
+
+        Plain field values only, no action_* calls: this is data to click
+        through, not a script replaying the workflow. noupdate so edits made
+        while testing survive a module upgrade, matching this module's
+        convention everywhere else.
+    -->
+    <data noupdate="1">
+
+        <record id="demo_applicant_ahmed_benali" model="hr.applicant">
+            <field name="partner_name">Ahmed Benali</field>
+            <field name="email_from">ahmed.benali@example.com</field>
+            <field name="partner_phone">+213 555 010 101</field>
+            <field name="job_id" ref="job_campus_enseignant_demo"/>
+            <field name="stage_id" ref="hr_recruitment.stage_job0"/>
+        </record>
+
+        <record id="demo_applicant_sara_mansouri" model="hr.applicant">
+            <field name="partner_name">Sara Mansouri</field>
+            <field name="email_from">sara.mansouri@example.com</field>
+            <field name="partner_phone">+213 555 010 102</field>
+            <field name="job_id" ref="job_campus_enseignant_demo"/>
+            <field name="stage_id" ref="hr_recruitment.stage_job1"/>
+        </record>
+
+        <record id="demo_applicant_mohamed_amine" model="hr.applicant">
+            <field name="partner_name">Mohamed Amine</field>
+            <field name="email_from">mohamed.amine@example.com</field>
+            <field name="partner_phone">+213 555 010 103</field>
+            <field name="job_id" ref="job_campus_enseignant_demo"/>
+            <field name="stage_id" ref="stage_interview1"/>
+            <field name="campus_hiring_state">meeting_1</field>
+        </record>
+
+        <record id="demo_slot_mohamed_amine" model="campus.interview.slot">
+            <field name="start_datetime" eval="(DateTime.now() + timedelta(days=3)).replace(hour=10, minute=0, second=0, microsecond=0)"/>
+            <field name="duration">0.5</field>
+            <field name="round">1</field>
+            <field name="interviewer_id" ref="base.user_admin"/>
+            <field name="state">booked</field>
+            <field name="applicant_id" ref="demo_applicant_mohamed_amine"/>
+        </record>
+
+        <record id="demo_applicant_lina_haddad" model="hr.applicant">
+            <field name="partner_name">Lina Haddad</field>
+            <field name="email_from">lina.haddad@example.com</field>
+            <field name="partner_phone">+213 555 010 104</field>
+            <field name="job_id" ref="job_campus_enseignant_demo"/>
+            <field name="stage_id" ref="stage_interview1"/>
+            <field name="campus_hiring_state">interview1_completed</field>
+        </record>
+
+        <record id="demo_slot_lina_haddad" model="campus.interview.slot">
+            <field name="start_datetime" eval="(DateTime.now() - timedelta(days=1)).replace(hour=14, minute=0, second=0, microsecond=0)"/>
+            <field name="duration">0.5</field>
+            <field name="round">1</field>
+            <field name="interviewer_id" ref="base.user_admin"/>
+            <field name="state">booked</field>
+            <field name="applicant_id" ref="demo_applicant_lina_haddad"/>
+            <field name="teacher_confirmed">True</field>
+            <field name="teacher_confirmed_date" eval="DateTime.now() - timedelta(days=2)"/>
+        </record>
+
+        <record id="demo_applicant_yacine_karim" model="hr.applicant">
+            <field name="partner_name">Yacine Karim</field>
+            <field name="email_from">yacine.karim@example.com</field>
+            <field name="partner_phone">+213 555 010 105</field>
+            <field name="job_id" ref="job_campus_enseignant_demo"/>
+            <field name="stage_id" ref="stage_contract"/>
+            <field name="campus_hiring_state">interview2_completed</field>
+            <field name="campus_contract_state">signed</field>
+        </record>
+
+        <record id="demo_subject_yacine_karim" model="campus.application.subject">
+            <field name="applicant_id" ref="demo_applicant_yacine_karim"/>
+            <field name="subject_id" ref="campus_teacher_management.subject_13"/>
+            <field name="source">catalogue</field>
+            <field name="is_wished" eval="True"/>
+            <field name="is_accepted" eval="True"/>
+        </record>
+
+        <record id="demo_shooting_program_yacine_karim" model="campus.shooting.program">
+            <field name="applicant_id" ref="demo_applicant_yacine_karim"/>
+        </record>
+
+        <record id="demo_shooting_session_yacine_1" model="campus.shooting.session">
+            <field name="applicant_id" ref="demo_applicant_yacine_karim"/>
+            <field name="program_id" ref="demo_shooting_program_yacine_karim"/>
+            <field name="title">Logiciel Libre - Chapitre 1</field>
+            <field name="description">Introduction aux logiciels libres : historique, licences, écosystème.</field>
+            <field name="start_datetime" eval="(DateTime.now() - timedelta(days=5)).replace(hour=9, minute=0, second=0, microsecond=0)"/>
+            <field name="duration">1.5</field>
+            <field name="confirmed" eval="True"/>
+            <field name="confirmed_date" eval="DateTime.now() - timedelta(days=6)"/>
+            <field name="recorded" eval="True"/>
+            <field name="recorded_date" eval="DateTime.now() - timedelta(days=5)"/>
+        </record>
+
+        <record id="demo_shooting_session_yacine_2" model="campus.shooting.session">
+            <field name="applicant_id" ref="demo_applicant_yacine_karim"/>
+            <field name="program_id" ref="demo_shooting_program_yacine_karim"/>
+            <field name="title">Logiciel Libre - Chapitre 2</field>
+            <field name="description">Outils collaboratifs open source et bonnes pratiques de contribution.</field>
+            <field name="start_datetime" eval="(DateTime.now() + timedelta(days=4)).replace(hour=9, minute=0, second=0, microsecond=0)"/>
+            <field name="duration">1.5</field>
+            <field name="confirmed" eval="False"/>
+            <field name="recorded" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

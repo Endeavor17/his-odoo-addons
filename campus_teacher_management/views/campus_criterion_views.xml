@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="campus_criterion_view_list" model="ir.ui.view">
+        <field name="name">campus.criterion.list</field>
+        <field name="model">campus.criterion</field>
+        <field name="arch" type="xml">
+            <list string="Criteria">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="version_id"/>
+                <field name="value_type"/>
+                <field name="source_key"/>
+                <field name="priority"/>
+                <field name="max_score"/>
+                <field name="weight_percent" string="Weight %"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="campus_criterion_view_form" model="ir.ui.view">
+        <field name="name">campus.criterion.form</field>
+        <field name="model">campus.criterion</field>
+        <field name="arch" type="xml">
+            <form string="Criterion">
+                <sheet>
+                    <field name="version_state" invisible="1"/>
+                    <div class="alert alert-warning" role="alert" invisible="version_state == 'draft'">
+                        This criterion belongs to a version that is no longer a draft, so its
+                        scoring settings are read-only.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="code" placeholder="C1" class="oe_inline" style="width: 4em;"/>
+                            <field name="name" placeholder="Criterion name" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Source and Type">
+                            <field name="version_id" options="{'no_create': True}"/>
+                            <field name="value_type"/>
+                            <field name="source_key"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Weighting">
+                            <field name="priority"/>
+                            <field name="weight" readonly="1"/>
+                            <field name="weight_percent" readonly="1"/>
+                            <field name="max_score"/>
+                            <field name="use_version_years_cap"
+                                   invisible="value_type != 'number'"/>
+                            <field name="answered_score"
+                                   invisible="value_type != 'answered'"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Notes for whoever maintains this criterion..."/>
+                    <notebook invisible="value_type != 'scale'">
+                        <page string="Scale (barème)" name="scale">
+                            <field name="scale_ids" nolabel="1">
+                                <list string="Scale" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="key"/>
+                                    <field name="name"/>
+                                    <field name="aliases"/>
+                                    <field name="score"/>
+                                </list>
+                            </field>
+                            <p class="text-muted mt-2">
+                                Answers are matched on the code first, then the label, then any
+                                alias — so renaming a label can never change how a past answer scored.
+                            </p>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="campus_criterion_view_search" model="ir.ui.view">
+        <field name="name">campus.criterion.search</field>
+        <field name="model">campus.criterion</field>
+        <field name="arch" type="xml">
+            <search string="Criteria">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="source_key"/>
+                <field name="version_id"/>
+                <group>
+                    <filter name="group_version" string="Version"
+                            context="{'group_by': 'version_id'}"/>
+                    <filter name="group_type" string="Value Type"
+                            context="{'group_by': 'value_type'}"/>
+                    <filter name="group_priority" string="Priority"
+                            context="{'group_by': 'priority'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_campus_criterion" model="ir.actions.act_window">
+        <field name="name">Criteria</field>
+        <field name="res_model">campus.criterion</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_version': 1}</field>
+    </record>
+
+    <!-- Scale lines get their own action so an administrator can audit every
+         score in one table rather than opening twelve criteria. -->
+    <record id="campus_criterion_scale_view_list" model="ir.ui.view">
+        <field name="name">campus.criterion.scale.list</field>
+        <field name="model">campus.criterion.scale</field>
+        <field name="arch" type="xml">
+            <list string="Scale Lines" editable="bottom">
+                <field name="version_id" optional="show" readonly="1"/>
+                <field name="criterion_id"/>
+                <field name="sequence" widget="handle"/>
+                <field name="key"/>
+                <field name="name"/>
+                <field name="aliases" optional="hide"/>
+                <field name="score"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_campus_criterion_scale" model="ir.actions.act_window">
+        <field name="name">Answer Scales</field>
+        <field name="res_model">campus.criterion.scale</field>
+        <field name="view_mode">list</field>
+    </record>
+
+</odoo>

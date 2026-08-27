@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- The swap seam. Point this at another model that inherits
+             campus.scoring.engine to change the algorithm without touching
+             models, views, the API or the dashboard. -->
+        <record id="param_scoring_engine" model="ir.config_parameter">
+            <field name="key">campus_teacher.scoring_engine</field>
+            <field name="value">campus.scoring.engine</field>
+        </record>
+
+        <!-- Comma-separated list. Empty means "not configured yet" and allows
+             every origin so a fresh install is testable; set this to the live
+             site before going to production. -->
+        <record id="param_allowed_origins" model="ir.config_parameter">
+            <field name="key">campus_teacher.allowed_origins</field>
+            <field name="value">https://campusplus.his.edu.dz</field>
+        </record>
+
+        <record id="param_rate_limit_ip" model="ir.config_parameter">
+            <field name="key">campus_teacher.rate_limit_ip</field>
+            <field name="value">20</field>
+        </record>
+
+        <record id="param_rate_limit_email" model="ir.config_parameter">
+            <field name="key">campus_teacher.rate_limit_email</field>
+            <field name="value">3</field>
+        </record>
+
+        <record id="param_rate_limit_window" model="ir.config_parameter">
+            <field name="key">campus_teacher.rate_limit_window_minutes</field>
+            <field name="value">60</field>
+        </record>
+
+        <!-- Name of the hidden field bots fill in and humans never see. -->
+        <record id="param_honeypot" model="ir.config_parameter">
+            <field name="key">campus_teacher.honeypot_field</field>
+            <field name="value">website</field>
+        </record>
+
+        <record id="seq_campus_submission" model="ir.sequence">
+            <field name="name">Campus+ Submission</field>
+            <field name="code">campus.submission</field>
+            <field name="prefix">SUB/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

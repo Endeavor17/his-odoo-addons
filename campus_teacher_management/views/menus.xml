@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        One phase, one menu, one screen. Each phase item below is filtered by
+        stage_id alone (see views/hr_applicant_views.xml's campus_phase_*
+        actions) - a candidate has exactly one stage_id, so these are
+        mutually exclusive by construction, not by convention. No item here
+        exposes a technical/internal state (campus_hiring_state,
+        campus_cb_state, campus_contract_state) as its own menu; those remain
+        as fields visible on the candidate's own record.
+
+        The old state-driven menus (Hiring's To Select/Awaiting Reply/In
+        Documents/Ready to Hire/Hired, and Scheduling's Interview
+        Calendar/Available Slots/Generate Week) are deliberately not linked
+        here anymore. Their actions and views are untouched in the code -
+        only removed from this navigation - so nothing is lost if they are
+        ever needed again.
+    -->
+
+    <menuitem id="menu_campus_root"
+              name="Campus+ Recruitment"
+              parent="hr_recruitment.menu_hr_recruitment_root"
+              sequence="15"
+              groups="group_campus_recruiter"/>
+
+    <menuitem id="menu_campus_dashboard"
+              name="Dashboard"
+              parent="menu_campus_root"
+              action="action_campus_dashboard"
+              sequence="10"/>
+
+    <menuitem id="menu_campus_candidatures"
+              name="Candidatures"
+              parent="menu_campus_root"
+              action="action_campus_applications"
+              sequence="20"/>
+
+    <menuitem id="menu_campus_phase_interview1"
+              name="1er Interview"
+              parent="menu_campus_root"
+              action="action_campus_phase_interview1"
+              sequence="30"/>
+
+    <menuitem id="menu_campus_phase_interview2"
+              name="2ème Interview"
+              parent="menu_campus_root"
+              action="action_campus_phase_interview2"
+              sequence="40"/>
+
+    <menuitem id="menu_campus_phase_course_breakdown"
+              name="Course Breakdown"
+              parent="menu_campus_root"
+              action="action_campus_phase_course_breakdown"
+              sequence="50"/>
+
+    <menuitem id="menu_campus_phase_contract"
+              name="Contrat"
+              parent="menu_campus_root"
+              action="action_campus_phase_contract"
+              sequence="60"/>
+
+    <menuitem id="menu_campus_phase_shooting"
+              name="Shooting"
+              parent="menu_campus_root"
+              action="action_campus_shooting_program"
+              sequence="70"/>
+
+    <!-- ============ Configuration (Manager-only, kept as-is) ============ -->
+    <menuitem id="menu_campus_configuration"
+              name="Configuration"
+              parent="menu_campus_root"
+              sequence="90"
+              groups="group_campus_manager"/>
+
+    <menuitem id="menu_campus_versions"
+              name="Evaluation Versions"
+              parent="menu_campus_configuration"
+              action="action_campus_evaluation_version"
+              sequence="10"/>
+
+    <menuitem id="menu_campus_criteria"
+              name="Criteria"
+              parent="menu_campus_configuration"
+              action="action_campus_criterion"
+              sequence="20"/>
+
+    <menuitem id="menu_campus_scales"
+              name="Answer Scales"
+              parent="menu_campus_configuration"
+              action="action_campus_criterion_scale"
+              sequence="30"/>
+
+    <menuitem id="menu_campus_subjects"
+              name="Subjects"
+              parent="menu_campus_configuration"
+              action="action_campus_subject"
+              sequence="40"/>
+
+    <menuitem id="menu_campus_mail_templates"
+              name="Email Templates"
+              parent="menu_campus_configuration"
+              action="action_campus_mail_template"
+              sequence="50"/>
+
+    <menuitem id="menu_campus_submissions"
+              name="Raw Submissions"
+              parent="menu_campus_configuration"
+              action="action_campus_submission"
+              sequence="60"/>
+
+    <!-- Process Permissions governs both Campus+ and InSite processes (one
+         shared campus.process.permission matrix, 14 process codes across the
+         two), so it does not belong nested inside Campus+'s own
+         Configuration — it lives directly under Recruitment's own standard
+         Configuration menu, alongside its InSite counterpart
+         (insite_recruitment's insite_menu_process_permissions), each
+         action pre-filtered to its own process codes. -->
+    <menuitem id="menu_campus_process_permissions"
+              name="Process Permissions — Campus+"
+              parent="hr_recruitment.menu_hr_recruitment_configuration"
+              action="action_campus_process_permission"
+              sequence="80"/>
+
+</odoo>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        The three automatic emails. noupdate so wording edited in Odoo survives a
+        module upgrade — the whole point of putting them here is that changing
+        what candidates read never needs a developer.
+
+        Available times are rendered from campus.interview.slot at send time, so
+        the candidate can only ever be offered a slot the recruiter can still book.
+    -->
+    <data noupdate="1">
+
+        <!-- ============ 1 · Selected, choose a time ============ -->
+        <record id="mail_template_campus_selected" model="mail.template">
+            <field name="name">Campus+ · Selected — choose a time</field>
+            <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+            <field name="subject">Campus+ — Your application has been accepted</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.email_from }}</field>
+            <field name="lang">{{ object.partner_id.lang or 'en_US' }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.campus_name_lat or object.partner_name or ''">Teacher</t>,</p>
+
+    <p>
+        We are pleased to inform you that your application to join the
+        <strong>Campus+</strong> teaching team has been accepted.
+    </p>
+
+    <p>The next step is a short meeting. Please reply to this email with the time that suits you best:</p>
+
+    <table style="border-collapse:collapse;margin:16px 0;">
+        <t t-foreach="object.env['campus.interview.slot']._free_slots(1, limit=12)" t-as="slot">
+            <tr>
+                <td style="padding:6px 14px;border:1px solid #DDE4F0;background:#F5F7FC;">
+                    <t t-out="slot.display_name">Sun 12 Oct · 09:00</t>
+                </td>
+            </tr>
+        </t>
+    </table>
+
+    <p style="color:#6B7FA8;font-size:13px;">
+        Times are shown in local time. If none of these work for you, tell us and we will
+        propose others.
+    </p>
+
+    <p>Kind regards,<br/>The Campus+ team</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ============ 2 · Course Breakdown + contract ============ -->
+        <record id="mail_template_campus_documents" model="mail.template">
+            <field name="name">Campus+ · Course Breakdown and contract</field>
+            <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+            <field name="subject">Campus+ — Your Course Breakdown and contract</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.email_from }}</field>
+            <field name="lang">{{ object.partner_id.lang or 'en_US' }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.campus_name_lat or object.partner_name or ''">Teacher</t>,</p>
+
+    <p>Thank you for meeting with us. Attached you will find:</p>
+
+    <ul>
+        <li>your <strong>Course Breakdown</strong> — the subjects proposed for you</li>
+        <li>your <strong>contract</strong></li>
+    </ul>
+
+    <t t-if="object.campus_subject_ids.filtered('is_accepted')">
+        <p>Subjects proposed:</p>
+        <table style="border-collapse:collapse;margin:12px 0;">
+            <t t-foreach="object.campus_subject_ids.filtered('is_accepted')" t-as="line">
+                <tr>
+                    <td style="padding:6px 14px;border:1px solid #DDE4F0;">
+                        <t t-out="line.display_subject">Subject</t>
+                    </td>
+                </tr>
+            </t>
+        </table>
+    </t>
+
+    <p>
+        Please review both documents and <strong>reply to this email</strong> to confirm that
+        you accept them.
+    </p>
+
+    <p>Kind regards,<br/>The Campus+ team</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ============ 3 · Final breakdown + second meeting ============ -->
+        <record id="mail_template_campus_final" model="mail.template">
+            <field name="name">Campus+ · Final Course Breakdown and second meeting</field>
+            <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+            <field name="subject">Campus+ — Final Course Breakdown and second meeting</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.email_from }}</field>
+            <field name="lang">{{ object.partner_id.lang or 'en_US' }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.campus_name_lat or object.partner_name or ''">Teacher</t>,</p>
+
+    <p>
+        Thank you for accepting. Attached is your <strong>final Course Breakdown</strong>.
+    </p>
+
+    <p>
+        We would like to arrange a second meeting to complete your onboarding.
+        Please reply with the time that suits you:
+    </p>
+
+    <table style="border-collapse:collapse;margin:16px 0;">
+        <t t-foreach="object.env['campus.interview.slot']._free_slots(2, limit=12)" t-as="slot">
+            <tr>
+                <td style="padding:6px 14px;border:1px solid #DDE4F0;background:#F5F7FC;">
+                    <t t-out="slot.display_name">Sun 19 Oct · 09:00</t>
+                </td>
+            </tr>
+        </t>
+    </table>
+
+    <p>Kind regards,<br/>The Campus+ team</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

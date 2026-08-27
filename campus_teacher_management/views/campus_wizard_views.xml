@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============ Generate a week of slots ============ -->
+    <record id="campus_slot_generate_view_form" model="ir.ui.view">
+        <field name="name">campus.slot.generate.form</field>
+        <field name="model">campus.slot.generate</field>
+        <field name="arch" type="xml">
+            <form string="Generate Interview Slots">
+                <p class="text-muted">
+                    Creates one slot per interval on each selected day. Times already
+                    on file are skipped, so it is safe to run again after adding a day.
+                </p>
+                <group>
+                    <group string="Period">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group string="For">
+                        <field name="round"/>
+                        <field name="interviewer_id" options="{'no_create': True}"/>
+                    </group>
+                </group>
+                <group string="Days">
+                    <div class="d-flex flex-wrap gap-3">
+                        <div><field name="day_sun"/><label for="day_sun"/></div>
+                        <div><field name="day_mon"/><label for="day_mon"/></div>
+                        <div><field name="day_tue"/><label for="day_tue"/></div>
+                        <div><field name="day_wed"/><label for="day_wed"/></div>
+                        <div><field name="day_thu"/><label for="day_thu"/></div>
+                        <div><field name="day_fri"/><label for="day_fri"/></div>
+                        <div><field name="day_sat"/><label for="day_sat"/></div>
+                    </div>
+                </group>
+                <group>
+                    <group string="Hours">
+                        <field name="time_from" widget="float_time"/>
+                        <field name="time_to" widget="float_time"/>
+                        <field name="duration" widget="float_time"/>
+                    </group>
+                    <group string="Result">
+                        <field name="preview" readonly="1" nolabel="1"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate" type="object" string="Generate"
+                            class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_campus_slot_generate" model="ir.actions.act_window">
+        <field name="name">Generate Week</field>
+        <field name="res_model">campus.slot.generate</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ============ Record the chosen interview time ============ -->
+    <record id="campus_schedule_interview_view_form" model="ir.ui.view">
+        <field name="name">campus.schedule.interview.form</field>
+        <field name="model">campus.schedule.interview</field>
+        <field name="arch" type="xml">
+            <form string="Record the chosen time">
+                <field name="available_slot_ids" invisible="1"/>
+                <group>
+                    <field name="applicant_id"/>
+                    <field name="round"/>
+                    <field name="slot_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="interviewer_id"/>
+                </group>
+                <div class="alert alert-warning" role="alert" invisible="slot_count">
+                    There are no free slots for this meeting. Create some under
+                    <b>Scheduling → Available Slots</b> first.
+                </div>
+                <p class="text-muted">
+                    Booking reserves the slot and puts the meeting in the calendar with the
+                    interviewer. The candidate is not emailed — confirm the time in your own reply.
+                </p>
+                <footer>
+                    <button name="action_confirm" type="object" string="Book It"
+                            class="btn-primary" invisible="not slot_count" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============ Schedule (or reschedule) 1st/2nd interview directly ============ -->
+    <record id="campus_interview_direct_schedule_view_form" model="ir.ui.view">
+        <field name="name">campus.interview.direct.schedule.form</field>
+        <field name="model">campus.interview.direct.schedule</field>
+        <field name="arch" type="xml">
+            <form string="Schedule Interview">
+                <div class="alert alert-info" role="alert" invisible="not existing_slot_id">
+                    Already booked for <field name="existing_slot_id" readonly="1" nolabel="1" class="oe_inline"/>.
+                    Confirming below will move it to the new time and notify the candidate again.
+                </div>
+                <group>
+                    <field name="applicant_id" readonly="1"/>
+                    <field name="round" readonly="1"/>
+                    <field name="start_datetime"/>
+                    <field name="duration" widget="float_time"/>
+                    <field name="interviewer_id" options="{'no_create': True}"/>
+                </group>
+                <p class="text-muted">
+                    Confirming books this time and emails the candidate — the email always
+                    states this exact date and time.
+                </p>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="campus_submission_view_list" model="ir.ui.view">
+        <field name="name">campus.submission.list</field>
+        <field name="model">campus.submission</field>
+        <field name="arch" type="xml">
+            <list string="Raw Submissions" create="false">
+                <field name="create_date" string="Received"/>
+                <field name="reference"/>
+                <field name="email"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'processed'"
+                       decoration-danger="state == 'rejected'"
+                       decoration-warning="state == 'duplicate'"
+                       decoration-info="state == 'received'"/>
+                <field name="error_code" optional="show"/>
+                <field name="applicant_id" optional="show"/>
+                <field name="version_id" optional="hide"/>
+                <field name="source_ip" optional="hide"/>
+                <field name="origin" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="campus_submission_view_form" model="ir.ui.view">
+        <field name="name">campus.submission.form</field>
+        <field name="model">campus.submission</field>
+        <field name="arch" type="xml">
+            <form string="Raw Submission" create="false">
+                <header>
+                    <button name="action_reprocess" type="object" string="Re-process"
+                            class="btn-primary"
+                            confirm="Rebuild the application from this stored payload?"/>
+                    <button name="action_view_applicant" type="object" string="Open Application"
+                            invisible="not applicant_id"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="received,processed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="state != 'rejected'">
+                        <field name="error_code" readonly="1" class="oe_inline"/>:
+                        <field name="error_message" readonly="1" class="oe_inline"/>
+                    </div>
+                    <group>
+                        <group string="Submission">
+                            <field name="create_date" string="Received" readonly="1"/>
+                            <field name="email" readonly="1"/>
+                            <field name="external_ref" readonly="1"/>
+                            <field name="applicant_id" readonly="1"/>
+                            <field name="version_id" readonly="1"/>
+                        </group>
+                        <group string="Request">
+                            <field name="source_ip" readonly="1"/>
+                            <field name="origin" readonly="1"/>
+                            <field name="user_agent" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Payload" name="payload">
+                            <field name="payload_preview" widget="text" readonly="1" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="campus_submission_view_search" model="ir.ui.view">
+        <field name="name">campus.submission.search</field>
+        <field name="model">campus.submission</field>
+        <field name="arch" type="xml">
+            <search string="Raw Submissions">
+                <field name="reference"/>
+                <field name="email"/>
+                <field name="source_ip"/>
+                <filter name="received" string="Received" domain="[('state', '=', 'received')]"/>
+                <filter name="processed" string="Processed" domain="[('state', '=', 'processed')]"/>
+                <filter name="rejected" string="Rejected" domain="[('state', '=', 'rejected')]"/>
+                <filter name="duplicate" string="Duplicate" domain="[('state', '=', 'duplicate')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_error" string="Error Code" context="{'group_by': 'error_code'}"/>
+                    <filter name="group_date" string="Received" context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_campus_submission" model="ir.actions.act_window">
+        <field name="name">Raw Submissions</field>
+        <field name="res_model">campus.submission</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No submissions yet</p>
+            <p>Every request the web form sends is stored here before it is parsed, so a
+               mapping mistake can be corrected and re-processed instead of losing an
+               application.</p>
+        </field>
+    </record>
+
+</odoo>

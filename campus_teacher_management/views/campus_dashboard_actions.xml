@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_campus_dashboard" model="ir.actions.client">
+        <field name="name">Campus+ Dashboard</field>
+        <field name="tag">campus_teacher_dashboard</field>
+    </record>
+
+    <!-- The three Campus+ templates only, so the config menu is not a list of
+         every mail template in the database. -->
+    <record id="action_campus_mail_template" model="ir.actions.act_window">
+        <field name="name">Email Templates</field>
+        <field name="res_model">mail.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('name', 'like', 'Campus+')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">The automatic emails</p>
+            <p>Edit the wording candidates receive. Available meeting times are inserted
+               automatically when each email is sent.</p>
+        </field>
+    </record>
+
+</odoo>

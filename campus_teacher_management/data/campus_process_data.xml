@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- One record per item in the Campus+ Recruitment menu (views/menus.xml).
+         stage_id is left empty for Dashboard/Candidatures, which don't map to
+         a single hr.recruitment.stage. -->
+
+    <record id="process_dashboard" model="campus.process">
+        <field name="code">dashboard</field>
+        <field name="name">Dashboard</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="process_candidatures" model="campus.process">
+        <field name="code">candidatures</field>
+        <field name="name">Candidatures</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="process_interview1" model="campus.process">
+        <field name="code">interview1</field>
+        <field name="name">1er Interview</field>
+        <field name="sequence">30</field>
+        <field name="stage_id" ref="stage_interview1"/>
+    </record>
+
+    <record id="process_interview2" model="campus.process">
+        <field name="code">interview2</field>
+        <field name="name">2ème Interview</field>
+        <field name="sequence">40</field>
+        <field name="stage_id" ref="stage_interview2"/>
+    </record>
+
+    <record id="process_course_breakdown" model="campus.process">
+        <field name="code">course_breakdown</field>
+        <field name="name">Course Breakdown</field>
+        <field name="sequence">50</field>
+        <field name="stage_id" ref="stage_course_breakdown"/>
+    </record>
+
+    <record id="process_contract" model="campus.process">
+        <field name="code">contract</field>
+        <field name="name">Contrat</field>
+        <field name="sequence">60</field>
+        <field name="stage_id" ref="stage_contract"/>
+    </record>
+
+    <record id="process_shooting" model="campus.process">
+        <field name="code">shooting</field>
+        <field name="name">Shooting</field>
+        <field name="sequence">70</field>
+        <field name="stage_id" ref="stage_shooting"/>
+    </record>
+
+</odoo>
