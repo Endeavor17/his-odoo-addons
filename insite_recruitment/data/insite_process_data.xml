@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- One record per InSite menu branch, reusing campus.process /
+         campus.process.permission verbatim — no new permission model.
+         family='insite' is what the "Process Permissions — InSite" action
+         filters on (see insite_process_permission_views.xml). -->
+
+    <record id="process_insite_needs" model="campus.process">
+        <field name="code">insite_needs</field>
+        <field name="name">InSite Recruitment Needs</field>
+        <field name="sequence">110</field>
+        <field name="family">insite</field>
+    </record>
+
+    <record id="process_insite_candidatures" model="campus.process">
+        <field name="code">insite_candidatures</field>
+        <field name="name">InSite Candidatures</field>
+        <field name="sequence">120</field>
+        <field name="family">insite</field>
+    </record>
+
+    <record id="process_insite_reviews" model="campus.process">
+        <field name="code">insite_reviews</field>
+        <field name="name">InSite Reviews</field>
+        <field name="sequence">130</field>
+        <field name="family">insite</field>
+    </record>
+
+    <record id="process_insite_engagements" model="campus.process">
+        <field name="code">insite_engagements</field>
+        <field name="name">InSite Engagements</field>
+        <field name="sequence">140</field>
+        <field name="family">insite</field>
+    </record>
+
+    <record id="process_insite_contracts" model="campus.process">
+        <field name="code">insite_contracts</field>
+        <field name="name">InSite Contracts</field>
+        <field name="sequence">150</field>
+        <field name="family">insite</field>
+    </record>
+
+    <record id="process_insite_module_preparation" model="campus.process">
+        <field name="code">insite_module_preparation</field>
+        <field name="name">InSite Module Preparation</field>
+        <field name="sequence">160</field>
+        <field name="family">insite</field>
+    </record>
+
+</odoo>

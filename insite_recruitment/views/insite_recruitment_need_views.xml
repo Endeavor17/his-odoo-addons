@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="insite_need_view_list" model="ir.ui.view">
+        <field name="name">insite.recruitment.need.list</field>
+        <field name="model">insite.recruitment.need</field>
+        <field name="arch" type="xml">
+            <list string="Recruitment Needs">
+                <field name="module_id"/>
+                <field name="academic_period_id"/>
+                <field name="hourly_volume"/>
+                <field name="priority" widget="badge"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('published',)"
+                       decoration-danger="state == 'cancelled'"
+                       decoration-warning="state in ('integration_pending', 'publication_pending')"
+                       decoration-muted="state == 'need'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="insite_need_view_form" model="ir.ui.view">
+        <field name="name">insite.recruitment.need.form</field>
+        <field name="model">insite.recruitment.need</field>
+        <field name="arch" type="xml">
+            <form string="Recruitment Need">
+                <header>
+                    <button name="action_search_internal" type="object" string="Search Internal Teachers"
+                            class="btn-primary" invisible="state != 'need'"/>
+                    <button name="action_no_internal_teacher_found" type="object" string="No Suitable Internal Teacher"
+                            invisible="state != 'searching_internal'"/>
+                    <button name="action_rank_external_candidates" type="object" string="Rank External Candidates"
+                            invisible="state != 'searching_external'"/>
+                    <button name="action_contact_candidate" type="object" string="Contact Candidate"
+                            class="btn-primary" invisible="state != 'candidate_selected'"/>
+                    <button name="action_mark_meeting_completed" type="object" string="Mark Meeting Completed"
+                            class="btn-primary" invisible="state != 'meeting_scheduled'"/>
+                    <button name="action_start_contract" type="object" string="Prepare Contract"
+                            class="btn-primary" invisible="state != 'meeting_completed'"/>
+                    <button name="action_mark_integration_done" type="object" string="Mark Integration Done"
+                            invisible="state != 'integration_pending'"/>
+                    <button name="action_assign_module" type="object" string="Assign Module"
+                            class="btn-primary" invisible="state != 'module_assigned'"/>
+                    <button name="action_mark_publication_done" type="object" string="Mark Publication Done"
+                            invisible="state != 'publication_pending'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('published', 'cancelled', 'closed')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="need,searching_internal,searching_external,candidate_selected,awaiting_response,accepted,meeting_scheduled,meeting_completed,contract,signed,module_assigned,module_preparation,published"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="module_id" options="{'no_create_edit': True}"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="specialty"/>
+                            <field name="hourly_volume"/>
+                            <field name="academic_period_id"/>
+                            <field name="priority"/>
+                        </group>
+                        <group>
+                            <field name="internal_teacher_id" readonly="1" invisible="not internal_teacher_id"/>
+                            <field name="selected_candidature_id" readonly="1" invisible="not selected_candidature_id"/>
+                            <field name="integration_pending" readonly="1" invisible="not integration_pending"/>
+                            <field name="publication_pending" readonly="1" invisible="not publication_pending"/>
+                        </group>
+                    </group>
+                    <group string="Reason for Recruitment">
+                        <field name="reason" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Candidates" name="candidates">
+                            <field name="candidature_ids">
+                                <list>
+                                    <field name="person_id"/>
+                                    <field name="source" widget="badge"/>
+                                    <field name="insite_rank" optional="show"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_select_this_candidate" type="object" string="Select" icon="fa-check"
+                                            invisible="state != 'prospect'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Contracts" name="contracts" invisible="not contract_ids">
+                            <field name="contract_ids">
+                                <list>
+                                    <field name="person_id"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Engagements" name="engagements" invisible="not engagement_ids">
+                            <field name="engagement_ids">
+                                <list>
+                                    <field name="person_id"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="insite_need_view_search" model="ir.ui.view">
+        <field name="name">insite.recruitment.need.search</field>
+        <field name="model">insite.recruitment.need</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="module_id"/>
+                <field name="academic_period_id"/>
+                <filter name="open" string="Open" domain="[('state', 'not in', ('published', 'cancelled', 'closed'))]"/>
+                <filter name="pending" string="Needs Attention" domain="['|', ('integration_pending', '=', True), ('publication_pending', '=', True)]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="insite_action_need" model="ir.actions.act_window">
+        <field name="name">Recruitment Needs</field>
+        <field name="res_model">insite.recruitment.need</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No recruitment needs yet</p>
+            <p>A Need represents a vacant teaching position or a decreed hourly volume
+               requiring a teacher. Internal teachers are always searched first.</p>
+        </field>
+    </record>
+
+</odoo>

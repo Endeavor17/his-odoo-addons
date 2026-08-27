@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- BPMN rule: 48h without response -> reminder to Pédagogie only,
+             never an automatic next candidate. See
+             insite.candidature._cron_insite_reminder_check(). -->
+        <record id="ir_cron_insite_reminder" model="ir.cron">
+            <field name="name">InSite: 48h candidate reminder</field>
+            <field name="model_id" ref="model_insite_candidature"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_insite_reminder_check()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

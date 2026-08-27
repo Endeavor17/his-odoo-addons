@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Same shared campus.process.permission model and views as Campus+'s
+         own "Process Permissions — Campus+" (campus_teacher_management),
+         just pre-filtered to InSite's 8 process codes so the two menus never
+         show a mixed list. No new model, view, ir.rule, or ACL. -->
+    <record id="insite_action_process_permission" model="ir.actions.act_window">
+        <field name="name">Process Permissions — InSite</field>
+        <field name="res_model">campus.process.permission</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="campus_teacher_management.campus_process_permission_view_search"/>
+        <field name="domain">[('process_id.family', '=', 'insite')]</field>
+        <field name="context">{'search_default_group_by_process': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Grant a user access to an InSite process</p>
+            <p>For each InSite Recruitment process (Solicitations, Candidatures, Reviews,
+               Evaluations, Selections, Engagements, Contracts), pick which users can
+               View, Execute and Validate it. Validate needs Execute, Execute needs View —
+               ticking one turns the others on automatically. Campus+'s own processes have
+               their own separate "Process Permissions — Campus+" menu.</p>
+        </field>
+    </record>
+
+    <menuitem id="insite_menu_process_permissions"
+              name="Process Permissions — InSite"
+              parent="hr_recruitment.menu_hr_recruitment_configuration"
+              action="insite_action_process_permission"
+              sequence="90"/>
+
+</odoo>

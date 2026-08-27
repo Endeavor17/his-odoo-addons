@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="mail_template_insite_invitation" model="mail.template">
+            <field name="name">InSite · Contact Candidate</field>
+            <field name="model_id" ref="model_insite_candidature"/>
+            <field name="subject">InSite — You are invited to apply</field>
+            <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.person_id.email_institutional or object.person_id.email_personal }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.person_id.display_name or ''">Teacher</t>,</p>
+    <p>
+        You are invited to apply to the <strong>InSite</strong> teaching programme.
+        Please reply to this email to confirm your interest.
+    </p>
+    <p>Best regards.</p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_insite_confirmation" model="mail.template">
+            <field name="name">InSite · Acceptance Confirmation</field>
+            <field name="model_id" ref="model_insite_candidature"/>
+            <field name="subject">InSite — Your meeting details</field>
+            <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.person_id.email_institutional or object.person_id.email_personal }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.person_id.display_name or ''">Teacher</t>,</p>
+    <p>Thank you for accepting the InSite teaching programme. Here are your meeting details:</p>
+    <p><strong>Date:</strong> <t t-out="format_datetime(dt=object.meeting_event_id.start, tz='UTC', dt_format='EEEE, d MMMM y')">a date</t></p>
+    <p><strong>Time:</strong> <t t-out="format_time(time=object.meeting_event_id.start, tz='UTC')">a time</t> to <t t-out="format_time(time=object.meeting_event_id.stop, tz='UTC')">a time</t></p>
+    <p><strong>Location / Link:</strong> <t t-out="object.meeting_event_id.location or ''">a location</t></p>
+    <p>Best regards.</p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_insite_reminder" model="mail.template">
+            <field name="name">InSite · 48h Reminder (internal)</field>
+            <field name="model_id" ref="model_insite_candidature"/>
+            <field name="subject">InSite — No response after 48h: {{ object.person_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="email_to">{{ user.email_formatted }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>
+        <t t-out="object.person_id.display_name or ''">Candidate</t> was contacted on
+        <t t-out="object.contacted_date or ''"/> and has not responded within 48 hours.
+    </p>
+    <p>
+        This is a reminder only — the system will <strong>not</strong> automatically
+        move to the next candidate. Decide whether to wait longer or select another
+        candidate for this Need.
+    </p>
+</div>
+            </field>
+        </record>
+
+    </data>
+</odoo>
