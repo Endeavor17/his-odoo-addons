@@ -1,34 +1,35 @@
-// Le bleu de HIS, et l'or qui va avec.
+// Le bleu de HIS, prélevé sur le sceau.
 //
-// La marque est un sceau : un bleu institutionnel profond, gravé sur blanc.
-// C'est un langage ancien et parfaitement lisible — celui des universités — et
-// il se traduit en interface avec deux couleurs seulement, pas dix.
+// La marque est un sceau : un bleu institutionnel gravé sur blanc. C'est un
+// langage ancien et parfaitement lisible — celui des universités — et il se
+// traduit en interface avec deux couleurs, pas dix.
 //
-// Le bleu porte l'identité (barre du haut, page d'accueil). L'or ne sert qu'à
-// une chose : dire *où l'on est*. Un accent qui signale tout ne signale rien.
+// Les deux couleurs viennent du fichier, pas d'une intention : #003874 est la
+// teinte dominante du tracé de `his_seal.png` (79 000 px sur un échantillon),
+// #00acc0 celle de la seconde déclinaison, `his_seal_teal.png`. L'échelle de
+// bleus est dérivée du #003874 en ne bougeant que la luminosité, donc toute la
+// gamme partage exactement la teinte (211°) et la saturation du sceau.
 //
-// ATTENTION — `--his-navy` est une lecture du sceau, pas un prélèvement. Le
-// fichier n'était pas dans le dépôt au moment de l'écriture. Quand il y sera,
-// prélever la teinte du trait et corriger **cette seule ligne** : tout le reste
-// en découle.
+// Le bleu porte l'identité. Le turquoise ne dit qu'une chose : où l'on se
+// trouve. Un accent qui signale tout ne signale rien.
 
 :root {
-    // Bleu de marque, du plus profond au plus clair
-    --his-navy-900: #0b2242;   // fond de la page d'accueil, bord bas de la barre
-    --his-navy-800: #0f3163;
-    --his-navy-700: #14417f;   // la barre du haut : la couleur du sceau
-    --his-navy-500: #2c63b0;   // survol
-    --his-navy-200: #adc4e4;   // texte secondaire sur fond bleu
+    --his-navy-900: #001e3d;   // fond de la page d'accueil
+    --his-navy-800: #002a57;   // haut du dégradé
+    --his-navy-700: #003874;   // LA couleur du sceau : la barre du haut
+    --his-navy-500: #0051a8;   // survol
+    --his-navy-200: #7abaff;   // texte secondaire sur fond bleu (8,22:1)
 
-    // Accent académique. Navy + or est l'appariement des sceaux, et c'est celui
-    // que la base de design propose pour « institutional navy + research accent ».
-    --his-gold: #a16207;
-    --his-gold-300: #e3b341;   // seule version lisible sur fond bleu profond
+    // Seconde déclinaison de la marque. Réservée aux repères — soulignement de
+    // l'onglet actif, coche de l'application courante, anneau de focus — et
+    // jamais à du texte sur la barre : 4,21:1 y suffit pour un élément
+    // d'interface (seuil 3:1) mais pas pour du texte (seuil 4,5:1).
+    --his-teal: #00acc0;
 
     --his-on-navy: #ffffff;
 
-    // Le sceau en filigrane. Aucun fichier livré : la valeur reste `none` et la
-    // page d'accueil retombe sur son dégradé, ce qui est délibéré et non cassé.
-    --his-seal: none;
+    // Le sceau en filigrane. Fond transparent, tracé bleu : la CSS l'aplatit
+    // en blanc, seule l'opacité décide de sa présence.
+    --his-seal: url('/his_web_ui/static/img/his_seal.png');
     --his-seal-opacity: 0.07;
 }

@@ -1,10 +1,8 @@
 # Le sceau, en filigrane
 
-La page d'accueil (la grille d'applications) attend **un fichier** :
-
-```
-his_web_ui/static/img/his_seal.png     (ou .svg)
-```
+**Le sceau est en place** : `his_seal.png`, la déclinaison bleue, 5740 × 5531 px
+à fond transparent. `his_seal_teal.png` est la seconde déclinaison (turquoise),
+conservée comme source de la couleur d'accent mais non utilisée à l'écran.
 
 ## Ce que le fichier doit être
 
@@ -39,15 +37,20 @@ L'intensité se règle avec `--his-seal-opacity` (0.07 par défaut). Au-delà de
 0.12 le filigrane commence à concurrencer les noms d'applications ; c'est un
 fond, pas une illustration.
 
-## Tant qu'il n'est pas là
+## Si le fichier venait à disparaître
 
-`--his-seal` vaut `none`, et la page d'accueil affiche son dégradé bleu seul.
-C'est **délibéré et fini**, pas un écran cassé : rien ne signale une image
-manquante, et le jour où le fichier arrive il ne fait que s'ajouter.
+`--his-seal` retomberait sur `none` et la page d'accueil afficherait son dégradé
+bleu seul : délibéré et fini, pas un écran cassé.
 
-## Pendant qu'on y est : le bleu
+## Le bleu vient du fichier, pas d'une intention
 
-`--his-navy-700` (`#14417f`) est une **lecture** du sceau, faite à l'œil sur une
-capture — le fichier n'était pas dans le dépôt. Quand il y sera, prélever la
-teinte réelle du tracé et corriger cette seule variable : la barre du haut, la
-page d'accueil et les états de survol en découlent tous.
+`--his-navy-700` (`#003874`) est la teinte **prélevée** sur le tracé du sceau —
+la plus fréquente parmi les pixels opaques non blancs. Toute l'échelle en
+dérive en ne bougeant que la luminosité, donc la barre du haut, la page
+d'accueil et les survols partagent exactement la teinte (211°) et la saturation
+de la marque.
+
+L'accent `--his-teal` (`#00acc0`) est prélevé de la même façon sur
+`his_seal_teal.png`. Il ne sert qu'aux repères, jamais à du texte sur la barre
+bleue : 4,21:1 y suffit pour un élément d'interface (seuil 3:1) mais pas pour du
+texte (seuil 4,5:1).

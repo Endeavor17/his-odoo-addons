@@ -9,6 +9,13 @@
 
 .app-menu-container {
     position: relative;
+
+    // OCA pose `height: 100%` sur un parent qui ne fait pas la hauteur de la
+    // fenetre : le panneau s'arrete donc sous la derniere rangee d'icones et
+    // la page blanche du dessous reapparait au milieu de l'ecran. Une page
+    // d'accueil qui laisse voir l'ecran precedent n'est pas une page
+    // d'accueil, c'est un menu deroulant.
+    min-height: calc(100dvh - var(--o-navbar-height, 46px));
     background: radial-gradient(
             120% 90% at 50% 0%,
             var(--his-navy-800) 0%,
@@ -74,22 +81,39 @@
     // Application courante : le meme or que la barre du haut, pour que
     // « ou je suis » se dise partout de la meme facon.
     .o-app-menu-item__active {
-        color: var(--his-gold-300);
+        color: var(--his-teal);
     }
 
-    // La recherche du tiroir, sur fond sombre.
-    input,
-    .o_searchview_input {
+    // La recherche du tiroir.
+    //
+    // Le champ est blanc par defaut. Se contenter d'en changer la couleur de
+    // texte donnait du blanc sur blanc : invisible des la premiere frappe. Le
+    // champ est donc habille en entier — fond, bordure, texte — pour appartenir
+    // a la page sombre plutot que d'y flotter.
+    .search-container .search-input,
+    .search-container .form-control {
+        background-color: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         color: var(--his-on-navy);
 
         &::placeholder {
             color: var(--his-navy-200);
             opacity: 1;
         }
+
+        &:focus {
+            background-color: rgba(255, 255, 255, 0.12);
+            border-color: var(--his-teal);
+            box-shadow: none;
+        }
+    }
+
+    .search-container .search-icon {
+        color: var(--his-navy-200);
     }
 
     :focus-visible {
-        outline: 2px solid var(--his-gold-300);
+        outline: 2px solid var(--his-teal);
         outline-offset: 2px;
     }
 }
