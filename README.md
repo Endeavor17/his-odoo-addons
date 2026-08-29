@@ -2,9 +2,16 @@
 
 Modules Odoo 19.0 Community développés pour le **Groupe HIS-HTC-IRA**.
 
-Ce dépôt ne contient **que les modules custom**. Odoo lui-même n'est pas
-versionné ici : il est fourni par l'image Docker officielle `odoo:19.0`. Il n'y
-a donc aucun fork du code source Odoo à maintenir.
+Ce dépôt contient **les modules custom du Groupe, plus les modules tiers
+copiés** dont ils dépendent. Odoo lui-même n'est pas versionné ici : il est
+fourni par l'image Docker officielle `odoo:19.0`. Il n'y a donc aucun fork du
+code source Odoo à maintenir.
+
+Un module tiers copié porte toujours un `VENDOR.md` donnant son origine, sa
+version et le commit exact, parce qu'une copie sans provenance devient un
+mystère à la première mise à jour. Le déploiement n'ayant aucune étape de build
+(l'image officielle est lancée telle quelle, ce dépôt monté en volume), la copie
+est ce qui arrive avec un simple `git pull` — voir `web_responsive/VENDOR.md`.
 
 ## Modules
 
@@ -20,6 +27,8 @@ a donc aucun fork du code source Odoo à maintenir.
 | [`maintenance_university`](maintenance_university/) | Maintenance universitaire — demandes, inspections, constats, tableau de bord | Développé ; ne possède plus le matricule (v19.0.2.0.0) |
 | [`his_pos_ui`](his_pos_ui/) | POS — habillage partagé des trois caisses, identité par point de vente, ergonomie tactile | Développé, 3 tests |
 | [`his_pos_copy_center`](his_pos_copy_center/) | POS Copy Center — composition d'un travail de copie en un seul écran | Développé, 5 tests + 2 tours |
+| [`his_web_ui`](his_web_ui/) | Interface web — atterrissage sur la grille d'applications plutôt que sur le premier menu trié | Développé, 3 tests |
+| [`web_responsive`](web_responsive/) | **Tiers (OCA)** — grille d'applications plein écran, absente d'Odoo Community | Copié, `19.0.1.1.0` |
 | _(à venir)_ | Achats | Autre intervenant |
 | _(à venir)_ | Point de Vente avancé | Autre intervenant |
 | _(à venir)_ | Carte RFID, portefeuille repas, Restaurant, Copy Center | Autre intervenant, s'appuie sur `his_person_core` |

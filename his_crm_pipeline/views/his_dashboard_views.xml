@@ -36,10 +36,21 @@
               action="action_dashboard_contenu" sequence="1"
               groups="his_crm_pipeline.group_contenu_priorisation"/>
 
-    <!-- ========================= Application Direction ========================= -->
+    <!-- ================= Application Marketing & Sales Dashboard =================
+         sequence : surtout pas un petit nombre. Odoo Community n'a pas de page
+         d'accueil ; sans action d'accueil il ouvre le premier menu racine
+         visible, trie par sequence. A 2, cette application passait devant
+         toutes les autres et attrapait quiconque portait le groupe Direction,
+         quel que soit son metier. A 30 elle s'assied parmi les applications
+         metier (Meals 45, Identite 85).
 
-    <menuitem id="menu_direction_root" name="Direction"
-              sequence="2"
+         L'identifiant XML reste menu_direction_root, et le groupe reste
+         « Direction » : le groupe nomme *qui l'on est*, le menu nomme *ce que
+         l'on ouvre*. Renommer les identifiants casserait toutes les references
+         existantes pour un gain cosmetique. -->
+
+    <menuitem id="menu_direction_root" name="Marketing &amp; Sales Dashboard"
+              sequence="30"
               groups="his_crm_pipeline.group_direction"/>
 
     <menuitem id="menu_direction_vue" name="Vue d'ensemble"
