@@ -1,0 +1,47 @@
+// La barre du haut aux couleurs de l'établissement.
+//
+// Odoo la peint en #71639e en dur — et pas seulement en fond : une bordure
+// #5a4f7f dessous, et surtout deux `box-shadow` de 20px qui prolongent le
+// violet à gauche et à droite. Oublier ces ombres laisse deux languettes
+// violettes aux extrémités de l'écran, ce qui est exactement le genre de détail
+// qui fait qu'un theme « presque » fini a l'air raté.
+
+.o_main_navbar {
+    background: var(--his-navy-700);
+    border-bottom: 1px solid var(--his-navy-900);
+    box-shadow: 20px 0 0 var(--his-navy-700), -20px 0 0 var(--his-navy-700);
+
+    // Odoo peint chaque entree du menu depuis ses propres proprietes
+    // personnalisees, dont --NavBar-entry-backgroundColor qui vaut #71639e par
+    // defaut. Les redefinir vaut mieux que surcharger les regles : sans cela
+    // l'entree active garde son bloc violet sur la barre bleue, ce qui est
+    // exactement ce qu'un theme a moitie fini donne a voir.
+    --NavBar-entry-backgroundColor: transparent;
+    --NavBar-entry-backgroundColor--hover: #{"var(--his-navy-500)"};
+    --NavBar-entry-color--hover: #{"var(--his-on-navy)"};
+
+    // Le nom de l'établissement, à gauche : c'est le seul endroit de
+    // l'interface de travail qui porte une serif. Le registre académique en
+    // deux mots, sans faire venir une police par le réseau — une école n'a pas
+    // à attendre fonts.googleapis.com pour afficher son propre nom.
+    .o_menu_brand {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1rem;
+        letter-spacing: 0.02em;
+        color: var(--his-on-navy);
+    }
+
+    // L'or ne dit qu'une chose : où l'on se trouve.
+    .o_menu_sections {
+        .o_nav_entry.active,
+        .dropdown-toggle.show {
+            box-shadow: inset 0 -3px 0 var(--his-gold-300);
+        }
+    }
+
+}
+
+// Le bouton de la grille d'applications, dans la barre.
+.o_navbar_apps_menu .dropdown-toggle:hover {
+    background-color: var(--his-navy-500);
+}

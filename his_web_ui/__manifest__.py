@@ -28,6 +28,16 @@ everyone else ended up in Discuss.
 
     'depends': ['web_responsive'],
 
+    'assets': {
+        'web.assets_backend': [
+            # Listés et non globés : les jetons doivent être compilés avant les
+            # règles qui les consomment.
+            'his_web_ui/static/src/scss/tokens.scss',
+            'his_web_ui/static/src/scss/navbar.scss',
+            'his_web_ui/static/src/scss/app_grid.scss',
+        ],
+    },
+
     'post_init_hook': 'post_init_hook',
 
     'installable': True,

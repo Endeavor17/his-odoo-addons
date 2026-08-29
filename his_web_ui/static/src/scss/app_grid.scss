@@ -1,0 +1,101 @@
+// La page d'accueil : la grille d'applications, sur le sceau.
+//
+// C'est le premier écran de la journée pour tout le monde, et le seul moment où
+// l'outil peut dire à qui il appartient sans voler de place au travail. D'où le
+// parti : le sceau en très grand et très pâle, la grille par-dessus, et rien
+// d'autre. Pas de titre ajouté — le sceau porte déjà le nom de l'établissement
+// gravé dans son anneau, donc l'écrire une seconde fois serait redondant. Aucun
+// noeud n'est ajouté au DOM d'OCA : uniquement de la CSS sur ses classes.
+
+.app-menu-container {
+    position: relative;
+    background: radial-gradient(
+            120% 90% at 50% 0%,
+            var(--his-navy-800) 0%,
+            var(--his-navy-900) 70%
+        )
+        var(--his-navy-900);
+    color: var(--his-on-navy);
+
+    // Le filigrane.
+    //
+    // Le sceau est un tracé bleu : posé tel quel sur un fond bleu il
+    // disparaitrait. `brightness(0) invert(1)` l'aplatit en blanc pur, et c'est
+    // l'opacite seule qui decide de sa presence. D'ou l'exigence d'un PNG ou
+    // d'un SVG a fond transparent, expliquee dans static/img/README.md : sur un
+    // fichier a fond blanc ce filtre produirait un carre blanc.
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: var(--his-seal);
+        background-repeat: no-repeat;
+        background-position: center 46%;
+        // Interpolation obligatoire : SCSS evalue `min()` a la compilation et
+        // refuse de melanger vmin et px (« Incompatible units »), ce qui ne
+        // casse pas seulement cette regle mais tout le bundle du back-office.
+        // Les guillemets la laissent passer telle quelle au navigateur.
+        background-size: #{"min(62vmin, 620px)"};
+        filter: brightness(0) invert(1);
+        opacity: var(--his-seal-opacity);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    // La grille passe devant le filigrane.
+    > * {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+// Les tuiles. Le fond est sombre : les noms doivent redevenir clairs, sinon on
+// herite du gris destine au fond blanc d'Odoo.
+.app-menu-container {
+    .o-app-menu-item__name,
+    .o-app-menu-list .o_app {
+        color: var(--his-on-navy);
+    }
+
+    .o_app {
+        border-radius: 0.75rem;
+        transition: background-color 0.15s ease, transform 0.15s ease;
+
+        &:hover,
+        &:focus-visible {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+
+    // Application courante : le meme or que la barre du haut, pour que
+    // « ou je suis » se dise partout de la meme facon.
+    .o-app-menu-item__active {
+        color: var(--his-gold-300);
+    }
+
+    // La recherche du tiroir, sur fond sombre.
+    input,
+    .o_searchview_input {
+        color: var(--his-on-navy);
+
+        &::placeholder {
+            color: var(--his-navy-200);
+            opacity: 1;
+        }
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--his-gold-300);
+        outline-offset: 2px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .app-menu-container .o_app {
+        transition: none;
+    }
+}
