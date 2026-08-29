@@ -1,0 +1,38 @@
+services:
+  odoo:
+    image: odoo:19.0
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=${ODOO_DB_PASSWORD}
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ../../:/mnt/extra-addons
+      - ./config/odoo.conf:/etc/odoo/odoo.conf
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
+          cpus: "2.0"
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=${ODOO_DB_PASSWORD}
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+
+volumes:
+  odoo-web-data:
+  odoo-db-data:

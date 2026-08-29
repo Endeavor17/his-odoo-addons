@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="his_inventaire_annuel_list_view" model="ir.ui.view">
+        <field name="name">his.inventaire.annuel.list</field>
+        <field name="model">his.inventaire.annuel</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="date_cloture"/>
+                <field name="cloture_par_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="his_inventaire_annuel_form_view" model="ir.ui.view">
+        <field name="name">his.inventaire.annuel.form</field>
+        <field name="model">his.inventaire.annuel</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_cloturer" type="object" string="Clôturer"
+                            class="oe_highlight" invisible="state == 'cloture'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="state == 'cloture'"/>
+                        <field name="company_id" readonly="state == 'cloture'"
+                               groups="base.group_multi_company"/>
+                        <field name="date_cloture" invisible="state != 'cloture'"/>
+                        <field name="cloture_par_id" invisible="state != 'cloture'"/>
+                    </group>
+                    <group>
+                        <field name="note" readonly="state == 'cloture'"
+                               placeholder="Écarts constatés, remarques pour l'exercice suivant..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="his_inventaire_annuel_action" model="ir.actions.act_window">
+        <field name="name">Inventaires annuels</field>
+        <field name="res_model">his.inventaire.annuel</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ouvrez le comptage physique annuel de l'exercice
+            </p>
+            <p>
+                La clôture est bloquée tant qu'un comptage reste saisi sans
+                avoir été appliqué aux livres (Inventaire ▸ Ajustements).
+            </p>
+        </field>
+    </record>
+
+    <!-- groups="" ici, en plus de l'acces modele deja limite au Manager
+         (security/ir.model.access.csv) : double controle deliberement,
+         meme discipline que do_scrap/action_apply_inventory. -->
+    <menuitem id="menu_his_inventaire_annuel"
+              name="Inventaires annuels"
+              parent="stock.menu_stock_config_settings"
+              action="his_inventaire_annuel_action"
+              groups="stock.group_stock_manager"
+              sequence="20"/>
+</odoo>

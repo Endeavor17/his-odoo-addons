@@ -12,7 +12,11 @@ class TestGovernance(TransactionCase):
         super().setUpClass()
         cls.boissons = cls.env.ref('his_stock_mdm.categ_cafe_boissons')
         cls.viandes = cls.env.ref('his_stock_mdm.categ_resto_viandes')
-        cls.book = cls.env.ref('his_stock_mdm.categ_book')
+        # Book a gagne une sous-arborescence reelle (16 rayons) : ce n'est plus
+        # une categorie terminale, donc plus utilisable comme second exemple de
+        # feuille pour ces tests. Articles Bureautique reste une feuille et
+        # n'est eligible ni Format ni Variante.
+        cls.other_leaf = cls.env.ref('his_stock_mdm.categ_copy_bureautique')
         cls.cafe = cls.env.ref('his_stock_mdm.categ_cafe')  # noeud intermediaire
 
         cls.counter = 0
@@ -56,7 +60,7 @@ class TestGovernance(TransactionCase):
     def test_reference_counter_is_global_across_categories(self):
         """Un seul compteur : pas de sequence par categorie ni par type."""
         a = self._product(default_code=False, categ_id=self.boissons.id)
-        b = self._product(default_code=False, categ_id=self.book.id)
+        b = self._product(default_code=False, categ_id=self.other_leaf.id)
         c = self._product(default_code=False, type='service', is_storable=False)
         numbers = [int(p.default_code[4:]) for p in (a, b, c)]
         self.assertEqual(numbers, sorted(numbers))
@@ -75,7 +79,7 @@ class TestGovernance(TransactionCase):
         """Changer categorie/type/attributs ne regenere jamais la reference."""
         product = self._product(default_code=False, categ_id=self.boissons.id)
         reference = product.default_code
-        product.write({'categ_id': self.book.id, 'sale_ok': False})
+        product.write({'categ_id': self.other_leaf.id, 'sale_ok': False})
         self.assertEqual(product.default_code, reference)
         product.write({'type': 'service', 'is_storable': False})
         self.assertEqual(product.default_code, reference)
@@ -131,7 +135,7 @@ class TestGovernance(TransactionCase):
         })
 
     def test_format_rejected_on_ineligible_category(self):
-        template = self._product(categ_id=self.book.id)
+        template = self._product(categ_id=self.other_leaf.id)
         fmt = self.env.ref('his_stock_mdm.attribute_format')
         with self.assertRaises(ValidationError):
             self._add_attribute_line(template, fmt, self.env.ref('his_stock_mdm.format_33cl'))
@@ -146,7 +150,7 @@ class TestGovernance(TransactionCase):
         attribute = self.env['product.attribute'].create({'name': 'Marque Test MDM'})
         value = self.env['product.attribute.value'].create({
             'name': 'Ghadir', 'attribute_id': attribute.id})
-        self._add_attribute_line(self._product(categ_id=self.book.id), attribute, value)
+        self._add_attribute_line(self._product(categ_id=self.other_leaf.id), attribute, value)
 
     # --- Phase 5 : tracabilite heritee de la categorie ----------------------
 

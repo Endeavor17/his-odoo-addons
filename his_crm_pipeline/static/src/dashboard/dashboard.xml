@@ -2,17 +2,30 @@
 <templates xml:space="preserve">
 
     <t t-name="his_crm_pipeline.Dashboard">
+        <!-- Ce div porte la classe o_action donnee par ActionContainer, et
+             c'est lui qui fait defiler la page. .o_action_manager > .o_action
+             en fait une colonne flex de hauteur pleine ; c'est de LUI que le
+             .o_content interieur tient sa hauteur contrainte, donc sa barre de
+             defilement. Sans cet englobant, le contenu deborde et l'ancetre le
+             coupe : on ne peut plus descendre. Toutes les vues natives
+             procedent ainsi (voir web.PivotView). -->
+        <div t-att-class="props.className" t-ref="root">
         <Layout className="'o_his_dashboard'" display="{ controlPanel: {} }">
             <t t-set-slot="control-panel-additional-actions">
-                <select class="form-select form-select-sm w-auto"
-                        t-on-change="changerPeriode">
-                    <t t-foreach="Object.entries(periodes)" t-as="entree"
-                       t-key="entree[0]">
-                        <option t-att-value="entree[0]"
-                                t-att-selected="entree[0] === state.periode"
-                                t-esc="entree[1].label"/>
-                    </t>
-                </select>
+                <div class="d-flex align-items-center gap-2">
+                    <select class="form-select form-select-sm w-auto"
+                            t-on-change="changerPeriode">
+                        <t t-foreach="Object.entries(periodes)" t-as="entree"
+                           t-key="entree[0]">
+                            <option t-att-value="entree[0]"
+                                    t-att-selected="entree[0] === state.periode"
+                                    t-esc="entree[1].label"/>
+                        </t>
+                    </select>
+                    <!-- Les bornes reelles : « ce trimestre » ne laisse pas
+                         deviner s'il commence en juillet ou en aout. -->
+                    <span class="text-muted small" t-esc="intervalle"/>
+                </div>
             </t>
 
             <div class="o_his_dashboard_body p-3" t-if="state.spec">
@@ -135,6 +148,7 @@
                 Chargement des indicateurs...
             </div>
         </Layout>
+        </div>
     </t>
 
 </templates>

@@ -6,9 +6,14 @@
 // Chart.js est deja livre avec Odoo (vue graph) — le charger plutot que de
 // dessiner des points a la main.
 
-.o_his_dashboard {
+// Cette classe atterrit sur le <main class="o_content"> de Layout.
+//
+// Aucune regle de hauteur ni de debordement ici, volontairement : Odoo pose
+// deja `.o_content { overflow: auto; height: 100% }` des lors que l'englobant
+// porte la classe o_action. C'est le template qui doit garantir cet englobant,
+// pas la feuille de style qui doit compenser son absence.
+.o_content.o_his_dashboard {
     background-color: var(--o-view-background-color, #f9f9f9);
-    overflow: auto;
 }
 
 .his_tuiles {

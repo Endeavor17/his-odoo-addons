@@ -21,6 +21,13 @@ import { standardActionServiceProps } from "@web/webclient/actions/action_servic
  * Les periodes proposees. Les bornes sont calculees dans le fuseau du
  * navigateur puis envoyees en AAAA-MM-JJ : le serveur ne recoit jamais
  * d'horodatage, donc jamais de decalage d'un jour.
+ *
+ * Chacune doit repondre a une question DIFFERENTE. « 30 derniers jours »
+ * cohabitait avec « ce mois-ci » : passe le 20 du mois les deux couvraient
+ * presque le meme intervalle et donnaient presque le meme chiffre, ce qui
+ * oblige le lecteur a se demander laquelle il regarde. « Le mois dernier » le
+ * remplace : une periode COMPLETE et close, la seule a laquelle on puisse
+ * comparer sans reflechir.
  */
 const PERIODES = {
     mois: {
@@ -28,6 +35,17 @@ const PERIODES = {
         bornes: () => {
             const today = new Date();
             return [new Date(today.getFullYear(), today.getMonth(), 1), today];
+        },
+    },
+    mois_dernier: {
+        label: "Le mois dernier",
+        bornes: () => {
+            const today = new Date();
+            return [
+                new Date(today.getFullYear(), today.getMonth() - 1, 1),
+                // Jour 0 du mois courant = dernier jour du mois precedent.
+                new Date(today.getFullYear(), today.getMonth(), 0),
+            ];
         },
     },
     trimestre: {
@@ -45,15 +63,6 @@ const PERIODES = {
             return [new Date(today.getFullYear(), 0, 1), today];
         },
     },
-    trente: {
-        label: "30 derniers jours",
-        bornes: () => {
-            const today = new Date();
-            const debut = new Date(today);
-            debut.setDate(debut.getDate() - 29);
-            return [debut, today];
-        },
-    },
 };
 
 function enIso(date) {
@@ -67,7 +76,16 @@ function enIso(date) {
 export class HisDashboard extends Component {
     static template = "his_crm_pipeline.Dashboard";
     static components = { Layout };
-    static props = { ...standardActionServiceProps };
+    static props = {
+        ...standardActionServiceProps,
+        // ActionContainer passe className="o_action" a TOUT composant d'action.
+        // Ce n'est pas decoratif : c'est cette classe qui recoit la colonne
+        // flex en hauteur pleine (.o_action_manager > .o_action), sans laquelle
+        // le .o_content interieur n'a pas de hauteur contrainte et ne peut donc
+        // pas defiler. Elle doit atterrir sur un element englobant le Layout —
+        // voir le template.
+        className: { type: String, optional: true },
+    };
 
     setup() {
         this.orm = useService("orm");
@@ -81,6 +99,23 @@ export class HisDashboard extends Component {
         });
 
         onWillStart(() => this.charger());
+    }
+
+    /**
+     * L'intervalle reellement interroge, en toutes lettres.
+     *
+     * Un libelle seul laisse deviner : « ce trimestre » commence-t-il en
+     * juillet ou en aout ? Afficher les bornes retire la question, et rend
+     * deux periodes impossibles a confondre.
+     */
+    get intervalle() {
+        const [debut, fin] = PERIODES[this.state.periode].bornes();
+        const format = { day: "numeric", month: "long" };
+        const meme_annee = debut.getFullYear() === fin.getFullYear();
+        return `${debut.toLocaleDateString("fr-FR", {
+            ...format,
+            year: meme_annee ? undefined : "numeric",
+        })} — ${fin.toLocaleDateString("fr-FR", { ...format, year: "numeric" })}`;
     }
 
     get methode() {
