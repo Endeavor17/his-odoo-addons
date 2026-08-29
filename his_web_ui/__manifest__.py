@@ -34,7 +34,9 @@ everyone else ended up in Discuss.
             # règles qui les consomment.
             'his_web_ui/static/src/scss/tokens.scss',
             'his_web_ui/static/src/scss/navbar.scss',
+            'his_web_ui/static/src/scss/buttons.scss',
             'his_web_ui/static/src/scss/app_grid.scss',
+            'his_web_ui/static/src/app/apps_menu_patch.esm.js',
         ],
     },
 

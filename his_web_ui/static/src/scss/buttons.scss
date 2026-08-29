@@ -1,0 +1,29 @@
+// Les actions principales, aux couleurs de l'etablissement.
+//
+// Odoo dessine .btn-primary depuis ses proprietes personnalisees, toutes
+// calees sur son violet #71639e. Sans cela la barre du haut est bleu sceau et
+// chaque bouton « Ouvrir la caisse » reste violet juste en dessous : un theme
+// a moitie applique se remarque plus qu'un theme absent.
+//
+// Le nom des variables n'a pas de prefixe bs- : le build Bootstrap d'Odoo le
+// retire. Poser --bs-btn-bg compile sans erreur et ne fait rien.
+
+.btn-primary {
+    --btn-bg: var(--his-navy-700);
+    --btn-border-color: var(--his-navy-700);
+    --btn-color: var(--his-on-navy);
+    --btn-hover-bg: var(--his-navy-800);
+    --btn-hover-border-color: var(--his-navy-800);
+    --btn-hover-color: var(--his-on-navy);
+    --btn-active-bg: var(--his-navy-900);
+    --btn-active-border-color: var(--his-navy-900);
+    --btn-active-color: var(--his-on-navy);
+    --btn-focus-shadow-rgb: 0, 56, 116;
+}
+
+// Les liens et les etats selectionnes suivent la meme teinte, sinon le violet
+// ressort par petites touches un peu partout.
+.o_form_view .o_notebook .nav-link.active,
+.o_list_view .o_data_row.o_data_row_selected {
+    --link-color: var(--his-navy-700);
+}
