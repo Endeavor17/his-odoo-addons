@@ -49,7 +49,15 @@ def migrate(cr, version):
     # meal by meal_credit_cost now, not by a field on pos.config.
     meal = env.ref('his_meal_management.product_daily_meal', raise_if_not_found=False)
     if meal:
-        meal.write({'name': "Meal 600", 'meal_credit_cost': 1.0})
+        # meal_validity_days back to 0 as well: it carried the old default of
+        # 30, which is meaningless on a meal (only a plan's validity is ever
+        # read, in _grant_meal_credits) and reads as a contradiction next to
+        # Meal 300. A fresh install gets 0 from the field default.
+        meal.write({
+            'name': "Meal 600",
+            'meal_credit_cost': 1.0,
+            'meal_validity_days': 0,
+        })
         _logger.info("his_meal_management: Daily Meal is now Meal 600 at 1 credit.")
 
     # A meal is no longer configured per point of sale, so every till serves
