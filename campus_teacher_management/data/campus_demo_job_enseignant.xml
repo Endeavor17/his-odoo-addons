@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        DEMO Job Position for testing the full Campus+ recruitment workflow
+        end to end, without touching the real "Campus+ Teacher" job
+        (job_campus_teacher, data/campus_stages_phase2.xml) - that one already
+        carries real applications from the live web form.
+
+        The 5 Phase 2/3 stages (1er Interview / 2eme Interview / Course
+        Breakdown / Contrat / Shooting) are scoped to specific jobs via
+        hr.recruitment.stage.job_ids. This demo job is ADDED to that same
+        job_ids list (the real job keeps its own link untouched), so it gets
+        the identical curated stage bar - see the generalized
+        hr.applicant._compute_campus_visible_stage_ids, which now reads that
+        scoping from the stages themselves instead of a single hardcoded job.
+
+        noupdate so renaming/reordering in the UI survives a module upgrade,
+        matching every other data file in this module.
+    -->
+    <data noupdate="1">
+
+        <record id="department_campus_plus_demo" model="hr.department">
+            <field name="name">Campus+</field>
+        </record>
+
+        <record id="employee_type_campus_part_time" model="hr.employee.type">
+            <field name="name">Part-Time</field>
+        </record>
+
+        <record id="job_tag_enseignement" model="hr.job.tag">
+            <field name="name">Enseignement</field>
+        </record>
+        <record id="job_tag_pedagogie" model="hr.job.tag">
+            <field name="name">Pédagogie</field>
+        </record>
+        <record id="job_tag_digital_learning" model="hr.job.tag">
+            <field name="name">Digital Learning</field>
+        </record>
+        <record id="job_tag_creation_contenu" model="hr.job.tag">
+            <field name="name">Création de contenu</field>
+        </record>
+
+        <record id="job_campus_enseignant_demo" model="hr.job">
+            <field name="name">Campus+ – Enseignant</field>
+            <field name="department_id" ref="department_campus_plus_demo"/>
+            <field name="employee_type_id" ref="employee_type_campus_part_time"/>
+            <field name="expected_degree" ref="hr_recruitment.degree_licenced"/>
+            <field name="no_of_recruitment">5</field>
+            <field name="tag_ids" eval="[(6, 0, [
+                ref('job_tag_enseignement'),
+                ref('job_tag_pedagogie'),
+                ref('job_tag_digital_learning'),
+                ref('job_tag_creation_contenu'),
+            ])]"/>
+            <field name="requirements">Diplôme attendu : Master ou Doctorat (Master retenu ci-dessus ; Doctorat également accepté).
+Compétences attendues : Enseignement, Pédagogie, Digital Learning, Création de contenu.</field>
+            <field name="description" type="html">
+                <p>Offre DEMO pour tester le processus complet de recrutement Campus+ :
+                   1er entretien, Course Breakdown + Contrat, puis Tournage.</p>
+            </field>
+        </record>
+
+        <!-- Additive only: (4, ...) adds this demo job alongside job_campus_teacher
+             on each stage's job_ids, it never removes the real job's own link. -->
+        <record id="stage_interview1" model="hr.recruitment.stage">
+            <field name="job_ids" eval="[(4, ref('job_campus_enseignant_demo'))]"/>
+        </record>
+        <record id="stage_interview2" model="hr.recruitment.stage">
+            <field name="job_ids" eval="[(4, ref('job_campus_enseignant_demo'))]"/>
+        </record>
+        <record id="stage_course_breakdown" model="hr.recruitment.stage">
+            <field name="job_ids" eval="[(4, ref('job_campus_enseignant_demo'))]"/>
+        </record>
+        <record id="stage_contract" model="hr.recruitment.stage">
+            <field name="job_ids" eval="[(4, ref('job_campus_enseignant_demo'))]"/>
+        </record>
+        <record id="stage_shooting" model="hr.recruitment.stage">
+            <field name="job_ids" eval="[(4, ref('job_campus_enseignant_demo'))]"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,127 @@
+.o_campus_dashboard {
+    padding: 1.5rem;
+    overflow: auto;
+    height: 100%;
+
+    .o_campus_dashboard_header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .o_campus_dashboard_title {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .o_campus_dashboard_filter {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+
+        label {
+            margin: 0;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .form-select {
+            min-width: 16rem;
+        }
+    }
+
+    .o_campus_loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 0;
+        color: var(--o-gray-600, #6c757d);
+    }
+
+    // Auto-fit rather than a fixed column count: seven cards reflow to one
+    // column on a phone and a single row on a wide screen without media queries.
+    .o_campus_kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .o_campus_kpi {
+        background: var(--o-view-background-color, #fff);
+        border: 1px solid var(--o-gray-300, #dee2e6);
+        border-radius: .5rem;
+        padding: 1.15rem 1.25rem;
+        cursor: pointer;
+        transition: box-shadow .15s ease, transform .15s ease;
+
+        &:hover {
+            box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .08);
+            transform: translateY(-1px);
+        }
+
+        &.o_campus_kpi_success .o_campus_kpi_value { color: #198754; }
+        &.o_campus_kpi_warning .o_campus_kpi_value { color: #b8860b; }
+        &.o_campus_kpi_danger  .o_campus_kpi_value { color: #dc3545; }
+    }
+
+    .o_campus_kpi_value {
+        font-size: 1.85rem;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    .o_campus_kpi_label {
+        font-size: .8rem;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        color: var(--o-gray-600, #6c757d);
+        margin-top: .25rem;
+    }
+
+    .o_campus_ranking {
+        background: var(--o-view-background-color, #fff);
+        border: 1px solid var(--o-gray-300, #dee2e6);
+        border-radius: .5rem;
+        padding: 1.25rem;
+    }
+
+    .o_campus_ranking_head {
+        margin-bottom: .75rem;
+
+        h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+    }
+
+    .o_campus_empty {
+        padding: 2rem 0;
+        text-align: center;
+        color: var(--o-gray-600, #6c757d);
+    }
+
+    // Wide content scrolls inside its own container so the page body never does.
+    .o_campus_table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .o_campus_row {
+        cursor: pointer;
+    }
+
+    .o_campus_rank {
+        font-weight: 700;
+    }
+
+    .o_campus_score {
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+    }
+}

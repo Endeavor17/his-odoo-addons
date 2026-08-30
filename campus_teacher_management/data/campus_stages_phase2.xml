@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Phase 2: the interview / Course Breakdown / Contract / Shooting pipeline.
+
+        Kept in its own file, separate from data/recruitment_stages.xml, so this
+        phase's additions stay independently auditable/revertible without
+        touching the 4 stages already in production use.
+
+        noupdate so renaming/reordering in the UI survives a module upgrade —
+        matching the existing recruitment_stages.xml convention exactly.
+    -->
+    <data noupdate="1">
+
+        <!-- A real Job Position is required for hr.recruitment.stage.job_ids to
+             scope these stages to Campus+ only, instead of appearing on every
+             recruitment pipeline in the database. -->
+        <record id="job_campus_teacher" model="hr.job">
+            <field name="name">Campus+ Teacher</field>
+        </record>
+
+        <record id="stage_interview1" model="hr.recruitment.stage">
+            <field name="name">1er Interview</field>
+            <field name="sequence">10</field>
+            <field name="job_ids" eval="[(4, ref('job_campus_teacher'))]"/>
+            <field name="requirements">Schedule the first interview and record whether it happened. Moving to the next stage is always manual.</field>
+        </record>
+
+        <record id="stage_interview2" model="hr.recruitment.stage">
+            <field name="name">2ème Interview</field>
+            <field name="sequence">11</field>
+            <field name="job_ids" eval="[(4, ref('job_campus_teacher'))]"/>
+            <field name="requirements">Schedule the second interview, track the Course Breakdown review cycle and the Contract signature, and select the candidate's subjects once the interview is done.</field>
+        </record>
+
+        <record id="stage_course_breakdown" model="hr.recruitment.stage">
+            <field name="name">Course Breakdown</field>
+            <field name="sequence">12</field>
+            <field name="job_ids" eval="[(4, ref('job_campus_teacher'))]"/>
+            <field name="requirements">The candidate's Course Breakdown is under review. See the Hiring tab for the submission history and status.</field>
+        </record>
+
+        <record id="stage_contract" model="hr.recruitment.stage">
+            <field name="name">Contrat</field>
+            <field name="sequence">13</field>
+            <field name="job_ids" eval="[(4, ref('job_campus_teacher'))]"/>
+            <field name="requirements">Contract sent, awaiting signature. See the Hiring tab for the exact status.</field>
+        </record>
+
+        <record id="stage_shooting" model="hr.recruitment.stage">
+            <field name="name">Shooting</field>
+            <field name="sequence">14</field>
+            <field name="job_ids" eval="[(4, ref('job_campus_teacher'))]"/>
+            <field name="requirements">Schedule and track the recording sessions.</field>
+        </record>
+
+    </data>
+</odoo>

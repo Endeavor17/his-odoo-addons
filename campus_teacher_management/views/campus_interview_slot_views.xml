@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="campus_interview_slot_view_list" model="ir.ui.view">
+        <field name="name">campus.interview.slot.list</field>
+        <field name="model">campus.interview.slot</field>
+        <field name="arch" type="xml">
+            <list string="Interview Slots" multi_edit="1"
+                  decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'booked'">
+                <field name="start_datetime"/>
+                <field name="end_datetime" optional="show"/>
+                <field name="duration" optional="hide"/>
+                <field name="round"/>
+                <field name="interviewer_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'booked'"
+                       decoration-info="state == 'free'"
+                       decoration-muted="state == 'cancelled'"/>
+                <field name="applicant_id" optional="show"/>
+                <button name="action_release" type="object" string="Release"
+                        icon="fa-undo" invisible="state != 'booked'"
+                        confirm="Release this slot? The meeting will be removed from the calendar."/>
+            </list>
+        </field>
+    </record>
+
+    <record id="campus_interview_slot_view_calendar" model="ir.ui.view">
+        <field name="name">campus.interview.slot.calendar</field>
+        <field name="model">campus.interview.slot</field>
+        <field name="arch" type="xml">
+            <calendar string="Interview Slots" date_start="start_datetime"
+                      date_stop="end_datetime" mode="week" color="state"
+                      quick_create="0">
+                <field name="applicant_id"/>
+                <field name="interviewer_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="campus_interview_slot_view_form" model="ir.ui.view">
+        <field name="name">campus.interview.slot.form</field>
+        <field name="model">campus.interview.slot</field>
+        <field name="arch" type="xml">
+            <form string="Interview Slot">
+                <header>
+                    <button name="action_release" type="object" string="Release"
+                            invisible="state != 'booked'"
+                            confirm="Release this slot? The meeting will be removed from the calendar."/>
+                    <button name="action_cancel" type="object" string="Cancel Slot"
+                            invisible="state == 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="free,booked"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="When">
+                            <field name="start_datetime"/>
+                            <field name="duration"/>
+                            <field name="end_datetime" readonly="1"/>
+                        </group>
+                        <group string="What for">
+                            <field name="round"/>
+                            <field name="interviewer_id"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group string="Booking" invisible="state != 'booked'">
+                        <field name="applicant_id" readonly="1"/>
+                        <field name="event_id" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="campus_interview_slot_view_search" model="ir.ui.view">
+        <field name="name">campus.interview.slot.search</field>
+        <field name="model">campus.interview.slot</field>
+        <field name="arch" type="xml">
+            <search string="Interview Slots">
+                <field name="applicant_id"/>
+                <field name="interviewer_id"/>
+                <filter name="free" string="Available" domain="[('state', '=', 'free')]"/>
+                <filter name="booked" string="Booked" domain="[('state', '=', 'booked')]"/>
+                <separator/>
+                <filter name="upcoming" string="Upcoming"
+                        domain="[('start_datetime', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="round1" string="First Meeting" domain="[('round', 'in', ['1', 'any'])]"/>
+                <filter name="round2" string="Second Meeting" domain="[('round', 'in', ['2', 'any'])]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_round" string="Meeting" context="{'group_by': 'round'}"/>
+                    <filter name="group_interviewer" string="Interviewer" context="{'group_by': 'interviewer_id'}"/>
+                    <filter name="group_day" string="Day" context="{'group_by': 'start_datetime:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_campus_interview_slot" model="ir.actions.act_window">
+        <field name="name">Available Slots</field>
+        <field name="res_model">campus.interview.slot</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="context">{'search_default_upcoming': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Offer some interview times</p>
+            <p>These are the times candidates are asked to choose from. Use
+               <b>Generate Week</b> to create a whole week at once.</p>
+        </field>
+    </record>
+
+    <!-- The interviews themselves, as booked meetings. -->
+    <record id="action_campus_interview_calendar" model="ir.actions.act_window">
+        <field name="name">Interview Calendar</field>
+        <field name="res_model">campus.interview.slot</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('state', '=', 'booked')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No interviews booked yet</p>
+            <p>Meetings appear here once you record the time a candidate replied with.</p>
+        </field>
+    </record>
+
+</odoo>

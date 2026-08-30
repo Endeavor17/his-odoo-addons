@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Phase 2 emails: 1st/2nd interview invitations, Course Breakdown review
+        outcomes, and shooting session notices.
+
+        Kept in its own file, separate from data/campus_mail_templates.xml, so
+        this phase's additions stay independently auditable/revertible without
+        touching the 3 templates already in production use. noupdate so wording
+        edited in Odoo survives a module upgrade, exactly like the existing file.
+
+        Templates 3-6 target campus.course.breakdown / campus.shooting.session
+        directly rather than hr.applicant: a candidate can have several Course
+        Breakdown submissions or several shooting sessions, so the email has to
+        render against the ONE specific row that was just reviewed or
+        created/changed — targeting the applicant instead would leave no way to
+        tell which one the email is about.
+    -->
+    <data noupdate="1">
+
+        <!-- ============ 1 · 1st Interview invitation ============ -->
+        <record id="mail_template_campus_interview1_invite" model="mail.template">
+            <field name="name">Campus+ · 1st Interview invitation</field>
+            <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+            <field name="subject">Campus+ — Your first interview</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.email_from }}</field>
+            <field name="lang">{{ object.partner_id.lang or 'en_US' }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.campus_name_lat or object.partner_name or ''">Teacher</t>,</p>
+
+    <p>
+        We are pleased to inform you that your application to join the
+        <strong>Campus+</strong> teaching team has been accepted, and we would like to invite
+        you to a first interview.
+    </p>
+
+    <table style="border-collapse:collapse;margin:16px 0;">
+        <tr>
+            <td style="padding:6px 14px;border:1px solid #DDE4F0;background:#F5F7FC;font-weight:600;">
+                <t t-out="object.campus_interview1_id.display_name">Sun 12 Oct · 09:00</t>
+            </td>
+        </tr>
+    </table>
+
+    <p style="color:#6B7FA8;font-size:13px;">
+        If this time does not suit you, reply to this email and we will find another one —
+        the meeting can be rescheduled.
+    </p>
+
+    <p>Kind regards,<br/>The Campus+ team</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ============ 2 · 2nd Interview + Course Breakdown + Contract ============ -->
+        <!-- attachment_ids is intentionally left empty: upload the blank Course
+             Breakdown (.xlsx) and Contract (.pdf) templates here, under
+             Recruitment > Campus+ Recruitment > Configuration > Email Templates,
+             before using this template. The same two files are then attached
+             automatically to every email sent from it. -->
+        <record id="mail_template_campus_interview2_invite" model="mail.template">
+            <field name="name">Campus+ · 2nd Interview, Course Breakdown and Contract</field>
+            <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+            <field name="subject">Campus+ — Your second interview, Course Breakdown and Contract</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.email_from }}</field>
+            <field name="lang">{{ object.partner_id.lang or 'en_US' }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.campus_name_lat or object.partner_name or ''">Teacher</t>,</p>
+
+    <p>Thank you for meeting with us. Your second interview is scheduled for:</p>
+
+    <table style="border-collapse:collapse;margin:16px 0;">
+        <tr>
+            <td style="padding:6px 14px;border:1px solid #DDE4F0;background:#F5F7FC;font-weight:600;">
+                <t t-out="object.campus_interview2_id.display_name">Sun 19 Oct · 09:00</t>
+            </td>
+        </tr>
+    </table>
+
+    <p>Attached you will find:</p>
+    <ul>
+        <li>the <strong>Course Breakdown</strong> template (Excel) — please complete it</li>
+        <li>your <strong>Contract</strong> (PDF) — please sign it</li>
+    </ul>
+
+    <p>Before the interview, please:</p>
+    <ol>
+        <li>Confirm this appointment by replying to this email</li>
+        <li>Complete the Course Breakdown</li>
+        <li>Send us the completed Course Breakdown</li>
+        <li>Sign the Contract</li>
+        <li>Send us the signed Contract</li>
+    </ol>
+
+    <p>Kind regards,<br/>The Campus+ team</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ============ 3 · Course Breakdown — modification requested ============ -->
+        <record id="mail_template_campus_cb_modification" model="mail.template">
+            <field name="name">Campus+ · Course Breakdown — modification requested</field>
+            <field name="model_id" ref="campus_teacher_management.model_campus_course_breakdown"/>
+            <field name="subject">Campus+ — Please revise your Course Breakdown</field>
+            <field name="email_from">{{ (object.applicant_id.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.applicant_id.email_from }}</field>
+            <field name="lang">{{ object.applicant_id.partner_id.lang or 'en_US' }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.applicant_id.campus_name_lat or object.applicant_id.partner_name or ''">Teacher</t>,</p>
+
+    <p>
+        Thank you for sending your Course Breakdown. Before we can approve it, a few
+        changes are needed:
+    </p>
+
+    <div style="padding:10px 14px;border:1px solid #DDE4F0;background:#F5F7FC;white-space:pre-wrap;">
+        <t t-out="object.review_notes"></t>
+    </div>
+
+    <p>Please send us a revised version once it is ready.</p>
+
+    <p>Kind regards,<br/>The Campus+ team</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ============ 4 · Course Breakdown — approved ============ -->
+        <record id="mail_template_campus_cb_approved" model="mail.template">
+            <field name="name">Campus+ · Course Breakdown — approved</field>
+            <field name="model_id" ref="campus_teacher_management.model_campus_course_breakdown"/>
+            <field name="subject">Campus+ — Your Course Breakdown has been approved</field>
+            <field name="email_from">{{ (object.applicant_id.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.applicant_id.email_from }}</field>
+            <field name="lang">{{ object.applicant_id.partner_id.lang or 'en_US' }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.applicant_id.campus_name_lat or object.applicant_id.partner_name or ''">Teacher</t>,</p>
+
+    <p>
+        Your Course Breakdown has been reviewed and <strong>approved</strong> — no further
+        changes are needed.
+    </p>
+
+    <p>Kind regards,<br/>The Campus+ team</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ============ 5 · Shooting session — created ============ -->
+        <record id="mail_template_campus_shooting_created" model="mail.template">
+            <field name="name">Campus+ · Shooting session — scheduled</field>
+            <field name="model_id" ref="campus_teacher_management.model_campus_shooting_session"/>
+            <field name="subject">Campus+ — Recording session scheduled: {{ object.title }}</field>
+            <field name="email_from">{{ (object.applicant_id.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.applicant_id.email_from }}</field>
+            <field name="lang">{{ object.applicant_id.partner_id.lang or 'en_US' }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.applicant_id.campus_name_lat or object.applicant_id.partner_name or ''">Teacher</t>,</p>
+
+    <p>A recording session has been scheduled for you:</p>
+
+    <table style="border-collapse:collapse;margin:16px 0;width:100%;max-width:480px;">
+        <tr>
+            <td style="padding:6px 14px;border:1px solid #DDE4F0;background:#F5F7FC;font-weight:600;" colspan="2">
+                <t t-out="object.display_name">Intro segment · Sun 12 Oct · 09:00</t>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:6px 14px;border:1px solid #DDE4F0;">Duration</td>
+            <td style="padding:6px 14px;border:1px solid #DDE4F0;"><t t-out="object.duration"/> h</td>
+        </tr>
+    </table>
+
+    <p>What to prepare and record during this session:</p>
+    <div style="padding:10px 14px;border:1px solid #DDE4F0;background:#F5F7FC;white-space:pre-wrap;">
+        <t t-out="object.description"></t>
+    </div>
+
+    <p style="color:#6B7FA8;font-size:13px;">
+        Please reply to confirm you can make this time.
+    </p>
+
+    <p>Kind regards,<br/>The Campus+ team</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ============ 6 · Shooting session — modified ============ -->
+        <record id="mail_template_campus_shooting_modified" model="mail.template">
+            <field name="name">Campus+ · Shooting session — updated</field>
+            <field name="model_id" ref="campus_teacher_management.model_campus_shooting_session"/>
+            <field name="subject">Campus+ — Recording session updated: {{ object.title }}</field>
+            <field name="email_from">{{ (object.applicant_id.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.applicant_id.email_from }}</field>
+            <field name="lang">{{ object.applicant_id.partner_id.lang or 'en_US' }}</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+    <p>Dear <t t-out="object.applicant_id.campus_name_lat or object.applicant_id.partner_name or ''">Teacher</t>,</p>
+
+    <p>Your recording session has been updated. The current details are:</p>
+
+    <table style="border-collapse:collapse;margin:16px 0;width:100%;max-width:480px;">
+        <tr>
+            <td style="padding:6px 14px;border:1px solid #DDE4F0;background:#F5F7FC;font-weight:600;" colspan="2">
+                <t t-out="object.display_name">Intro segment · Sun 12 Oct · 09:00</t>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:6px 14px;border:1px solid #DDE4F0;">Duration</td>
+            <td style="padding:6px 14px;border:1px solid #DDE4F0;"><t t-out="object.duration"/> h</td>
+        </tr>
+    </table>
+
+    <p>What to prepare and record during this session:</p>
+    <div style="padding:10px 14px;border:1px solid #DDE4F0;background:#F5F7FC;white-space:pre-wrap;">
+        <t t-out="object.description"></t>
+    </div>
+
+    <p style="color:#6B7FA8;font-size:13px;">
+        If you had already confirmed the previous time, please reconfirm for this new one.
+    </p>
+
+    <p>Kind regards,<br/>The Campus+ team</p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

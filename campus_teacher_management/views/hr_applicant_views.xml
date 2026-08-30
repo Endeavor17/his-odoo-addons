@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============ Form: evaluation page + smart buttons ============ -->
+    <record id="hr_applicant_view_form_campus" model="ir.ui.view">
+        <field name="name">hr.applicant.form.campus</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="campus_shooting_program_id" invisible="1"/>
+                <button name="action_campus_view_shooting_program" type="object"
+                        class="oe_stat_button" icon="fa-video-camera"
+                        invisible="not campus_shooting_program_id">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Shooting</span>
+                        <span class="o_stat_text">Program</span>
+                    </div>
+                </button>
+                <button name="action_campus_view_scores" type="object"
+                        class="oe_stat_button" icon="fa-calculator"
+                        invisible="not campus_score_count">
+                    <field name="campus_score_count" widget="statinfo" string="Criteria"/>
+                </button>
+                <button name="action_campus_view_submissions" type="object"
+                        class="oe_stat_button" icon="fa-inbox"
+                        groups="campus_teacher_management.group_campus_manager"
+                        invisible="not campus_version_id">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Raw</span>
+                        <span class="o_stat_text">Submissions</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <!-- Core's own stage_id domain always ORs in every unscoped stage
+                 for every job (by design), so a Campus+ Teacher applicant
+                 would otherwise see the 9 unscoped stages alongside the 5
+                 Campus+ ones in the top bar. Overriding just this field's
+                 domain, in just this view, swaps in campus_visible_stage_ids
+                 - exactly the 5 for Campus+ Teacher, and a reproduction of
+                 core's own formula (not a bypass of it) for every other job. -->
+            <xpath expr="//field[@name='stage_id'][@widget='rotting_statusbar_duration']" position="before">
+                <field name="campus_visible_stage_ids" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='stage_id'][@widget='rotting_statusbar_duration']" position="attributes">
+                <attribute name="domain">[('id', 'in', campus_visible_stage_ids)]</attribute>
+            </xpath>
+
+            <xpath expr="//header" position="inside">
+                <button name="action_campus_evaluate" type="object" string="Evaluate"
+                        class="btn-primary"
+                        invisible="not campus_version_id or campus_locked"
+                        groups="campus_teacher_management.group_campus_manager"/>
+                <button name="action_campus_lock" type="object" string="Lock Evaluation"
+                        invisible="campus_locked or campus_state == 'not_started'"
+                        groups="campus_teacher_management.group_campus_manager"/>
+                <button name="action_campus_unlock" type="object" string="Unlock Evaluation"
+                        invisible="not campus_locked"
+                        groups="campus_teacher_management.group_campus_manager"/>
+
+                <!-- The hiring sequence. Exactly one of these is ever visible, so
+                     the header itself tells the recruiter what comes next. -->
+                <field name="campus_hiring_state" invisible="1"/>
+                <button name="action_campus_select" type="object" string="Select &amp; Invite"
+                        class="btn-primary"
+                        invisible="campus_hiring_state != 'not_selected' or campus_state != 'evaluated'"
+                        confirm="Send the acceptance email with the available first-meeting times?"/>
+                <button name="action_campus_schedule" type="object" string="Schedule Meeting"
+                        class="btn-primary"
+                        invisible="campus_hiring_state not in ('invited', 'docs_accepted', 'final_sent')"/>
+                <button name="action_campus_send_documents" type="object"
+                        string="Send Course Breakdown &amp; Contract" class="btn-primary"
+                        invisible="campus_hiring_state != 'meeting_1'"/>
+                <button name="action_campus_record_acceptance" type="object"
+                        string="Record Acceptance" class="btn-primary"
+                        invisible="campus_hiring_state != 'docs_sent'"
+                        confirm="Confirm the candidate accepted the Course Breakdown and contract by email?"/>
+                <button name="action_campus_send_final" type="object"
+                        string="Send Final Breakdown" class="btn-primary"
+                        invisible="campus_hiring_state != 'docs_accepted'"/>
+                <button name="action_campus_hire" type="object" string="Hire"
+                        class="btn-primary"
+                        invisible="campus_hiring_state not in ('meeting_2', 'final_sent')"
+                        confirm="Create the employee record for this teacher?"/>
+                <button name="action_campus_reset_hiring" type="object" string="Reset Hiring"
+                        invisible="campus_hiring_state in ('not_selected', 'hired')"
+                        groups="campus_teacher_management.group_campus_manager"
+                        confirm="Put this candidate back to the start of the hiring sequence?"/>
+
+                <!-- ============ Phase 2: 1er/2ème Interview, Course Breakdown, Contract, Subjects ============ -->
+                <field name="campus_interview1_id" invisible="1"/>
+                <field name="campus_interview2_id" invisible="1"/>
+                <field name="campus_interview1_confirmed" invisible="1"/>
+                <field name="campus_interview2_confirmed" invisible="1"/>
+                <field name="campus_contract_state" invisible="1"/>
+                <field name="campus_in_contract_stage" invisible="1"/>
+                <field name="campus_can_execute_process" invisible="1"/>
+                <field name="campus_can_validate_process" invisible="1"/>
+
+                <button name="action_campus_open_schedule_interview1" type="object"
+                        string="Schedule 1st Interview" class="btn-primary"
+                        invisible="campus_hiring_state != 'invited' or campus_interview1_id or not campus_can_execute_process"/>
+                <button name="action_campus_open_schedule_interview1" type="object"
+                        string="Reschedule 1st Interview"
+                        invisible="not campus_interview1_id or campus_hiring_state != 'meeting_1' or not campus_can_execute_process"/>
+                <button name="action_campus_confirm_interview1" type="object"
+                        string="Confirm Interview 1 Attendance"
+                        invisible="not campus_interview1_id or campus_interview1_confirmed or campus_hiring_state != 'meeting_1' or not campus_can_execute_process"/>
+                <button name="action_campus_mark_interview1_completed" type="object"
+                        string="Mark Interview 1 Completed" class="btn-primary"
+                        invisible="campus_hiring_state != 'meeting_1' or not campus_can_validate_process"
+                        confirm="Mark the first interview as completed? Moving to the 2ème Interview stage is a separate, manual step."/>
+
+                <button name="action_campus_open_schedule_interview2" type="object"
+                        string="Schedule 2nd Interview" class="btn-primary"
+                        invisible="campus_hiring_state != 'interview1_completed' or campus_interview2_id or not campus_can_execute_process"/>
+                <button name="action_campus_open_schedule_interview2" type="object"
+                        string="Reschedule 2nd Interview"
+                        invisible="not campus_interview2_id or campus_hiring_state != 'meeting_2' or not campus_can_execute_process"/>
+                <button name="action_campus_confirm_interview2" type="object"
+                        string="Confirm Interview 2 Attendance"
+                        invisible="not campus_interview2_id or campus_interview2_confirmed or campus_hiring_state != 'meeting_2' or not campus_can_execute_process"/>
+                <button name="action_campus_mark_interview2_completed" type="object"
+                        string="Mark Interview 2 Completed" class="btn-primary"
+                        invisible="campus_hiring_state != 'meeting_2' or not campus_can_validate_process"
+                        confirm="Mark the second interview as completed?"/>
+
+                <button name="action_campus_mark_subjects_selected" type="object"
+                        string="Mark Subjects Selected" class="btn-primary"
+                        invisible="campus_hiring_state != 'interview2_completed' or not campus_can_execute_process"/>
+
+                <button name="action_campus_mark_contract_sent" type="object" string="Mark Contract Sent"
+                        invisible="not campus_interview2_id or campus_contract_state != 'not_sent' or not campus_can_execute_process"/>
+                <button name="action_campus_mark_contract_awaiting_signature" type="object"
+                        string="Mark Awaiting Signature"
+                        invisible="campus_contract_state != 'sent' or not campus_can_execute_process"/>
+                <button name="action_campus_mark_contract_signed" type="object" string="Mark Contract Signed"
+                        class="btn-primary"
+                        invisible="campus_contract_state not in ('sent', 'awaiting_signature') or not campus_can_validate_process or not campus_in_contract_stage"
+                        groups="campus_teacher_management.group_campus_manager"
+                        confirm="Mark this contract as signed?"/>
+                <button name="action_campus_mark_contract_not_signed" type="object" string="Mark Contract Not Signed"
+                        invisible="campus_contract_state not in ('sent', 'awaiting_signature') or not campus_can_validate_process or not campus_in_contract_stage"
+                        groups="campus_teacher_management.group_campus_manager"
+                        confirm="Mark this contract as not signed?"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+
+                <page string="Campus+ Evaluation" name="campus_evaluation"
+                      invisible="not campus_version_id">
+                    <group>
+                        <group string="Result">
+                            <field name="campus_version_id" options="{'no_create': True}"/>
+                            <field name="campus_final_score" widget="float" digits="[16,2]"/>
+                            <field name="campus_rank"/>
+                            <field name="campus_state"/>
+                            <field name="campus_evaluation_date"/>
+                        </group>
+                        <group string="Provenance">
+                            <field name="campus_engine_version"/>
+                            <field name="campus_weighting_method"/>
+                            <field name="campus_locked"/>
+                            <field name="campus_external_ref"/>
+                        </group>
+                    </group>
+                    <separator string="Score Breakdown"/>
+                    <field name="campus_score_ids" readonly="1" nolabel="1">
+                        <list string="Score Breakdown" create="false" delete="false">
+                            <field name="code_snapshot" string="Code" optional="show"/>
+                            <field name="name_snapshot" string="Criterion"/>
+                            <field name="raw_value" string="Answer"/>
+                            <field name="raw_score" string="Raw"/>
+                            <field name="max_score_snapshot" string="Max" optional="show"/>
+                            <field name="normalized_score" string="Normalized" optional="hide"/>
+                            <field name="weight_snapshot" string="Weight"/>
+                            <field name="weighted_score" string="Weighted" sum="Total"/>
+                            <field name="contribution_percent" string="Share %" optional="hide"/>
+                        </list>
+                    </field>
+                </page>
+
+                <page string="Campus+ Subjects" name="campus_subjects"
+                      invisible="not campus_version_id">
+                    <div class="oe_button_box">
+                        <button name="action_campus_accept_all_subjects" type="object"
+                                string="Accept all requested subjects" class="btn-link"/>
+                    </div>
+                    <field name="campus_subject_ids" nolabel="1">
+                        <list string="Subjects" editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="source"/>
+                            <field name="subject_id" options="{'no_create': True}"/>
+                            <field name="subject_name"/>
+                            <field name="years_exp"/>
+                            <field name="is_wished"/>
+                            <field name="is_accepted" widget="boolean_toggle"/>
+                        </list>
+                    </field>
+                </page>
+
+                <page string="Course Breakdown" name="campus_cb_dedicated"
+                      invisible="not campus_in_cb_stage">
+                    <p class="text-muted">
+                        Same Course Breakdown data as the Hiring tab — shown here directly
+                        because the candidate is currently at the Course Breakdown stage.
+                    </p>
+                    <group>
+                        <field name="campus_cb_state" widget="badge"
+                               decoration-success="campus_cb_state == 'approved'"
+                               decoration-warning="campus_cb_state == 'modification_requested'"
+                               decoration-info="campus_cb_state in ('submitted', 'pending')"
+                               decoration-muted="campus_cb_state == 'not_sent'"/>
+                    </group>
+                    <p class="text-muted">
+                        Every submission is kept — older versions are never overwritten.
+                        Add a line with the file the candidate sent back to record a new one.
+                    </p>
+                    <field name="campus_cb_ids" nolabel="1">
+                        <list string="Course Breakdown Submissions" editable="bottom" delete="false">
+                            <field name="create_date" string="Submitted" readonly="1" optional="show"/>
+                            <field name="file" filename="filename"/>
+                            <field name="filename" column_invisible="1"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'approved'"
+                                   decoration-warning="state == 'modification_requested'"
+                                   decoration-info="state == 'submitted'"
+                                   readonly="1"/>
+                            <field name="review_notes" optional="show"/>
+                            <field name="reviewed_by" optional="hide" readonly="1"/>
+                            <field name="campus_can_execute_process" invisible="1"/>
+                            <field name="campus_can_validate_process" invisible="1"/>
+                            <button name="action_approve" type="object" string="Approve" icon="fa-check"
+                                    invisible="state == 'approved' or not campus_can_validate_process"
+                                    groups="campus_teacher_management.group_campus_manager"
+                                    confirm="Approve this Course Breakdown submission?"/>
+                            <button name="action_request_modification" type="object" string="Request Changes"
+                                    icon="fa-reply"
+                                    invisible="state in ('approved', 'modification_requested') or not campus_can_execute_process"/>
+                        </list>
+                    </field>
+                </page>
+
+                <page string="Hiring" name="campus_hiring"
+                      invisible="campus_hiring_state == 'not_selected' and not campus_in_contract_stage">
+                    <group>
+                        <group string="Progress">
+                            <field name="campus_hiring_state" readonly="1"/>
+                            <field name="campus_hiring_date" readonly="1"
+                                   invisible="not campus_hiring_date"/>
+                        </group>
+                        <group string="Meetings">
+                            <field name="campus_slot_ids" nolabel="1" colspan="2" readonly="1">
+                                <list string="Meetings" create="false" delete="false">
+                                    <field name="round"/>
+                                    <field name="start_datetime"/>
+                                    <field name="interviewer_id"/>
+                                    <field name="teacher_confirmed" optional="show"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </group>
+                    </group>
+                    <separator string="Documents"/>
+                    <p class="text-muted">
+                        Attach the files here before pressing the send buttons above.
+                        Odoo emails exactly what is attached — it does not generate these.
+                    </p>
+                    <group>
+                        <group>
+                            <field name="campus_cb_file" filename="campus_cb_filename"
+                                   string="Course Breakdown"/>
+                            <field name="campus_cb_filename" invisible="1"/>
+                            <field name="campus_contract_file" filename="campus_contract_filename"
+                                   string="Contract"/>
+                            <field name="campus_contract_filename" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="campus_cb_final_file" filename="campus_cb_final_filename"
+                                   string="Final Course Breakdown"/>
+                            <field name="campus_cb_final_filename" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <separator string="Course Breakdown (current workflow)"/>
+                    <group>
+                        <field name="campus_cb_state" widget="badge"
+                               decoration-success="campus_cb_state == 'approved'"
+                               decoration-warning="campus_cb_state == 'modification_requested'"
+                               decoration-info="campus_cb_state in ('submitted', 'pending')"
+                               decoration-muted="campus_cb_state == 'not_sent'"/>
+                    </group>
+                    <p class="text-muted">
+                        Every submission is kept — older versions are never overwritten.
+                        Add a line with the file the candidate sent back to record a new one.
+                    </p>
+                    <field name="campus_cb_ids" nolabel="1">
+                        <list string="Course Breakdown Submissions" editable="bottom" delete="false">
+                            <field name="create_date" string="Submitted" readonly="1" optional="show"/>
+                            <field name="file" filename="filename"/>
+                            <field name="filename" column_invisible="1"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'approved'"
+                                   decoration-warning="state == 'modification_requested'"
+                                   decoration-info="state == 'submitted'"
+                                   readonly="1"/>
+                            <field name="review_notes" optional="show"/>
+                            <field name="reviewed_by" optional="hide" readonly="1"/>
+                            <field name="campus_can_execute_process" invisible="1"/>
+                            <field name="campus_can_validate_process" invisible="1"/>
+                            <button name="action_approve" type="object" string="Approve" icon="fa-check"
+                                    invisible="state == 'approved' or not campus_can_validate_process"
+                                    groups="campus_teacher_management.group_campus_manager"
+                                    confirm="Approve this Course Breakdown submission?"/>
+                            <button name="action_request_modification" type="object" string="Request Changes"
+                                    icon="fa-reply"
+                                    invisible="state in ('approved', 'modification_requested') or not campus_can_execute_process"/>
+                        </list>
+                    </field>
+
+                    <separator string="Contract (current workflow)"/>
+                    <group>
+                        <field name="campus_contract_state" widget="badge"
+                               decoration-success="campus_contract_state == 'signed'"
+                               decoration-danger="campus_contract_state == 'not_signed'"
+                               decoration-warning="campus_contract_state == 'awaiting_signature'"
+                               decoration-info="campus_contract_state == 'sent'"
+                               decoration-muted="campus_contract_state == 'not_sent'"/>
+                    </group>
+                    <p class="text-muted">
+                        Attach the signed Contract in the "Contract" field above, then use the
+                        header buttons to mark it sent, awaiting signature, signed or not signed.
+                    </p>
+                </page>
+
+                <page string="Shooting Program" name="campus_shooting"
+                      invisible="campus_hiring_state not in ('subjects_selected', 'hired') and not campus_shooting_ids">
+                    <p class="text-muted">
+                        These sessions belong to this teacher's own Shooting Program, created
+                        automatically once their contract is signed. Creating or editing a
+                        session emails the candidate automatically — only if something
+                        meaningful (time, title, description) actually changed.
+                    </p>
+                    <field name="campus_shooting_ids" nolabel="1">
+                        <list string="Shooting Sessions" editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="title"/>
+                            <field name="start_datetime"/>
+                            <field name="duration" widget="float_time"/>
+                            <field name="description" optional="show"/>
+                            <field name="confirmed" widget="boolean_toggle"/>
+                            <field name="recorded" widget="boolean_toggle"/>
+                            <field name="campus_can_execute_process" invisible="1"/>
+                            <field name="campus_can_validate_process" invisible="1"/>
+                            <button name="action_confirm" type="object" string="Confirm" icon="fa-check"
+                                    invisible="confirmed or not campus_can_execute_process"/>
+                            <button name="action_mark_recorded" type="object" string="Recorded" icon="fa-video-camera"
+                                    invisible="recorded or not campus_can_validate_process"/>
+                        </list>
+                    </field>
+                </page>
+
+                <page string="Campus+ Answers" name="campus_answers"
+                      invisible="not campus_version_id">
+                    <group>
+                        <group string="Identity">
+                            <field name="campus_name_ar"/>
+                            <field name="campus_name_lat"/>
+                            <field name="campus_dob"/>
+                            <field name="campus_phone2"/>
+                            <field name="campus_wilaya"/>
+                            <field name="campus_commune"/>
+                        </group>
+                        <group string="Academic">
+                            <field name="campus_university"/>
+                            <field name="campus_faculty"/>
+                            <field name="campus_specialty"/>
+                            <field name="campus_gov_institution"/>
+                            <field name="campus_scientific_rank"/>
+                            <field name="campus_years_exp"/>
+                        </group>
+                        <group string="Languages">
+                            <field name="campus_lang_ar"/>
+                            <field name="campus_lang_en"/>
+                            <field name="campus_lang_fr"/>
+                        </group>
+                        <group string="History">
+                            <field name="campus_taught_his"/>
+                            <field name="campus_taught_campus"/>
+                            <field name="campus_available_days_display"/>
+                        </group>
+                        <group string="Practice">
+                            <field name="campus_teach_methods_display"/>
+                            <field name="campus_digital_tools_display"/>
+                            <field name="campus_flipped_knowledge"/>
+                            <field name="campus_camera_confidence"/>
+                            <field name="campus_video_rec"/>
+                            <field name="campus_redesigned"/>
+                        </group>
+                    </group>
+                    <separator string="Written Answers"/>
+                    <group>
+                        <field name="campus_flipped_def"/>
+                        <field name="campus_redesign_detail"/>
+                        <field name="campus_concerns"/>
+                        <field name="campus_concerns_handled"/>
+                        <field name="campus_referrals"/>
+                        <field name="campus_referrals_field"/>
+                    </group>
+                </page>
+
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============ List: score and rank columns ============ -->
+    <record id="crm_case_tree_view_job_campus" model="ir.ui.view">
+        <field name="name">hr.applicant.list.campus</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.crm_case_tree_view_job"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="campus_rank" string="Rank" optional="show"/>
+                <field name="campus_final_score" string="Score" optional="show"
+                       widget="float" digits="[16,2]"/>
+                <field name="campus_state" string="Evaluation" optional="hide"/>
+                <field name="campus_hiring_state" string="Hiring Step" optional="hide"/>
+                <field name="campus_cb_state" string="Course Breakdown" optional="hide"/>
+                <field name="campus_contract_state" string="Contract" optional="hide"/>
+                <field name="campus_version_id" string="Campaign" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============ Search: Campus+ filters and grouping ============ -->
+    <record id="hr_applicant_view_search_campus" model="ir.ui.view">
+        <field name="name">hr.applicant.search.campus</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_search_bis"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="campus_version_id"/>
+                <filter name="campus_evaluated" string="Evaluated"
+                        domain="[('campus_state', '=', 'evaluated')]"/>
+                <filter name="campus_pending" string="Pending Evaluation"
+                        domain="[('campus_state', 'in', ['not_started', 'submitted'])]"/>
+                <filter name="campus_locked" string="Locked"
+                        domain="[('campus_locked', '=', True)]"/>
+                <separator/>
+                <filter name="campus_has_version" string="Campus+ Applications"
+                        domain="[('campus_version_id', '!=', False)]"/>
+                <separator/>
+                <field name="campus_hiring_state"/>
+                <filter name="campus_in_hiring" string="In Hiring"
+                        domain="[('campus_hiring_state', 'not in', ['not_selected', 'hired'])]"/>
+                <filter name="campus_hired" string="Hired"
+                        domain="[('campus_hiring_state', '=', 'hired')]"/>
+                <separator/>
+                <field name="campus_cb_state"/>
+                <filter name="campus_cb_needs_review" string="Course Breakdown Needs Review"
+                        domain="[('campus_cb_state', '=', 'submitted')]"/>
+                <field name="campus_contract_state"/>
+                <filter name="campus_contract_awaiting" string="Contract Awaiting Signature"
+                        domain="[('campus_contract_state', '=', 'awaiting_signature')]"/>
+                <group>
+                    <filter name="group_campus_version" string="Campaign"
+                            context="{'group_by': 'campus_version_id'}"/>
+                    <filter name="group_campus_state" string="Evaluation Status"
+                            context="{'group_by': 'campus_state'}"/>
+                    <filter name="group_campus_hiring" string="Hiring Step"
+                            context="{'group_by': 'campus_hiring_state'}"/>
+                    <filter name="group_campus_cb_state" string="Course Breakdown Status"
+                            context="{'group_by': 'campus_cb_state'}"/>
+                    <filter name="group_campus_contract_state" string="Contract Status"
+                            context="{'group_by': 'campus_contract_state'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============ Ranking list ============ -->
+    <record id="hr_applicant_view_ranking" model="ir.ui.view">
+        <field name="name">hr.applicant.ranking.campus</field>
+        <field name="model">hr.applicant</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Ranking" create="false" default_order="campus_final_score desc, id asc">
+                <field name="campus_rank" string="#"/>
+                <field name="partner_name" string="Candidate"/>
+                <field name="email_from" string="Email"/>
+                <field name="campus_scientific_rank" string="Rank" optional="show"/>
+                <field name="campus_years_exp" string="Years" optional="show"/>
+                <field name="job_id" string="Position" optional="hide"/>
+                <field name="campus_final_score" string="Score" widget="float" digits="[16,2]"/>
+                <field name="campus_state" string="Evaluation"/>
+                <field name="stage_id" string="Stage"/>
+                <field name="campus_version_id" string="Campaign" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============ Actions ============ -->
+    <record id="action_campus_applications" model="ir.actions.act_window">
+        <field name="name">Candidatures</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,kanban,form,graph,pivot</field>
+        <field name="domain">[('campus_version_id', '!=', False)]</field>
+        <field name="context">{'search_default_campus_has_version': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No Campus+ applications yet</p>
+            <p>Applications arrive from the Campus+ web form, or you can create one by hand
+               and set its evaluation version.</p>
+        </field>
+    </record>
+
+    <record id="action_campus_pending" model="ir.actions.act_window">
+        <field name="name">Pending Evaluation</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('campus_version_id', '!=', False), ('campus_state', 'in', ['not_started', 'submitted'])]</field>
+    </record>
+
+    <record id="action_campus_ranking" model="ir.actions.act_window">
+        <field name="name">Ranking</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('campus_state', '=', 'evaluated')]</field>
+        <field name="context">{'search_default_group_campus_version': 1}</field>
+    </record>
+
+    <record id="action_campus_ranking_view" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="hr_applicant_view_ranking"/>
+        <field name="act_window_id" ref="action_campus_ranking"/>
+    </record>
+
+    <!-- ============ Hiring funnel: one action per thing you owe someone ======= -->
+
+    <record id="action_campus_to_select" model="ir.actions.act_window">
+        <field name="name">To Select</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('campus_state', '=', 'evaluated'), ('campus_hiring_state', '=', 'not_selected')]</field>
+        <field name="context">{'search_default_group_campus_version': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nobody is waiting on a decision</p>
+            <p>Evaluated candidates you have not yet selected or refused appear here,
+               highest score first.</p>
+        </field>
+    </record>
+
+    <record id="action_campus_to_select_view" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="hr_applicant_view_ranking"/>
+        <field name="act_window_id" ref="action_campus_to_select"/>
+    </record>
+
+    <record id="action_campus_awaiting_reply" model="ir.actions.act_window">
+        <field name="name">Awaiting Reply</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('campus_hiring_state', '=', 'invited')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No one to chase</p>
+            <p>Candidates who were sent the available times and have not had their
+               meeting recorded yet.</p>
+        </field>
+    </record>
+
+    <record id="action_campus_in_documents" model="ir.actions.act_window">
+        <field name="name">In Documents</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('campus_hiring_state', 'in', ['meeting_1', 'docs_sent', 'docs_accepted'])]</field>
+        <field name="context">{'search_default_group_campus_hiring': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No paperwork outstanding</p>
+            <p>Candidates between their first meeting and accepting the contract.</p>
+        </field>
+    </record>
+
+    <record id="action_campus_ready_to_hire" model="ir.actions.act_window">
+        <field name="name">Ready to Hire</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('campus_hiring_state', 'in', ['final_sent', 'meeting_2'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nobody ready to hire yet</p>
+            <p>Candidates who accepted their documents and are through the second meeting.</p>
+        </field>
+    </record>
+
+    <record id="action_campus_hired" model="ir.actions.act_window">
+        <field name="name">Hired</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('campus_hiring_state', '=', 'hired')]</field>
+    </record>
+
+    <!-- ================================================================
+         Phase screens — one list per Campus+ stage, filtered by stage_id
+         alone. A candidate has exactly one stage_id, so these lists are
+         mutually exclusive by construction: nobody appears in two of them
+         at once, and nothing here is a technical/internal state.
+         ================================================================ -->
+
+    <!-- ============ 1er Interview ============ -->
+    <record id="campus_phase_interview1_view_list" model="ir.ui.view">
+        <field name="name">hr.applicant.phase.interview1.list</field>
+        <field name="model">hr.applicant</field>
+        <field name="arch" type="xml">
+            <list string="1er Interview" create="false">
+                <field name="partner_name" string="Candidate"/>
+                <field name="email_from" string="Email"/>
+                <field name="campus_interview1_id" string="Scheduled For"/>
+                <field name="campus_interview1_confirmed" string="Confirmed" widget="boolean_toggle"/>
+                <field name="campus_can_execute_process" column_invisible="1"/>
+                <field name="campus_can_validate_process" column_invisible="1"/>
+                <button name="action_campus_open_schedule_interview1" type="object"
+                        string="Schedule" icon="fa-calendar"
+                        invisible="campus_interview1_id or not campus_can_execute_process"/>
+                <button name="action_campus_open_schedule_interview1" type="object"
+                        string="Reschedule" icon="fa-calendar"
+                        invisible="not campus_interview1_id or not campus_can_execute_process"/>
+                <button name="action_campus_confirm_interview1" type="object"
+                        string="Confirm" icon="fa-check"
+                        invisible="not campus_interview1_id or campus_interview1_confirmed or not campus_can_execute_process"/>
+                <button name="action_campus_mark_interview1_completed" type="object"
+                        string="Mark Completed" icon="fa-flag-checkered"
+                        invisible="campus_hiring_state != 'meeting_1' or not campus_can_validate_process"
+                        confirm="Mark the first interview as completed and move this candidate to 2ème Interview?"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_campus_phase_interview1" model="ir.actions.act_window">
+        <field name="name">1er Interview</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain" eval="[('stage_id', '=', ref('stage_interview1'))]"/>
+        <field name="view_id" ref="campus_phase_interview1_view_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nobody at 1er Interview right now</p>
+            <p>Candidates land here once selected. Schedule the interview, confirm it, then
+               mark it completed to move them on to 2ème Interview.</p>
+        </field>
+    </record>
+
+    <!-- ============ 2ème Interview ============ -->
+    <record id="campus_phase_interview2_view_list" model="ir.ui.view">
+        <field name="name">hr.applicant.phase.interview2.list</field>
+        <field name="model">hr.applicant</field>
+        <field name="arch" type="xml">
+            <list string="2ème Interview" create="false">
+                <field name="partner_name" string="Candidate"/>
+                <field name="email_from" string="Email"/>
+                <field name="campus_interview2_id" string="Scheduled For"/>
+                <field name="campus_interview2_confirmed" string="Confirmed" widget="boolean_toggle"/>
+                <field name="campus_can_execute_process" column_invisible="1"/>
+                <field name="campus_can_validate_process" column_invisible="1"/>
+                <button name="action_campus_open_schedule_interview2" type="object"
+                        string="Schedule" icon="fa-calendar"
+                        invisible="campus_interview2_id or not campus_can_execute_process"/>
+                <button name="action_campus_open_schedule_interview2" type="object"
+                        string="Reschedule" icon="fa-calendar"
+                        invisible="not campus_interview2_id or not campus_can_execute_process"/>
+                <button name="action_campus_confirm_interview2" type="object"
+                        string="Confirm" icon="fa-check"
+                        invisible="not campus_interview2_id or campus_interview2_confirmed or not campus_can_execute_process"/>
+                <button name="action_campus_mark_interview2_completed" type="object"
+                        string="Mark Completed" icon="fa-flag-checkered"
+                        invisible="campus_hiring_state != 'meeting_2' or not campus_can_validate_process"
+                        confirm="Mark the second interview as completed and move this candidate to Course Breakdown?"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_campus_phase_interview2" model="ir.actions.act_window">
+        <field name="name">2ème Interview</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain" eval="[('stage_id', '=', ref('stage_interview2'))]"/>
+        <field name="view_id" ref="campus_phase_interview2_view_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nobody at 2ème Interview right now</p>
+            <p>Candidates land here once their 1st interview is marked completed.</p>
+        </field>
+    </record>
+
+    <!-- ============ Course Breakdown ============ -->
+    <record id="campus_phase_course_breakdown_view_list" model="ir.ui.view">
+        <field name="name">hr.applicant.phase.course.breakdown.list</field>
+        <field name="model">hr.applicant</field>
+        <field name="arch" type="xml">
+            <list string="Course Breakdown" create="false">
+                <field name="partner_name" string="Candidate"/>
+                <field name="email_from" string="Email"/>
+                <field name="campus_cb_state" string="Status" widget="badge"
+                       decoration-success="campus_cb_state == 'approved'"
+                       decoration-warning="campus_cb_state == 'modification_requested'"
+                       decoration-info="campus_cb_state in ('submitted', 'pending')"
+                       decoration-muted="campus_cb_state == 'not_sent'"/>
+                <field name="campus_can_execute_process" column_invisible="1"/>
+                <field name="campus_can_validate_process" column_invisible="1"/>
+                <button name="action_campus_open_latest_cb" type="object"
+                        string="View / Request Changes" icon="fa-eye"
+                        invisible="campus_cb_state in ('not_sent', 'pending') or not campus_can_execute_process"/>
+                <button name="action_campus_approve_latest_cb" type="object"
+                        string="Approve" icon="fa-check"
+                        invisible="campus_cb_state not in ('submitted',) or not campus_can_validate_process"
+                        groups="campus_teacher_management.group_campus_manager"
+                        confirm="Approve the latest Course Breakdown submission and move this candidate to Contrat?"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_campus_phase_course_breakdown" model="ir.actions.act_window">
+        <field name="name">Course Breakdown</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain" eval="[('stage_id', '=', ref('stage_course_breakdown'))]"/>
+        <field name="view_id" ref="campus_phase_course_breakdown_view_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nobody at Course Breakdown right now</p>
+            <p>Candidates land here once their 2nd interview is marked completed. Approving the
+               latest submission moves them on to Contrat.</p>
+        </field>
+    </record>
+
+    <!-- ============ Contrat ============ -->
+    <record id="campus_phase_contract_view_list" model="ir.ui.view">
+        <field name="name">hr.applicant.phase.contract.list</field>
+        <field name="model">hr.applicant</field>
+        <field name="arch" type="xml">
+            <list string="Contrat" create="false">
+                <field name="partner_name" string="Candidate"/>
+                <field name="email_from" string="Email"/>
+                <field name="campus_contract_file" string="Contract" filename="campus_contract_filename"/>
+                <field name="campus_contract_filename" column_invisible="1"/>
+                <field name="campus_contract_state" string="Status" widget="badge"
+                       decoration-success="campus_contract_state == 'signed'"
+                       decoration-danger="campus_contract_state == 'not_signed'"
+                       decoration-warning="campus_contract_state == 'awaiting_signature'"
+                       decoration-info="campus_contract_state == 'sent'"
+                       decoration-muted="campus_contract_state == 'not_sent'"/>
+                <field name="campus_can_execute_process" column_invisible="1"/>
+                <field name="campus_can_validate_process" column_invisible="1"/>
+                <button name="action_campus_mark_contract_sent" type="object"
+                        string="Mark Sent" icon="fa-paper-plane"
+                        invisible="campus_contract_state != 'not_sent' or not campus_can_execute_process"/>
+                <button name="action_campus_mark_contract_awaiting_signature" type="object"
+                        string="Mark Awaiting Signature" icon="fa-clock-o"
+                        invisible="campus_contract_state != 'sent' or not campus_can_execute_process"/>
+                <button name="action_campus_mark_contract_signed" type="object"
+                        string="Mark Signed" icon="fa-check"
+                        invisible="campus_contract_state not in ('sent', 'awaiting_signature') or not campus_can_validate_process"
+                        groups="campus_teacher_management.group_campus_manager"
+                        confirm="Mark this contract as signed and move this candidate to Shooting?"/>
+                <button name="action_campus_mark_contract_not_signed" type="object"
+                        string="Mark Not Signed" icon="fa-times"
+                        invisible="campus_contract_state not in ('sent', 'awaiting_signature') or not campus_can_validate_process"
+                        groups="campus_teacher_management.group_campus_manager"
+                        confirm="Mark this contract as not signed?"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_campus_phase_contract" model="ir.actions.act_window">
+        <field name="name">Contrat</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain" eval="[('stage_id', '=', ref('stage_contract'))]"/>
+        <field name="view_id" ref="campus_phase_contract_view_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nobody at Contrat right now</p>
+            <p>Candidates land here once their Course Breakdown is approved. Marking the
+               contract signed moves them on to Shooting.</p>
+        </field>
+    </record>
+
+</odoo>

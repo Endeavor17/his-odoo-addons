@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="campus_teacher_management.Dashboard">
+        <div class="o_campus_dashboard o_action">
+            <div class="o_campus_dashboard_header">
+                <h2 class="o_campus_dashboard_title">Campus+ Recruitment</h2>
+                <div class="o_campus_dashboard_filter">
+                    <label for="campus_version_select">Campaign</label>
+                    <select id="campus_version_select" class="form-select"
+                            t-on-change="onVersionChange">
+                        <t t-foreach="state.versions" t-as="version" t-key="version.id">
+                            <option t-att-value="version.id"
+                                    t-att-selected="version.id === state.versionId ? 'selected' : undefined">
+                                <t t-esc="version.display_name"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="o_campus_loading">
+                <i class="fa fa-circle-o-notch fa-spin fa-2x"/>
+                <span class="ms-2">Loading…</span>
+            </div>
+
+            <div t-else="">
+                <div class="o_campus_kpis">
+                    <div class="o_campus_kpi" t-on-click="() => this.openAll()">
+                        <div class="o_campus_kpi_value"><t t-esc="state.kpis.total"/></div>
+                        <div class="o_campus_kpi_label">Total Applications</div>
+                    </div>
+                    <div class="o_campus_kpi o_campus_kpi_success" t-on-click="() => this.openEvaluated()">
+                        <div class="o_campus_kpi_value"><t t-esc="state.kpis.evaluated"/></div>
+                        <div class="o_campus_kpi_label">Evaluated</div>
+                    </div>
+                    <div class="o_campus_kpi o_campus_kpi_warning" t-on-click="() => this.openPending()">
+                        <div class="o_campus_kpi_value"><t t-esc="state.kpis.pending"/></div>
+                        <div class="o_campus_kpi_label">Pending Evaluation</div>
+                    </div>
+                    <div class="o_campus_kpi o_campus_kpi_success" t-on-click="() => this.openAccepted()">
+                        <div class="o_campus_kpi_value"><t t-esc="state.kpis.accepted"/></div>
+                        <div class="o_campus_kpi_label">Accepted</div>
+                    </div>
+                    <div class="o_campus_kpi o_campus_kpi_danger" t-on-click="() => this.openRefused()">
+                        <div class="o_campus_kpi_value"><t t-esc="state.kpis.refused"/></div>
+                        <div class="o_campus_kpi_label">Refused</div>
+                    </div>
+                    <div class="o_campus_kpi">
+                        <div class="o_campus_kpi_value"><t t-esc="formatScore(state.kpis.avgScore)"/></div>
+                        <div class="o_campus_kpi_label">Average Score</div>
+                    </div>
+                    <div class="o_campus_kpi">
+                        <div class="o_campus_kpi_value"><t t-esc="formatScore(state.kpis.maxScore)"/></div>
+                        <div class="o_campus_kpi_label">Highest Score</div>
+                    </div>
+                </div>
+
+                <div class="o_campus_ranking">
+                    <div class="o_campus_ranking_head">
+                        <h3>Ranking</h3>
+                        <small class="text-muted">Top 25 by final score. Tied scores share a rank.</small>
+                    </div>
+
+                    <div t-if="!state.ranking.length" class="o_campus_empty">
+                        No evaluated candidates in this campaign yet.
+                    </div>
+
+                    <table t-else="" class="table table-sm table-hover o_campus_table">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 4rem;">#</th>
+                                <th>Candidate</th>
+                                <th>Email</th>
+                                <th>Rank</th>
+                                <th>Stage</th>
+                                <th class="text-end">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.ranking" t-as="row" t-key="row.id"
+                                t-on-click="() => this.openApplicant(row.id)"
+                                class="o_campus_row">
+                                <td class="text-center o_campus_rank">
+                                    <t t-esc="row.campus_rank || '—'"/>
+                                </td>
+                                <td><t t-esc="row.partner_name || '—'"/></td>
+                                <td class="text-muted"><t t-esc="row.email_from || '—'"/></td>
+                                <td><t t-esc="row.campus_scientific_rank || '—'"/></td>
+                                <td><t t-esc="row.stage_id and row.stage_id[1] || '—'"/></td>
+                                <td class="text-end o_campus_score">
+                                    <t t-esc="formatScore(row.campus_final_score)"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

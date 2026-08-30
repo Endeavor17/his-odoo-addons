@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        The 2026/2027 evaluation set: 12 criteria, their barèmes and their
+        priorities, exactly as specified. Weights are NOT in this file — they are
+        derived from the priorities by the CAR algorithm whenever a priority
+        changes.
+
+        Answer codes (`key`) are the stable `data-val` values the web form sends.
+        `aliases` carry the Arabic display labels the current form sends instead,
+        so submissions score correctly whether or not the form has been patched.
+
+        Shipped as a DRAFT so nothing is frozen before a human has reviewed the
+        mappings marked NEEDS CONFIRMATION below. Publish it from the UI.
+
+        noupdate so edits made in Odoo survive a module upgrade.
+    -->
+    <data noupdate="1">
+
+        <record id="version_2026" model="campus.evaluation.version">
+            <field name="name">Campus+ 2026/2027</field>
+            <field name="version">1</field>
+            <field name="state">draft</field>
+            <field name="weighting_method">car</field>
+            <field name="normalize" eval="True"/>
+            <field name="years_cap">20</field>
+            <!-- Inline markup, not CDATA: Odoo 19's import schema rejects a
+                 CDATA block inside a type="html" field. -->
+            <field name="description" type="html">
+                <div>
+                    <p>Twelve criteria weighted by the CAR algorithm.</p>
+                    <p><b>Before publishing</b>, confirm the source fields for C5, C9 and C11.
+                    The web form has no question that maps to them directly, so the values
+                    below are a best reading and can be re-pointed without code.</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- ============ C1 — Scientific rank ============ -->
+        <record id="criterion_c1" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C1</field>
+            <field name="name">Scientific Rank</field>
+            <field name="sequence">10</field>
+            <field name="priority">3</field>
+            <field name="value_type">scale</field>
+            <field name="source_key">rank</field>
+        </record>
+        <record id="scale_c1_prof" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">prof</field><field name="name">Professeur</field><field name="aliases">استاذ التعليم العالي (Professeur),استاذ التعليم العالي,Prof</field><field name="score">6</field><field name="sequence">10</field></record>
+        <record id="scale_c1_mca" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">mca</field><field name="name">MCA</field><field name="aliases">استاذ محاضر أ (MCA),استاذ محاضر أ</field><field name="score">5</field><field name="sequence">20</field></record>
+        <record id="scale_c1_mcb" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">mcb</field><field name="name">MCB</field><field name="aliases">استاذ محاضر ب (MCB),استاذ محاضر ب</field><field name="score">4</field><field name="sequence">30</field></record>
+        <record id="scale_c1_maa" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">maa</field><field name="name">MAA</field><field name="aliases">استاذ مساعد أ (MAA),استاذ مساعد أ</field><field name="score">3</field><field name="sequence">40</field></record>
+        <record id="scale_c1_mab" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">mab</field><field name="name">MAB</field><field name="aliases">استاذ مساعد ب (MAB),استاذ مساعد ب</field><field name="score">2</field><field name="sequence">50</field></record>
+        <!-- The form offers two ranks the barème does not name; both are "Autre". -->
+        <record id="scale_c1_vacataire" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">vacataire</field><field name="name">Autre — Vacataire</field><field name="aliases">أستاذ معيد / مستخلف / متربص / مؤقت</field><field name="score">1</field><field name="sequence">60</field></record>
+        <record id="scale_c1_doctorant" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">doctorant</field><field name="name">Autre — Doctorant</field><field name="aliases">طالب دكتوراه أو دكتور متخرج</field><field name="score">1</field><field name="sequence">70</field></record>
+
+        <!-- ============ C2 — Previous Campus+ participation ============ -->
+        <record id="criterion_c2" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C2</field>
+            <field name="name">Previous Campus+ Participation</field>
+            <field name="sequence">20</field>
+            <field name="priority">1</field>
+            <field name="value_type">scale</field>
+            <field name="source_key">taughtCampus</field>
+        </record>
+        <record id="scale_c2_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c2"/><field name="key">yes</field><field name="name">Oui</field><field name="aliases">نعم,oui</field><field name="score">5</field><field name="sequence">10</field></record>
+        <record id="scale_c2_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c2"/><field name="key">no</field><field name="name">Non</field><field name="aliases">لا,non</field><field name="score">0</field><field name="sequence">20</field></record>
+
+        <!-- ============ C3 — Years of experience ============ -->
+        <record id="criterion_c3" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C3</field>
+            <field name="name">Years of Experience</field>
+            <field name="description">One point per year. Saturates at the version's years cap so an unbounded answer cannot dominate every other criterion.</field>
+            <field name="sequence">30</field>
+            <field name="priority">2</field>
+            <field name="value_type">number</field>
+            <field name="source_key">yearsExp</field>
+            <field name="use_version_years_cap" eval="True"/>
+            <field name="max_score">20</field>
+        </record>
+
+        <!-- ============ C4 — Confidence on camera ============ -->
+        <record id="criterion_c4" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C4</field>
+            <field name="name">Confidence on Camera</field>
+            <field name="description">The barème has five bands scored 0, 1, 3, 4, 5 — it deliberately skips 2. The form's five levels map onto them in order.</field>
+            <field name="sequence">40</field>
+            <field name="priority">1</field>
+            <field name="value_type">scale</field>
+            <field name="source_key">camConfidence</field>
+        </record>
+        <record id="scale_c4_4" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">4</field><field name="name">Très bonne</field><field name="aliases">ثقة عالية جداً وأتحدث بطلاقة أمام الكاميرا</field><field name="score">5</field><field name="sequence">10</field></record>
+        <record id="scale_c4_3" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">3</field><field name="name">Bonne</field><field name="aliases">ثقة جيدة وأستطيع التحدث بشكل مرتاح</field><field name="score">4</field><field name="sequence">20</field></record>
+        <record id="scale_c4_2" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">2</field><field name="name">Moyenne</field><field name="aliases">ثقة متوسطة مع بعض التوتر في البداية</field><field name="score">3</field><field name="sequence">30</field></record>
+        <record id="scale_c4_1" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">1</field><field name="name">Faible</field><field name="aliases">ثقة ضعيفة وأشعر بالتوتر أثناء التحدث</field><field name="score">1</field><field name="sequence">40</field></record>
+        <record id="scale_c4_0" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">0</field><field name="name">Aucune</field><field name="aliases">لا أشعر بأي ثقة وأجد الأمر صعباً جداً</field><field name="score">0</field><field name="sequence">50</field></record>
+
+        <!-- ============ C5 — Already taught the selected subjects ============
+             NEEDS CONFIRMATION: the form has no such question. Derived from the
+             per-subject experience inputs: any selected catalogue subject with
+             more than zero years counts as "yes". Re-point `source_key` to
+             change this without touching code. -->
+        <record id="criterion_c5" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C5</field>
+            <field name="name">Already Taught the Selected Subjects</field>
+            <field name="description">DERIVED — confirm against the intended question. True when any catalogue subject the candidate selected carries more than zero years of experience.</field>
+            <field name="sequence">50</field>
+            <field name="priority">3</field>
+            <field name="value_type">scale</field>
+            <field name="source_key">taughtSelectedSubjects</field>
+        </record>
+        <record id="scale_c5_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c5"/><field name="key">oui</field><field name="name">Oui</field><field name="aliases">نعم,yes</field><field name="score">5</field><field name="sequence">10</field></record>
+        <record id="scale_c5_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c5"/><field name="key">non</field><field name="name">Non</field><field name="aliases">لا,no</field><field name="score">0</field><field name="sequence">20</field></record>
+
+        <!-- ============ C6 — Already taught at HIS ============ -->
+        <record id="criterion_c6" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C6</field>
+            <field name="name">Already Taught at HIS</field>
+            <field name="sequence">60</field>
+            <field name="priority">0</field>
+            <field name="value_type">scale</field>
+            <field name="source_key">taughtHIS</field>
+        </record>
+        <record id="scale_c6_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c6"/><field name="key">yes</field><field name="name">Oui</field><field name="aliases">نعم,oui</field><field name="score">5</field><field name="sequence">10</field></record>
+        <record id="scale_c6_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c6"/><field name="key">no</field><field name="name">Non</field><field name="aliases">لا,non</field><field name="score">0</field><field name="sequence">20</field></record>
+
+        <!-- ============ C7 — Digital tools used ============ -->
+        <record id="criterion_c7" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C7</field>
+            <field name="name">Digital Tools Used</field>
+            <field name="description">One point per selected tool. The form offers six options including "other".</field>
+            <field name="sequence">70</field>
+            <field name="priority">1</field>
+            <field name="value_type">count</field>
+            <field name="source_key">digitalTools</field>
+            <field name="max_score">6</field>
+        </record>
+
+        <!-- ============ C8 — Flipped classroom knowledge ============ -->
+        <record id="criterion_c8" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C8</field>
+            <field name="name">Flipped Classroom Knowledge</field>
+            <field name="sequence">80</field>
+            <field name="priority">2</field>
+            <field name="value_type">scale</field>
+            <field name="source_key">flippedKnowledge</field>
+        </record>
+        <record id="scale_c8_4" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">4</field><field name="name">Bonne</field><field name="aliases">لدي معرفة جيدة</field><field name="score">4</field><field name="sequence">10</field></record>
+        <record id="scale_c8_3" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">3</field><field name="name">Limitée</field><field name="aliases">لدي معرفة محدودة</field><field name="score">3</field><field name="sequence">20</field></record>
+        <record id="scale_c8_2" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">2</field><field name="name">Superficielle</field><field name="aliases">لدي معرفة سطحية</field><field name="score">2</field><field name="sequence">30</field></record>
+        <record id="scale_c8_1" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">1</field><field name="name">A entendu parler</field><field name="aliases">سمعت به فقط</field><field name="score">1</field><field name="sequence">40</field></record>
+        <record id="scale_c8_0" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">0</field><field name="name">Ne connaît pas</field><field name="aliases">لم أسمع به من قبل</field><field name="score">0</field><field name="sequence">50</field></record>
+
+        <!-- ============ C9 — Experience per subject ============
+             NEEDS CONFIRMATION: derived from whether the candidate filled in any
+             per-subject years of experience. -->
+        <record id="criterion_c9" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C9</field>
+            <field name="name">Experience Per Subject Provided</field>
+            <field name="description">DERIVED — confirm against the intended question. True when the candidate entered years of experience against at least one subject.</field>
+            <field name="sequence">90</field>
+            <field name="priority">1</field>
+            <field name="value_type">scale</field>
+            <field name="source_key">subjectExperienceProvided</field>
+        </record>
+        <record id="scale_c9_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c9"/><field name="key">oui</field><field name="name">Réponse fournie</field><field name="aliases">نعم,yes</field><field name="score">5</field><field name="sequence">10</field></record>
+        <record id="scale_c9_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c9"/><field name="key">non</field><field name="name">Pas de réponse</field><field name="aliases">لا,no</field><field name="score">0</field><field name="sequence">20</field></record>
+
+        <!-- ============ C10 — Pedagogical means used ============ -->
+        <record id="criterion_c10" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C10</field>
+            <field name="name">Pedagogical Means Used</field>
+            <field name="description">One point per selected method. The form offers five options including "other".</field>
+            <field name="sequence">100</field>
+            <field name="priority">0</field>
+            <field name="value_type">count</field>
+            <field name="source_key">teachMethods</field>
+            <field name="max_score">5</field>
+        </record>
+
+        <!-- ============ C11 — Explanation of digital tool use ============
+             NEEDS CONFIRMATION: no form question carries this name. Currently
+             pointed at "how did you address your concerns", the closest match.
+             The alternative is `redesignDetail`. -->
+        <record id="criterion_c11" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C11</field>
+            <field name="name">Explanation of Digital Tool Use</field>
+            <field name="description">NEEDS CONFIRMATION — currently reads the "how did you address your concerns" answer. Change the source field to `redesignDetail` if that was the intent.</field>
+            <field name="sequence">110</field>
+            <field name="priority">1</field>
+            <field name="value_type">answered</field>
+            <field name="source_key">concernsHandled</field>
+            <field name="answered_score">5</field>
+        </record>
+
+        <!-- ============ C12 — Flipped classroom in own words ============ -->
+        <record id="criterion_c12" model="campus.criterion">
+            <field name="version_id" ref="version_2026"/>
+            <field name="code">C12</field>
+            <field name="name">Flipped Classroom Defined in Own Words</field>
+            <field name="sequence">120</field>
+            <field name="priority">2</field>
+            <field name="value_type">answered</field>
+            <field name="source_key">flippedDef</field>
+            <field name="answered_score">5</field>
+        </record>
+
+    </data>
+</odoo>

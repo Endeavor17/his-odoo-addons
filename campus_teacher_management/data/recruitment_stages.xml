@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate so renaming or reordering these in the UI survives a module
+         upgrade. We only ADD stages; hr_recruitment's own defaults are left
+         exactly as they are. -->
+    <data noupdate="1">
+
+        <record id="stage_under_evaluation" model="hr.recruitment.stage">
+            <field name="name">Under Evaluation</field>
+            <field name="sequence">6</field>
+            <field name="requirements">Application received and awaiting scoring.</field>
+        </record>
+
+        <record id="stage_evaluated" model="hr.recruitment.stage">
+            <field name="name">Evaluated</field>
+            <field name="sequence">7</field>
+            <field name="requirements">Score computed; awaiting shortlist decision.</field>
+        </record>
+
+        <record id="stage_shortlisted" model="hr.recruitment.stage">
+            <field name="name">Shortlisted</field>
+            <field name="sequence">8</field>
+            <field name="requirements">Ranked highly enough to be contacted.</field>
+        </record>
+
+        <record id="stage_contacted" model="hr.recruitment.stage">
+            <field name="name">Contacted</field>
+            <field name="sequence">9</field>
+            <field name="requirements">Candidate has been reached out to.</field>
+        </record>
+
+    </data>
+</odoo>
