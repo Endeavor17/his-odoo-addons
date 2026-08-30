@@ -21,16 +21,17 @@ class MealAdjustWizard(models.TransientModel):
         'res.partner', string="Person", required=True,
         domain=[('meal_card_ids', '!=', False)],
     )
-    current_credits = fields.Integer(
+    current_credits = fields.Float(
         related='partner_id.meal_credits_remaining', string="Credits Now", readonly=True,
     )
-    credits = fields.Integer(
-        required=True,
-        help="Positive to grant credits, negative to take them back.",
+    credits = fields.Float(
+        required=True, digits=(16, 2),
+        help="Positive to grant credits, negative to take them back. "
+             "Half credits are allowed: a 300 DA meal is worth 0.5.",
     )
     validity_days = fields.Integer(
-        string="Valid For (days)", default=30,
-        help="Only used when granting credits.",
+        string="Valid For (days)", default=0,
+        help="Only used when granting credits. Zero means they never expire.",
     )
     reason = fields.Char(required=True, help="Recorded on the ledger line.")
 
@@ -44,11 +45,16 @@ class MealAdjustWizard(models.TransientModel):
         self.ensure_one()
         partner = self.partner_id
         if self.credits > 0:
-            if self.validity_days <= 0:
-                raise UserError(_("Granted credits need a validity of at least one day."))
+            if self.validity_days < 0:
+                raise UserError(_(
+                    "A validity cannot be negative. Use zero for credits that never expire."
+                ))
+            date_end = False
+            if self.validity_days > 0:
+                date_end = fields.Date.context_today(self) + timedelta(days=self.validity_days - 1)
             partner._add_meal_credits(
                 credits=self.credits,
-                date_end=fields.Date.context_today(self) + timedelta(days=self.validity_days - 1),
+                date_end=date_end,
                 tx_type='adjust',
                 note=self.reason,
             )
@@ -56,6 +62,6 @@ class MealAdjustWizard(models.TransientModel):
             # Reuses the same guarded path as a real meal, so a correction can
             # no more push a student negative than a cashier can.
             partner._consume_meal_credit(
-                qty=-self.credits, tx_type='adjust', note=self.reason,
+                amount=-self.credits, tx_type='adjust', note=self.reason,
             )
         return {'type': 'ir.actions.act_window_close'}
