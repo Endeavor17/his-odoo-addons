@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="insite_identity_match_wizard_view_form" model="ir.ui.view">
+        <field name="name">insite.identity.match.wizard.form</field>
+        <field name="model">insite.identity.match.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Identity Matching">
+                <field name="submission_id" invisible="1"/>
+                <group>
+                    <group string="Details to match on">
+                        <field name="matricule"/>
+                        <field name="first_name"/>
+                        <field name="last_name"/>
+                        <field name="name_ar"/>
+                        <field name="email"/>
+                        <field name="phone"/>
+                    </group>
+                </group>
+                <button name="action_search" type="object" string="Search" class="btn-secondary"/>
+
+                <group string="Possible Existing Persons" invisible="not possible_person_ids">
+                    <field name="possible_person_ids" nolabel="1" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="matricule_institutionnel"/>
+                            <field name="email_institutional"/>
+                            <field name="phone"/>
+                        </list>
+                    </field>
+                    <field name="selected_person_id"/>
+                    <button name="action_confirm_existing_person" type="object"
+                            string="Use This Person" class="btn-primary"/>
+                </group>
+
+                <group string="Possible Campus+ Applicants" invisible="not possible_applicant_ids">
+                    <field name="possible_applicant_ids" nolabel="1" readonly="1">
+                        <list>
+                            <field name="partner_name"/>
+                            <field name="email_from"/>
+                            <field name="partner_phone"/>
+                        </list>
+                    </field>
+                    <field name="selected_applicant_id"/>
+                    <button name="action_confirm_existing_applicant" type="object"
+                            string="Use This Campus+ Applicant" class="btn-primary"/>
+                </group>
+
+                <footer>
+                    <button name="action_confirm_new_person" type="object"
+                            string="No Match — Create New Person"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- No standalone ir.actions.act_window here: the wizard is only ever
+         opened via insite.submission.action_open_matching_wizard(), which
+         builds its own act_window dict and picks up this form view as the
+         model's only one — a second, unused action record would just be
+         dead weight. -->
+
+</odoo>

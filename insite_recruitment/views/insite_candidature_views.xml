@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="insite_candidature_view_list" model="ir.ui.view">
+        <field name="name">insite.candidature.list</field>
+        <field name="model">insite.candidature</field>
+        <field name="arch" type="xml">
+            <list string="InSite Candidates">
+                <field name="person_id"/>
+                <field name="need_id"/>
+                <field name="source" widget="badge" readonly="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'accepted'"
+                       decoration-danger="state in ('declined',)"
+                       decoration-muted="state in ('prospect', 'superseded')"
+                       decoration-info="state == 'contacted'"/>
+                <field name="insite_rank" optional="show"/>
+                <button name="action_select_this_candidate" type="object" string="Select" icon="fa-check"
+                        invisible="state != 'prospect' or not need_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="insite_candidature_view_form" model="ir.ui.view">
+        <field name="name">insite.candidature.form</field>
+        <field name="model">insite.candidature</field>
+        <field name="arch" type="xml">
+            <form string="InSite Candidate">
+                <header>
+                    <button name="action_select_this_candidate" type="object" string="Select Candidate"
+                            class="btn-primary" invisible="state != 'prospect' or not need_id"/>
+                    <button name="action_contact" type="object" string="Contact Candidate"
+                            class="btn-primary" invisible="state != 'prospect'"/>
+                    <button name="action_mark_accepted" type="object" string="Mark Accepted"
+                            class="btn-primary" invisible="state != 'contacted'"
+                            confirm="Mark this candidate as accepted?"/>
+                    <button name="action_mark_declined" type="object" string="Mark Declined"
+                            invisible="state != 'contacted'"
+                            confirm="Mark this candidate as declined?"/>
+                    <button name="action_schedule_meeting" type="object" string="Schedule Meeting"
+                            class="btn-primary" invisible="state != 'accepted' or meeting_event_id"/>
+                    <button name="action_reschedule_meeting" type="object" string="Reschedule Meeting"
+                            invisible="not meeting_event_id"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="prospect,contacted,accepted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(insite_action_engagement)d" type="action"
+                                class="oe_stat_button" icon="fa-graduation-cap"
+                                context="{'search_default_insite_candidature_id': id}"
+                                invisible="not engagement_ids">
+                            <field name="engagement_ids" widget="statinfo" string="Engagements"/>
+                        </button>
+                        <button name="%(insite_action_contract)d" type="action"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                context="{'search_default_candidature_id': id}"
+                                invisible="not contract_ids">
+                            <field name="contract_ids" widget="statinfo" string="Contracts"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="person_id"/>
+                        <h1><field name="person_id" options="{'no_create_edit': True}"/></h1>
+                    </div>
+
+                    <group string="Overview">
+                        <group>
+                            <field name="need_id" required="1"/>
+                            <field name="source" readonly="1"
+                                   placeholder="Set automatically once the Person is classified Internal/External"/>
+                        </group>
+                        <group>
+                            <field name="insite_rank" readonly="1" invisible="not insite_rank"/>
+                            <field name="meeting_event_id" readonly="1" invisible="not meeting_event_id"/>
+                            <field name="latest_contract_state" readonly="1" invisible="not latest_contract_state"/>
+                            <field name="latest_engagement_state" readonly="1" invisible="not latest_engagement_state"/>
+                        </group>
+                    </group>
+                    <group string="Ranking Explanation" invisible="not rank_explanation">
+                        <field name="rank_explanation" readonly="1" nolabel="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Contract" name="contract" invisible="not contract_ids">
+                            <field name="contract_ids">
+                                <list>
+                                    <field name="state" widget="badge"/>
+                                    <field name="contract_date"/>
+                                    <field name="signature_date"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Engagement" name="engagement" invisible="not engagement_ids">
+                            <field name="engagement_ids">
+                                <list>
+                                    <field name="module_id"/>
+                                    <field name="academic_period_id"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Identity / Person" name="identity">
+                            <p class="text-muted">
+                                Read from the shared Person — edit identity on the Person record itself,
+                                not here.
+                            </p>
+                            <group>
+                                <group>
+                                    <field name="person_matricule" readonly="1"/>
+                                    <field name="person_email_institutional" readonly="1"/>
+                                    <field name="person_phone" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="person_academic_rank" readonly="1"/>
+                                    <field name="person_specialty" readonly="1"/>
+                                    <field name="contacted_date" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="InSite Answers" name="answers">
+                            <group>
+                                <field name="motivation"/>
+                                <field name="availability"/>
+                                <field name="teaching_experience"/>
+                            </group>
+                        </page>
+
+                        <page string="Raw Submissions" name="submissions" invisible="not raw_submission_ids">
+                            <field name="raw_submission_ids">
+                                <list>
+                                    <field name="reference"/>
+                                    <field name="create_date"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="match_method"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="insite_candidature_view_search" model="ir.ui.view">
+        <field name="name">insite.candidature.search</field>
+        <field name="model">insite.candidature</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="person_id"/>
+                <field name="need_id"/>
+                <filter name="prospect" string="Prospect" domain="[('state', '=', 'prospect')]"/>
+                <filter name="contacted" string="Awaiting Response" domain="[('state', '=', 'contacted')]"/>
+                <filter name="accepted" string="Accepted" domain="[('state', '=', 'accepted')]"/>
+                <separator/>
+                <filter name="declined" string="Declined" domain="[('state', '=', 'declined')]"/>
+                <filter name="internal" string="Internal" domain="[('source', '=', 'internal')]"/>
+                <filter name="external" string="External" domain="[('source', '=', 'external')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_need" string="Need" context="{'group_by': 'need_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="insite_action_candidature" model="ir.actions.act_window">
+        <field name="name">Candidates</field>
+        <field name="res_model">insite.candidature</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No InSite candidates yet</p>
+            <p>Candidates appear here once selected against a Recruitment Need — internal
+               teachers directly, external candidates once a submission is matched to a Person.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="insite_meeting_schedule_wizard_view_form" model="ir.ui.view">
+        <field name="name">insite.meeting.schedule.wizard.form</field>
+        <field name="model">insite.meeting.schedule.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Schedule Meeting">
+                <group>
+                    <field name="candidature_id" readonly="1"/>
+                    <field name="meeting_start"/>
+                    <field name="meeting_end"/>
+                    <field name="location" placeholder="Room, address, or video call link"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- No standalone ir.actions.act_window: only ever opened via
+         insite.candidature.action_schedule_meeting()/action_reschedule_meeting(),
+         which build their own act_window dict and pick up this form view as
+         the model's only one. -->
+
+</odoo>

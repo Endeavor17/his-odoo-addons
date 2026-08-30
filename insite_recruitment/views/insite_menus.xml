@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Sibling of campus_teacher_management's own menu_campus_root, same
+        placement technique (parented on hr_recruitment's own root), same
+        group. Top-level items mirror the actual pipeline:
+        Need -> Candidates -> Contracts -> Teacher Integration -> Modules.
+        Reviews (raw submissions + identity matching) is a technical/admin
+        screen, not a step a recruiter walks through per-candidate, so it
+        lives under a manager-only Configuration folder instead.
+    -->
+
+    <menuitem id="insite_menu_root"
+              name="InSite Recruitment"
+              parent="hr_recruitment.menu_hr_recruitment_root"
+              sequence="20"
+              groups="campus_teacher_management.group_campus_recruiter"/>
+
+    <menuitem id="insite_menu_need"
+              name="Recruitment Needs"
+              parent="insite_menu_root"
+              action="insite_action_need"
+              sequence="10"/>
+
+    <menuitem id="insite_menu_candidature"
+              name="Candidates"
+              parent="insite_menu_root"
+              action="insite_action_candidature"
+              sequence="20"/>
+
+    <menuitem id="insite_menu_contract"
+              name="Contracts"
+              parent="insite_menu_root"
+              action="insite_action_contract"
+              sequence="30"/>
+
+    <menuitem id="insite_menu_engagement"
+              name="Teacher Integration"
+              parent="insite_menu_root"
+              action="insite_action_engagement"
+              sequence="40"/>
+
+    <menuitem id="insite_menu_module_sheet"
+              name="Modules"
+              parent="insite_menu_root"
+              action="insite_action_module_sheet"
+              sequence="50"/>
+
+    <!-- Technical/admin screens — kept out of the day-to-day recruiter
+         navigation, manager-only (matches Reviews' own existing
+         manager-only ir.rule, so this changes nothing about who can see it,
+         only where they find it). -->
+    <menuitem id="insite_menu_configuration"
+              name="Configuration"
+              parent="insite_menu_root"
+              sequence="60"
+              groups="campus_teacher_management.group_campus_manager"/>
+
+    <menuitem id="insite_menu_review"
+              name="Reviews"
+              parent="insite_menu_configuration"
+              action="insite_action_review"
+              sequence="10"/>
+
+</odoo>

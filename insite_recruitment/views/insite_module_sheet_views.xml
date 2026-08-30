@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="insite_module_sheet_view_list" model="ir.ui.view">
+        <field name="name">insite.module.sheet.list</field>
+        <field name="model">insite.module.sheet</field>
+        <field name="arch" type="xml">
+            <list string="Modules">
+                <field name="engagement_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'published'"
+                       decoration-warning="state == 'modification_requested'"
+                       decoration-muted="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="insite_module_sheet_view_form" model="ir.ui.view">
+        <field name="name">insite.module.sheet.form</field>
+        <field name="model">insite.module.sheet</field>
+        <field name="arch" type="xml">
+            <form string="Module Sheet">
+                <header>
+                    <button name="action_submit" type="object" string="Submit"
+                            class="btn-primary" invisible="state not in ('draft', 'modification_requested')"/>
+                    <button name="action_request_modification" type="object" string="Request Modification"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_validate" type="object" string="Validate"
+                            class="btn-primary" invisible="state != 'submitted'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,validated,published"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="engagement_id" options="{'no_create_edit': True}"/></h1>
+                    </div>
+                    <group>
+                        <field name="plan"/>
+                        <field name="chapters"/>
+                        <field name="clos"/>
+                        <field name="document" filename="filename"/>
+                        <field name="filename" invisible="1"/>
+                    </group>
+                    <group string="Review Notes" invisible="not review_notes">
+                        <field name="review_notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="insite_action_module_sheet" model="ir.actions.act_window">
+        <field name="name">Modules</field>
+        <field name="res_model">insite.module.sheet</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No module sheets yet</p>
+            <p>Created automatically once a Need reaches Module Assignment. The teacher
+               prepares the content; Pédagogie/the module owner validates it, then it
+               publishes to students.</p>
+        </field>
+    </record>
+
+</odoo>

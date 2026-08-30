@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- No academic.person UI existed anywhere before this — Person was only
+         ever picked (no_create_edit) from other forms. This is the one place
+         a recruiter can manually enter a teacher and classify them
+         Internal/External, which InSite Candidature creation now requires
+         before it will let a Candidature be created for them. -->
+    <record id="academic_person_view_list" model="ir.ui.view">
+        <field name="name">academic.person.list</field>
+        <field name="model">academic.person</field>
+        <field name="arch" type="xml">
+            <list string="Persons">
+                <field name="name"/>
+                <field name="matricule_institutionnel" optional="show"/>
+                <field name="email_institutional" optional="show"/>
+                <field name="is_internal_teacher" widget="badge"
+                       decoration-muted="not is_internal_teacher"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="academic_person_view_form" model="ir.ui.view">
+        <field name="name">academic.person.form</field>
+        <field name="model">academic.person</field>
+        <field name="arch" type="xml">
+            <form string="Person">
+                <sheet>
+                    <div class="oe_title">
+                        <group>
+                            <group>
+                                <field name="first_name"/>
+                                <field name="last_name"/>
+                                <field name="name_ar"/>
+                            </group>
+                            <group>
+                                <field name="is_internal_teacher" required="1"
+                                       placeholder="Not yet classified — required before this Person can have an InSite Candidature"/>
+                                <field name="status"/>
+                            </group>
+                        </group>
+                    </div>
+                    <group string="Contact">
+                        <group>
+                            <field name="matricule_institutionnel"/>
+                            <field name="email_institutional"/>
+                            <field name="email_personal"/>
+                            <field name="phone"/>
+                        </group>
+                        <group>
+                            <field name="academic_rank"/>
+                            <field name="specialty"/>
+                        </group>
+                    </group>
+                    <group string="Campus+" invisible="not campus_applicant_id">
+                        <field name="campus_applicant_id" readonly="1" nolabel="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="academic_person_view_search" model="ir.ui.view">
+        <field name="name">academic.person.search</field>
+        <field name="model">academic.person</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="matricule_institutionnel"/>
+                <field name="email_institutional"/>
+                <filter name="internal" string="Internal Teacher" domain="[('is_internal_teacher', '=', 'internal')]"/>
+                <filter name="external" string="External Teacher" domain="[('is_internal_teacher', '=', 'external')]"/>
+                <filter name="unclassified" string="Not Yet Classified" domain="[('is_internal_teacher', '=', False)]"/>
+                <group>
+                    <filter name="group_classification" string="Classification" context="{'group_by': 'is_internal_teacher'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="academic_action_person" model="ir.actions.act_window">
+        <field name="name">Persons</field>
+        <field name="res_model">academic.person</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No Persons yet</p>
+            <p>Enter a teacher manually and classify them Internal or External here —
+               a Candidature cannot be created for a Person left unclassified.
+               Persons arriving through the external submission form are already
+               classified External automatically.</p>
+        </field>
+    </record>
+
+    <menuitem id="insite_menu_person"
+              name="Persons"
+              parent="insite_menu_configuration"
+              action="academic_action_person"
+              sequence="20"/>
+
+</odoo>

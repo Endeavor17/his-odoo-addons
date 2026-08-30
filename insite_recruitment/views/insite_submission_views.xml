@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="insite_submission_view_list" model="ir.ui.view">
+        <field name="name">insite.submission.list</field>
+        <field name="model">insite.submission</field>
+        <field name="arch" type="xml">
+            <list string="InSite Reviews" default_order="create_date desc">
+                <field name="candidate_name" string="Candidate"/>
+                <field name="reference" optional="hide"/>
+                <field name="create_date" string="Received"/>
+                <field name="email"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'processed'"
+                       decoration-warning="state == 'needs_matching'"
+                       decoration-danger="state in ('rejected',)"
+                       decoration-muted="state in ('received', 'duplicate')"/>
+                <field name="person_id"/>
+                <field name="match_method"/>
+                <field name="candidature_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="insite_submission_view_form" model="ir.ui.view">
+        <field name="name">insite.submission.form</field>
+        <field name="model">insite.submission</field>
+        <field name="arch" type="xml">
+            <form string="InSite Review">
+                <header>
+                    <button name="action_process" type="object" string="Process"
+                            class="btn-primary" invisible="state != 'received'"/>
+                    <button name="action_open_matching_wizard" type="object" string="Resolve Identity Match"
+                            class="btn-primary" invisible="state != 'needs_matching'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="received,needs_matching,processed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_candidature" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not candidature_id">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">InSite</span>
+                                <span class="o_stat_text">Candidature</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="candidate_name" readonly="1" nolabel="1"/></h1>
+                        <div class="text-muted">
+                            <field name="reference" readonly="1" nolabel="1"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Candidate">
+                            <field name="first_name" readonly="1"/>
+                            <field name="last_name" readonly="1"/>
+                            <field name="name_ar" readonly="1" invisible="not name_ar"/>
+                            <field name="submitted_email" readonly="1"/>
+                            <field name="submitted_phone" readonly="1" invisible="not submitted_phone"/>
+                            <field name="submitted_matricule" readonly="1" invisible="not submitted_matricule"/>
+                        </group>
+                        <group string="Identity Matching">
+                            <field name="person_id" readonly="1"/>
+                            <field name="match_method" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Recruitment Answers">
+                        <field name="submitted_motivation" readonly="1"/>
+                        <field name="submitted_availability" readonly="1"/>
+                        <field name="submitted_teaching_experience" readonly="1"/>
+                    </group>
+
+                    <group invisible="not error_message">
+                        <field name="error_code" readonly="1"/>
+                        <field name="error_message" readonly="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Technical Details" name="raw_payload">
+                            <p class="text-muted">
+                                Submission metadata, kept for traceability. The original raw payload
+                                itself is preserved in the database for reprocessing but is not
+                                displayed here.
+                            </p>
+                            <group>
+                                <field name="origin" readonly="1"/>
+                                <field name="source_ip" readonly="1"/>
+                                <field name="user_agent" readonly="1" invisible="not user_agent"/>
+                                <field name="external_ref" readonly="1" invisible="not external_ref"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="insite_submission_view_search" model="ir.ui.view">
+        <field name="name">insite.submission.search</field>
+        <field name="model">insite.submission</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="candidate_name" string="Candidate"/>
+                <field name="reference"/>
+                <field name="email"/>
+                <field name="person_id"/>
+                <filter name="needs_matching" string="Needs Matching" domain="[('state', '=', 'needs_matching')]"/>
+                <filter name="received" string="Received" domain="[('state', '=', 'received')]"/>
+                <filter name="processed" string="Processed" domain="[('state', '=', 'processed')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="insite_action_review" model="ir.actions.act_window">
+        <field name="name">Reviews</field>
+        <field name="res_model">insite.submission</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_needs_matching': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing waiting on a review</p>
+            <p>Every InSite submission arrives here first. Process it to run identity matching;
+               anything short of an exact match needs a human decision before it becomes a candidature.</p>
+        </field>
+    </record>
+
+</odoo>
