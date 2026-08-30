@@ -45,7 +45,7 @@ patch(ControlButtons.prototype, {
                     {
                         name: balance.name,
                         credits: balance.credits,
-                        meal: product.name,
+                        meal: product.display_name,
                         cost: cost,
                     }
                 ),
@@ -62,7 +62,7 @@ patch(ControlButtons.prototype, {
                       plan: balance.plan,
                       credits: balance.credits,
                       expires: balance.expires,
-                      meal: product.name,
+                      meal: product.display_name,
                       cost: cost,
                   }
               )

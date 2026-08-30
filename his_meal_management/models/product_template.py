@@ -67,14 +67,18 @@ class ProductProduct(models.Model):
     def _load_pos_data_fields(self, *args, **kwargs):
         """The till needs the cost to tell the cashier what a meal will take.
 
-        Without it `meal_credit_cost` is simply absent from the products loaded
-        into the browser, and the meal buttons cannot render their price in
-        credits or check it against the balance.
+        This has to be asked for on product.product specifically. The POS
+        variant delegates to its template only for methods and getters (see
+        enhanceProductTemplate in core's models/product_product.js) - a plain
+        loaded field like this one does not fall through, so without this line
+        the meal buttons cannot price a meal or check it against the balance.
+
+        Only the cost: `meal_credits` belongs to selling a plan, which happens
+        server-side in pos.order._apply_meal_credits, and nothing in the
+        browser reads it.
 
         *args rather than the declared parameter: core has renamed this
         argument between POS versions (config_id / config), and this override
         does not care which it is - it only appends to whatever core returns.
         """
-        return super()._load_pos_data_fields(*args, **kwargs) + [
-            'meal_credit_cost', 'meal_credits',
-        ]
+        return super()._load_pos_data_fields(*args, **kwargs) + ['meal_credit_cost']
