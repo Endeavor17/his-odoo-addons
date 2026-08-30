@@ -22,3 +22,38 @@ venv/
 /CLAUDE.md
 /MDM_Produits_Stock_POS_v1.md
 /Plan_Implementation_Stock_Module_Odoo19.md
+
+# ---------------------------------------------------------------------------
+# Donnees personnelles — a ne JAMAIS versionner
+#
+# Les exports d'admission et les listes d'etudiants portent des noms, des
+# emails, des telephones et des numeros de badge de personnes reelles. Un
+# depot n'est pas un endroit pour ca, meme prive : un depot se clone, se
+# fork et se partage, et une donnee poussee une fois reste dans l'historique
+# meme apres suppression du fichier.
+#
+# L'exception explicite plus bas est le fichier d'exemple des tests : il ne
+# contient que des personnes inventees.
+/imports/
+/exports/
+*.csv
+!his_person_sync_sheets/tests/exemple_export.csv
+*.xlsx
+*.xls
+
+# Sauvegardes, dumps et filestore. Les sauvegardes reelles vivent dans
+# ..\_backups\, hors du depot, precisement pour ne pas pouvoir etre commitees.
+*.sql
+*.dump
+*.tar.gz
+/backups/
+/_backups/
+filestore/
+
+# Secrets. config/odoo.conf reste versionne (cf. plus haut, environnement de
+# dev) ; tout ce qui suit ne l'est jamais.
+.env
+.env.*
+*.key
+*.pem
+/config/*.local.conf

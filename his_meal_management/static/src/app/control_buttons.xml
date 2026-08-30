@@ -2,12 +2,16 @@
 <templates id="template" xml:space="preserve">
     <t t-name="his_meal_management.ControlButtons" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
         <xpath expr="//SelectPartnerButton" position="after">
-            <button t-if="pos.config.meal_product_id and !props.showRemainingButtons"
-                class="btn btn-primary btn-lg border-0 js_student_meal"
-                t-on-click="() => this.clickStudentMeal()">
-                <i class="fa fa-cutlery me-1" role="img" aria-label="Student Meal" title="Student Meal"/>
-                Student Meal
-            </button>
+            <!-- One button per meal, from the products themselves rather than
+                 a field on this till. A third meal appears here on its own. -->
+            <t t-foreach="mealProducts" t-as="mealProduct" t-key="mealProduct.id">
+                <button t-if="!props.showRemainingButtons"
+                    class="btn btn-primary btn-lg border-0 js_student_meal"
+                    t-on-click="() => this.clickStudentMeal(mealProduct)">
+                    <i class="fa fa-cutlery me-1" role="img" aria-label="Student Meal" title="Student Meal"/>
+                    <t t-esc="mealProduct.name"/>
+                </button>
+            </t>
         </xpath>
     </t>
 </templates>

@@ -8,8 +8,6 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import mute_logger
 
-from odoo.addons.his_meal_management import post_init_hook
-
 
 def make_person(env, name, **vals):
     """A person, created where identity now lives.
@@ -142,6 +140,85 @@ class TestMealCredits(TransactionCase):
                 sub.credits_used = sub.credits_total + 1
                 sub.flush_recordset()
 
+    def test_half_a_credit_can_be_spent_and_the_constraint_still_holds(self):
+        """A 300 DA meal costs 0.5, so the balance has to carry halves."""
+        self.student._grant_meal_credits(self.weekly)
+
+        self.student._consume_meal_credit(amount=0.5)
+        self.assertEqual(self.student.meal_credits_remaining, 5.5)
+
+        # Twelve halves is six credits: the last one empties it exactly, and
+        # the thirteenth is refused.
+        for _i in range(11):
+            self.student._consume_meal_credit(amount=0.5)
+        self.assertEqual(self.student.meal_credits_remaining, 0.0)
+        with self.assertRaises(UserError):
+            self.student._consume_meal_credit(amount=0.5)
+
+    def test_a_meal_can_be_paid_from_two_subscriptions_at_once(self):
+        """The case that a per-meal loop could not express.
+
+        A student with half a credit left on an expiring plan and a full one on
+        a later plan can still eat a 600 DA meal: it takes the 0.5 that would
+        otherwise be lost, then the rest from the next.
+        """
+        short_sub = self.student._grant_meal_credits(self.weekly)
+        long_sub = self.student._grant_meal_credits(self.monthly)
+        self.assertLess(short_sub.date_end, long_sub.date_end)
+
+        # Drain the expiring plan down to exactly half a credit.
+        self.student._consume_meal_credit(amount=5.5)
+        self.assertEqual(short_sub.credits_remaining, 0.5)
+
+        self.student._consume_meal_credit(amount=1.0)
+
+        self.assertEqual(short_sub.credits_remaining, 0.0, "the expiring half went first")
+        self.assertEqual(long_sub.credits_remaining, 24.5, "the rest came from the next plan")
+        self.assertEqual(self.student.meal_credits_remaining, 24.5)
+
+        # One ledger line per subscription touched, so the split is visible.
+        split = self.env['his.meal.transaction'].search([
+            ('partner_id', '=', self.student.id), ('type', '=', 'consume'),
+        ], order='id desc', limit=2)
+        self.assertEqual(sorted(split.mapped('credits')), [-0.5, -0.5])
+
+    def test_credits_with_no_end_date_never_expire(self):
+        plan = self.env['product.product'].create({
+            'name': "Pack 300 - Monthly",
+            'type': 'service',
+            'list_price': 6000.0,
+            'meal_credits': 12.5,
+            'meal_validity_days': 0,
+        })
+        sub = self.student._grant_meal_credits(plan)
+
+        self.assertFalse(sub.date_end, "zero validity means no end date at all")
+        self.assertEqual(sub.state, 'active')
+        # Far enough back that any date-based expiry would have fired.
+        sub.date_start = fields.Date.context_today(self.student) - timedelta(days=900)
+        sub._compute_state()
+        self.assertEqual(sub.state, 'active')
+        self.assertEqual(self.student.meal_credits_remaining, 12.5)
+
+        self.student._consume_meal_credit(amount=0.5)
+        self.assertEqual(self.student.meal_credits_remaining, 12.0)
+
+    def test_expiring_credits_are_spent_before_permanent_ones(self):
+        """A dated plan must drain first, or the student loses it for nothing."""
+        permanent = self.env['product.product'].create({
+            'name': "Permanent Pack",
+            'type': 'service',
+            'meal_credits': 10.0,
+            'meal_validity_days': 0,
+        })
+        forever_sub = self.student._grant_meal_credits(permanent)
+        dated_sub = self.student._grant_meal_credits(self.weekly)
+
+        self.student._consume_meal_credit(amount=1.0)
+
+        self.assertEqual(dated_sub.credits_used, 1.0, "the one with a deadline went first")
+        self.assertEqual(forever_sub.credits_used, 0.0)
+
     def test_active_card_is_reachable_by_scanning_and_a_dead_one_is_not(self):
         card = self.env['his.meal.card'].create({
             'partner_id': self.student.id,
@@ -200,7 +277,7 @@ class TestMealCredits(TransactionCase):
             'code': "HIS-TEST-CARD-1",
         })
         self.student._grant_meal_credits(self.monthly)
-        self.student._consume_meal_credit(qty=8)
+        self.student._consume_meal_credit(amount=8)
         self.assertEqual(self.student.meal_credits_remaining, 17)
 
         action = card.action_replace()
@@ -250,7 +327,10 @@ class TestMealCredits(TransactionCase):
         corrections = self.env['his.meal.transaction'].search([
             ('partner_id', '=', self.student.id), ('type', '=', 'adjust'),
         ])
-        self.assertEqual(len(corrections), 2)
+        # One line, not two: the ledger now writes a line per subscription the
+        # amount is drawn from rather than one per credit, so a 2-credit
+        # correction against a single plan is a single -2 line.
+        self.assertEqual(len(corrections), 1)
         self.assertEqual(sum(corrections.mapped('credits')), -2)
         self.assertEqual(corrections[0].note, "meals never served")
 
@@ -296,15 +376,22 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
             'available_in_pos': True,
         })
         cls.daily_meal = cls.env['product.product'].create({
-            'name': "Daily Meal",
+            'name': "Meal 600",
             'type': 'consu',
             'list_price': 600.0,
+            'meal_credit_cost': 1.0,
             'available_in_pos': True,
         })
-        cls.config = cls.env['pos.config'].create({
-            'name': "Test Restaurant",
-            'meal_product_id': cls.daily_meal.id,
+        cls.meal_300 = cls.env['product.product'].create({
+            'name': "Meal 300",
+            'type': 'consu',
+            'list_price': 300.0,
+            'meal_credit_cost': 0.5,
+            'available_in_pos': True,
         })
+        # Nothing meal-related is configured on the till any more: a meal is a
+        # product carrying a cost, so a plain config serves both of the above.
+        cls.config = cls.env['pos.config'].create({'name': "Test Restaurant"})
         cls.config.open_ui()
         cls.session = cls.config.current_session_id
 
@@ -383,6 +470,73 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
             with self.cr.savepoint():
                 order._apply_meal_credits()
         self.assertFalse(self.env['his.meal.transaction'].search([('pos_order_id', '=', order.id)]))
+
+    def test_the_300_meal_takes_half_a_credit(self):
+        self._seed_credits()
+        order = self._order(self.meal_300, qty=1, price_unit=0.0)
+        order._apply_meal_credits()
+
+        self.assertEqual(self.student.meal_credits_remaining, 24.5)
+        line = self.env['his.meal.transaction'].search(
+            [('pos_order_id', '=', order.id), ('type', '=', 'consume')]
+        )
+        self.assertEqual(line.credits, -0.5)
+        self.assertEqual(
+            line.product_id, self.meal_300,
+            "the ledger has to name which meal was served, now there are two",
+        )
+
+    def test_quantity_multiplies_the_cost(self):
+        """Three 300 DA meals on one ticket are 1.5 credits, not three."""
+        self._seed_credits()
+        order = self._order(self.meal_300, qty=3, price_unit=0.0)
+        order._apply_meal_credits()
+
+        self.assertEqual(self.student.meal_credits_remaining, 23.5)
+
+    def test_a_ticket_mixing_both_meals_is_charged_for_both(self):
+        self._seed_credits()
+        order = self.env['pos.order'].create({
+            'company_id': self.env.company.id,
+            'session_id': self.session.id,
+            'partner_id': self.student.id,
+            'amount_tax': 0.0,
+            'amount_total': 0.0,
+            'amount_paid': 0.0,
+            'amount_return': 0.0,
+            'lines': [
+                Command.create({
+                    'product_id': self.meal_300.id, 'qty': 1, 'price_unit': 0.0,
+                    'price_subtotal': 0.0, 'price_subtotal_incl': 0.0,
+                }),
+                Command.create({
+                    'product_id': self.daily_meal.id, 'qty': 1, 'price_unit': 0.0,
+                    'price_subtotal': 0.0, 'price_subtotal_incl': 0.0,
+                }),
+            ],
+        })
+        order._apply_meal_credits()
+
+        # 0.5 + 1 = 1.5 off a 25-credit plan.
+        self.assertEqual(self.student.meal_credits_remaining, 23.5)
+        served = self.env['his.meal.transaction'].search([
+            ('pos_order_id', '=', order.id), ('type', '=', 'consume'),
+        ])
+        self.assertEqual(
+            sorted(served.mapped('product_id.name')), ["Meal 300", "Meal 600"],
+        )
+
+    def test_any_till_serves_a_meal_with_nothing_configured(self):
+        """The Cafeteria could not serve anything while a meal was a field on
+        pos.config that only the Restaurant had filled."""
+        self._seed_credits()
+        plain_till = self.env['pos.config'].create({'name': "Test Cafeteria"})
+        plain_till.open_ui()
+        order = self._order(self.daily_meal, qty=1, price_unit=0.0)
+        order.session_id = plain_till.current_session_id
+        order._apply_meal_credits()
+
+        self.assertEqual(self.student.meal_credits_remaining, 24)
 
     def test_a_meal_without_a_student_is_refused(self):
         order = self._order(self.daily_meal, qty=1, price_unit=0.0, partner=False)
@@ -796,43 +950,72 @@ class TestBadgeFromIdentity(TransactionCase):
 
 
 @tagged('post_install', '-at_install')
-class TestRestaurantWiring(TransactionCase):
-    """The one field joining this module to his_stock_mdm's POS configs.
+class TestTheShippedOffer(TransactionCase):
+    """The six packages and the two meals, as the price sheet defines them.
 
-    Neither module depends on the other and neither should, so the link is made
-    by post_init_hook rather than by a <record>. That makes it worth testing:
-    a hook has no XML id to fail loudly on, it just quietly does nothing.
+    These numbers are the product, not an implementation detail: getting one
+    wrong overcharges or undercharges a student, and nothing else in the suite
+    would notice. There used to be a class here testing the hook that wired one
+    meal to the Restaurant till; a meal is now identified by its own cost, so
+    every till serves every meal and there is no wiring left to check.
     """
 
-    def _restaurant(self):
-        return self.env.ref(
-            'his_stock_mdm.pos_config_restaurant', raise_if_not_found=False,
-        )
+    # xml id -> (price, credits granted). One credit is one 600 DA meal.
+    PLANS = {
+        'product_plan_300_weekly': (1500.0, 3.0),
+        'product_plan_300_monthly': (6000.0, 12.5),
+        'product_plan_300_semester': (18000.0, 40.0),
+        'product_plan_weekly': (3000.0, 6.0),
+        'product_plan_monthly': (12000.0, 25.0),
+        'product_plan_semester': (36000.0, 80.0),
+    }
 
-    def test_the_restaurant_serves_the_student_meal(self):
-        config = self._restaurant()
-        if not config:
-            self.skipTest("his_stock_mdm is not installed: no Restaurant to wire")
+    def test_every_package_grants_what_the_price_sheet_says(self):
+        for xml_id, (price, credits) in self.PLANS.items():
+            plan = self.env.ref(f'his_meal_management.{xml_id}')
+            self.assertEqual(plan.list_price, price, xml_id)
+            self.assertEqual(plan.meal_credits, credits, xml_id)
+
+    def test_no_package_expires(self):
+        """Credits keep until they are eaten - that is the whole rule."""
+        for xml_id in self.PLANS:
+            plan = self.env.ref(f'his_meal_management.{xml_id}')
+            self.assertEqual(plan.meal_validity_days, 0, xml_id)
+
+    def test_a_credit_costs_the_same_in_both_tiers(self):
+        """What makes one shared wallet safe: no tier is a better deal.
+
+        If the two tiers ever priced a credit differently, a student could buy
+        the cheaper one and spend it on the other pack. They do not: 500, 480
+        and 450 DA per credit, weekly through semesterly, in both tiers.
+        """
+        for small, large in (
+            ('product_plan_300_weekly', 'product_plan_weekly'),
+            ('product_plan_300_monthly', 'product_plan_monthly'),
+            ('product_plan_300_semester', 'product_plan_semester'),
+        ):
+            small_plan = self.env.ref(f'his_meal_management.{small}')
+            large_plan = self.env.ref(f'his_meal_management.{large}')
+            self.assertEqual(
+                small_plan.list_price / small_plan.meal_credits,
+                large_plan.list_price / large_plan.meal_credits,
+                f"{small} and {large} must price a credit identically",
+            )
+
+    def test_the_two_meals_cost_a_half_and_a_whole_credit(self):
         self.assertEqual(
-            config.meal_product_id,
-            self.env.ref('his_meal_management.product_daily_meal').product_variant_id,
-            "the Student Meal button would report 'Not configured' at the till",
+            self.env.ref('his_meal_management.product_meal_300').meal_credit_cost, 0.5
+        )
+        self.assertEqual(
+            self.env.ref('his_meal_management.product_daily_meal').meal_credit_cost, 1.0
         )
 
-    def test_the_hook_never_overwrites_a_choice_made_at_the_till(self):
-        """Re-running it after a failed deployment must not undo a manager."""
-        config = self._restaurant()
-        if not config:
-            self.skipTest("his_stock_mdm is not installed: no Restaurant to wire")
-        other = self.env['product.product'].create({
-            'name': "Autre Repas", 'type': 'consu', 'available_in_pos': True,
-        })
-        config.meal_product_id = other
-        post_init_hook(self.env)
-        self.assertEqual(config.meal_product_id, other)
-
-    def test_the_hook_is_silent_without_his_stock_mdm(self):
-        """The meal module has to install on a database that has no stock module."""
-        if self._restaurant():
-            self.skipTest("his_stock_mdm is installed: the absent case cannot be run here")
-        post_init_hook(self.env)  # must not raise
+    def test_a_product_cannot_be_a_plan_and_a_meal_at_once(self):
+        """Selling it would grant and spend in the same breath."""
+        with self.assertRaises(ValidationError):
+            self.env['product.product'].create({
+                'name': "Impossible",
+                'type': 'consu',
+                'meal_credits': 5.0,
+                'meal_credit_cost': 1.0,
+            })

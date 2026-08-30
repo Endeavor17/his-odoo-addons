@@ -2,62 +2,146 @@
 <odoo>
     <data noupdate="1">
 
-        <!-- The three plans as sold by the IT centre. Prices are in the
-             company currency: set it to DZD before going live.
+        <!-- The six plans as sold by the IT centre, and the two meals they pay
+             for. Prices are in the company currency: set it to DZD before
+             going live.
+
+             One credit is one 600 DA meal; a 300 DA meal costs half of one. So
+             the two tiers are the same offer at two scales, and a credit costs
+             the same in both: 500 DA on the weekly, 480 on the monthly, 450 on
+             the semesterly. The discount is for committing to volume, not for
+             picking a tier - which is why the two can share one wallet with
+             nothing to arbitrage between them.
+
+             Validity is 0 everywhere: credits keep until they are eaten. The
+             weekly / monthly / semesterly names are package sizes now, not
+             time windows.
 
              Taxes are cleared deliberately. A plan sold at 12 000 must land 25
-             credits and take exactly 12 000, and the student meal must stay at
-             zero when it is paid with a credit. -->
+             credits and take exactly 12 000, and a meal must stay at zero when
+             it is paid with a credit. -->
 
-        <record id="product_plan_weekly" model="product.template">
-            <field name="name">Weekly Meal Plan</field>
+        <record id="product_category_meal_plans" model="product.category">
+            <field name="name">Meal Plans</field>
+        </record>
+
+        <!-- Pack 300: the 300 DA meal, six / twenty-five / eighty of them. -->
+
+        <record id="product_plan_300_weekly" model="product.template">
+            <field name="name">Pack 300 - Weekly (6 meals)</field>
             <field name="type">service</field>
-            <field name="list_price">3000.0</field>
-            <field name="meal_credits">6</field>
-            <field name="meal_validity_days">7</field>
+            <field name="categ_id" ref="product_category_meal_plans"/>
+            <field name="list_price">1500.0</field>
+            <field name="meal_credits">3.0</field>
+            <field name="meal_validity_days">0</field>
             <field name="available_in_pos" eval="True"/>
             <field name="sale_ok" eval="True"/>
             <field name="purchase_ok" eval="False"/>
             <field name="taxes_id" eval="[(5, 0, 0)]"/>
-            <field name="description_sale">5 paid meals + 1 free = 6 credits, valid 7 days.</field>
+            <field name="description_sale">5 paid meals + 1 free = 6 meals at 300 DA. 3 credits, no expiry.</field>
+        </record>
+
+        <record id="product_plan_300_monthly" model="product.template">
+            <field name="name">Pack 300 - Monthly (25 meals)</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_meal_plans"/>
+            <field name="list_price">6000.0</field>
+            <field name="meal_credits">12.5</field>
+            <field name="meal_validity_days">0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[(5, 0, 0)]"/>
+            <field name="description_sale">20 paid meals + 5 free = 25 meals at 300 DA. 12.5 credits, no expiry.</field>
+        </record>
+
+        <record id="product_plan_300_semester" model="product.template">
+            <field name="name">Pack 300 - Semesterly (80 meals)</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_meal_plans"/>
+            <field name="list_price">18000.0</field>
+            <field name="meal_credits">40.0</field>
+            <field name="meal_validity_days">0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[(5, 0, 0)]"/>
+            <field name="description_sale">60 paid meals + 20 free = 80 meals at 300 DA. 40 credits, no expiry.</field>
+        </record>
+
+        <!-- Pack 600: the same three sizes at the 600 DA meal. These three
+             kept their original XML IDs (product_plan_weekly / _monthly /
+             _semester) so every subscription already pointing at them still
+             resolves - they were this tier all along, under shorter names. -->
+
+        <record id="product_plan_weekly" model="product.template">
+            <field name="name">Pack 600 - Weekly (6 meals)</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_meal_plans"/>
+            <field name="list_price">3000.0</field>
+            <field name="meal_credits">6.0</field>
+            <field name="meal_validity_days">0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[(5, 0, 0)]"/>
+            <field name="description_sale">5 paid meals + 1 free = 6 meals at 600 DA. 6 credits, no expiry.</field>
         </record>
 
         <record id="product_plan_monthly" model="product.template">
-            <field name="name">Monthly Meal Plan</field>
+            <field name="name">Pack 600 - Monthly (25 meals)</field>
             <field name="type">service</field>
+            <field name="categ_id" ref="product_category_meal_plans"/>
             <field name="list_price">12000.0</field>
-            <field name="meal_credits">25</field>
-            <field name="meal_validity_days">30</field>
+            <field name="meal_credits">25.0</field>
+            <field name="meal_validity_days">0</field>
             <field name="available_in_pos" eval="True"/>
             <field name="sale_ok" eval="True"/>
             <field name="purchase_ok" eval="False"/>
             <field name="taxes_id" eval="[(5, 0, 0)]"/>
-            <field name="description_sale">20 paid meals + 5 free = 25 credits, valid 30 days.</field>
+            <field name="description_sale">20 paid meals + 5 free = 25 meals at 600 DA. 25 credits, no expiry.</field>
         </record>
 
         <record id="product_plan_semester" model="product.template">
-            <field name="name">Semester Meal Plan</field>
+            <field name="name">Pack 600 - Semesterly (80 meals)</field>
             <field name="type">service</field>
+            <field name="categ_id" ref="product_category_meal_plans"/>
             <field name="list_price">36000.0</field>
-            <field name="meal_credits">80</field>
-            <field name="meal_validity_days">180</field>
+            <field name="meal_credits">80.0</field>
+            <field name="meal_validity_days">0</field>
             <field name="available_in_pos" eval="True"/>
             <field name="sale_ok" eval="True"/>
             <field name="purchase_ok" eval="False"/>
             <field name="taxes_id" eval="[(5, 0, 0)]"/>
-            <field name="description_sale">60 paid meals + 20 free = 80 credits, valid 180 days.</field>
+            <field name="description_sale">60 paid meals + 20 free = 80 meals at 600 DA. 80 credits, no expiry.</field>
         </record>
 
-        <!-- The meal itself. Sold at 600 to a walk-in customer, or added at 0
-             and paid with one credit when the student has a plan. -->
-        <record id="product_daily_meal" model="product.template">
-            <field name="name">Daily Meal</field>
+        <!-- The meals themselves. Sold at their listed price to a walk-in
+             customer, or added at 0 and paid with credits when the student has
+             a balance. meal_credit_cost is what makes a product a meal, and it
+             is read by every till - there is nothing to set per shop. -->
+
+        <record id="product_meal_300" model="product.template">
+            <field name="name">Meal 300</field>
             <!-- 'consu' without is_storable: a meal is not tracked in stock.
                  (is_storable lives in the stock module, which this one does not
                  depend on, so it is deliberately not set here.) -->
             <field name="type">consu</field>
+            <field name="list_price">300.0</field>
+            <field name="meal_credit_cost">0.5</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[(5, 0, 0)]"/>
+        </record>
+
+        <!-- Keeps the product_daily_meal XML ID: this is the same 600 DA meal
+             the module has always sold, renamed and given its cost. -->
+        <record id="product_daily_meal" model="product.template">
+            <field name="name">Meal 600</field>
+            <field name="type">consu</field>
             <field name="list_price">600.0</field>
-            <field name="meal_credits">0</field>
+            <field name="meal_credit_cost">1.0</field>
             <field name="available_in_pos" eval="True"/>
             <field name="sale_ok" eval="True"/>
             <field name="purchase_ok" eval="False"/>

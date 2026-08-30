@@ -1,12 +1,18 @@
 {
     'name': 'HIS Meal Management',
-    'version': '19.0.2.2.0',
+    'version': '19.0.3.0.0',
     'summary': 'HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS',
     'description': """
 HIS Meal Management
 ===================
-Prepaid meal credits, driven from two Point of Sale points: the IT centre sells
-the plans, the restaurant consumes the credits.
+Prepaid meal credits: the IT centre sells the plans, and any food point of sale
+serves meals against the balance.
+
+Two meals at two prices share one wallet. A 300 DA meal costs half a credit and
+a 600 DA meal costs one, so the six packages - 1 500 / 6 000 / 18 000 DA in the
+300 tier and 3 000 / 12 000 / 36 000 DA in the 600 tier - all buy from the same
+balance at the same rate for a given duration: 500, 480 or 450 DA per credit.
+Credits do not expire; they keep until they are eaten.
 
 * Identity belongs to his_person_core: the person record, the matricule
   institutionnel and its sequence are all its business, not this module's.
@@ -22,15 +28,17 @@ the plans, the restaurant consumes the credits.
 * The card carries only an identifier. Credits and history live in Odoo, so a
   lost card is replaced without losing a single credit.
 * A meal plan is an ordinary product carrying a credit count and a validity, so
-  pricing, payment, invoicing and accounting stay stock Odoo.
+  pricing, payment, invoicing and accounting stay stock Odoo. A meal is the
+  mirror of it: an ordinary product carrying the credits it costs to serve.
+* Nothing about meals is configured per point of sale. Any till can serve any
+  meal, because what a meal costs is a property of the meal and not of the
+  shop.
 * Credits move on the server when a POS order is saved, never in the browser:
   a cashier cannot grant, edit or invent credits.
 * A negative balance is impossible at the database level, not merely refused in
   Python.
 * Every grant and every meal writes an append-only ledger line naming the
   student, card, plan, cashier, session and the balance it left behind.
-* The Restaurant point of sale is pointed at the student meal automatically
-  when his_stock_mdm created it, without either module depending on the other.
 """,
     'author': 'Abdo Chabouti',
     'category': 'Sales/Point of Sale',
@@ -60,7 +68,6 @@ the plans, the restaurant consumes the credits.
         'views/his_person_views.xml',
         'views/res_partner_views.xml',
         'views/product_template_views.xml',
-        'views/pos_config_views.xml',
         'report/meal_card_report.xml',
         'views/menus.xml',
     ],
@@ -70,8 +77,6 @@ the plans, the restaurant consumes the credits.
             'his_meal_management/static/src/app/**/*',
         ],
     },
-
-    'post_init_hook': 'post_init_hook',
 
     'installable': True,
     'application': True,

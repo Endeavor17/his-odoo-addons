@@ -33,11 +33,13 @@ class PosOrder(models.Model):
             return
 
         plan_lines = self.lines.filtered(lambda line: line.product_id.meal_credits > 0)
-        meal_product = self.config_id.meal_product_id
         rounding = self.currency_id.rounding
+        # A meal is any product carrying a credit cost - the mirror of how a
+        # plan is any product granting credits. It used to be the one product
+        # named on this till's pos.config, which meant a shop served exactly
+        # one meal and a shop with the field empty served none.
         meal_lines = self.lines.filtered(
-            lambda line: meal_product
-            and line.product_id == meal_product
+            lambda line: line.product_id.meal_credit_cost > 0
             # A student meal is the free one. The same product sold at its real
             # price is a paying customer and must not touch anyone's balance.
             and float_is_zero(line.price_unit, precision_rounding=rounding)
@@ -66,6 +68,20 @@ class PosOrder(models.Model):
             for _n in range(int(line.qty)):
                 partner._grant_meal_credits(line.product_id, pos_order=self)
 
-        total_meals = int(sum(meal_lines.mapped('qty')))
-        if total_meals > 0:
-            partner._consume_meal_credit(qty=total_meals, pos_order=self)
+        # One call per meal served, not one per order line: the ledger has kept
+        # a line per meal since it was written, and a cashier reading it back
+        # wants to see two meals, not one line saying "2". What changes is that
+        # each meal now costs what its own product says - 0.5 for a 300 DA
+        # meal, 1 for a 600 DA one - instead of exactly one credit.
+        #
+        # The product is passed explicitly because the ledger used to read it
+        # back off the till's config, which cannot tell two meals apart.
+        #
+        # A ticket short of credits raises partway through and the whole order
+        # rolls back, so no meal is ever charged that the student did not get.
+        for line in meal_lines:
+            cost = line.product_id.meal_credit_cost
+            for _i in range(int(line.qty)):
+                partner._consume_meal_credit(
+                    amount=cost, pos_order=self, product=line.product_id,
+                )
