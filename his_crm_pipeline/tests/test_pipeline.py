@@ -92,6 +92,49 @@ class TestPipeline(TransactionCase):
                 (0, 0, {'type_id': self.type_video.id, 'statut': 'en_cours'}),
             ]})
 
+    # --- Le resume d'avancement de la carte kanban ---------------------------
+
+    def test_le_resume_des_livrables_suit_les_statuts(self):
+        """La carte doit dire s'il reste du travail, et s'il y a du retard.
+
+        Champ non stocke : il ne definit pas le retard, il relit celui que
+        his.content.deliverable.en_retard a deja calcule. Ce test verrouille le
+        lien entre les deux — si le resume cessait de suivre, la carte
+        afficherait un avancement perime sans que rien n'echoue.
+        """
+        lead = self.env['crm.lead'].create({
+            'name': "Campagne resume",
+            'team_id': self.team_contenu.id,
+            'stage_id': self.stage_production.id,
+            'deliverable_ids': [
+                (0, 0, {'type_id': self.type_copy.id, 'statut': 'approuve'}),
+                (0, 0, {'type_id': self.type_design.id, 'statut': 'a_faire'}),
+            ],
+        })
+        self.assertEqual(lead.livrables_resume, "1/2 approuves")
+
+        design = lead.deliverable_ids.filtered(
+            lambda d: d.type_id == self.type_design
+        )
+        design.statut = 'approuve'
+        self.assertEqual(lead.livrables_resume, "2/2 approuves")
+
+        # Le retard vient de la ligne, pas d'un second calcul. L'echeance est
+        # portee par la demande (date_echeance est related sur
+        # lead_id.date_deadline) : elle vaut donc pour tous ses livrables.
+        design.statut = 'en_cours'
+        lead.date_deadline = fields.Date.today() - timedelta(days=1)
+        self.assertTrue(design.en_retard)
+        self.assertEqual(lead.livrables_resume, "1/2 approuves - en retard")
+
+    def test_une_demande_sans_livrable_n_a_pas_de_resume(self):
+        """« 0/0 » dirait qu'on a mesure ; il n'y a rien a mesurer."""
+        lead = self.env['crm.lead'].create({
+            'name': "Pas encore arbitree",
+            'team_id': self.team_contenu.id,
+        })
+        self.assertFalse(lead.livrables_resume)
+
     # --- Les actions doivent etre lisibles par le client web -----------------
 
     def test_les_actions_ont_un_domaine_et_un_contexte_evaluables(self):
@@ -116,6 +159,36 @@ class TestPipeline(TransactionCase):
             self.assertNotIn('%(', action.context or '', action.display_name)
             safe_eval(action.domain or '[]', dict(contexte))
             safe_eval(action.context or '{}', dict(contexte))
+
+    def test_les_vues_enregistrees_sont_litterales_et_executables(self):
+        """Les favoris, verrouilles de la meme facon que les actions.
+
+        Deux pieges distincts, que rien ne signale au chargement :
+
+        1. ir.filters.domain est relu par _get_eval_domain() avec
+           `ast.literal_eval`, qui REFUSE tout appel de fonction. Un domaine
+           ecrit avec context_today() ou relativedelta() s'installe sans bruit
+           et casse a la lecture. Les dates relatives doivent donc passer par
+           le mini-langage d'Odoo 19 ('now -4H'), qui reste une chaine.
+
+        2. Un nom de champ errone dans un domaine de favori n'est verifie ni a
+           l'installation — contrairement a l'arch d'une vue — ni par le
+           literal_eval. Il n'echouerait qu'au premier clic d'un utilisateur.
+
+        Ce test relit ce qui est REELLEMENT en base et l'execute.
+        """
+        filtres = self.env['ir.filters'].search([]).filtered(
+            lambda f: f.get_external_id().get(f.id, '').startswith('his_crm_pipeline.'),
+        )
+        self.assertTrue(filtres, "Aucun favori trouve : le test ne verifie rien.")
+        for filtre in filtres:
+            domaine = filtre._get_eval_domain()
+            self.env['crm.lead'].search(domaine, limit=1)
+            self.assertTrue(
+                filtre.action_id,
+                "%s n'est rattache a aucune action : il apparaitrait dans les "
+                "deux pipelines." % filtre.name,
+            )
 
     # --- Cloisonnement des deux pipelines -----------------------------------
 

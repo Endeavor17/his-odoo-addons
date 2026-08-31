@@ -227,11 +227,106 @@ de `his_stock_mdm`.
 Un refus d'approbation n'est pas une perte sèche : le motif « Retour production
 nécessaire » renvoie la demande en production.
 
+## Les deux tableaux kanban
+
+Le pipeline se lit sur un tableau, pas dans une liste : c'est le geste que
+l'équipe avait dans GoHighLevel et qu'elle voulait retrouver. Les deux vues
+héritent de la kanban native d'Odoo (`crm.crm_case_kanban_view_leads`) en
+`mode="primary"`, exactement comme Odoo le fait lui-même pour sa vue prévisionnelle.
+
+**Pourquoi deux vues et non une seule partagée.** `<progressbar>` est un élément
+de la vue, pas de la carte : il ne porte pas d'attribut `invisible` et ne peut
+donc pas apparaître pour une équipe et disparaître pour l'autre, comme le font
+les pages du formulaire. Chaque action pointe la sienne par `view_id`.
+
+| | Admissions | Production Contenu |
+|---|---|---|
+| Barre de progression | oui, par état d'activité | **non** — rien ne pose d'activité sur une demande de contenu, la barre serait uniformément grise |
+| Total de colonne | somme des `score_academique` | le compteur natif seul |
+| Carte | score, visite effectuée, spécialité[^1] | département, marque, avancement des livrables |
+
+[^1]: la spécialité est ajoutée par `his_admission`, qui apporte le référentiel.
+`his_crm_pipeline` s'installe seul et ne le connaît pas — d'où le point
+d'accroche `o_his_lead_kanban_meta`, stable, que les modules en aval visent.
+
+**Le total de colonne n'est pas de l'argent.** Odoo somme le chiffre d'affaires
+attendu ; une candidature n'en porte pas — les montants vivent sur
+`his.engagement`. La somme des scores est utile pour comparer deux colonnes, pas
+pour annoncer un chiffre d'affaires.
+
+Ce que les cartes ne redéclarent pas : étiquettes, avatar du commercial,
+activités, priorité, pourrissement. La carte native les rend déjà.
+
+## Étiquettes et vues enregistrées
+
+Huit étiquettes de départ (`data/crm_tag_data.xml`) et huit vues enregistrées
+(`data/ir_filters_data.xml`), en `noupdate="1"` : ce sont des points de départ,
+une équipe qui les affine ne doit pas les voir revenir à la prochaine livraison.
+
+Les étiquettes ne doublent délibérément **pas** ce que des champs de sélection
+disent déjà — pas d'étiquette « HIS » à côté de `marque`, sinon deux vérités pour
+la même question. Elles portent ce que le dossier ne dit pas : « Bourse
+demandée », « Indécis programme », « Urgent », « Réseaux sociaux »…
+
+Chaque vue enregistrée est rattachée à **son** action (`action_id`) : sans cela
+un favori est global au modèle, et « Livrables en retard » apparaîtrait dans les
+Admissions. Le cloisonnement des favoris suit celui du reste du module.
+
+**Deux pièges techniques, tous deux vérifiés par un test.**
+
+`ir.filters.domain` est relu par `_get_eval_domain()` avec `ast.literal_eval`,
+qui **refuse tout appel de fonction** : un domaine écrit avec `context_today()`
+ou `relativedelta()` s'installe sans bruit et casse à la lecture. Les dates
+relatives passent donc par le mini-langage d'Odoo 19 (`'now -4H'`, `'today -7d'`,
+cf. `odoo/tools/date_utils.py:parse_date`), qui reste une simple chaîne — donc
+littérale — tout en restant dynamique, et qui a son équivalent JavaScript.
+
+Un nom de champ erroné dans un domaine de favori n'est vérifié **ni** à
+l'installation, contrairement à l'arch d'une vue, **ni** par le `literal_eval` :
+il n'échouerait qu'au premier clic. `test_les_vues_enregistrees_sont_litterales_et_executables`
+relit ce qui est en base et l'exécute.
+
+### Droits sur les étiquettes
+
+Les rôles Admissions portent `sales_team.group_sale_salesman`, qui donne déjà
+l'accès natif à `crm.tag` : rien à ajouter. Les rôles Contenu n'en portent aucun,
+délibérément — et **`base.group_user` ne reçoit rien du tout sur `crm.tag` dans
+Odoo natif** (`0,0,0,0`). Sans droit explicite, une demande étiquetée devenait
+donc illisible pour son propre demandeur. Trois lignes le corrigent : lecture
+pour Demandeur et Production, création et écriture pour la Priorisation — qui
+trie les demandes entrantes, donc fait vivre la taxonomie, comme elle le fait
+déjà pour les types de livrable. Jamais de `unlink` : une étiquette supprimée
+disparaît de tous les leads qui la portaient, sans trace.
+
+## Programmer une visite du campus
+
+Bouton dans le formulaire et entrée du menu de la carte kanban, côté Admissions
+seulement. Il appelle `action_schedule_meeting`, **native d'Odoo** (`crm`), qui
+ouvre l'agenda pré-rempli du candidat et de l'équipe. Aucun code serveur ajouté.
+
+**Il ne coche rien, et c'est le point.** `visite_campus_effectuee` reste ce
+qu'une conseillère atteste après coup. Un rendez-vous pris n'est pas une visite
+effectuée — les absences sont courantes — et un booléen qui deviendrait vrai tout
+seul mentirait sur la moitié d'entre elles. Programmer et constater sont deux
+gestes distincts ; ils le restent.
+
 ## Hors périmètre (assumé)
 
-- **Thème GHL** — aucune référence visuelle (capture ou palette) n'existe dans ce
-  dépôt. Les vues sont fonctionnelles, pas thémées. Passe séparée, une fois la
-  référence fournie.
+- **Thème GHL** — la passe *structurelle* est faite (tableaux kanban, étiquettes,
+  vues enregistrées, totaux de colonne). La passe *visuelle* — couleurs, espacements
+  exacts — attend toujours une capture réelle de l'instance du client : rien dans ce
+  dépôt ne fixe de couleur en dur, tout passe par les composants et les jetons de
+  thème d'Odoo, pour qu'un habillage ultérieur ne touche que ceux-ci.
+- **Prise de rendez-vous en libre-service** — le module `appointment` est réservé à
+  l'édition Enterprise et absent de cette image Community. La prise de rendez-vous
+  reste donc à la main de l'équipe, via l'agenda natif. Un lien public de
+  réservation à la GoHighLevel demanderait Enterprise ou un module tiers.
+- **`visite_campus_effectuee` calculé depuis l'agenda** — non, et pas « pas encore » :
+  voir ci-dessus. Le champ est une attestation, pas une déduction.
+- **Chart.js sur l'entonnoir du cockpit** — les barres CSS suffisent tant qu'aucune
+  courbe temporelle n'est demandée (cf. le commentaire dans `dashboard.scss`).
+  L'entonnoir est un instantané, pas une série temporelle. Une répartition en donut
+  par étape ferait double emploi avec le lien pivot déjà présent dans « Explorer ».
 - Migration des données GHL : départ à neuf, aucun historique repris.
 - WhatsApp, Facebook, Instagram : pas d'inbox, pas de threading.
 - Séquences de nurturing et automatisation marketing.

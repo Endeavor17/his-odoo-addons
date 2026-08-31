@@ -241,6 +241,54 @@ class TestRoles(TransactionCase):
         self.assertNotIn(celle_des_autres, vues)
         self.assertNotIn(sienne, self.env['crm.lead'].with_user(autre).search([]))
 
+    def test_le_demandeur_lit_les_etiquettes(self):
+        """Sans groupe commercial, aucune etiquette n'est lisible par defaut.
+
+        base.group_user ne recoit RIEN sur crm.tag dans Odoo natif
+        (sales_team/security/ir.model.access.csv : 0,0,0,0). Les roles
+        Admissions s'en sortent parce qu'ils portent group_sale_salesman, qui
+        lui donne l'acces ; les roles Contenu n'en portent aucun, deliberement.
+
+        Consequence sans droit explicite : une demande etiquetee devient
+        illisible pour son propre demandeur des qu'une vue affiche tag_ids.
+        """
+        rh = self._user('r_rh_tags', 'his_crm_pipeline.group_contenu_demandeur')
+        demande = self.env['crm.lead'].with_user(rh).create({
+            'name': "Affiche RH", 'team_id': self.team_contenu.id,
+            'tag_ids': [(4, self.env.ref('his_crm_pipeline.tag_urgent').id)],
+        })
+
+        self.assertEqual(
+            demande.with_user(rh).tag_ids.mapped('name'), ["Urgent"],
+        )
+
+    def test_seule_la_priorisation_definit_la_taxonomie(self):
+        """Etiqueter n'est pas definir les etiquettes.
+
+        Le tri des demandes entrantes appartient a la Priorisation : c'est donc
+        elle qui fait vivre la taxonomie, comme elle le fait deja pour les types
+        de livrable. La Production etiquette avec ce qui existe, sans pouvoir
+        inventer de nouveaux mots.
+        """
+        graphiste = self._user(
+            'r_prod_tags', 'his_crm_pipeline.group_contenu_production', self.team_contenu,
+        )
+        strategiste = self._user(
+            'r_prio_tags', 'his_crm_pipeline.group_contenu_priorisation', self.team_contenu,
+        )
+
+        with self.assertRaises(AccessError):
+            self.env['crm.tag'].with_user(graphiste).create({'name': "Invente"})
+
+        etiquette = self.env['crm.tag'].with_user(strategiste).create({'name': "Podcast"})
+        self.assertEqual(etiquette.name, "Podcast")
+
+        # Renommer oui, supprimer non : une etiquette effacee disparait de tous
+        # les leads qui la portaient, sans trace.
+        etiquette.with_user(strategiste).name = "Podcast long"
+        with self.assertRaises(AccessError):
+            etiquette.with_user(strategiste).unlink()
+
     def test_le_demandeur_est_trace_a_la_creation(self):
         """demandeur_id et non user_id : ce dernier change de main a la
         priorisation, et le demandeur perdrait sa demande de vue."""

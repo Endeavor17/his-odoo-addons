@@ -23,6 +23,21 @@
                             <field name="visite_campus_effectuee"/>
                             <field name="date_visite_campus"
                                    invisible="not visite_campus_effectuee"/>
+                            <!-- Programmer et constater sont deux gestes
+                                 distincts, et ils le restent.
+
+                                 action_schedule_meeting est native (crm) :
+                                 elle ouvre l'agenda pre-rempli du candidat et
+                                 de l'equipe. Elle ne coche RIEN — la case
+                                 ci-dessus reste ce qu'une conseillere atteste
+                                 apres coup. Un rendez-vous pris n'est pas une
+                                 visite effectuee : les absences sont
+                                 courantes, et un booleen qui deviendrait vrai
+                                 tout seul mentirait sur la moitie d'entre
+                                 elles. -->
+                            <button name="action_schedule_meeting" type="object"
+                                    string="Programmer une visite"
+                                    icon="fa-calendar-plus-o" class="btn-link"/>
                         </group>
                     </group>
                     <group string="Motivation">
@@ -123,6 +138,127 @@
             <xpath expr="//header/button[@name='%(crm.crm_lead_lost_action)d']" position="attributes">
                 <attribute name="groups">sales_team.group_sale_manager,his_crm_pipeline.group_admissions_conseiller,his_crm_pipeline.group_contenu_approbation</attribute>
             </xpath>
+        </field>
+    </record>
+
+    <!-- ==================== Les deux tableaux kanban ====================
+
+         DEUX vues et non une seule partagee, pour une raison technique dont
+         decoule tout le reste : <progressbar> est un element de la vue, pas de
+         la carte. Il ne porte pas d'attribut `invisible`, donc il ne peut pas
+         apparaitre pour une equipe et disparaitre pour l'autre comme le font
+         les pages du formulaire. Une vue par pipeline est le seul moyen de
+         donner a chacun ce qui a du sens chez lui.
+
+         C'est aussi ce que fait Odoo lui-meme : crm_lead_view_kanban_forecast
+         herite de la meme vue stock en mode="primary" pour devenir une vue a
+         part entiere. Chaque action pointe la sienne par view_id, exactement
+         comme action_crm_lead_non_affectes pointe deja sa liste.
+
+         priority=32 : au-dessus de la vue stock (1), pour qu'aucune de ces deux
+         vues ne soit choisie par defaut ailleurs dans Odoo. Elles ne sont
+         atteintes que par le view_id de leur action.
+
+         Ce qui n'est PAS redefini ici, deliberement : les etiquettes
+         (many2many_tags), l'avatar du commercial (many2one_avatar_user), les
+         activites (kanban_activity), la priorite et le pourrissement. La carte
+         stock les rend deja. Les redeclarer serait du code mort a maintenir. -->
+
+    <record id="view_crm_lead_kanban_admissions" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.admissions</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="mode">primary</field>
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+
+            <!-- Le total de colonne. Odoo somme le chiffre d'affaires attendu ;
+                 nous n'en avons pas — l'argent d'une candidature vit sur
+                 his.engagement, pas ici. Le score est la vraie monnaie de ce
+                 pipeline : c'est deja lui qui ordonne la file d'affectation.
+
+                 A NE PAS LIRE COMME UNE VALEUR MONETAIRE. C'est une somme de
+                 scores, utile pour comparer deux colonnes entre elles, pas pour
+                 annoncer un chiffre d'affaires.
+
+                 `field` reste activity_state : il vient de mail.activity.mixin
+                 sans rien coder, et c'est le meme signal que la relance SLA
+                 horaire. Une colonne rouge ici veut dire exactement ce que dit
+                 l'activite posee sur le responsable. -->
+            <xpath expr="//progressbar" position="attributes">
+                <attribute name="sum_field">score_academique</attribute>
+            </xpath>
+
+            <xpath expr="//kanban" position="inside">
+                <field name="visite_campus_effectuee"/>
+            </xpath>
+
+            <!-- Le geste de la conseillere, la ou elle regarde deja. -->
+            <xpath expr="//t[@t-name='menu']" position="inside">
+                <a role="menuitem" type="object" name="action_schedule_meeting"
+                   class="dropdown-item">Programmer une visite</a>
+            </xpath>
+
+            <!-- o_his_lead_kanban_meta est un point d'accroche stable pour les
+                 modules en aval : his_admission y ajoute la specialite. Sans
+                 classe nommee, ils devraient viser une classe utilitaire
+                 Bootstrap (« gap-1 »), qui ne dit rien et changerait au premier
+                 ajustement de mise en page. -->
+            <xpath expr="//div[hasclass('o_kanban_card_crm_lead_revenue')]" position="replace">
+                <div class="o_his_lead_kanban_meta d-flex align-items-center gap-1">
+                    <span class="badge rounded-pill text-bg-light"
+                          invisible="not score_academique"
+                          title="Score academique">
+                        <i class="fa fa-star-o me-1" role="img" aria-label="Score academique"/><field name="score_academique"/>
+                    </span>
+                    <i class="fa fa-calendar-check-o text-success"
+                       role="img" aria-label="Visite du campus effectuee"
+                       title="Visite du campus effectuee"
+                       invisible="not visite_campus_effectuee"/>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_crm_lead_kanban_contenu" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.contenu</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="mode">primary</field>
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+
+            <!-- Aucune barre de progression ici. Elle regroupe les demandes par
+                 etat d'activite, or rien dans ce module ne pose d'activite sur
+                 une demande de contenu — la relance SLA ne concerne que les
+                 Admissions. La barre serait donc uniformement grise : de
+                 l'habillage qui ne dit rien. Le compteur par colonne, lui,
+                 reste : Odoo le donne sans rien demander. -->
+            <xpath expr="//progressbar" position="replace"/>
+
+            <!-- Ni chiffre d'affaires, ni score : une demande de contenu ne se
+                 chiffre pas. Ce qu'on veut voir d'un coup d'oeil, c'est pour
+                 qui, pour quelle marque, et ou en sont les livrables. -->
+            <xpath expr="//div[hasclass('o_kanban_card_crm_lead_revenue')]" position="replace">
+                <div class="o_his_lead_kanban_meta d-flex flex-wrap align-items-center gap-1">
+                    <span class="badge rounded-pill text-bg-light"
+                          invisible="not departement_demandeur">
+                        <field name="departement_demandeur"/>
+                    </span>
+                    <span class="badge rounded-pill text-bg-light"
+                          invisible="not marque">
+                        <field name="marque"/>
+                    </span>
+                </div>
+                <!-- Une ligne, pas un tableau : l'avancement detaille se lit
+                     dans le formulaire. Ici on veut seulement savoir s'il reste
+                     du travail et s'il y a du retard. -->
+                <div class="text-muted small" invisible="not livrables_resume">
+                    <field name="livrables_resume"/>
+                </div>
+            </xpath>
+
         </field>
     </record>
 

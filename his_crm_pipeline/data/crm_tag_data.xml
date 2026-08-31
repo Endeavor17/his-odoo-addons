@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les etiquettes de depart des deux processus.
+
+         noupdate="1" : c'est une taxonomie, pas une regle. Les equipes doivent
+         pouvoir renommer, desactiver ou completer sans qu'une livraison ecrase
+         leur travail. Meme choix que pour les etapes, les types de livrable et
+         les types de piece.
+
+         crm.tag n'a pas de champ equipe : le modele est global. Le cloisonnement
+         se joue ailleurs — sur qui peut en creer (ir.model.access.csv) — et la
+         separation entre les deux jeux ci-dessous n'est qu'une convention de
+         nommage. C'est assume : une etiquette est un mot, pas un droit.
+
+         Ce qui n'est PAS ici, deliberement : marque et departement demandeur.
+         Ils sont deja des champs de selection sur crm.lead. Une etiquette
+         « HIS » ferait une seconde version, moins fiable, de marque = 'his' —
+         et deux verites pour la meme question finissent toujours par diverger.
+
+         `color` est l'index de la palette d'Odoo (0-11), pas une couleur : le
+         theme decide du rendu. Rien a reprendre ici lors d'une passe visuelle. -->
+    <data noupdate="1">
+
+        <!-- ===================== Ventes / Admissions =====================
+             Ce que le dossier ne dit pas et que la conseillere doit se
+             rappeler avant de rappeler le candidat. -->
+
+        <record id="tag_bourse_demandee" model="crm.tag">
+            <field name="name">Bourse demandee</field>
+            <field name="color">4</field>
+        </record>
+
+        <record id="tag_indecis_programme" model="crm.tag">
+            <field name="name">Indecis programme</field>
+            <field name="color">3</field>
+        </record>
+
+        <record id="tag_parent_implique" model="crm.tag">
+            <field name="name">Parent tres implique</field>
+            <field name="color">6</field>
+        </record>
+
+        <record id="tag_relance_prioritaire" model="crm.tag">
+            <field name="name">Relance prioritaire</field>
+            <field name="color">1</field>
+        </record>
+
+        <!-- ===================== Production Contenu =====================
+             Le canal et l'urgence : ni la marque ni le departement, qui sont
+             deja des champs. -->
+
+        <record id="tag_urgent" model="crm.tag">
+            <field name="name">Urgent</field>
+            <field name="color">1</field>
+        </record>
+
+        <record id="tag_reseaux_sociaux" model="crm.tag">
+            <field name="name">Reseaux sociaux</field>
+            <field name="color">10</field>
+        </record>
+
+        <record id="tag_site_web" model="crm.tag">
+            <field name="name">Site web</field>
+            <field name="color">7</field>
+        </record>
+
+        <record id="tag_evenement" model="crm.tag">
+            <field name="name">Evenement</field>
+            <field name="color">5</field>
+        </record>
+
+    </data>
+</odoo>

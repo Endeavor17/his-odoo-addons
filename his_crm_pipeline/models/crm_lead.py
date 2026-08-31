@@ -61,6 +61,12 @@ class CrmLead(models.Model):
         'his.content.deliverable', 'lead_id', string="Livrables",
     )
 
+    livrables_resume = fields.Char(
+        string="Avancement des livrables",
+        compute='_compute_livrables_resume',
+        help="Resume d'une ligne, pour la carte du tableau kanban.",
+    )
+
     demandeur_id = fields.Many2one(
         'res.users', string="Demandeur", copy=False, index=True,
         help="Qui a depose la demande. Distinct du commercial, qui change de "
@@ -75,6 +81,38 @@ class CrmLead(models.Model):
         ],
         string="Marque",
     )
+
+    @api.depends('deliverable_ids.statut', 'deliverable_ids.en_retard')
+    def _compute_livrables_resume(self):
+        """L'avancement en une ligne, pour la carte du kanban.
+
+        NON STOCKE, et c'est le point : ce champ ne definit rien. Il met en
+        forme ce que his.content.deliverable sait deja. Le stocker en ferait un
+        second endroit ou vit la notion de retard, a cote de
+        his.content.deliverable.en_retard, et deux definitions du meme mot
+        finissent toujours par diverger.
+
+        Le retard est un DRAPEAU, pas un compte, et c'est voulu : date_echeance
+        est un champ related sur lead_id.date_deadline, donc tous les livrables
+        d'une demande partagent la meme echeance. Des que celle-ci est passee,
+        « en retard » designe exactement les livrables non approuves — le
+        compte serait toujours egal a total moins approuves, et n'ajouterait
+        donc rien a la fraction qui le precede. Ce qu'il apporte, lui, c'est
+        que l'echeance est depassee.
+
+        Vide quand il n'y a aucun livrable : une demande sans livrable n'a pas
+        « 0/0 » d'avancement, elle n'a pas encore ete arbitree.
+        """
+        for lead in self:
+            livrables = lead.deliverable_ids
+            if not livrables:
+                lead.livrables_resume = False
+                continue
+            approuves = len(livrables.filtered(lambda d: d.statut == 'approuve'))
+            resume = "%s/%s approuves" % (approuves, len(livrables))
+            if any(livrables.mapped('en_retard')):
+                resume += " - en retard"
+            lead.livrables_resume = resume
 
     # --- La file d'attente d'affectation -------------------------------------
 
