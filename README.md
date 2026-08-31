@@ -24,6 +24,8 @@ est ce qui arrive avec un simple `git pull` — voir `web_responsive/VENDOR.md`.
 | [`his_crm_pipeline`](his_crm_pipeline/) | CRM — pipeline Ventes/Admissions et pipeline Production Contenu, cloisonnés par équipe et par étapes (remplace GoHighLevel) | Développé, 16 tests |
 | [`his_crm_identity_bridge`](his_crm_identity_bridge/) | Pont CRM → Identité — crée la fiche personne du candidat au premier contact | Développé, 12 tests |
 | [`his_admission`](his_admission/) | Admission — dossier candidat, pièces justificatives, éligibilité et transmissions Ministère / service national (remplace le classeur Excel) | Développé, 32 tests |
+| [`campus_teacher_management`](campus_teacher_management/) | Recrutement Campus+ — candidatures enseignants, évaluation CAR, classement, entretiens, contrat et tournage | Développé, 129 tests |
+| [`insite_recruitment`](insite_recruitment/) | Recrutement InSite — besoin, candidats internes/externes, contrat, intégration, affectation de module ; partage l'identité `academic.person` avec Campus+ | Développé, 22 tests |
 | [`maintenance_university`](maintenance_university/) | Maintenance universitaire — demandes, inspections, constats, tableau de bord | Développé ; ne possède plus le matricule (v19.0.2.0.0) |
 | [`his_pos_ui`](his_pos_ui/) | POS — habillage partagé des trois caisses, identité par point de vente, ergonomie tactile | Développé, 3 tests |
 | [`his_pos_copy_center`](his_pos_copy_center/) | POS Copy Center — composition d'un travail de copie en un seul écran | Développé, 5 tests + 2 tours |
@@ -136,6 +138,50 @@ service national). Les conseillères Ventes y ont un accès en lecture seule.
 obligatoire de chaque pièce — les deux sont déduits du classeur, aucun document
 de référence ne les fixe, cf.
 [`his_admission/README.md`](his_admission/README.md).
+
+### Recrutement — Campus+ et InSite
+
+`insite_recruitment` dépend de `campus_teacher_management` : les deux
+s'installent donc en **une seule commande**, Odoo résolvant l'ordre lui-même.
+
+```bash
+docker compose run --rm odoo odoo -d <base> \
+  -i campus_teacher_management,insite_recruitment --stop-after-init
+```
+
+Installer d'abord Campus+ seul puis InSite fonctionne aussi, mais rien ne le
+justifie : InSite n'est utilisable qu'avec Campus+ en place.
+
+`campus_teacher_management` tire `hr_recruitment` comme dépendance. Sur une base
+où il n'était pas installé, **l'application Recrutement apparaît** avec ses
+propres menus, en plus des menus Campus+ — c'est attendu, pas un effet de bord.
+
+Campus+ pose une règle d'enregistrement **globale** sur `hr.applicant` : une
+candidature rattachée à un processus Campus+ n'est visible que par les
+utilisateurs disposant de la permission `can_view` sur ce processus
+(`campus.process.permission`). Les candidatures hors Campus+
+(`campus_process_id` vide) restent visibles de tous les recruteurs. À
+l'installation, le `post_init_hook` accorde les trois permissions (voir,
+exécuter, valider) sur tous les processus à chaque membre du groupe **Campus+ /
+Manager**, qui contient `base.user_root` et `base.user_admin` — l'administrateur
+ne peut donc pas se verrouiller dehors. Le reste de la matrice se règle ensuite
+depuis Configuration > Process Permissions.
+
+**Tout module qui ajoute des `campus.process` doit porter son propre
+`post_init_hook`.** Celui de Campus+ s'exécute quand *Campus+* finit de
+s'installer : les processus déclarés par un module installé après lui n'existent
+pas encore à ce moment-là et n'obtiennent donc aucune permission. La matrice
+étant *opt-in* (aucune ligne = refusé, cf.
+`campus.process.permission._has_process_permission`), ces processus seraient
+fermés à tout le monde sauf au superutilisateur uid 1 — l'administrateur inclus.
+C'est pourquoi `insite_recruitment` déclare
+`_insite_grant_manager_process_permissions`, qui rappelle le grant de Campus+ ;
+celui-ci est idempotent et ne fait que compléter les processus manquants.
+
+Les deux fichiers `data/campus_demo_*.xml` (poste et 5 candidats de
+démonstration) ne sont **référencés par aucun manifeste** : ils ne se chargent
+pas. C'est délibéré — les charger sèmerait de fausses candidatures dans une base
+qui porte les vraies.
 
 ## Lancer les tests
 

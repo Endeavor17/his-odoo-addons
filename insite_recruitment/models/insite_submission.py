@@ -32,16 +32,22 @@ class InsiteSubmission(models.Model):
     # last_name are store=True — the standard way to make a computed field
     # usable in search/list sorting — the other, purely-display-only ones
     # aren't referenced from any search view, so they stay unstored.
-    candidate_name = fields.Char("Candidate Name", compute='_compute_payload_fields', store=True)
-    first_name = fields.Char("First Name", compute='_compute_payload_fields', store=True)
-    last_name = fields.Char("Last Name", compute='_compute_payload_fields', store=True)
-    name_ar = fields.Char("Name (Arabic)", compute='_compute_payload_fields')
-    submitted_email = fields.Char("Email", compute='_compute_payload_fields')
-    submitted_phone = fields.Char("Phone", compute='_compute_payload_fields')
-    submitted_matricule = fields.Char("Institutional Matricule", compute='_compute_payload_fields')
-    submitted_motivation = fields.Text("Motivation", compute='_compute_payload_fields')
-    submitted_availability = fields.Char("Availability", compute='_compute_payload_fields')
-    submitted_teaching_experience = fields.Text("Teaching Experience", compute='_compute_payload_fields')
+    #
+    # The stored and the unstored projections deliberately have *separate*
+    # compute methods. A single method covering both makes the ORM treat all
+    # of them as one recompute group, so merely reading a display-only field
+    # re-runs the group and marks the three stored columns dirty — a write on
+    # every read. Splitting them keeps reading the payload preview free.
+    candidate_name = fields.Char("Candidate Name", compute='_compute_payload_names', store=True)
+    first_name = fields.Char("First Name", compute='_compute_payload_names', store=True)
+    last_name = fields.Char("Last Name", compute='_compute_payload_names', store=True)
+    name_ar = fields.Char("Name (Arabic)", compute='_compute_payload_details')
+    submitted_email = fields.Char("Submitted Email", compute='_compute_payload_details')
+    submitted_phone = fields.Char("Phone", compute='_compute_payload_details')
+    submitted_matricule = fields.Char("Institutional Matricule", compute='_compute_payload_details')
+    submitted_motivation = fields.Text("Motivation", compute='_compute_payload_details')
+    submitted_availability = fields.Char("Availability", compute='_compute_payload_details')
+    submitted_teaching_experience = fields.Text("Teaching Experience", compute='_compute_payload_details')
 
     state = fields.Selection([
         ('received', 'Received'),
@@ -77,18 +83,23 @@ class InsiteSubmission(models.Model):
     )
 
     @api.depends('payload', 'reference')
-    def _compute_payload_fields(self):
+    def _compute_payload_names(self):
         for submission in self:
             payload = submission.payload or {}
             first_name = (payload.get('firstName') or '').strip()
             last_name = (payload.get('lastName') or '').strip()
-            name_ar = (payload.get('nameAr') or '').strip()
             submission.first_name = first_name
             submission.last_name = last_name
-            submission.name_ar = name_ar
             submission.candidate_name = (
                 ' '.join(part for part in (first_name, last_name) if part)
-                or name_ar or submission.reference)
+                or (payload.get('nameAr') or '').strip()
+                or submission.reference)
+
+    @api.depends('payload')
+    def _compute_payload_details(self):
+        for submission in self:
+            payload = submission.payload or {}
+            submission.name_ar = (payload.get('nameAr') or '').strip()
             submission.submitted_email = payload.get('email') or ''
             submission.submitted_phone = payload.get('phone') or ''
             submission.submitted_matricule = payload.get('matricule') or ''

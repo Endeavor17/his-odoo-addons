@@ -26,7 +26,10 @@ class AcademicPerson(models.Model):
     first_name = fields.Char("First Name", tracking=True)
     last_name = fields.Char("Last Name", tracking=True)
     name_ar = fields.Char("Name (Arabic)", tracking=True)
-    name = fields.Char("Display Name", compute='_compute_name', store=True)
+    # Not "Display Name": that is the label of the built-in display_name, and
+    # two identically-labelled fields on one model are indistinguishable in the
+    # filter, group-by and export pickers.
+    name = fields.Char("Full Name", compute='_compute_name', store=True)
 
     matricule_institutionnel = fields.Char(
         "Institutional Matricule", index=True, tracking=True,
