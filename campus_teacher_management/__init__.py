@@ -12,7 +12,7 @@ def _campus_grant_manager_process_permissions(env):
     Managers configure everyone else's matrix afterwards from Configuration >
     Process Permissions.
     """
-    managers = env.ref('campus_teacher_management.group_campus_manager').users
+    managers = env.ref('campus_teacher_management.group_campus_manager').user_ids
     processes = env['campus.process'].search([])
     if not managers or not processes:
         return

@@ -60,4 +60,5 @@ fully separate from Campus+'s.
 
     'installable': True,
     'application': False,
+    'post_init_hook': '_insite_grant_manager_process_permissions',
 }
