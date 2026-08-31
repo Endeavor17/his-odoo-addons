@@ -8,13 +8,29 @@
 // noeud n'est ajouté au DOM d'OCA : uniquement de la CSS sur ses classes.
 
 .app-menu-container {
-    position: relative;
+    // OCA pose `position: fixed` mais jamais `top` : le panneau demarre donc
+    // au sommet de la page et recouvre la barre elle-meme — notifications et
+    // menu utilisateur inclus — invisible d'habitude car la grille n'apparait
+    // qu'un instant avant de choisir une application, mais ici c'est l'ecran
+    // d'atterrissage de chaque connexion (cf. __manifest__.py).
+    //
+    // Passer en `position: relative` pour corriger la hauteur (note figee
+    // ci-dessous) a introduit un bug pire : redevenu un bloc normal du fil du
+    // document, ce panneau plein ecran gonfle alors la ligne flex de la barre
+    // elle-meme (son parent `.o_grid_apps_menu`), ce qui pousse la systray
+    // hors de l'ecran a droite plutot que de simplement la recouvrir. Rester
+    // `fixed` (hors du fil du document, donc sans effet sur la largeur de la
+    // barre) et fixer `top` regle les deux problemes a la fois.
+    position: fixed;
+    top: var(--o-navbar-height, 46px);
 
     // OCA pose `height: 100%` sur un parent qui ne fait pas la hauteur de la
     // fenetre : le panneau s'arrete donc sous la derniere rangee d'icones et
     // la page blanche du dessous reapparait au milieu de l'ecran. Une page
     // d'accueil qui laisse voir l'ecran precedent n'est pas une page
-    // d'accueil, c'est un menu deroulant.
+    // d'accueil, c'est un menu deroulant. `dvh` resout ca sans dependre de la
+    // hauteur du parent — d'ou min-height plutot que la seule `height: 100%`
+    // d'OCA.
     min-height: calc(100dvh - var(--o-navbar-height, 46px));
     background: radial-gradient(
             120% 90% at 50% 0%,
