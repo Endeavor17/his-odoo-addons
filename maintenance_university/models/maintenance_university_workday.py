@@ -114,18 +114,33 @@ class MaintenanceUniversityWorkday(models.Model):
 
     # ------------------------------------------------------------------
     # The four buttons
+    #
+    # A Worker holds read access and nothing more (see ir.model.access.csv), so
+    # every write below runs sudo(). That is the point: a presence record is
+    # only worth keeping if the person it measures cannot rewrite it. Left
+    # writable, a worker could move date_start back an hour through the API and
+    # invent a morning - the record rule scopes them to their own day, which is
+    # exactly the day they would want to change.
+    #
+    # sudo() here does not widen anything: _my_employee() and _check_is_owner()
+    # have already established that this is the caller's own day, and each
+    # method refuses an illegal transition. Same shape as the meal module's
+    # _log_meal_transaction, which sudo()s a create the cashier is allowed to
+    # cause but not to perform.
     # ------------------------------------------------------------------
     @api.model
     def action_start_day(self):
         employee = self._my_employee()
         today = fields.Date.context_today(self)
-        existing = self.search([('employee_id', '=', employee.id), ('date', '=', today)], limit=1)
+        existing = self.sudo().search(
+            [('employee_id', '=', employee.id), ('date', '=', today)], limit=1,
+        )
         if existing:
             raise UserError(_(
                 "You already started your day at %s.",
                 fields.Datetime.to_string(existing.date_start),
             ))
-        day = self.create({
+        day = self.sudo().create({
             'employee_id': employee.id,
             'date': today,
             'date_start': fields.Datetime.now(),
@@ -138,8 +153,9 @@ class MaintenanceUniversityWorkday(models.Model):
         self._check_is_owner()
         if self.state != 'working':
             raise UserError(_("Only a running day can be paused."))
-        self._close_open_segments()
-        self._open_segment('pause')
+        day = self.sudo()
+        day._close_open_segments()
+        day._open_segment('pause')
         return self.get_my_day()
 
     def action_resume(self):
@@ -147,8 +163,9 @@ class MaintenanceUniversityWorkday(models.Model):
         self._check_is_owner()
         if self.state != 'paused':
             raise UserError(_("Only a paused day can be resumed."))
-        self._close_open_segments()
-        self._open_segment('work')
+        day = self.sudo()
+        day._close_open_segments()
+        day._open_segment('work')
         return self.get_my_day()
 
     def action_end_day(self):
@@ -156,8 +173,9 @@ class MaintenanceUniversityWorkday(models.Model):
         self._check_is_owner()
         if self.state == 'done':
             raise UserError(_("This day is already finished."))
-        self._close_open_segments()
-        self.date_end = fields.Datetime.now()
+        day = self.sudo()
+        day._close_open_segments()
+        day.date_end = fields.Datetime.now()
         return self.get_my_day()
 
     def _open_segment(self, kind):
@@ -166,7 +184,7 @@ class MaintenanceUniversityWorkday(models.Model):
         # unrelated click and inflate the total. Same guard as the request's
         # own _open_time_segment.
         self._close_open_segments()
-        return self.env['maintenance.university.workday.segment'].create({
+        return self.env['maintenance.university.workday.segment'].sudo().create({
             'workday_id': self.id,
             'kind': kind,
             'date_start': fields.Datetime.now(),
@@ -174,7 +192,7 @@ class MaintenanceUniversityWorkday(models.Model):
 
     def _close_open_segments(self):
         self.ensure_one()
-        self.segment_ids.filtered(lambda s: not s.date_end).write({
+        self.sudo().segment_ids.filtered(lambda s: not s.date_end).write({
             'date_end': fields.Datetime.now(),
         })
 

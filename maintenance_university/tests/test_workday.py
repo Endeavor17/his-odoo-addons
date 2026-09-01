@@ -12,7 +12,7 @@ signale.
 from datetime import timedelta
 
 from odoo import fields
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -190,6 +190,63 @@ class TestWorkday(TransactionCase):
         reading = self.Workday.get_my_day()
         self.assertEqual(reading['state'], 'working')
         self.assertGreater(reading['worked_seconds'], 7000, "roughly two hours, live")
+
+    # ------------------------------------------------------------------
+    # A presence record the worker cannot rewrite
+    # ------------------------------------------------------------------
+    def test_a_worker_cannot_rewrite_their_own_clock(self):
+        """Otherwise the record measures nothing.
+
+        The record rule scopes a worker to their own day - which is exactly the
+        day they would want to move. Read is theirs; write is not.
+        """
+        self.Workday.action_start_day()
+        day = self._day()
+
+        with self.assertRaises(AccessError):
+            day.with_user(self.user).write({'date_start': '2026-01-01 04:00:00'})
+
+    def test_a_worker_cannot_rewrite_a_segment(self):
+        self.Workday.action_start_day()
+        day = self._day()
+        segment = day.segment_ids[0]
+
+        with self.assertRaises(AccessError):
+            segment.with_user(self.user).write({'date_end': '2026-01-01 23:00:00'})
+
+    def test_a_worker_cannot_invent_a_day_out_of_nothing(self):
+        with self.assertRaises(AccessError):
+            self.env['maintenance.university.workday'].with_user(self.user).create({
+                'employee_id': self.employee.id,
+                'date': fields.Date.context_today(self.env.user),
+                'date_start': '2026-01-01 04:00:00',
+            })
+
+    def test_the_buttons_still_work_with_the_worker_read_only(self):
+        """The whole point: locked down, and still usable."""
+        self.Workday.action_start_day()
+        day = self._day()
+        day.with_user(self.user).action_pause()
+        day.with_user(self.user).action_resume()
+        day.with_user(self.user).action_end_day()
+
+        self.assertEqual(day.state, 'done')
+        self.assertEqual(len(day.segment_ids), 3)
+        self.assertFalse(day.segment_ids.filtered(lambda s: not s.date_end))
+
+    def test_a_manager_can_still_correct_a_forgotten_day(self):
+        """The agreed recovery path, so read-only must not close it."""
+        self.Workday.action_start_day()
+        day = self._day()
+        manager = self.env['res.users'].create({
+            'name': "Chef", 'login': "chef.workday@his.test",
+            'group_ids': [(6, 0, [
+                self.worker_group.id,
+                self.env.ref('maintenance_university.group_maintenance_manager').id,
+            ])],
+        })
+        day.with_user(manager).write({'date_end': fields.Datetime.now()})
+        self.assertEqual(day.state, 'done')
 
     # ------------------------------------------------------------------
     # What the leader sees

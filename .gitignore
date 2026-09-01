@@ -57,3 +57,8 @@ filestore/
 *.key
 *.pem
 /config/*.local.conf
+
+# Notes internes adressees a une personne, pas au depot. Une revue de code
+# nominative se transmet de la main a la main : poussee ici, elle devient une
+# critique publique d'un collegue, et elle y reste.
+/NOTE_TO_ENDEAVOR.md
