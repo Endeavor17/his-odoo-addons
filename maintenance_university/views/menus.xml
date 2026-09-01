@@ -48,6 +48,13 @@
               sequence="20"
               groups="maintenance_university.group_maintenance_manager"/>
 
+    <menuitem id="menu_maintenance_workday"
+              name="Work Days"
+              parent="menu_maintenance_root"
+              action="action_maintenance_university_workday"
+              sequence="25"
+              groups="maintenance_university.group_maintenance_manager"/>
+
     <menuitem id="menu_maintenance_worker_summary"
               name="Worker Summary"
               parent="menu_maintenance_root"

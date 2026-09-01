@@ -1,7 +1,17 @@
 # his_meal_management — Cards, Meal Wallet and Point of Sale
 
-Prepaid meal credits for the Groupe HIS-HTC-IRA, driven from two points of sale:
-the **student centre sells the plans**, the **restaurant consumes the credits**.
+Prepaid meal credits for the Groupe HIS-HTC-IRA: the **student centre sells the
+plans**, and **any food point of sale serves meals** against the balance.
+
+Two meals at two prices share one wallet. One credit is one 600 DA meal; a
+300 DA meal costs **half** of one. The six packages —
+1 500 / 6 000 / 18 000 DA in the 300 tier and 3 000 / 12 000 / 36 000 DA in the
+600 tier — all buy from the same balance at the same rate for a given duration:
+**500, 480 or 450 DA per credit**. Nothing to arbitrage between the tiers, which
+is what makes a single shared balance safe.
+
+**Credits do not expire.** They keep until they are eaten. The weekly / monthly /
+semesterly names are package sizes, not time windows.
 
 The governing idea is small and worth stating first:
 
@@ -133,9 +143,18 @@ through Odoo's own code paths. **No custom JavaScript identifies the student.**
 
 ### A subscription is one purchase
 
-`his.meal.subscription` carries its own validity window and its own counters —
-`credits_total`, `credits_used`, computed `credits_remaining`, and a computed
-`state` of `active` / `exhausted` / `expired` / `cancelled`.
+`his.meal.subscription` carries its own counters — `credits_total`,
+`credits_used`, computed `credits_remaining`, and a computed `state` of
+`active` / `exhausted` / `expired` / `cancelled`.
+
+The counters are **decimal**, because a 300 DA meal costs half a credit. Every
+amount the module moves is a multiple of 0.5, and halves are exact in binary
+floating point, so no sequence of grants and meals can drift.
+
+`date_end` is **optional, and normally empty**: a plan whose
+`meal_validity_days` is 0 never expires, which is how all six shipped packages
+are configured. A dated subscription is still supported — the correction wizard
+can grant one — it is simply no longer the rule.
 
 `product_id` is empty on a manual correction: those credits came from an
 officer's decision, not from a plan anyone bought.
@@ -143,9 +162,10 @@ officer's decision, not from a plan anyone bought.
 ### Spending order
 
 `_usable_subscriptions()` returns what may be eaten today — not cancelled,
-credits left, inside the window — ordered by `date_end` ascending. **Credits
-about to be lost are spent before the ones that keep**, which is what a person
-would choose.
+credits left, started, and either undated or still inside its window — ordered
+by `date_end` ascending. Postgres sorts NULLs last on an ascending order, so a
+**dated subscription drains before a permanent one**: credits about to be lost
+are spent before the ones that keep, which is what a person would choose.
 
 ### The safety story
 
@@ -172,9 +192,20 @@ re-read at their committed values.
 A cashier with the developer console open still cannot invent a credit.
 
 ```
-plan line   (product.meal_credits > 0)   →  _grant_meal_credits()   →  +credits
-meal line   (the configured meal, at price 0)  →  _consume_meal_credit()  →  −1 each
+plan line  (product.meal_credits > 0)                →  _grant_meal_credits()   →  +credits
+meal line  (product.meal_credit_cost > 0, price 0)   →  _consume_meal_credit()  →  −cost each
 ```
+
+A **meal is a product carrying a credit cost**, the exact mirror of a plan being
+a product carrying a credit count. Meal 300 costs 0.5, Meal 600 costs 1. Nothing
+about meals is configured per point of sale, so every till serves every meal —
+which is what lets the Cafétéria serve one at all.
+
+`_consume_meal_credit()` takes a decimal **amount**, not a meal count, and draws
+it across subscriptions in expiry order: a 1-credit meal can take 0.5 from a plan
+about to run out and 0.5 from the next. Each subscription touched gets its own
+ledger line, so a split is visible afterwards. It is called once per meal served,
+so the ledger keeps one line per meal rather than one per order line.
 
 A **student meal is the free one**. The same product sold at its real price is a
 paying walk-in customer and must not touch anyone's balance — that is what the
@@ -282,18 +313,23 @@ broader rights.
 
 ## 11. Configuration
 
-Set **Student Meal Product** on the *restaurant* point of sale; leave it empty on
-the one that sells plans. Without it the button reports "Not configured".
+**There is nothing to configure per point of sale.** A meal is any product whose
+`meal_credit_cost` is above zero, so every till loads every meal and serves it
+against the balance.
 
-`post_init_hook` wires `his_stock_mdm`'s Restaurant config to the Daily Meal
-automatically, with two guards: `his_stock_mdm` being absent is a normal install,
-and an already-filled field is never overwritten. Because hooks only run at
-**install**, migration `19.0.2.2.0` calls the same function so existing databases
-get it too.
+This used to be a `meal_product_id` on `pos.config`, filled on the Restaurant by
+a `post_init_hook`. It meant a shop served exactly one meal, and a shop with the
+field empty — the Cafétéria — served none at all. The field, its view and the
+hook were all removed in `19.0.3.0.0`, which also drops the column; with them
+went this module's last reference to `his_stock_mdm`, so neither knows about the
+other.
 
-> **Do not add `meal_product_id` to `_get_special_products()`.** It looks right —
-> `pos_discount` does exactly that — and it is a trap here. See the comment in
-> `models/pos_config.py` for why.
+> **Do not add a meal product to `_get_special_products()`.** It looks right —
+> `pos_discount` does exactly that — and it is a trap here: POS feeds that list
+> into `getExcludedProductIds()` and hides every special product from the grid,
+> which is right for a tip and wrong for a meal. Someone with no credits pays
+> the normal price for exactly that product, so the cashier has to be able to
+> find it. A test pins this shut.
 
 `ir_sequence.xml` issues `HIS-CARD-000001` codes for **printed** cards only. RFID
 cards never use it: their code is the UID burned in by the manufacturer.
