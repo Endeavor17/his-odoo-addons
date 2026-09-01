@@ -915,12 +915,24 @@ class TestBadgeFromIdentity(TransactionCase):
         the chain is card -> person -> employee. If it ever broke, a badge the
         till accepts would be refused at the attendance reader.
 
-        Skipped when his_hr_base is absent: this module has no business
-        depending on HR just to serve meals, so the employee half of the chain
-        only exists on a database that installed it.
+        Skipped when nothing wires the employee half: this module has no
+        business depending on HR just to serve meals, so it asserts the chain
+        only where the chain exists.
+
+        The guard tests the wiring, not the presence of hr.employee. Checking
+        `'hr.employee' in self.env` was too weak - core hr is installed the
+        moment anything pulls it in, while `barcode` stays core's own loose
+        Char. It is his_hr_base that makes it a related on the person's badge,
+        and on a database carrying an older his_hr_base this test was failing
+        for something this module does not own.
         """
-        if 'hr.employee' not in self.env:
-            self.skipTest("his_hr_base is not installed: no employee half to check")
+        barcode = self.env['hr.employee']._fields.get('barcode') if 'hr.employee' in self.env else None
+        related = getattr(barcode, 'related', None) if barcode else None
+        if related not in ('person_id.numero_carte', ('person_id', 'numero_carte')):
+            self.skipTest(
+                "hr.employee.barcode is not related to the person's badge: "
+                "his_hr_base is absent or predates that link"
+            )
         employee = self.env['hr.employee'].sudo().create({'name': "Badge Employee"})
         employee.person_id.numero_carte = card_uid(56)
 
