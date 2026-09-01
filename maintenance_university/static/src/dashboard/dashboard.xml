@@ -23,22 +23,31 @@
 
             <div t-if="state.data">
                 <div class="row mb-4 g-3">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="card p-3 text-center">
                             <div class="fs-3 fw-bold" t-esc="state.data.totals.requests_done"/>
                             <div class="text-muted">Requests Completed</div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="card p-3 text-center">
                             <div class="fs-3 fw-bold" t-esc="state.data.totals.hours.toFixed(1)"/>
                             <div class="text-muted">Hours Logged</div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="card p-3 text-center">
                             <div class="fs-3 fw-bold" t-esc="state.data.totals.findings_logged"/>
                             <div class="text-muted">Findings Logged</div>
+                        </div>
+                    </div>
+                    <!-- Presence, from the My Work clock. Not the same as Hours
+                         Logged beside it: that counts time booked against
+                         requests, this counts time on site. -->
+                    <div class="col-md-3">
+                        <div class="card p-3 text-center">
+                            <div class="fs-3 fw-bold" t-esc="state.data.totals.hours_present.toFixed(1)"/>
+                            <div class="text-muted">Hours Present</div>
                         </div>
                     </div>
                 </div>
@@ -58,6 +67,7 @@
                                 <tr>
                                     <th>Worker</th>
                                     <th>Hours Worked</th>
+                                    <th>Hours Present</th>
                                     <th>Tasks Completed</th>
                                     <th>Findings Logged</th>
                                     <th>Critical/High Findings</th>
@@ -67,6 +77,7 @@
                                 <tr t-foreach="state.data.workers" t-as="worker" t-key="worker.id">
                                     <td t-esc="worker.name"/>
                                     <td t-esc="worker.hours"/>
+                                    <td t-esc="worker.hours_present"/>
                                     <td t-esc="worker.tasks_done"/>
                                     <td t-esc="worker.findings_logged"/>
                                     <td t-esc="worker.findings_critical"/>
