@@ -2,7 +2,8 @@ import { _t } from "@web/core/l10n/translation";
 import { deserializeDateTime } from "@web/core/l10n/dates";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { View } from "@web/views/view";
+import { KanbanController } from "@web/views/kanban/kanban_controller";
+import { kanbanView } from "@web/views/kanban/kanban_view";
 import { Component, onWillStart, onWillUnmount, useState } from "@odoo/owl";
 
 // The worker's day, above the worker's jobs.
@@ -129,33 +130,24 @@ export class WorkdayBanner extends Component {
     }
 }
 
-export class MyWork extends Component {
-    static template = "maintenance_university.MyWork";
-    static components = { WorkdayBanner, View };
-    static props = ["*"];
-
-    setup() {
-        this.action = useService("action");
-        this.viewProps = null;
-
-        onWillStart(async () => {
-            // Read the kanban and search views off the existing act_window
-            // rather than restating them here: it stays the single definition
-            // of what My Work lists.
-            const action = await this.action.loadAction(
-                "maintenance_university.action_maintenance_university_request_my_work"
-            );
-            this.viewProps = {
-                resModel: action.res_model,
-                type: "kanban",
-                views: action.views,
-                context: action.context || {},
-                domain: action.domain || [],
-                searchViewId: action.search_view_id ? action.search_view_id[0] : false,
-                display: { controlPanel: { layoutActions: false } },
-            };
-        });
-    }
+// A kanban variant, not a client action.
+//
+// My Work was briefly a client action embedding a bare <View>. That broke both
+// the New button and opening a card: createRecord and selectRecord are optional
+// props with no default (standard_view_props.js), normally injected by the
+// action service, and the kanban controller calls them unconditionally. Rolling
+// my own would have meant re-implementing the action controller - create, open,
+// breadcrumbs, pager, view switching - to no benefit.
+//
+// A js_class swaps the controller instead. My Work is an ordinary window action
+// again and every one of those behaviours is core's job, exactly as before; all
+// this adds is a banner above the cards.
+export class WorkdayKanbanController extends KanbanController {
+    static template = "maintenance_university.WorkdayKanbanView";
+    static components = { ...KanbanController.components, WorkdayBanner };
 }
 
-registry.category("actions").add("maintenance_university_my_work", MyWork);
+registry.category("views").add("maintenance_workday_kanban", {
+    ...kanbanView,
+    Controller: WorkdayKanbanController,
+});

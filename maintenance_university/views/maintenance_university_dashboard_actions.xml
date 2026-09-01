@@ -6,13 +6,4 @@
         <field name="tag">maintenance_university_dashboard</field>
     </record>
 
-    <!-- My Work is a client action so the day's clock can sit above the job
-         cards. It embeds action_maintenance_university_request_my_work's own
-         kanban rather than replacing it, so the cards, their Start/Pause
-         buttons and the search filters are untouched. -->
-    <record id="action_maintenance_university_my_work" model="ir.actions.client">
-        <field name="name">My Work</field>
-        <field name="tag">maintenance_university_my_work</field>
-    </record>
-
 </odoo>

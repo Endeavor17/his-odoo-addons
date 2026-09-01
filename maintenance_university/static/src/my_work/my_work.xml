@@ -49,13 +49,15 @@
         </div>
     </t>
 
-    <t t-name="maintenance_university.MyWork">
-        <div class="o_mu_my_work d-flex flex-column h-100">
+    <!-- Core's kanban, with the day's clock slipped in above the cards. A
+         primary inherit so only the maintenance_workday_kanban js_class gets
+         it; every other kanban in the database is untouched. -->
+    <t t-name="maintenance_university.WorkdayKanbanView"
+       t-inherit="web.KanbanView"
+       t-inherit-mode="primary">
+        <xpath expr="//t[@t-component='props.Renderer']" position="before">
             <WorkdayBanner/>
-            <div class="o_mu_my_work_view flex-grow-1 overflow-auto">
-                <View t-if="viewProps" t-props="viewProps"/>
-            </div>
-        </div>
+        </xpath>
     </t>
 
 </templates>

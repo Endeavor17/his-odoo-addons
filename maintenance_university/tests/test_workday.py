@@ -191,6 +191,38 @@ class TestWorkday(TransactionCase):
         self.assertEqual(reading['state'], 'working')
         self.assertGreater(reading['worked_seconds'], 7000, "roughly two hours, live")
 
+    # ------------------------------------------------------------------
+    # What the leader sees
+    # ------------------------------------------------------------------
+    def test_the_employee_shows_todays_state_to_a_leader(self):
+        """The field the whole Worker Summary column hangs off."""
+        self.assertEqual(self.employee.maintenance_workday_state, 'not_started')
+
+        self.Workday.action_start_day()
+        self.employee.invalidate_recordset()
+        self.assertEqual(self.employee.maintenance_workday_state, 'working')
+        self.assertTrue(self.employee.maintenance_workday_started_at)
+
+        day = self._day()
+        day.with_user(self.user).action_pause()
+        self.employee.invalidate_recordset()
+        self.assertEqual(self.employee.maintenance_workday_state, 'paused')
+
+        day.with_user(self.user).action_end_day()
+        self.employee.invalidate_recordset()
+        self.assertEqual(self.employee.maintenance_workday_state, 'done')
+
+    def test_yesterdays_day_does_not_count_as_today(self):
+        """Otherwise a leader sees a worker still 'Working' from last week."""
+        self.Workday.action_start_day()
+        day = self._day()
+        day.with_user(self.user).action_end_day()
+        day.date = fields.Date.context_today(day) - timedelta(days=1)
+
+        self.employee.invalidate_recordset()
+        self.assertEqual(self.employee.maintenance_workday_state, 'not_started')
+        self.assertFalse(self.employee.maintenance_workday_started_at)
+
     def test_the_banner_survives_a_user_with_no_employee(self):
         stranger = self.env['res.users'].create({
             'name': "Sans Fiche 2", 'login': "sans.fiche2@his.test",

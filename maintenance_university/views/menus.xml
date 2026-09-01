@@ -10,13 +10,10 @@
               sequence="10"
               groups="maintenance_university.group_maintenance_worker,maintenance_university.group_maintenance_reporter"/>
 
-    <!-- The client action, not the act_window: it draws the day's clock above
-         the same kanban. The act_window still exists and still owns the views;
-         this only wraps it. -->
     <menuitem id="menu_maintenance_my_work"
               name="My Work"
               parent="menu_maintenance_root"
-              action="action_maintenance_university_my_work"
+              action="action_maintenance_university_request_my_work"
               sequence="5"
               groups="maintenance_university.group_maintenance_worker"/>
 
