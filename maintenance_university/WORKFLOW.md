@@ -68,7 +68,7 @@
       | Purpose | Login |
       |---------|-------|
       | Manager | `a.chabouti@esi-sba.com` (Manitenance leader) |
-      | Worker | `a.chabouti@esi-sba.dzz` (RAYAN) |
+      | Worker | `chabouti3abdo@gmail.com` (Worker) |
       | Reporter | `a.chabouti@dz` (Reporter) |
 
       `admin` is also a Manager if you'd rather use it.
@@ -125,7 +125,7 @@
 
    ### Step 3 — Manager assigns it *(Manager window)*
 
-   1. On that request form, in **Assigned Workers**, pick **RAYAN**.
+   1. On that request form, in **Assigned Workers**, pick the worker **Worker**.
    2. Set **Scheduled For** to today, if you want to show it.
    3. Click **Assign**.
       → Status bar: **New → Assigned**, and *Assigned On* stamps itself.
@@ -140,9 +140,17 @@
 
    ### Step 4 — Worker does the job *(Worker window)*
 
-   1. Log in as `a.chabouti@esi-sba.dzz` (RAYAN).
-   2. Click **Maintenance → My Work**. The new job is a card in the **Assigned**
-      column.
+   1. Log in as `chabouti3abdo@gmail.com` (Worker).
+   2. Click **Maintenance → My Work**. Two things are on this screen: the **work-day
+      clock** across the top, and the job cards below.
+
+      Press **Start working** first. The banner switches to *Working*, stamps the
+      arrival time and starts counting. Say what it is: **presence, not task time**
+      — it keeps running between jobs and through a break, which is exactly why it
+      is a different number from the job timers below. Take a break and come back
+      later in the demo to show *On break*; **End day** closes it.
+
+      The new job is a card in the **Assigned** column.
    3. Click **Start** right on the card (no need to open it).
       → The card slides to **In Progress**. A time segment just opened.
    4. Open the card. Go to the **Time Log** tab — there's a row with a start time
@@ -152,9 +160,9 @@
    6. Try to edit the **Description** as the worker → it's read-only. The worker
       updates their *progress*, never the *definition* of the job.
 
-   > **Show the isolation:** in the search bar, clear all filters. RAYAN still sees
-   > only their own jobs — the other requests in the university are invisible, at
-   > the database level.
+   > **Show the isolation:** in the search bar, clear all filters. The worker still
+   > sees only their own jobs — the other requests in the university are invisible,
+   > at the database level.
 
    ---
 
@@ -169,7 +177,7 @@
       **Category**: **inspection** (the one flagged as the inspection category).
       → The moment you pick it, two new tabs appear: **Findings** and **Report**.
       The kanban card will also carry an orange *Inspection tour* badge.
-   3. **Assigned Workers**: RAYAN. Click **Assign**.
+   3. **Assigned Workers**: **Worker**. Click **Assign**.
 
    ### Step 2 — Worker walks the building *(Worker window)*
 

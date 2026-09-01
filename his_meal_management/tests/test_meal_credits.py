@@ -731,10 +731,15 @@ class TestRfidScanning(TransactionCase):
     what stop someone "simplifying" its pattern back into a bug.
     """
 
+    # Les UID sont reels - c'est ce qui donne sa valeur au test, ils sortent
+    # vraiment du lecteur. Les noms qui les accompagnaient ont ete retires :
+    # un numero de badge colle a un nom, c'est une donnee personnelle, et le
+    # .gitignore de ce depot l'interdit noir sur blanc. Aucun test ne s'en
+    # servait, ils n'etaient que la valeur du dictionnaire.
     REAL_UIDS = {
-        "0007197786": "CHABOUTI Abderrahim",
-        "0001063810": "LAMLOUM Rayane",
-        "0007089073": "BOUNOUA MOHAMED",
+        "0007197786": "carte A",
+        "0001063810": "carte B",
+        "0007089073": "carte C",
     }
 
     @classmethod
@@ -781,7 +786,7 @@ class TestRfidScanning(TransactionCase):
 
     def test_a_uid_resolves_to_its_person_the_way_pos_resolves_it(self):
         """Reproduces `_barcodePartnerAction`: search res.partner on barcode."""
-        person = make_person(self.env, "CHABOUTI Abderrahim").partner_id
+        person = make_person(self.env, "Porteur Un").partner_id
         uid = card_uid(1)
         self.env['his.meal.card'].create({'partner_id': person.id, 'code': uid})
 
@@ -790,7 +795,7 @@ class TestRfidScanning(TransactionCase):
 
     def test_leading_zeros_are_not_lost(self):
         """0001063810 is not 1063810. Losing a zero loses the person."""
-        person = make_person(self.env, "LAMLOUM Rayane").partner_id
+        person = make_person(self.env, "Porteur Deux").partner_id
         uid = card_uid(2)                     # 0000900002
         card = self.env['his.meal.card'].create({'partner_id': person.id, 'code': uid})
 
@@ -803,7 +808,7 @@ class TestRfidScanning(TransactionCase):
 
     def test_replacing_a_card_asks_for_a_tap_instead_of_inventing_a_code(self):
         """An RFID code cannot be minted: it has to be read off the new card."""
-        person = make_person(self.env, "CHABOUTI Abderrahim").partner_id
+        person = make_person(self.env, "Porteur Un").partner_id
         card = self.env['his.meal.card'].create({
             'partner_id': person.id,
             'code': card_uid(3),
