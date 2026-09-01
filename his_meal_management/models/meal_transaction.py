@@ -28,11 +28,13 @@ class HisMealTransaction(models.Model):
         ],
         required=True, index=True,
     )
-    credits = fields.Integer(
-        required=True, help="Signed: +25 for a purchase, -1 for a meal.",
+    credits = fields.Float(
+        required=True, digits=(16, 2),
+        help="Signed: +25 for a purchase, -1 for a 600 DA meal, -0.5 for a 300 DA one.",
     )
-    balance_after = fields.Integer(
-        required=True, help="The student's total usable credits right after this line.",
+    balance_after = fields.Float(
+        required=True, digits=(16, 2),
+        help="The student's total usable credits right after this line.",
     )
     product_id = fields.Many2one('product.product', string="Plan / Meal", ondelete='set null')
     pos_order_id = fields.Many2one('pos.order', string="POS Order", ondelete='set null')

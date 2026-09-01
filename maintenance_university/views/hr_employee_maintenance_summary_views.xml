@@ -8,6 +8,13 @@
             <list string="Worker Summary" create="0" edit="0" delete="0">
                 <field name="name"/>
                 <field name="matricule_institutionnel"/>
+                <field name="maintenance_workday_state"
+                       decoration-success="maintenance_workday_state == 'working'"
+                       decoration-warning="maintenance_workday_state == 'paused'"
+                       decoration-muted="maintenance_workday_state == 'not_started'"/>
+                <field name="maintenance_workday_started_at" widget="datetime" string="Started"/>
+                <field name="maintenance_workday_worked_hours" widget="float_time" string="Worked Today"/>
+                <field name="maintenance_workday_paused_hours" widget="float_time" string="Breaks Today"/>
                 <field name="maintenance_hours_this_month" widget="float_time" sum="Total"/>
                 <field name="maintenance_requests_done_this_month" sum="Total"/>
                 <field name="maintenance_findings_logged_this_month" sum="Total"/>
@@ -27,6 +34,12 @@
                         <field name="matricule_institutionnel"/>
                     </div>
                     <group>
+                        <group string="Today">
+                            <field name="maintenance_workday_state" string="Status"/>
+                            <field name="maintenance_workday_started_at" string="Started At"/>
+                            <field name="maintenance_workday_worked_hours" widget="float_time" string="Worked"/>
+                            <field name="maintenance_workday_paused_hours" widget="float_time" string="On Break"/>
+                        </group>
                         <group string="This Month">
                             <field name="maintenance_hours_this_month" widget="float_time" string="Hours Worked"/>
                             <field name="maintenance_requests_done_this_month" string="Tasks Completed"/>
@@ -39,6 +52,43 @@
                         </group>
                     </group>
                     <notebook>
+                        <!-- Where "when was he on a break" gets answered: each
+                             day expands to its segments, and a pause carries
+                             its own start and end. -->
+                        <page name="maintenance_workdays" string="Work Days">
+                            <field name="maintenance_workday_ids">
+                                <list default_order="date desc" create="0" delete="0">
+                                    <field name="date"/>
+                                    <field name="date_start" widget="datetime"/>
+                                    <field name="date_end" widget="datetime"/>
+                                    <field name="worked_hours" widget="float_time" sum="Total Worked"/>
+                                    <field name="paused_hours" widget="float_time" sum="Total Breaks"/>
+                                    <field name="state"/>
+                                </list>
+                                <form string="Work Day">
+                                    <group>
+                                        <group>
+                                            <field name="date"/>
+                                            <field name="state"/>
+                                        </group>
+                                        <group>
+                                            <field name="date_start"/>
+                                            <field name="date_end"/>
+                                            <field name="worked_hours" widget="float_time"/>
+                                            <field name="paused_hours" widget="float_time"/>
+                                        </group>
+                                    </group>
+                                    <field name="segment_ids">
+                                        <list create="0" delete="0">
+                                            <field name="kind"/>
+                                            <field name="date_start"/>
+                                            <field name="date_end"/>
+                                            <field name="duration" widget="float_time"/>
+                                        </list>
+                                    </field>
+                                </form>
+                            </field>
+                        </page>
                         <page name="maintenance_requests" string="Maintenance Requests">
                             <field name="maintenance_request_ids">
                                 <list default_order="request_date desc" create="0" delete="0">

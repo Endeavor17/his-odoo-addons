@@ -2,6 +2,9 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import float_compare, float_round
+
+from .meal_subscription import CREDIT_PRECISION
 
 
 class ResPartner(models.Model):
@@ -34,8 +37,9 @@ class ResPartner(models.Model):
     meal_transaction_ids = fields.One2many('his.meal.transaction', 'partner_id')
     # compute_sudo: a restaurant cashier is allowed to see a balance without
     # being granted read access to the subscription ledger itself.
-    meal_credits_remaining = fields.Integer(
-        string="Meal Credits", compute='_compute_meal_credits_remaining', compute_sudo=True,
+    meal_credits_remaining = fields.Float(
+        string="Meal Credits", digits=(16, 2),
+        compute='_compute_meal_credits_remaining', compute_sudo=True,
     )
     meal_card_code = fields.Char(
         string="Card Code", compute='_compute_meal_card_code', compute_sudo=True,
@@ -60,6 +64,9 @@ class ResPartner(models.Model):
 
         Ordering by `date_end` means the credits about to be lost are spent
         before the ones that keep, which is what a person would choose.
+        Postgres sorts NULLs last on an ASC order, so subscriptions that never
+        expire naturally come after every dated one - exactly the right
+        priority now that never-expiring is the normal case.
         """
         self.ensure_one()
         today = fields.Date.context_today(self)
@@ -69,7 +76,7 @@ class ResPartner(models.Model):
                 ('state', '!=', 'cancelled'),
                 ('credits_remaining', '>', 0),
                 ('date_start', '<=', today),
-                ('date_end', '>=', today),
+                '|', ('date_end', '=', False), ('date_end', '>=', today),
             ],
             order='date_end asc, id asc',
         )
@@ -118,28 +125,42 @@ class ResPartner(models.Model):
     def _grant_meal_credits(self, product, pos_order=None, note=None):
         """Sell a plan: create the subscription and log the grant."""
         self.ensure_one()
-        if product.meal_credits <= 0:
+        if float_compare(product.meal_credits, 0.0, CREDIT_PRECISION) <= 0:
             raise UserError(_("%s is not a meal plan.", product.display_name))
         today = fields.Date.context_today(self)
+        # Zero validity means the credits keep until they are eaten. Otherwise
+        # -1 so a 7-day plan bought today is usable today through day 7, not
+        # day 8.
+        date_end = False
+        if product.meal_validity_days > 0:
+            date_end = today + timedelta(days=product.meal_validity_days - 1)
         return self._add_meal_credits(
             credits=product.meal_credits,
-            # -1 so a 7-day plan bought today is usable today through day 7,
-            # not day 8.
-            date_end=today + timedelta(days=product.meal_validity_days - 1),
+            date_end=date_end,
             tx_type='purchase',
             product=product,
             pos_order=pos_order,
             note=note,
         )
 
-    def _consume_meal_credit(self, qty=1, pos_order=None, tx_type='consume', note=None):
-        """Eat `qty` meals. Raises if the person is short; never goes negative.
+    def _consume_meal_credit(self, amount=1.0, pos_order=None, tx_type='consume',
+                             note=None, product=None):
+        """Spend `amount` credits. Raises if short; never goes negative.
+
+        `amount` is decimal because meals are not all worth the same: a 300 DA
+        meal takes 0.5 and a 600 DA one takes 1. It is a total, not a meal
+        count - the caller multiplies quantity by the product's cost.
+
+        The amount is drawn across subscriptions in expiry order, so a meal
+        costing 1 credit can take 0.5 from a plan about to run out and 0.5 from
+        the next. Each subscription touched gets its own ledger line, which is
+        what makes a split visible afterwards.
 
         Called from the POS order hook on the server, so the browser cannot
         decide whether a credit was really available.
         """
         self.ensure_one()
-        if qty <= 0:
+        if float_compare(amount, 0.0, CREDIT_PRECISION) <= 0:
             return self.env['his.meal.transaction']
 
         # Lock this person's subscriptions for the length of the transaction.
@@ -158,20 +179,29 @@ class ResPartner(models.Model):
 
         card = self._active_meal_card()
         transactions = self.env['his.meal.transaction']
-        for _i in range(qty):
+        left_to_spend = float_round(amount, precision_digits=CREDIT_PRECISION)
+
+        while float_compare(left_to_spend, 0.0, CREDIT_PRECISION) > 0:
             subscription = self._usable_subscriptions()[:1]
             if not subscription:
+                # Raising rolls the whole transaction back, so the credits
+                # already taken from earlier subscriptions in this loop are
+                # never left spent against a meal that was not served.
                 raise UserError(_(
                     "%(person)s has no meal credits available.",
                     person=self.display_name,
                 ))
-            subscription.credits_used += 1
+            take = min(subscription.credits_remaining, left_to_spend)
+            subscription.credits_used += take
+            left_to_spend = float_round(
+                left_to_spend - take, precision_digits=CREDIT_PRECISION,
+            )
             self.invalidate_recordset(['meal_credits_remaining', 'meal_active_plan'])
             transactions |= self._log_meal_transaction(
                 tx_type=tx_type,
-                credits=-1,
+                credits=-take,
                 subscription=subscription,
-                product=pos_order.config_id.meal_product_id if pos_order else None,
+                product=product,
                 pos_order=pos_order,
                 card=card,
                 note=note,
@@ -215,7 +245,9 @@ class ResPartner(models.Model):
             'matricule': person.matricule_affiche or "",
             'credits': sum(subs.mapped('credits_remaining')),
             'plan': subs[:1].product_id.display_name or "",
-            'expires': fields.Date.to_string(subs[:1].date_end) if subs else "",
+            # Empty when the credits never expire, which the till reads as
+            # "don't mention a date" rather than "no date known".
+            'expires': fields.Date.to_string(subs[:1].date_end) if subs[:1].date_end else "",
         }
 
     def action_open_meal_transactions(self):

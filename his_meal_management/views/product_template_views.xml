@@ -7,8 +7,13 @@
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='list_price']" position="after">
-                <field name="meal_credits"/>
+                <!-- A product is a plan or a meal, never both (constrained in
+                     product_template.py), so each field hides while the other
+                     is set rather than offering a combination that is refused
+                     on save. -->
+                <field name="meal_credits" invisible="meal_credit_cost &gt; 0"/>
                 <field name="meal_validity_days" invisible="meal_credits &lt;= 0"/>
+                <field name="meal_credit_cost" invisible="meal_credits &gt; 0"/>
             </xpath>
         </field>
     </record>

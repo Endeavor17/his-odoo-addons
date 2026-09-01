@@ -26,6 +26,7 @@ class MaintenanceUniversityDashboard(models.AbstractModel):
         Request = self.env['maintenance.request']
         Time = self.env['maintenance.university.request.time']
         Finding = self.env['maintenance.university.finding']
+        Workday = self.env['maintenance.university.workday']
 
         # Manager implies Worker, so without excluding it explicitly, a
         # Manager with their own hr.employee record would show up in this
@@ -43,10 +44,19 @@ class MaintenanceUniversityDashboard(models.AbstractModel):
                 ('employee_id', '=', worker.id),
                 ('date_start', '>=', start_dt), ('date_start', '<', end_dt),
             ])
+            # Presence, from the My Work clock. Deliberately a different number
+            # from `hours` above: that one counts time booked against requests,
+            # this one counts time on site. The difference is travel and idle
+            # time, which is the point of showing both.
+            workdays = Workday.search([
+                ('employee_id', '=', worker.id),
+                ('date', '>=', month_start), ('date', '<', month_start + relativedelta(months=1)),
+            ])
             worker_rows.append({
                 'id': worker.id,
                 'name': worker.name,
                 'hours': sum(time_logs.mapped('duration')),
+                'hours_present': sum(workdays.mapped('worked_hours')),
                 'tasks_done': Request.search_count([
                     ('employee_ids', 'in', worker.id), ('state', '=', 'done'),
                     ('date_end', '>=', start_dt), ('date_end', '<', end_dt),
@@ -76,6 +86,7 @@ class MaintenanceUniversityDashboard(models.AbstractModel):
             'totals': {
                 'requests_done': sum(w['tasks_done'] for w in worker_rows),
                 'hours': sum(w['hours'] for w in worker_rows),
+                'hours_present': sum(w['hours_present'] for w in worker_rows),
                 'findings_logged': sum(w['findings_logged'] for w in worker_rows),
             },
         }

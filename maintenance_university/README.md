@@ -19,7 +19,7 @@ Three groups, in two ladders.
 | Group | Implies | Sees | Menus |
 |---|---|---|---|
 | **Worker** | `base.group_user` | Only requests they are assigned to | My Work |
-| **Manager** | Worker | Everything | + Monthly Recap, Requests, Findings & Reports, Worker Summary, Configuration |
+| **Manager** | Worker | Everything | + Monthly Recap, Requests, Findings & Reports, Work Days, Worker Summary, Configuration |
 | **Reporter** | `base.group_user` | Only their own standalone reports. **No requests at all** | Report a Problem |
 
 **Reporter is a sibling, not a lesser Worker.** It has its own
@@ -88,7 +88,9 @@ effect of reaching a done stage, from a nested `write()` inside our own action.
 | `maintenance.building` | new | Where. Name, code, description |
 | `maintenance.category` | new | What kind of problem. One may be flagged *Inspection* |
 | `maintenance.university.finding` | new | An observation. Two distinct uses — see §4 |
-| `maintenance.university.request.time` | new | One work segment: start, end, computed duration |
+| `maintenance.university.request.time` | new | One work segment on a request: start, end, computed duration |
+| `maintenance.university.workday` | new | One worker's presence on one day: arrival, breaks, departure |
+| `maintenance.university.workday.segment` | new | A stretch of that day, `work` or `pause` |
 | `maintenance.university.dashboard` | abstract | Monthly recap data, no table |
 | `hr.employee` | inherit | Start date, maintenance stats, temporary password |
 | `maintenance.university.worker.create` | transient | The Create Workers wizard |
@@ -176,6 +178,35 @@ Two rules keep it honest:
 - **The segment is logged under whoever clicked**, not "the first assigned
   worker" — several people can share a job.
 
+### The work day — presence, not task time
+
+`maintenance.university.workday` records when a worker arrived, every break, and
+when they left. One row per employee per day (`UNIQUE(employee_id, date)`), with
+`maintenance.university.workday.segment` children of kind `work` or `pause` —
+the same open-ended-row shape as the request time log above, including its
+duration compute. `worked_hours` excludes breaks; `paused_hours` accounts for
+them; `state` is derived from the segments, never stored as something writable.
+
+The worker drives it from a **banner across the top of My Work**: Start working,
+Take a break, Back to work, End day. That banner is a kanban variant selected by
+`js_class`, so My Work stays an ordinary window action and keeps New, opening a
+card, breadcrumbs, filters and the pager — all the action service's job.
+
+**This is deliberately a different number from the request time above.** Presence
+keeps running between jobs and through a break; task time does not. The gap is
+travel and idle time, which is the interesting figure for a leader, and the
+Monthly Recap reports both.
+
+Two rules of its own:
+
+- **The worker cannot rewrite it.** A Worker holds read access and nothing more;
+  all four buttons write under `sudo()` after establishing the day is theirs. A
+  presence record the measured person can edit measures nothing — and the record
+  rule scopes them to their own day, which is exactly the day they would change.
+- **Nothing auto-closes.** A day left running stays open until a manager corrects
+  it on the **Work Days** screen. Better a visibly wrong record than a quietly
+  invented end time.
+
 ---
 
 ## 6. Manager screens
@@ -185,6 +216,16 @@ Without that exclusion every employee in the university appeared, almost all
 with zero stats. The views are `create="0" edit="0" delete="0"`: it is a stats
 screen, not a way to create people. The form shows the worker's **Login** and
 **Temporary Password**.
+
+It also answers *who is working right now*: a **Today** column reading Working /
+On break / Not started, with the arrival time and hours so far, and on the form a
+**Work Days** tab where each day opens onto its segments — which is where *when
+was he on a break* gets answered, since a pause carries its own start and end. A
+list does not poll, so this is current as of opening the screen.
+
+**Work Days** — every day for every worker, with *Still Running* and *On Break*
+filters. This is where a manager closes a day someone forgot to end; nothing
+auto-closes.
 
 **Monthly Recap** — hours, tasks done, findings logged and critical findings per
 worker, plus breakdowns by category and building. `get_recap_data()` re-checks

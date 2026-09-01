@@ -35,6 +35,31 @@ class HrEmployee(models.Model):
         string="Critical/High Findings This Month", compute='_compute_maintenance_monthly_stats'
     )
 
+    # Today's presence, so a leader can see at a glance who is on site and who
+    # is on a break. Unstored for the same reason as the monthly stats above:
+    # "today" moves, so it is read from the source rather than kept in sync.
+    maintenance_workday_ids = fields.One2many(
+        'maintenance.university.workday', 'employee_id', string="Work Days",
+    )
+    maintenance_workday_state = fields.Selection(
+        [
+            ('not_started', "Not started"),
+            ('working', "Working"),
+            ('paused', "On break"),
+            ('done', "Finished"),
+        ],
+        string="Today", compute='_compute_maintenance_workday_today',
+    )
+    maintenance_workday_started_at = fields.Datetime(
+        string="Started At", compute='_compute_maintenance_workday_today',
+    )
+    maintenance_workday_worked_hours = fields.Float(
+        string="Worked Today", compute='_compute_maintenance_workday_today',
+    )
+    maintenance_workday_paused_hours = fields.Float(
+        string="Breaks Today", compute='_compute_maintenance_workday_today',
+    )
+
     # `groups=` is an ORM-level restriction, not just a view one: a Worker
     # user can't read this field at all, even via a direct API call.
     initial_password = fields.Char(
@@ -72,6 +97,23 @@ class HrEmployee(models.Model):
         Request = self.env['maintenance.request']
         for employee in self:
             employee.maintenance_request_ids = Request.search([('employee_ids', 'in', employee.id)])
+
+    @api.depends()
+    def _compute_maintenance_workday_today(self):
+        today = fields.Date.context_today(self)
+        # sudo: the Worker Summary is a manager screen, but the same fields sit
+        # on hr.employee generally, and a worker reading their own record must
+        # not hit an access error on a day record they cannot see directly.
+        days = self.env['maintenance.university.workday'].sudo().search([
+            ('employee_id', 'in', self.ids), ('date', '=', today),
+        ])
+        by_employee = {day.employee_id.id: day for day in days}
+        for employee in self:
+            day = by_employee.get(employee.id)
+            employee.maintenance_workday_state = day.state if day else 'not_started'
+            employee.maintenance_workday_started_at = day.date_start if day else False
+            employee.maintenance_workday_worked_hours = day.worked_hours if day else 0.0
+            employee.maintenance_workday_paused_hours = day.paused_hours if day else 0.0
 
     @api.depends()
     def _compute_maintenance_monthly_stats(self):

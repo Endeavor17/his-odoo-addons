@@ -153,10 +153,19 @@ class MaintenanceUniversityFinding(models.Model):
             'state': 'converted',
             'created_request_id': new_request.id,
         })
+        # Explicit view, for the third time in this module: maintenance.request
+        # carries two form views at the same priority (core's
+        # hr_equipment_request_view_form and ours), so default resolution falls
+        # to the lower id - core's - which has neither Building nor Category on
+        # it. Both are required here, so the converted request opened in a form
+        # that could not save it.
         return {
             'type': 'ir.actions.act_window',
             'name': _("Maintenance Request"),
             'res_model': 'maintenance.request',
             'view_mode': 'form',
+            'views': [
+                (self.env.ref('maintenance_university.view_maintenance_university_request_form').id, 'form'),
+            ],
             'res_id': new_request.id,
         }

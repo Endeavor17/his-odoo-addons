@@ -67,6 +67,24 @@
         </field>
     </record>
 
+    <!-- Same cards, plus the day's clock on top. A js_class swaps in a kanban
+         controller that draws the banner above the renderer (view.js reads the
+         attribute off the arch); everything else - New, opening a card,
+         breadcrumbs, filters, the pager - stays the action service's job.
+         It lives on its own inherited view rather than on the kanban above, so
+         the manager's Requests screen does not get a clock it has no use for. -->
+    <record id="view_maintenance_university_request_kanban_my_work" model="ir.ui.view">
+        <field name="name">maintenance.university.request.kanban.my.work</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="view_maintenance_university_request_kanban"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <kanban position="attributes">
+                <attribute name="js_class">maintenance_workday_kanban</attribute>
+            </kanban>
+        </field>
+    </record>
+
     <record id="view_maintenance_university_request_form" model="ir.ui.view">
         <field name="name">maintenance.university.request.form</field>
         <field name="model">maintenance.request</field>
@@ -242,7 +260,7 @@
              the same reason the main Requests action needed view_ids. -->
         <field name="view_ids" eval="[
             (5, 0, 0),
-            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_maintenance_university_request_kanban')}),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_maintenance_university_request_kanban_my_work')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('view_maintenance_university_request_form')}),
         ]"/>
         <field name="search_view_id" ref="view_maintenance_university_request_search"/>

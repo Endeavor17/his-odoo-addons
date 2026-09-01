@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="maintenance_university.WorkdayBanner">
+        <div class="o_mu_workday d-flex flex-wrap align-items-center justify-content-between gap-3 p-3 border-bottom bg-view"
+             t-att-class="{
+                'o_mu_workday_paused': dayState === 'paused',
+                'o_mu_workday_done': dayState === 'done',
+            }">
+            <t t-if="!hasEmployee">
+                <div class="text-muted">
+                    Your account is not linked to an employee record, so your work day
+                    cannot be clocked. Ask a maintenance manager to set one up.
+                </div>
+            </t>
+            <t t-else="">
+                <div>
+                    <div class="fs-4 fw-bold lh-sm">
+                        <t t-if="dayState === 'working'">Working</t>
+                        <t t-elif="dayState === 'paused'">On break</t>
+                        <t t-elif="dayState === 'done'">Day finished</t>
+                        <t t-else="">Not started</t>
+                    </div>
+                    <div class="text-muted small" t-if="dayState">
+                        Started at <t t-esc="startedAt"/>
+                        · Worked <t t-esc="workedLabel"/>
+                        · Breaks <t t-esc="pausedLabel"/>
+                    </div>
+                    <div class="text-muted small" t-else="">
+                        Press the button when you start your day.
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-lg o_mu_workday_main"
+                            t-att-class="dayState === 'paused' ? 'btn-success' : 'btn-primary'"
+                            t-att-disabled="state.busy or dayState === 'done'"
+                            t-on-click="() => this.onPrimary()">
+                        <t t-esc="primaryLabel"/>
+                    </button>
+                    <button t-if="dayState and dayState !== 'done'"
+                            class="btn btn-lg btn-outline-secondary"
+                            t-att-disabled="state.busy"
+                            t-on-click="() => this.onEndDay()">
+                        End day
+                    </button>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <!-- Core's kanban, with the day's clock slipped in above the cards. A
+         primary inherit so only the maintenance_workday_kanban js_class gets
+         it; every other kanban in the database is untouched. -->
+    <t t-name="maintenance_university.WorkdayKanbanView"
+       t-inherit="web.KanbanView"
+       t-inherit-mode="primary">
+        <xpath expr="//t[@t-component='props.Renderer']" position="before">
+            <WorkdayBanner/>
+        </xpath>
+    </t>
+
+</templates>

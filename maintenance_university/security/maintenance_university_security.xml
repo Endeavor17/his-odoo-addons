@@ -101,6 +101,35 @@
         <field name="groups" eval="[(4, ref('group_maintenance_worker'))]"/>
     </record>
 
+    <!-- Presence, not task time. A worker clocks and reads only their own day;
+         a manager sees every day and can correct one, which is the whole
+         recovery path for a worker who forgets to clock out. -->
+    <record id="rule_maintenance_university_workday_manager_all" model="ir.rule">
+        <field name="name">Work Day: Manager sees all</field>
+        <field name="model_id" ref="model_maintenance_university_workday"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_maintenance_manager'))]"/>
+    </record>
+    <record id="rule_maintenance_university_workday_worker_own" model="ir.rule">
+        <field name="name">Work Day: Worker sees own</field>
+        <field name="model_id" ref="model_maintenance_university_workday"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_maintenance_worker'))]"/>
+    </record>
+
+    <record id="rule_maintenance_university_workday_segment_manager_all" model="ir.rule">
+        <field name="name">Work Day Segment: Manager sees all</field>
+        <field name="model_id" ref="model_maintenance_university_workday_segment"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_maintenance_manager'))]"/>
+    </record>
+    <record id="rule_maintenance_university_workday_segment_worker_own" model="ir.rule">
+        <field name="name">Work Day Segment: Worker sees own</field>
+        <field name="model_id" ref="model_maintenance_university_workday_segment"/>
+        <field name="domain_force">[('workday_id.employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_maintenance_worker'))]"/>
+    </record>
+
     <record id="rule_maintenance_university_finding_manager_all" model="ir.rule">
         <field name="name">Inspection Finding: Manager sees all</field>
         <field name="model_id" ref="model_maintenance_university_finding"/>

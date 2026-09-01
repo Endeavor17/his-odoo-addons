@@ -1,0 +1,30 @@
+// Layout and sizing only. Colour and spacing come from Bootstrap utility
+// classes on the markup, and the accent stripe from CSS custom properties Odoo
+// already publishes - deliberately no SCSS variables, since the module's other
+// stylesheet uses none and nothing here proves which are in scope for this
+// bundle. A stylesheet that fails to compile takes the whole backend with it.
+
+.o_mu_workday {
+    // The stripe tells the state apart at a glance from across a corridor.
+    border-left: 6px solid var(--primary, #714b67);
+
+    &.o_mu_workday_paused {
+        border-left-color: var(--warning, #f0ad4e);
+    }
+
+    &.o_mu_workday_done {
+        border-left-color: var(--secondary, #adb5bd);
+    }
+}
+
+// Big enough to hit without looking, on a phone in a stairwell.
+.o_mu_workday_main {
+    min-width: 13rem;
+    font-weight: 600;
+}
+
+// The embedded kanban brings its own control panel and scroller; keep it
+// scrolling itself rather than pushing the banner off the top of the page.
+.o_mu_my_work_view {
+    min-height: 0;
+}

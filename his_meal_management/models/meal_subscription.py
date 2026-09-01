@@ -1,5 +1,10 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import float_compare
+
+# Credits move in halves. Two decimals is one more than the scheme needs, which
+# leaves room for a future third of a credit without touching the columns.
+CREDIT_PRECISION = 2
 
 
 class HisMealSubscription(models.Model):
@@ -23,12 +28,19 @@ class HisMealSubscription(models.Model):
     )
     pos_order_id = fields.Many2one('pos.order', string="Purchase Order", readonly=True)
     date_start = fields.Date(required=True, default=fields.Date.context_today)
-    date_end = fields.Date(required=True)
+    # Not required: empty means the credits never expire, which is now the
+    # normal case. A plan with meal_validity_days = 0 lands here as False.
+    date_end = fields.Date(
+        help="Leave empty for credits that never expire.",
+    )
 
-    credits_total = fields.Integer(required=True, readonly=True)
-    credits_used = fields.Integer(default=0, readonly=True)
-    credits_remaining = fields.Integer(
-        compute='_compute_credits_remaining', store=True, readonly=True,
+    # Decimal, because a 300 DA meal costs half a credit. Every amount this
+    # module moves is a multiple of 0.5, and halves are exact in binary
+    # floating point, so no sequence of grants and meals can drift.
+    credits_total = fields.Float(required=True, readonly=True, digits=(16, 2))
+    credits_used = fields.Float(default=0.0, readonly=True, digits=(16, 2))
+    credits_remaining = fields.Float(
+        compute='_compute_credits_remaining', store=True, readonly=True, digits=(16, 2),
     )
     state = fields.Selection(
         [
@@ -53,6 +65,8 @@ class HisMealSubscription(models.Model):
         'CHECK (credits_total > 0)',
         "A subscription must carry at least one credit.",
     )
+    # NULL date_end makes this comparison NULL, which a CHECK accepts - so a
+    # never-expiring subscription passes without needing its own clause.
     _dates_ordered = models.Constraint(
         'CHECK (date_end >= date_start)',
         "A subscription cannot end before it starts.",
@@ -87,7 +101,7 @@ class HisMealSubscription(models.Model):
         for sub in self:
             if sub.state == 'cancelled':
                 continue
-            if sub.credits_remaining <= 0:
+            if float_compare(sub.credits_remaining, 0.0, CREDIT_PRECISION) <= 0:
                 sub.state = 'exhausted'
             elif sub.date_end and sub.date_end < today:
                 sub.state = 'expired'
@@ -98,8 +112,10 @@ class HisMealSubscription(models.Model):
         self.ensure_one()
         return (
             self.state != 'cancelled'
-            and self.credits_remaining > 0
-            and self.date_start <= on_date <= self.date_end
+            and float_compare(self.credits_remaining, 0.0, CREDIT_PRECISION) > 0
+            and self.date_start <= on_date
+            # No end date means it never stops being usable.
+            and (not self.date_end or on_date <= self.date_end)
         )
 
     def action_cancel(self):
