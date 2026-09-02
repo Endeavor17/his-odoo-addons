@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les vues enregistrees des deux pipelines — les « smart lists » de
+         GoHighLevel, en natif.
+
+         noupdate="1" : comme les etapes et les etiquettes, ce sont des points de
+         depart. Une equipe qui affine un filtre ne doit pas le voir revenir a
+         l'original a la prochaine livraison.
+
+         DEUX CHOIX TECHNIQUES A CONNAITRE :
+
+         1. `action_id` rattache chaque filtre a SON pipeline. Sans lui, un
+            filtre est global au modele : les huit apparaitraient dans les deux
+            menus, et « Livrables en retard » n'aurait aucun sens dans les
+            Admissions. C'est le meme cloisonnement que partout ailleurs dans ce
+            module, applique aux favoris.
+
+         2. Les dates relatives sont ecrites dans le mini-langage d'Odoo 19
+            (`'now -4H'`, `'today -7d'`, cf. odoo/tools/date_utils.py:parse_date),
+            PAS avec context_today() ni relativedelta(). Raison : ir.filters.domain
+            est relu par `_get_eval_domain()` avec `ast.literal_eval`, qui refuse
+            tout appel de fonction. Le mini-langage reste une simple chaine — donc
+            litteral — tout en restant dynamique, et il a son equivalent cote
+            JavaScript (`parseSmartDateInput`). Un domaine avec un appel de
+            fonction serait accepte a l'installation et casserait a la lecture.
+
+         `eval` et non `%(xmlid)d` pour les references d'etapes : domain est un
+         champ texte, la substitution %(...)d n'a lieu que dans les champs
+         type="xml". Meme raison que dans crm_menus.xml. -->
+    <data noupdate="1">
+
+        <!-- ===================== Ventes / Admissions ===================== -->
+
+        <!-- Le meme retard que le cron de relance (_cron_relance_sla_premier_contact).
+             ATTENTION : le seuil de 4 h est ecrit ici ET dans la constante
+             SLA_PREMIER_CONTACT_HEURES de models/crm_lead.py. Il n'existe pas de
+             source unique — changer l'un sans l'autre ferait mentir ce filtre sur
+             ce que l'equipe recoit reellement comme relances. -->
+        <record id="filter_admissions_sla_retard" model="ir.filters">
+            <field name="name">SLA en retard</field>
+            <field name="model_id">crm.lead</field>
+            <field name="action_id" ref="action_crm_lead_admissions"/>
+            <field name="user_ids" eval="False"/>
+            <field name="domain" eval="str([
+                ('stage_id', '=', ref('his_crm_pipeline.stage_vente_pris_en_charge')),
+                ('date_last_stage_update', '&lt;', 'now -4H'),
+            ])"/>
+        </record>
+
+        <!-- Triees par score decroissant, comme la file d'affectation : c'est le
+             meme arbitrage, vu depuis le pipeline. -->
+        <record id="filter_admissions_candidatures_chaudes" model="ir.filters">
+            <field name="name">Candidatures chaudes</field>
+            <field name="model_id">crm.lead</field>
+            <field name="action_id" ref="action_crm_lead_admissions"/>
+            <field name="user_ids" eval="False"/>
+            <field name="domain">[('score_academique', '&gt;=', 8), ('won_status', '=', 'pending')]</field>
+            <field name="sort">["score_academique desc"]</field>
+        </record>
+
+        <!-- Le meme domaine que la tuile du cockpit (his_dashboard.py,
+             JOURS_PRE_ADMIS_SANS_ENCAISSEMENT) : deux definitions du meme retard
+             donneraient un tableau de bord qui contredit le pipeline. -->
+        <record id="filter_admissions_pre_admis_sans_encaissement" model="ir.filters">
+            <field name="name">Pre-admis sans encaissement</field>
+            <field name="model_id">crm.lead</field>
+            <field name="action_id" ref="action_crm_lead_admissions"/>
+            <field name="user_ids" eval="False"/>
+            <field name="domain" eval="str([
+                ('stage_id', '=', ref('his_crm_pipeline.stage_vente_pre_admis')),
+                ('date_last_stage_update', '&lt;', 'today -7d'),
+            ])"/>
+        </record>
+
+        <record id="filter_admissions_visite_a_programmer" model="ir.filters">
+            <field name="name">Visite campus a programmer</field>
+            <field name="model_id">crm.lead</field>
+            <field name="action_id" ref="action_crm_lead_admissions"/>
+            <field name="user_ids" eval="False"/>
+            <field name="domain" eval="str([
+                ('visite_campus_effectuee', '=', False),
+                ('stage_id', 'in', [
+                    ref('his_crm_pipeline.stage_vente_contact_etabli'),
+                    ref('his_crm_pipeline.stage_vente_dossier'),
+                ]),
+            ])"/>
+        </record>
+
+        <!-- ===================== Production Contenu ===================== -->
+
+        <record id="filter_contenu_livrables_en_retard" model="ir.filters">
+            <field name="name">Livrables en retard</field>
+            <field name="model_id">crm.lead</field>
+            <field name="action_id" ref="action_crm_lead_contenu"/>
+            <field name="user_ids" eval="False"/>
+            <field name="domain">[('deliverable_ids.en_retard', '=', True)]</field>
+        </record>
+
+        <record id="filter_contenu_livrables_non_assignes" model="ir.filters">
+            <field name="name">Livrables non assignes</field>
+            <field name="model_id">crm.lead</field>
+            <field name="action_id" ref="action_crm_lead_contenu"/>
+            <field name="user_ids" eval="False"/>
+            <field name="domain">[('deliverable_ids.assignee_id', '=', False)]</field>
+        </record>
+
+        <record id="filter_contenu_attente_approbation" model="ir.filters">
+            <field name="name">En attente d'approbation</field>
+            <field name="model_id">crm.lead</field>
+            <field name="action_id" ref="action_crm_lead_contenu"/>
+            <field name="user_ids" eval="False"/>
+            <field name="domain" eval="str([
+                ('stage_id', '=', ref('his_crm_pipeline.stage_contenu_approbation')),
+            ])"/>
+        </record>
+
+        <record id="filter_contenu_urgent" model="ir.filters">
+            <field name="name">Urgent</field>
+            <field name="model_id">crm.lead</field>
+            <field name="action_id" ref="action_crm_lead_contenu"/>
+            <field name="user_ids" eval="False"/>
+            <field name="domain" eval="str([
+                ('tag_ids', 'in', [ref('his_crm_pipeline.tag_urgent')]),
+            ])"/>
+        </record>
+
+    </data>
+</odoo>

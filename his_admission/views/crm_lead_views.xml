@@ -48,4 +48,33 @@
         </field>
     </record>
 
+    <!-- La carte du kanban Admissions gagne la specialite demandee.
+
+         Elle vit ici et non dans his_crm_pipeline pour la meme raison que le
+         bloc academique du formulaire juste au-dessus : specialite_id est
+         apporte par CE module. his_crm_pipeline s'installe seul et ne connait
+         pas le referentiel des specialites.
+
+         C'est le seul renseignement que la conseillere lit avant de rappeler :
+         le nom dit qui, le score dit s'il faut se depecher, la specialite dit
+         de quoi on va parler. -->
+    <record id="view_crm_lead_kanban_admission_specialite" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.admission.specialite</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="his_crm_pipeline.view_crm_lead_kanban_admissions"/>
+        <field name="arch" type="xml">
+            <!-- Sur sa propre ligne, sous les badges, et non dans la pastille du
+                 score : le libelle d'une specialite porte son nom arabe, il est
+                 donc long. Glisse dans la pastille il l'etirait sur toute la
+                 largeur de la carte et noyait le score, qui doit rester lisible
+                 d'un coup d'oeil. -->
+            <xpath expr="//div[hasclass('o_his_lead_kanban_meta')]" position="after">
+                <div class="text-muted small text-truncate"
+                     invisible="not specialite_id">
+                    <field name="specialite_id"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

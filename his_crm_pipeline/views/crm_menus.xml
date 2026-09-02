@@ -15,6 +15,10 @@
              echouerait a l'evaluer. C'est la forme qu'Odoo utilise lui-meme. -->
         <field name="domain" eval="[('team_id', 'in', [ref('his_crm_pipeline.crm_team_ventes'), ref('his_crm_pipeline.crm_team_orientation')])]"/>
         <field name="context" eval="{'default_team_id': ref('his_crm_pipeline.crm_team_ventes'), 'default_type': 'opportunity'}"/>
+        <!-- kanban est le premier mode de view_mode : view_id lui substitue
+             notre tableau. Meme mecanisme que la liste de la file
+             d'affectation. -->
+        <field name="view_id" ref="view_crm_lead_kanban_admissions"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Aucune candidature dans votre pipeline.</p>
             <p>Si cette liste est vide alors qu'il existe des candidatures, c'est que vous
@@ -59,6 +63,7 @@
         <field name="view_mode">kanban,list,form,activity</field>
         <field name="domain" eval="[('team_id', '=', ref('his_crm_pipeline.crm_team_contenu'))]"/>
         <field name="context" eval="{'default_team_id': ref('his_crm_pipeline.crm_team_contenu'), 'default_type': 'opportunity'}"/>
+        <field name="view_id" ref="view_crm_lead_kanban_contenu"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Aucune demande de contenu.</p>
             <p>Deposez une demande : precisez la marque, le departement demandeur et

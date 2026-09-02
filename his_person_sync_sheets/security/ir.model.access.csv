@@ -1,5 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_his_person_sync_log_user,his.person.sync.log.user,model_his_person_sync_log,base.group_user,1,0,0,0
 access_his_person_sync_log_manager,his.person.sync.log.manager,model_his_person_sync_log,his_person_core.group_his_person_manager,1,1,1,0
 access_his_person_import_manager,his.person.import.manager,model_his_person_import,his_person_core.group_his_person_manager,1,1,1,1
 access_his_person_import_line_manager,his.person.import.line.manager,model_his_person_import_line,his_person_core.group_his_person_manager,1,1,1,1

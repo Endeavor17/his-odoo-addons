@@ -2,7 +2,7 @@
 """hr.employee est un miroir du referentiel Personnes, jamais sa source."""
 from psycopg2 import IntegrityError
 
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import mute_logger
 
@@ -289,3 +289,66 @@ class TestPersonLink(TransactionCase):
         employee = self._employee()
         with self.assertRaises(ValidationError):
             employee.person_id.numero_carte = '04:A2:B3:C4'
+
+
+@tagged('post_install', '-at_install')
+class TestAccesReferentiel(TransactionCase):
+    """Qui a le droit de lire le referentiel des personnes.
+
+    Il contenait les etudiants, les candidats et les matricules a vie du
+    groupe, en lecture, pour TOUT utilisateur interne — une ligne d'ACL sur
+    base.group_user et un menu sans groupe suffisaient. Ces tests tiennent les
+    deux sens : ce qui est ferme, et ce qui doit rester ouvert.
+    """
+
+    def _user(self, login, roles=()):
+        groupes = [self.env.ref('base.group_user').id]
+        groupes += [self.env.ref(r).id for r in roles]
+        return self.env['res.users'].create({
+            'name': login, 'login': login,
+            'group_ids': [(6, 0, groupes)],
+        })
+
+    def test_un_salarie_ordinaire_ne_lit_pas_le_referentiel(self):
+        salarie = self._user('zz_salarie')
+
+        with self.assertRaises(AccessError):
+            self.env['his.person'].with_user(salarie).search([])
+        with self.assertRaises(AccessError):
+            self.env['his.engagement'].with_user(salarie).search([])
+
+    def test_un_salarie_ordinaire_ne_voit_pas_le_menu_identite(self):
+        salarie = self._user('zz_salarie_menu')
+
+        visibles = self.env['ir.ui.menu'].with_user(salarie).search(
+            [],
+        )._filter_visible_menus()
+
+        self.assertNotIn(self.env.ref('his_person_core.menu_his_person_root'), visibles)
+
+    def test_les_rh_lisent_le_referentiel_sans_pouvoir_l_ecrire(self):
+        """Le formulaire employe affiche la fiche personne : sans lecture, il
+        se bloquerait entierement pour l'equipe RH."""
+        rh = self._user('zz_rh', ['hr.group_hr_user'])
+
+        self.env['his.person'].with_user(rh).search([])
+        self.assertFalse(
+            self.env['his.person'].with_user(rh).check_access_rights(
+                'write', raise_exception=False,
+            ),
+            "les RH lisent le referentiel, ils n'emettent pas de matricule",
+        )
+        self.assertIn(
+            self.env.ref('his_person_core.menu_his_person_root'),
+            self.env['ir.ui.menu'].with_user(rh).search([])._filter_visible_menus(),
+        )
+
+    def test_le_gestionnaire_garde_l_ecriture(self):
+        gestionnaire = self._user(
+            'zz_gest', ['his_person_core.group_his_person_manager'],
+        )
+        self.assertTrue(
+            self.env['his.person'].with_user(gestionnaire).check_access_rights(
+                'write', raise_exception=False,
+            ),
+        )

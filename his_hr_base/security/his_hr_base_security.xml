@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le referentiel des personnes est ferme par his_person_core a son seul
+         groupe de gestion. Les RH doivent pourtant le lire : le formulaire
+         employe affiche la fiche personne rattachee et le matricule, et ce
+         module est precisement celui qui fait ce lien.
+
+         L'ouverture vit ici et non dans his_person_core, qui ne depend pas de
+         hr et ne peut donc pas nommer ses groupes. Le module qui apporte le
+         lien apporte aussi le droit de le lire.
+
+         Lecture SEULE, deliberement : creer une fiche personne, c'est emettre
+         un matricule a vie. his_hr_base le fait en sudo() a l'embauche, par sa
+         propre logique — ce n'est pas un geste qu'on laisse a la main. -->
+
+    <record id="his_person_core.menu_his_person_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>
+
+</odoo>

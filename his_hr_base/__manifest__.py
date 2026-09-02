@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': "Socle RH - Groupe HIS-HTC-IRA",
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.1.0',
     'category': 'Human Resources',
     'summary': "Rattache hr.employee au referentiel Personnes (his.person)",
     'description': """
@@ -20,6 +20,8 @@ rattaches a des fiches his.person portant exactement la meme valeur.
         'his_person_core',
     ],
     'data': [
+        'security/ir.model.access.csv',
+        'security/his_hr_base_security.xml',
         'data/hr_contract_type_data.xml',
         'views/hr_employee_views.xml',
     ],

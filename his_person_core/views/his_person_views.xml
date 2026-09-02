@@ -108,7 +108,16 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_his_person_root" name="Identite" sequence="85"/>
+    <!-- Le referentiel n'est PAS un annuaire d'entreprise. Il contient les
+         etudiants, les candidats et les matricules a vie de tout le groupe :
+         sans groupe explicite, ce menu s'ouvrait a n'importe quel utilisateur
+         interne, avec le registre en lecture derriere.
+
+         his_person_core ne depend pas de hr et ne peut donc pas nommer les
+         groupes RH ici. C'est his_hr_base qui ouvre ce menu a hr.group_hr_user,
+         puisque c'est lui qui fait le lien entre un employe et sa personne. -->
+    <menuitem id="menu_his_person_root" name="Identite" sequence="85"
+              groups="his_person_core.group_his_person_manager"/>
     <menuitem id="menu_his_person" name="Personnes" parent="menu_his_person_root" action="action_his_person" sequence="10"/>
 
 </odoo>

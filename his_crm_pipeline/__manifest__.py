@@ -33,10 +33,14 @@ dans presque toutes les lignes reelles.
         'data/crm_stage_data.xml',
         'data/crm_stage_native_data.xml',
         'data/crm_lost_reason_data.xml',
+        'data/crm_tag_data.xml',
         'data/ir_cron_data.xml',
         'views/crm_lead_views.xml',
         'views/crm_menus.xml',
         'views/his_dashboard_views.xml',
+        # Apres crm_menus.xml : chaque filtre est rattache a l'action de son
+        # pipeline, qui doit donc exister au moment du chargement.
+        'data/ir_filters_data.xml',
     ],
     'assets': {
         'web.assets_backend': [
