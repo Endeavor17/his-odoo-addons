@@ -36,6 +36,12 @@
                        required="note_physique_utilisee"/>
                 <field name="score_academique"/>
                 <field name="score_detail" invisible="not score_detail"/>
+                <!-- Le score du navigateur ne s'affiche QUE s'il diverge. Le
+                     montrer en permanence apprendrait a la conseillere a lire
+                     deux scores et a choisir ; ne le montrer que sur ecart en
+                     fait ce qu'il est, une alerte. -->
+                <field name="score_client"
+                       invisible="score_client == score_academique"/>
             </field>
 
             <field name="motivation_notes" position="before">
@@ -43,6 +49,25 @@
                        placeholder="Pourquoi cette specialite ?"/>
                 <field name="motivation_his"
                        placeholder="Pourquoi HIS ?"/>
+            </field>
+
+            <!-- Ce que le formulaire recueille et que personne ne lisait dans
+                 Odoo : la conseillere devait rouvrir GoHighLevel pour savoir
+                 d'ou vient le candidat.
+
+                 Ancre sur motivation_notes et non sur motivation_his : ce
+                 dernier est ajoute par CETTE vue, quelques lignes plus haut, et
+                 les operations d'heritage s'appliquent dans l'ordre du
+                 document — s'ancrer dessus marcherait ici et casserait au
+                 premier deplacement de bloc. motivation_notes, lui, vient de la
+                 vue heritee. -->
+            <field name="motivation_notes" position="after">
+                <field name="wilaya"/>
+                <field name="bac_annee"/>
+                <field name="bac_filiere"/>
+                <field name="consentement_18_07"/>
+                <field name="date_consentement"
+                       invisible="not consentement_18_07"/>
             </field>
 
         </field>

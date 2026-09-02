@@ -40,6 +40,41 @@ class CrmLead(models.Model):
     motivation_majeure = fields.Text(string="Pourquoi cette specialite ?")
     motivation_his = fields.Text(string="Pourquoi HIS ?")
 
+    # Renseignements que le formulaire recueille mais qu'aucun champ ne portait
+    # encore. Ils arrivaient jusqu'ici dans GoHighLevel et nulle part ailleurs :
+    # la conseillere qui rappelle depuis Odoo devait rouvrir GHL pour savoir
+    # d'ou vient le candidat et quel bac il a passe.
+    wilaya = fields.Char(string="Wilaya")
+    bac_annee = fields.Char(string="Annee du BAC")
+
+    # La filiere du bac, et non la specialite visee : les deux se confondent
+    # facilement. specialite_id dit ce que le candidat DEMANDE, bac_filiere dit
+    # ce qu'il a OBTENU. C'est la seconde qui explique un dossier refuse.
+    #
+    # Char et non Selection : les libelles arrivent du formulaire GHL en
+    # francais ou en arabe selon la langue choisie par le candidat, et une
+    # Selection imposerait une livraison de code a chaque libelle nouveau.
+    bac_filiere = fields.Char(string="Filiere du BAC")
+
+    # Loi 18-07 (protection des donnees a caractere personnel). Le consentement
+    # se prouve par une date, pas par une case : « il a coche » sans quand ne
+    # vaut rien devant l'ANPDP. copy=False pour que dupliquer un lead ne
+    # duplique pas un consentement qui n'a jamais ete donne sur cette copie.
+    consentement_18_07 = fields.Boolean(string="Consentement Loi 18-07", copy=False)
+    date_consentement = fields.Datetime(string="Date du consentement", copy=False)
+
+    # Le meme score, calcule dans le navigateur du candidat. Il est conserve
+    # POUR ETRE COMPARE, jamais pour trier : il se modifie depuis la console du
+    # navigateur avant l'envoi. Un ecart avec score_academique signale soit une
+    # specialite mal rapprochee a la capture, soit une saisie trafiquee — dans
+    # les deux cas quelque chose qu'un humain doit regarder.
+    score_client = fields.Integer(
+        string="Score client (non verifie)", copy=False, readonly=True,
+        help="Score calcule dans le navigateur du candidat, donc modifiable par "
+             "lui. Conserve pour comparaison avec le score academique, jamais "
+             "pour ordonner la file d'affectation.",
+    )
+
     # Quelles notes sont demandees depend de la majeure. Plutot qu'une seconde
     # table de correspondance a tenir en phase avec la premiere, on lit celle
     # qui existe : un domaine qui ne pondere pas les maths ne les demande pas.
