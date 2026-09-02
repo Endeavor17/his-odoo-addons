@@ -472,3 +472,83 @@ class TestAdmission(TransactionCase):
         self.assertEqual(dossier.cycle, 'licence')
         self.assertAlmostEqual(dossier.bac_moyenne, 13.0, places=2)
         self.assertAlmostEqual(dossier.note_physique, 12.0, places=2)
+
+    # --- Capture web (formulaire de candidature -> n8n) -----------------------
+
+    def test_la_capture_web_ne_cree_aucune_fiche_personne(self):
+        """Un lead capte par le formulaire n'emet PAS de matricule.
+
+        C'est l'hypothese A1, restee ouverte : quelle etape declenche la fiche
+        personne n'est pas tranchee par la Direction. Le pont d'identite se
+        declenche a « Contact etabli » et sur create() aussi bien que sur
+        write() — un lead cree directement dans cette etape emettrait donc un
+        matricule a vie a quelqu'un qui n'a rempli qu'un formulaire.
+
+        La capture web nait en « Nouveau (score) », et ce test est ce qui
+        empeche que cela change par inadvertance.
+        """
+        avant = self.env['his.person'].search_count([])
+        lead = self._lead_score(
+            contact_name="Lina Cherif",
+            email_from="lina.cherif@example.com",
+            stage_id=self.env.ref('his_crm_pipeline.stage_vente_nouveau').id,
+            specialite_id=self.spec_licence.id,
+            bac_moyenne=15.0, note_math=14.0,
+        )
+        self.assertFalse(lead.his_person_id)
+        self.assertFalse(lead.his_person_candidate_id)
+        self.assertEqual(self.env['his.person'].search_count([]), avant)
+
+    def test_la_capture_web_laisse_le_lead_sans_proprietaire(self):
+        """Sans quoi la file « Leads a affecter » resterait vide.
+
+        his_crm_pipeline vide user_id a la creation en « Nouveau (score) ». Le
+        compte de service qui porte l'appel n8n serait sinon inscrit comme
+        commercial sur chaque candidature.
+        """
+        lead = self._lead_score(
+            stage_id=self.env.ref('his_crm_pipeline.stage_vente_nouveau').id,
+        )
+        self.assertFalse(lead.user_id)
+
+    def test_le_score_client_est_conserve_sans_influencer_le_calcul(self):
+        """Il vient du navigateur du candidat : on le garde, on ne s'y fie pas."""
+        lead = self._lead_score(
+            specialite_id=self.spec_licence.id,
+            bac_moyenne=16.0, note_math=16.0,
+            score_client=99,
+        )
+        self.assertEqual(lead.score_client, 99)
+        self.assertEqual(lead.score_academique, 9)
+
+    def test_le_consentement_et_les_renseignements_du_formulaire_arrivent(self):
+        """Loi 18-07 : le consentement se prouve par une date, pas par une case."""
+        lead = self._lead_score(
+            wilaya="Blida",
+            bac_annee="2026",
+            bac_filiere="Sciences experimentales",
+            consentement_18_07=True,
+            date_consentement="2026-09-02 14:03:11",
+        )
+        self.assertEqual(lead.wilaya, "Blida")
+        self.assertEqual(lead.bac_annee, "2026")
+        self.assertEqual(lead.bac_filiere, "Sciences experimentales")
+        self.assertTrue(lead.consentement_18_07)
+        self.assertTrue(lead.date_consentement)
+
+    def test_une_note_absente_n_est_pas_une_note_a_zero(self):
+        """Le formulaire envoie null, pas 0, pour une note qu'il n'a pas demandee.
+
+        Droit public ne pondere ni maths ni physique : la moyenne ponderee
+        n'est pas applicable, et le lead vaut ses points de BAC seuls. Un zero
+        envoye a la place du vide se lirait comme une vraie note nulle.
+        """
+        lead = self._lead_score(
+            specialite_id=self.env.ref('his_admission.spec_droit_public').id,
+            bac_moyenne=15.0,
+            motivation_his="Le droit public m'interesse.",
+        )
+        self.assertFalse(lead.note_math)
+        self.assertFalse(lead.note_physique)
+        self.assertEqual(lead.score_academique, 7)
+        self.assertIn("non applicable", lead.score_detail)
