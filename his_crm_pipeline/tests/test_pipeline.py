@@ -493,3 +493,80 @@ class TestPipeline(TransactionCase):
         })
         self.assertFalse(lead.telephone_e164)
         self.assertFalse(lead.whatsapp_url)
+
+    def test_un_numero_illisible_ne_donne_pas_de_lien(self):
+        """phone_format rend la saisie telle quelle quand il echoue.
+
+        Sans le controle du signe plus, une faute de frappe deviendrait une
+        URL WhatsApp pointant vers rien — un lien mort est pire qu'une absence
+        de lien, parce qu'on clique dessus.
+        """
+        lead = self.env['crm.lead'].create({
+            'name': "Numero casse",
+            'team_id': self.team_ventes.id,
+            'phone': 'a rappeler chez la tante',
+        })
+        self.assertFalse(lead.telephone_e164)
+        self.assertFalse(lead.whatsapp_url)
+
+    # --- Boucle d'appel ------------------------------------------------------
+
+    def _lead_pris_en_charge(self):
+        return self.env['crm.lead'].create({
+            'name': "Candidat a rappeler",
+            'team_id': self.team_ventes.id,
+            'stage_id': self.stage_pris_en_charge.id,
+            'phone': '0555123456',
+        })
+
+    def test_une_tentative_sans_reponse_incremente_et_replanifie(self):
+        lead = self._lead_pris_en_charge()
+        self.assertEqual(lead.tentatives_appel, 0)
+
+        lead.action_appel_sans_reponse()
+
+        self.assertEqual(lead.tentatives_appel, 1)
+        self.assertTrue(lead.derniere_tentative)
+        # L'etape ne bouge pas : une tentative n'est pas un contact.
+        self.assertEqual(lead.stage_id, self.stage_pris_en_charge)
+        rappels = self.env['mail.activity'].search([
+            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
+        ])
+        self.assertEqual(len(rappels), 1)
+
+    def test_trois_tentatives_ne_posent_qu_un_seul_rappel(self):
+        """Sinon la conseillere recoit une activite par tentative et cesse de
+        les lire — exactement le defaut que la relance SLA evite deja."""
+        lead = self._lead_pris_en_charge()
+        for _ in range(3):
+            lead.action_appel_sans_reponse()
+
+        self.assertEqual(lead.tentatives_appel, 3)
+        rappels = self.env['mail.activity'].search([
+            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
+        ])
+        self.assertEqual(len(rappels), 1, "Un seul rappel, replanifie")
+
+    def test_joint_avance_a_contact_etabli_et_efface_le_rappel(self):
+        lead = self._lead_pris_en_charge()
+        lead.action_appel_sans_reponse()
+
+        action = lead.action_appel_joint()
+
+        self.assertEqual(
+            lead.stage_id,
+            self.env.ref('his_crm_pipeline.stage_vente_contact_etabli'),
+        )
+        self.assertFalse(self.env['mail.activity'].search([
+            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
+        ]), "Le rappel n'a plus d'objet une fois le candidat joint")
+        self.assertEqual(action['res_id'], lead.id)
+        self.assertEqual(action['res_model'], 'crm.lead')
+
+    def test_chaque_tentative_laisse_une_trace_datee(self):
+        """Le compteur dit combien ; le fil dit quand. Le second explique le
+        premier a qui relit la fiche trois semaines plus tard."""
+        lead = self._lead_pris_en_charge()
+        avant = len(lead.message_ids)
+        lead.action_appel_sans_reponse()
+        self.assertGreater(len(lead.message_ids), avant)

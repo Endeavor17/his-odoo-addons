@@ -8,6 +8,15 @@ from odoo.exceptions import ValidationError
 # Delai de premier contact. Au-dela, le responsable d'equipe est relance.
 SLA_PREMIER_CONTACT_HEURES = 4
 
+# Delai avant le rappel suivant, apres une tentative sans reponse.
+JOURS_AVANT_RAPPEL = 1
+# Au-dela, le candidat n'a jamais repondu : c'est une candidature fantome.
+TENTATIVES_AVANT_FANTOME = 3
+# Le resume qui identifie le rappel pose par la boucle d'appel. Une constante
+# et non une chaine recopiee : elle sert a POSER l'activite et a la RETROUVER,
+# et deux copies qui divergent donneraient une activite par tentative.
+RESUME_RAPPEL = "Rappeler le candidat"
+
 
 
 class CrmLead(models.Model):
@@ -50,6 +59,20 @@ class CrmLead(models.Model):
     )
     whatsapp_url = fields.Char(
         string="Lien WhatsApp", compute='_compute_telephone_e164',
+    )
+
+    # --- La boucle d'appel ---------------------------------------------------
+
+    # Le compteur est ce qui transforme « candidature fantome » d'un souvenir
+    # en un fait porte par la fiche. Sans lui, la conseillere qui reprend un
+    # lead ne sait pas si personne n'a essaye ou si six personnes ont echoue.
+    tentatives_appel = fields.Integer(
+        string="Tentatives d'appel", default=0, copy=False, readonly=True,
+        help="Nombre d'appels restes sans reponse. Remis a zero par aucun "
+             "geste : c'est un historique, pas un etat.",
+    )
+    derniere_tentative = fields.Datetime(
+        string="Derniere tentative", copy=False, readonly=True,
     )
 
     @api.depends('phone', 'country_id')
@@ -170,6 +193,89 @@ class CrmLead(models.Model):
             if any(livrables.mapped('en_retard')):
                 resume += " - en retard"
             lead.livrables_resume = resume
+
+    # --- La boucle d'appel ---------------------------------------------------
+
+    def action_appel_sans_reponse(self):
+        """Le candidat n'a pas repondu : on compte, on trace, on replanifie.
+
+        Trois effets et pas un de plus. L'etape ne bouge PAS — une tentative
+        n'est pas un contact, et faire avancer le lead sur un appel sans
+        reponse gonflerait le pipeline avec des candidats que personne n'a
+        jamais eus au telephone.
+
+        Aucune perte automatique au-dela de N tentatives : une machine qui
+        declare un candidat perdu est la meme automatisation que la Direction a
+        refusee pour l'affectation. La fiche propose, la conseillere decide.
+        """
+        for lead in self:
+            # sudo() : c'est le systeme qui enregistre un fait, pas
+            # l'utilisateur qui affirme quelque chose. tentatives_appel est en
+            # readonly, donc ce chemin est le seul qui l'ecrit.
+            lead.sudo().write({
+                'tentatives_appel': lead.tentatives_appel + 1,
+                'derniere_tentative': fields.Datetime.now(),
+            })
+            lead.message_post(body=_(
+                "Appel sans reponse (tentative n° %(n)s).",
+                n=lead.tentatives_appel,
+            ))
+            lead._his_replanifier_rappel()
+
+    def _his_replanifier_rappel(self):
+        """Un seul rappel a la fois, repousse plutot que duplique.
+
+        Poser une activite par tentative ferait exactement ce que la relance
+        SLA evite deja : une pile d'activites que le destinataire cesse de
+        lire. On deplace donc celle qui existe.
+        """
+        self.ensure_one()
+        echeance = fields.Date.context_today(self) + timedelta(
+            days=JOURS_AVANT_RAPPEL,
+        )
+        activite = self._his_rappel_existant()
+        if activite:
+            activite.date_deadline = echeance
+            return
+        self.activity_schedule(
+            'mail.mail_activity_data_call',
+            date_deadline=echeance,
+            summary=RESUME_RAPPEL,
+            user_id=self.user_id.id or self.env.uid,
+        )
+
+    def _his_rappel_existant(self):
+        """Le rappel pose par cette boucle, s'il y en a un."""
+        self.ensure_one()
+        return self.env['mail.activity'].search([
+            ('res_model', '=', 'crm.lead'),
+            ('res_id', '=', self.id),
+            ('summary', '=', RESUME_RAPPEL),
+        ], limit=1)
+
+    def action_appel_joint(self):
+        """Le candidat a repondu : on avance, on efface le rappel, on ouvre.
+
+        Ouvrir la fiche est la moitie utile du geste. Le contact vient d'avoir
+        lieu, c'est le seul moment ou la conseillere se souvient de ce qui a
+        ete dit ; l'ecran doit etre devant elle sans qu'elle ait a le chercher.
+        """
+        self.ensure_one()
+        etape = self.env.ref(
+            'his_crm_pipeline.stage_vente_contact_etabli',
+            raise_if_not_found=False,
+        )
+        if etape:
+            self.stage_id = etape
+        self._his_rappel_existant().unlink()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Candidat joint"),
+            'res_model': 'crm.lead',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     # --- La file d'attente d'affectation -------------------------------------
 
