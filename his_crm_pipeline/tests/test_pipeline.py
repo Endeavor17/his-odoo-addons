@@ -460,3 +460,36 @@ class TestPipeline(TransactionCase):
         """
         vue = self.env.ref('his_crm_pipeline.view_crm_lead_list_non_affectes')
         self.assertIn('score_academique desc', vue.arch)
+
+    # --- Telephone et lien WhatsApp -----------------------------------------
+
+    def test_le_numero_algerien_est_normalise_en_e164(self):
+        """Les trois formes saisies par les candidats donnent le meme numero.
+
+        C'est le lien WhatsApp qui en depend : wa.me refuse un zero initial et
+        refuse le signe plus.
+        """
+        for saisi in ('0555123456', '+213555123456', '00213555123456'):
+            lead = self.env['crm.lead'].create({
+                'name': "Candidat %s" % saisi,
+                'team_id': self.team_ventes.id,
+                'phone': saisi,
+            })
+            self.assertEqual(
+                lead.telephone_e164, '+213555123456',
+                "« %s » n'a pas ete normalise" % saisi,
+            )
+            self.assertEqual(
+                lead.whatsapp_url,
+                'https://wa.me/213555123456',
+                "Le lien WhatsApp doit porter les chiffres seuls",
+            )
+
+    def test_sans_telephone_il_n_y_a_pas_de_lien(self):
+        """Un lien vide plutot qu'un lien casse : la carte le masque."""
+        lead = self.env['crm.lead'].create({
+            'name': "Sans telephone",
+            'team_id': self.team_ventes.id,
+        })
+        self.assertFalse(lead.telephone_e164)
+        self.assertFalse(lead.whatsapp_url)

@@ -2,6 +2,7 @@
 from datetime import timedelta
 
 from odoo import _, api, fields, models
+from odoo.addons.phone_validation.tools import phone_validation
 from odoo.exceptions import ValidationError
 
 # Delai de premier contact. Au-dela, le responsable d'equipe est relance.
@@ -36,6 +37,62 @@ class CrmLead(models.Model):
     )
     visite_campus_effectuee = fields.Boolean(string="Visite du campus effectuee")
     date_visite_campus = fields.Datetime(string="Date de visite du campus")
+
+    # --- Joindre le candidat ------------------------------------------------
+
+    # NON STOCKES. Ces deux champs ne sont qu'une mise en forme de `phone` :
+    # les stocker creerait un second endroit ou vit le numero, et deux
+    # versions du meme numero finissent toujours par diverger. Le cout est nul,
+    # le calcul est une expression reguliere sur une chaine deja en memoire.
+    telephone_e164 = fields.Char(
+        string="Telephone (E.164)", compute='_compute_telephone_e164',
+        help="Le numero au format international, seule forme que WhatsApp accepte.",
+    )
+    whatsapp_url = fields.Char(
+        string="Lien WhatsApp", compute='_compute_telephone_e164',
+    )
+
+    @api.depends('phone', 'country_id')
+    def _compute_telephone_e164(self):
+        """Normalise le numero saisi, quelle que soit la forme.
+
+        Les candidats saisissent « 0555... », « +213555... » ou
+        « 00213555... ». wa.me refuse le zero initial ET le signe plus : sans
+        normalisation, deux candidats sur trois donnent un lien mort.
+
+        L'Algerie par defaut, et non le pays de la societe : ce pipeline
+        recrute en Algerie. country_id reste prioritaire quand il est
+        renseigne, pour le candidat etranger.
+        """
+        for lead in self:
+            if not lead.phone:
+                lead.telephone_e164 = False
+                lead.whatsapp_url = False
+                continue
+            pays = lead.country_id
+            try:
+                e164 = phone_validation.phone_format(
+                    lead.phone,
+                    pays.code or 'DZ',
+                    pays.phone_code or 213,
+                    force_format='E164',
+                    raise_exception=False,
+                )
+            except Exception:
+                # Un numero illisible n'est pas une erreur bloquante : la
+                # conseillere le corrigera. Perdre la fiche pour un numero mal
+                # tape serait hors de proportion.
+                e164 = False
+            # phone_format REND LA SAISIE TELLE QUELLE quand il echoue —
+            # verifie sur l'image : « n importe quoi » ressort inchange. Sans
+            # ce controle, une faute de frappe deviendrait une URL WhatsApp
+            # pointant vers rien.
+            if not e164 or not e164.startswith('+'):
+                lead.telephone_e164 = False
+                lead.whatsapp_url = False
+                continue
+            lead.telephone_e164 = e164
+            lead.whatsapp_url = 'https://wa.me/%s' % e164[1:]
 
     # --- Production Contenu (equipe Production Contenu) ---------------------
 

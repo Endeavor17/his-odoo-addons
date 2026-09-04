@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': "CRM Ventes/Admissions et Production Contenu",
-    'version': '19.0.3.1.0',
+    'version': '19.0.3.2.0',
     'category': 'Sales/CRM',
     'summary': "Deux pipelines CRM natifs : admissions candidats et production de contenu",
     'description': """
@@ -22,6 +22,11 @@ dans presque toutes les lignes reelles.
     'depends': [
         'crm',
         'mail',
+        # Normalisation E.164 des numeros algeriens. Module Community, deja
+        # present dans l'image : c'est celui qu'Odoo utilise lui-meme. Ecrire
+        # l'expression reguliere a la main serait reimplementer une dependance
+        # deja installee.
+        'phone_validation',
     ],
     'data': [
         'security/his_crm_roles.xml',
