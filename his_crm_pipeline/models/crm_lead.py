@@ -75,6 +75,14 @@ class CrmLead(models.Model):
         string="Derniere tentative", copy=False, readonly=True,
     )
 
+    # Ce que les motifs de la liste ne savent pas dire. Obligatoire avec
+    # « Autre » : voir _check_perte_motivee. Alimente par l'assistant natif,
+    # dont la note de cloture n'atterrissait nulle part (voir crm_lead_lost.py).
+    perte_precision = fields.Char(
+        string="Precision sur la perte", copy=False,
+        help="Obligatoire avec le motif « Autre - a preciser ».",
+    )
+
     @api.depends('phone', 'country_id')
     def _compute_telephone_e164(self):
         """Normalise le numero saisi, quelle que soit la forme.
@@ -348,6 +356,71 @@ class CrmLead(models.Model):
                     "avant la validation finale.",
                     lead=lead.display_name,
                     manquants=", ".join(manquants),
+                ))
+
+    def action_set_lost(self, **additional_values):
+        """Le motif AVANT l'archivage, et non l'inverse.
+
+        Odoo archive puis ecrit le motif (crm/models/crm_lead.py:1123-1124).
+        Entre les deux, la fiche vaut deja « perdue » au sens de won_status et
+        ne porte pas encore son motif : la contrainte se declencherait sur un
+        etat transitoire que personne n'a voulu, et perdre un lead deviendrait
+        impossible meme en s'y prenant correctement.
+
+        On pose donc le motif d'abord. Une perte SANS motif echoue toujours —
+        elle echoue simplement a l'archivage, ce qui est le bon moment.
+        """
+        if additional_values.get('lost_reason_id'):
+            self.lost_reason_id = additional_values['lost_reason_id']
+        return super().action_set_lost(**additional_values)
+
+    @api.constrains('won_status', 'lost_reason_id', 'perte_precision')
+    def _check_perte_motivee(self):
+        """On ne perd pas un candidat sans dire pourquoi.
+
+        Dans GoHighLevel, 626 opportunites perdues portent 193 motifs : les
+        deux tiers ne disent rien. Ce n'est pas de la negligence — consigner
+        coutait six gestes et sauter n'en coutait aucun. La contrainte rend le
+        vide impossible ; la boucle d'appel et le pre-remplissage rendent le
+        motif bon marche. Les DEUX sont necessaires : une contrainte seule
+        pousserait a ne plus clore du tout, et le pipeline se remplirait de
+        cadavres — une panne pire que celle qu'on repare.
+
+        Contrainte serveur et non regle de vue, pour la meme raison que le
+        verrou d'approbation : le glisser-deposer du kanban, l'import et l'API
+        ne passent par aucune vue. Ils passent tous par write().
+
+        Le declencheur est won_status et NON active. « Perdu » vaut
+        probabilite 0 ET archive (crm/models/crm_lead.py:1122) ; un lead
+        seulement archive garde sa probabilite. Exiger un motif sur `active`
+        interdirait le rangement ordinaire d'une fiche.
+
+        Les deux pipelines, sans distinction d'equipe. Brancher par equipe
+        serait du code de plus pour rien : la seule perte du pipeline Contenu
+        est « Retour production necessaire », qu'il renseigne deja.
+        """
+        autre = self.env.ref(
+            'his_crm_pipeline.lost_reason_autre', raise_if_not_found=False,
+        )
+        for lead in self:
+            if lead.won_status != 'lost':
+                continue
+            if not lead.lost_reason_id:
+                raise ValidationError(_(
+                    "« %(lead)s » ne peut pas etre perdu sans motif.\n\n"
+                    "Le motif est ce qui permet de savoir OU l'on perd les "
+                    "candidats. Si aucun de la liste ne convient, choisissez "
+                    "« Autre - a preciser » et dites en une ligne ce qui s'est "
+                    "passe.",
+                    lead=lead.display_name,
+                ))
+            if autre and lead.lost_reason_id == autre \
+                    and not (lead.perte_precision or '').strip():
+                raise ValidationError(_(
+                    "« %(lead)s » : le motif « Autre » demande une precision.\n\n"
+                    "Sans elle, « Autre » deviendrait le raccourci universel et "
+                    "n'apprendrait rien de plus qu'un motif vide.",
+                    lead=lead.display_name,
                 ))
 
     # --- Relance SLA premier contact ----------------------------------------

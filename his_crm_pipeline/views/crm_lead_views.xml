@@ -60,6 +60,12 @@
                             <button name="action_appel_joint"
                                     type="object" class="btn-primary"
                                     string="Joint"/>
+                            <!-- La precision de la perte se lit ici, aupres de
+                                 l'issue de l'appel : c'est de cela qu'elle
+                                 parle. L'assistant natif la remplit tout seul
+                                 depuis sa note de cloture. -->
+                            <field name="perte_precision"
+                                   invisible="not perte_precision"/>
                         </group>
                     </group>
                     <group string="Motivation">

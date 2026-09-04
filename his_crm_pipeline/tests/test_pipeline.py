@@ -608,6 +608,73 @@ class TestPipeline(TransactionCase):
         self.assertEqual(noms[1], "Candidature fantome")
         self.assertEqual(noms[-1], "Autre - a preciser")
 
+    # --- Une perte doit dire quelque chose -----------------------------------
+
+    def _lead_simple(self, **kw):
+        vals = {'name': "Candidat", 'team_id': self.team_ventes.id}
+        vals.update(kw)
+        return self.env['crm.lead'].create(vals)
+
+    def test_perdre_sans_motif_est_refuse(self):
+        """626 pertes, 193 motifs. Le vide n'est plus une option.
+
+        Contrainte serveur et non regle de vue : le kanban, l'import et l'API
+        contournent une vue. Meme discipline que le verrou d'approbation et que
+        « gagne seulement si encaisse ».
+        """
+        lead = self._lead_simple()
+        with self.assertRaises(ValidationError):
+            lead.action_set_lost()
+
+    def test_perdre_avec_un_motif_passe(self):
+        lead = self._lead_simple()
+        lead.action_set_lost(lost_reason_id=self.env.ref(
+            'his_crm_pipeline.lost_reason_sans_reponse').id)
+        self.assertEqual(lead.won_status, 'lost')
+
+    def test_autre_sans_precision_est_refuse(self):
+        """La soupape d'honnetete a un prix : il faut ecrire la ligne. Sans
+        cela « Autre » devient le raccourci universel et on aurait remplace un
+        vide par un mot qui n'en dit pas davantage."""
+        lead = self._lead_simple()
+        with self.assertRaises(ValidationError):
+            lead.action_set_lost(lost_reason_id=self.env.ref(
+                'his_crm_pipeline.lost_reason_autre').id)
+
+    def test_autre_avec_precision_passe(self):
+        lead = self._lead_simple(
+            perte_precision="Parti a l'etranger, ne rappellera pas.")
+        lead.action_set_lost(lost_reason_id=self.env.ref(
+            'his_crm_pipeline.lost_reason_autre').id)
+        self.assertEqual(lead.won_status, 'lost')
+
+    def test_archiver_n_est_pas_perdre(self):
+        """La contrainte porte sur won_status, pas sur active.
+
+        « Perdu » vaut probabilite 0 ET archive (crm_lead.py:1122). Un lead
+        simplement archive garde sa probabilite : exiger un motif de perte
+        la-dessus interdirait le rangement ordinaire d'une fiche.
+        """
+        lead = self._lead_simple(probability=40)
+        lead.action_archive()
+        self.assertFalse(lead.active)
+        self.assertNotEqual(lead.won_status, 'lost')
+
+    def test_la_note_de_cloture_atterrit_sur_le_lead(self):
+        """Odoo ne se sert de lost_feedback que comme message de suivi : aucun
+        champ ne la porte, donc aucune contrainte ne peut l'exiger. On la pose
+        sur la fiche, ce qui rend « Autre » exigeable depuis l'assistant natif.
+        """
+        lead = self._lead_simple()
+        wizard = self.env['crm.lead.lost'].create({
+            'lead_ids': [(6, 0, [lead.id])],
+            'lost_reason_id': self.env.ref('his_crm_pipeline.lost_reason_autre').id,
+            'lost_feedback': '<p>Recu a l universite d Alger.</p>',
+        })
+        wizard.action_lost_reason_apply()
+        self.assertEqual(lead.won_status, 'lost')
+        self.assertIn("Alger", lead.perte_precision)
+
     def test_chaque_tentative_laisse_une_trace_datee(self):
         """Le compteur dit combien ; le fil dit quand. Le second explique le
         premier a qui relit la fiche trois semaines plus tard."""
