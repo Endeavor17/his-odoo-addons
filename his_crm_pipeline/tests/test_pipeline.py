@@ -597,6 +597,31 @@ class TestPipeline(TransactionCase):
                 'his_crm_pipeline.%s' % xmlid, raise_if_not_found=False,
             ), "Motif d'origine perdu : %s" % xmlid)
 
+    def test_les_motifs_anglais_natifs_sont_retires_de_la_liste(self):
+        """« Too expensive » doublait « Frais trop eleves », en anglais.
+
+        Le meme compartiment coupe en deux qu'on vient de fusionner pour
+        « Sans reponse », reintroduit par le haut. Desactives et non
+        supprimes : lost_reason_id est en ondelete='restrict' et l'un d'eux
+        portait deja un lead sur la base de recette.
+        """
+        for xmlid in ('crm.lost_reason_1', 'crm.lost_reason_2', 'crm.lost_reason_3'):
+            motif = self.env.ref(xmlid, raise_if_not_found=False)
+            if not motif:
+                continue
+            self.assertFalse(
+                motif.active,
+                "« %s » doit disparaitre de la liste de selection" % motif.name,
+            )
+
+    def test_aucun_motif_selectionnable_n_est_en_anglais(self):
+        """Le garde-fou general : la liste que voit la conseillere est
+        entierement en francais, sans quoi deux vocabulaires cohabitent."""
+        actifs = self.env['crm.lost.reason'].search([]).mapped('name')
+        for interdit in ("Too expensive", "We don't have people/skills",
+                         "Not enough stock"):
+            self.assertNotIn(interdit, actifs)
+
     def test_les_motifs_sont_ordonnes_par_frequence_reelle(self):
         """Odoo trie les motifs par id : « Sans reponse », le plus frequent,
         se retrouverait au milieu d'une liste de onze. Trois motifs couvrent

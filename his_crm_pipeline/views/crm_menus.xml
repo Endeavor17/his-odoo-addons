@@ -26,9 +26,56 @@
         </field>
     </record>
 
-    <menuitem id="menu_admissions_root" name="Admissions"
+    <!-- ================= Un seul menu, pas deux =================
+
+         Le CRM natif ouvre un menu « Sales » dont l'entree principale,
+         « My Pipeline », filtre sur les leads AFFECTES A L'UTILISATEUR
+         COURANT. Nos candidatures sont reparties entre les conseilleres :
+         un responsable, un directeur ou l'administrateur y voyaient donc un
+         tableau vide, a cote d'un menu « Admissions » qui, lui, montrait tout.
+         Deux portes vers le meme modele, dont une toujours fermee.
+
+         On garde la porte qui marche. Le menu natif est desactive, le notre
+         prend son nom, et les trois entrees natives qui servent reellement
+         le suivent — clients, activites, equipes. « My Pipeline » ne suit
+         pas : « Pipeline » ci-dessous le remplace et montre l'equipe entiere.
+
+         Desactiver plutot que supprimer : un menu supprime revient a la
+         prochaine mise a jour du module crm, et emporterait avec lui les
+         enfants qu'on vient d'y rattacher. -->
+    <record id="crm.crm_menu_sales" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Le rapport natif mesure `prorated_revenue`, derive de
+         `expected_revenue`. Ce pipeline ne porte AUCUN montant sur le lead —
+         l'argent vit sur his.engagement, c'est une decision assumee du module.
+         Les quatre rapports tracent donc correctement nos etapes et n'y
+         empilent que des zeros. Un graphique de zeros n'est pas un rapport
+         vide : c'est un rapport qui ment par omission, et qu'on finit par
+         croire. Le cockpit repond aux memes questions avec des chiffres
+         justes ; on ferme celui-ci. -->
+    <record id="crm.crm_menu_report" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <menuitem id="menu_admissions_root" name="Sales"
               parent="crm.crm_menu_root" sequence="3"
               groups="his_crm_pipeline.group_admissions_acquisition,his_crm_pipeline.group_admissions_orientation"/>
+
+    <!-- Les entrees natives qui servent, rattachees au menu conserve. -->
+    <record id="crm.res_partner_menu_customer" model="ir.ui.menu">
+        <field name="parent_id" ref="his_crm_pipeline.menu_admissions_root"/>
+        <field name="sequence">50</field>
+    </record>
+    <record id="crm.crm_lead_menu_my_activities" model="ir.ui.menu">
+        <field name="parent_id" ref="his_crm_pipeline.menu_admissions_root"/>
+        <field name="sequence">40</field>
+    </record>
+    <record id="crm.sales_team_menu_team_pipeline" model="ir.ui.menu">
+        <field name="parent_id" ref="his_crm_pipeline.menu_admissions_root"/>
+        <field name="sequence">60</field>
+    </record>
 
     <menuitem id="menu_admissions_pipeline" name="Pipeline"
               parent="menu_admissions_root"

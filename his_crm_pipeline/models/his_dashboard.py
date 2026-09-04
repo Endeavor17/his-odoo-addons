@@ -22,6 +22,7 @@ une definition fausse indetectable.
 from datetime import timedelta
 
 from odoo import api, fields, models
+from odoo.exceptions import AccessError
 
 # Au-dela, un dossier pre-admis qui n'a pas paye merite qu'on rappelle.
 JOURS_PRE_ADMIS_SANS_ENCAISSEMENT = 7
@@ -572,18 +573,47 @@ class HisDashboard(models.AbstractModel):
             ],
         }
 
-    def _cockpits_direction(self, date_from, date_to):
-        """Les cockpits que la vue Direction agrege.
+    def _methodes_cockpits(self):
+        """Les cockpits que la vue Direction agrege, par NOM DE METHODE.
 
         Un point d'extension et non une liste en dur : his_admission ajoute le
         sien en heritant de ce modele. Le module qui apporte un metier apporte
         aussi ses indicateurs — his_crm_pipeline ne connait pas his.engagement,
         qui vit dans un module situe en aval de lui.
+
+        Des noms et non des resultats deja calcules : c'est ce qui permet a
+        _cockpits_direction d'entourer chaque appel. La liste etait auparavant
+        construite en appelant les methodes directement, et le premier metier
+        qu'un role n'avait pas le droit de lire faisait tomber TOUTE la vue
+        d'ensemble.
         """
-        return [
-            self.get_admissions(date_from, date_to),
-            self.get_contenu(date_from, date_to),
-        ]
+        return ['get_admissions', 'get_contenu']
+
+    def _cockpits_direction(self, date_from, date_to):
+        """Les cockpits que cet utilisateur-la peut reellement lire.
+
+        Un metier hors de sa portee DISPARAIT de l'ecran ; il ne le fait pas
+        tomber, et ne lui montre rien non plus. C'est la meme regle que partout
+        ailleurs dans ce fichier — un cockpit ne montre que ce que
+        l'utilisateur peut voir — appliquee au moment de l'agregation.
+
+        Le defaut etait reel et visible : des que his_admission etait installe
+        aux cotes de ce module, ouvrir « Vue d'ensemble » avec un role
+        Direction ou Production Contenu levait une erreur d'acces sur
+        his.person, atteinte par le display_name des dossiers. Deux roles sur
+        trois ne pouvaient pas ouvrir leur propre tableau de bord.
+
+        On n'attrape PAS l'erreur en sudo() : cela afficherait a un demandeur
+        de contenu les noms des candidats a l'admission. Se taire est la bonne
+        reponse, la montrer quand meme serait une fuite.
+        """
+        cockpits = []
+        for nom in self._methodes_cockpits():
+            try:
+                cockpits.append(getattr(self, nom)(date_from, date_to))
+            except AccessError:
+                continue
+        return cockpits
 
     # =============================== Communs =================================
 

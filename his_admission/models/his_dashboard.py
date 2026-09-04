@@ -151,6 +151,11 @@ class HisDashboard(models.AbstractModel):
             ))
         return files
 
-    def _cockpits_direction(self, date_from, date_to):
-        cockpits = super()._cockpits_direction(date_from, date_to)
-        return cockpits + [self.get_dossiers(date_from, date_to)]
+    def _methodes_cockpits(self):
+        """Le cockpit des dossiers rejoint la vue Direction.
+
+        Par NOM : c'est l'agregateur qui appelle, et qui entoure l'appel. Un
+        role sans droit sur les dossiers ne voit pas ce bloc, au lieu de voir
+        la vue d'ensemble entiere tomber.
+        """
+        return super()._methodes_cockpits() + ['get_dossiers']

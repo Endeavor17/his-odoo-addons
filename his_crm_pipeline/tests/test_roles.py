@@ -488,14 +488,33 @@ class TestRoles(TransactionCase):
         self.assertIn(self.env.ref('crm.crm_lead_menu_my_activities'), visibles)
 
     def test_le_responsable_garde_l_analyse(self):
-        """Arbitrer la file sans pouvoir la mesurer n'a pas de sens."""
+        """Arbitrer la file sans pouvoir la mesurer n'a pas de sens.
+
+        La regle n'a pas change ; l'OUTIL qui la sert, si. Ce test exigeait le
+        menu Reporting natif, ecrit quand on le croyait fonctionnel. Il ne
+        l'est pas ici : ses quatre rapports mesurent `prorated_revenue`, derive
+        d'`expected_revenue`, et ce pipeline ne porte AUCUN montant sur le lead
+        — l'argent vit sur his.engagement, c'est une decision assumee du
+        module. Verifie sur la base de recette : 13 candidatures, somme des
+        `expected_revenue` a zero, quatre graphiques qui tracent correctement
+        nos etapes et n'y empilent que des zeros.
+
+        Un graphique de zeros n'est pas un rapport vide, c'est un rapport qui
+        ment par omission — et qu'on finit par croire. Le responsable garde
+        donc son analyse, mais c'est le cockpit qui la lui donne, avec des
+        chiffres justes.
+        """
         responsable = self._user(
             'r_resp_menus', 'his_crm_pipeline.group_admissions_responsable',
             self.team_ventes,
         )
         visibles = self._menus_visibles(responsable)
 
-        self.assertIn(self.env.ref('crm.crm_menu_report'), visibles)
+        self.assertIn(
+            self.env.ref('his_crm_pipeline.menu_admissions_cockpit'), visibles,
+            "Le responsable doit pouvoir mesurer sa file",
+        )
+        self.assertNotIn(self.env.ref('crm.crm_menu_report'), visibles)
         self.assertNotIn(self.env.ref('crm.res_partner_menu_customer'), visibles)
 
     def test_la_direction_garde_les_portes_natives(self):
@@ -506,6 +525,10 @@ class TestRoles(TransactionCase):
             'crm.res_partner_menu_customer',
             'crm.menu_crm_opportunities',
             'crm.sales_team_menu_team_pipeline',
-            'crm.crm_menu_report',
         ):
             self.assertIn(self.env.ref(xmlid), visibles, xmlid)
+
+        # Le Reporting natif ne fait plus partie des portes : il mesure un
+        # chiffre d'affaires que ce pipeline ne porte pas. Voir
+        # test_le_responsable_garde_l_analyse.
+        self.assertNotIn(self.env.ref('crm.crm_menu_report'), visibles)
