@@ -209,6 +209,31 @@ class TestDashboard(TransactionCase):
         self.assertEqual(pertes['total'], 1)
         self.assertEqual(pertes['segments'][0]['label'], "Sans reponse")
 
+    def test_les_donuts_comptent_la_meme_population_que_les_tuiles(self):
+        """Deux totaux differents cote a cote sur le meme ecran sont
+        illisibles : le lecteur ne peut pas deviner lequel il regarde.
+
+        Vu au rendu — « Acquisition par source » totalisait 13 quand
+        « Candidatures recues » en annoncait 7, parce que le donut heritait
+        d'active_test=False et comptait les fiches perdues. Seul « Motifs de
+        perte » a besoin des archivees.
+        """
+        self._candidatures(4)
+        perdu = self._candidatures(1)
+        perdu.action_set_lost(lost_reason_id=self.env.ref(
+            'his_crm_pipeline.lost_reason_sans_reponse').id)
+
+        spec = self._spec()
+        recues = self._tuile(spec, 'candidatures')['valeur']
+        for donut in spec['donuts']:
+            if donut['label'] == "Motifs de perte":
+                continue
+            self.assertEqual(
+                donut['total'], recues,
+                "« %s » ne compte pas la meme population que les tuiles"
+                % donut['label'],
+            )
+
     def test_les_parts_sont_triees_de_la_plus_grosse_a_la_plus_petite(self):
         """Une legende dans l'ordre de la base fait chercher la plus grosse
         part a l'oeil."""

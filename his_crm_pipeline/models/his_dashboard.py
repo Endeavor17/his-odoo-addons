@@ -274,13 +274,19 @@ class HisDashboard(models.AbstractModel):
         candidats arrive, ou en est le portefeuille, ou l'on perd, et d'ou
         vient l'acquisition. Une cinquieme ferait double emploi.
 
-        active_test=False sur les deux dernieres : une candidature perdue EST
-        une fiche desactivee (crm/models/crm_lead.py:1122). Sans cela le donut
-        des motifs de perte serait vide en permanence, ce qui est la seule
-        chose plus inutile qu'un motif faux.
+        active_test=False sur « Motifs de perte » SEULEMENT : une candidature
+        perdue EST une fiche desactivee (crm/models/crm_lead.py:1122), donc
+        sans cela ce donut serait vide en permanence — la seule chose plus
+        inutile qu'un motif faux.
+
+        Les trois autres restent sur les fiches actives, comme les tuiles.
+        C'est une correction vue a l'ecran : « Acquisition par source »
+        totalisait 13 quand « Candidatures recues » en annoncait 7, deux
+        populations differentes cote a cote sur le meme ecran. Le lecteur ne
+        peut pas deviner laquelle il regarde, et c'est exactement ce que la
+        regle « un indicateur, une definition » existe pour empecher.
         """
         base = [('team_id', 'in', equipes.ids)] + self._entre(date_from, date_to)
-        toutes = self.with_context(active_test=False)
 
         return [
             self._donut(
@@ -289,11 +295,11 @@ class HisDashboard(models.AbstractModel):
             self._donut(
                 "Etat du portefeuille", 'crm.lead', base, 'stage_id',
             ),
-            toutes._donut(
+            self.with_context(active_test=False)._donut(
                 "Motifs de perte", 'crm.lead',
                 base + [('lost_reason_id', '!=', False)], 'lost_reason_id',
             ),
-            toutes._donut(
+            self._donut(
                 "Acquisition par source", 'crm.lead', base, 'source_id',
             ),
         ]
