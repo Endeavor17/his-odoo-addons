@@ -202,6 +202,40 @@ conseillère qui a amené le candidat.
 Un dossier déjà instruit ne redescend pas : repasser par « Pré-admis » après une
 inscription ne défait pas le travail de l'Admission.
 
+## La grille tarifaire (`his.tarif`)
+
+Une référence **de reporting, et rien d'autre**. Elle ne facture pas, ne
+comptabilise pas et ne touche aucun modèle `account`. `his.engagement` garde ses
+booléens payé / non payé — la position du module n'a pas changé :
+
+> *Payé / non payé seulement, comme le classeur. Aucun montant, aucun raccord
+> comptable. Le jour où les montants comptent, c'est un chantier `account`.*
+
+Ce que la grille permet, c'est de **déduire** un chiffre d'affaires attendu au
+lieu de le saisir. C'est la leçon des données de GoHighLevel : **454 opportunités
+ouvertes sur 505 n'y portent aucun montant**, conséquence directe d'avoir demandé
+à un humain de taper un nombre qu'une grille connaît déjà. Un chiffre déduit ne
+peut pas être vide.
+
+- Un tarif par spécialité, `cycle` en `related` (la spécialité le porte déjà :
+  le dupliquer donnerait deux vérités).
+- **Un seul tarif actif par spécialité**, contrainte serveur : deux tarifs actifs
+  donneraient deux revenus possibles et le cockpit en choisirait un au hasard.
+  Pour changer de barème, on désactive l'ancien — l'historique de ce qu'on
+  facturait la rentrée précédente reste lisible.
+- Une spécialité **sans tarif** rend ses candidatures non chiffrables. Elle
+  remonte donc dans la file « Qualité des données » du cockpit, plutôt que de
+  disparaître silencieusement du total.
+
+**La tuile « Revenu attendu » n'apparaît pas tant que la grille est vide**, et
+c'est voulu : un chiffre d'affaires inventé est pire qu'un chiffre absent, parce
+qu'il se cite en réunion.
+
+> **À obtenir de la Finance avant mise en service :** le barème réel. Les cartes
+> GoHighLevel affichent un uniforme DA 400 000, mais rien ne dit s'il s'agit des
+> frais d'inscription seuls ou du total, ni si le Master diffère de la Licence.
+> Le module est livré avec une grille **vide**.
+
 ## Hors périmètre (assumé)
 
 - **Les montants.** Payé / non payé seulement, comme le classeur. La caisse

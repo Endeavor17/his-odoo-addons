@@ -188,6 +188,106 @@ Sans responsable d'équipe (`team_id.user_id`), **aucune relance n'est posée** 
 la poser sur le conseiller rendrait le retard invisible tout en paraissant
 traité.
 
+### La boucle d'appel
+
+Les conseillères composent le numéro sur **leur propre téléphone**, en regardant
+un écran de bureau. Un bouton « cliquer pour appeler » n'aurait donc rien à
+appeler : la valeur est entièrement dans ce qui se passe **après** l'appel.
+
+Trois champs — `tentatives_appel`, `derniere_tentative` — et trois gestes d'un
+clic, présents sur la carte du tableau **et** sur la fiche :
+
+| Geste | Effet |
+|---|---|
+| **Sans réponse** | incrémente le compteur, poste une note datée, repousse le rappel d'un jour. **L'étape ne bouge pas** — une tentative n'est pas un contact. |
+| **Joint** | passe en *Contact établi*, efface le rappel, ouvre la fiche : c'est le seul moment où la conseillère se souvient de ce qui a été dit. |
+| **Perdu** | ouvre l'assistant natif, motif pré-rempli quand la fiche le sait déjà. |
+
+**Un seul rappel à la fois**, repoussé plutôt que dupliqué. Poser une activité
+par tentative referait exactement le défaut que la relance SLA évite déjà : une
+pile que le destinataire cesse de lire. Le résumé qui l'identifie est une
+constante — il sert à poser l'activité *et* à la retrouver.
+
+**Aucune perte automatique** au-delà de N tentatives. Une machine qui déclare un
+candidat perdu est la même automatisation que la Direction a refusée pour
+l'affectation : la fiche propose, la conseillère décide. Le compteur se contente
+de transformer « candidature fantôme » d'un souvenir en un fait porté par la
+fiche.
+
+### Joindre le candidat : des liens, pas une intégration
+
+`telephone_e164` normalise `0555…`, `+213555…` et `00213555…` vers `+213555…`
+via **`phone_validation`** — module Community déjà présent, celui qu'Odoo
+utilise lui-même. De là, deux liens sur la carte : `tel:` et
+`wa.me/<numéro>`.
+
+Ce sont des **liens profonds, pas une intégration**. Ils ouvrent l'application
+avec le numéro prêt. Aucun message entrant, aucun accusé de réception, aucun fil
+dans Odoo : la Community n'a ni téléphonie, ni SMS gratuit, ni WhatsApp. C'est
+une perte assumée face à l'onglet Conversations de GoHighLevel, et elle est
+écrite ici plutôt que découverte à l'usage.
+
+`phone_format` **rend la saisie telle quelle** quand elle est illisible : sans
+vérifier le signe `+`, une faute de frappe deviendrait une URL WhatsApp pointant
+vers rien. Un candidat au numéro incompréhensible n'affiche donc aucun des deux
+liens.
+
+## Les motifs de perte
+
+Les quatre motifs livrés à l'origine décrivent tous une mort **tardive**, en
+revue de dossier. Les chiffres réels de GoHighLevel disent l'inverse : sur 193
+pertes expliquées, *Candidature fantôme* (48), *Sans réponse* (56), *Numéro
+erroné* (12) et *BAC trop ancien* (12) sont des **issues d'appel**. Les leads
+meurent au téléphone.
+
+Six motifs les rejoignent donc, repris du vocabulaire que l'équipe connaît. Deux
+décisions au passage :
+
+- **« No Answer » et « No answer » fusionnent.** GHL les tenait séparés ; les
+  garder scindés perpétuerait un compartiment coupé en deux dans tous les
+  graphiques à venir. Une fois fusionnés, **104 des 193 pertes expliquées sont
+  « jamais joint »** — plus de la moitié.
+- **« Unknown » n'est pas repris** : il n'enregistre rien. Sa place est tenue par
+  **« Autre - à préciser »**, qui *exige* une précision.
+
+`crm.lost.reason` n'a **pas** de champ `sequence` et trie par `id` : le motif le
+plus fréquent se retrouverait au milieu d'une liste de onze. Le module l'ajoute,
+et range les motifs par fréquence réelle. Ce n'est pas cosmétique — voir
+ci-dessous.
+
+### Une perte ne peut plus être muette
+
+**626 pertes, 193 motifs.** Les deux tiers ne disaient rien. Ce n'est pas de la
+négligence : consigner coûtait six gestes et sauter n'en coûtait aucun.
+
+`_check_perte_motivee` est une contrainte **serveur**, aux côtés du verrou
+d'approbation et de « gagné seulement si encaissé », et pour la même raison : le
+glisser-déposer du kanban, l'import et l'API ne passent par aucune vue, ils
+passent tous par `write()`.
+
+Trois détails qui comptent :
+
+- **Elle porte sur `won_status`, pas sur `active`.** « Perdu » vaut probabilité 0
+  *et* archivé (`crm/models/crm_lead.py:1122`) ; une fiche simplement rangée
+  garde sa probabilité. Exiger un motif sur `active` interdirait le classement
+  ordinaire.
+- **`action_set_lost` est renversé.** Odoo archive *puis* écrit le motif, ce qui
+  laisse entre les deux une fiche déjà perdue et sans motif : la contrainte se
+  déclenchait sur cet état transitoire et rendait toute perte impossible, y
+  compris bien faite. Le motif est désormais posé d'abord.
+- **La contrainte seule serait nuisible.** Elle pousserait à ne plus clore du
+  tout, et le pipeline se remplirait de cadavres — une panne pire que celle
+  qu'on répare. C'est le pré-remplissage (trois tentatives sans réponse *sont*
+  une candidature fantôme) et l'ordre par fréquence qui la rendent supportable.
+
+La soupape d'honnêteté est délibérée : un motif obligatoire **sans porte de
+sortie** ne produit pas de meilleures données, il produit des mensonges
+confiants. Une conseillère qui ne sait pas choisit ce qui est le plus proche du
+curseur, et ce motif-là est pire qu'un vide parce qu'il ne s'en distingue pas.
+Odoo ne se servait de sa note de clôture que comme message de suivi — aucun
+champ ne la portait, donc rien ne pouvait l'exiger ; l'assistant natif la dépose
+maintenant sur `perte_precision`.
+
 ## Pipeline Production Contenu
 
 | # | Étape |
@@ -226,6 +326,32 @@ de `his_stock_mdm`.
 
 Un refus d'approbation n'est pas une perte sèche : le motif « Retour production
 nécessaire » renvoie la demande en production.
+
+## Les répartitions et la qualité des données
+
+Quatre donuts sur le cockpit — score, portefeuille, motifs de perte, acquisition
+par source — un `_read_group` chacun, sur des colonnes déjà stockées. Chaque part
+porte **son** action, et un test vérifie part par part que le clic ramène
+exactement le compte annoncé : une part qu'on ne peut pas ouvrir doit être crue
+sur parole, et c'est aussi ce qui rend une définition fausse indétectable.
+
+Seul « Motifs de perte » lit les fiches archivées (`active_test=False`) : une
+candidature perdue *est* une fiche désactivée, sans quoi ce donut serait vide en
+permanence. Les trois autres restent sur les fiches actives, **comme les
+tuiles** — c'est une correction vue à l'écran : « Acquisition par source »
+totalisait 13 quand « Candidatures reçues » en annonçait 7, deux populations
+côte à côte que le lecteur ne peut pas départager.
+
+La file **« Qualité des données »** est la meilleure idée du cockpit GoHighLevel
+— son panneau *Fix your forecast data* — et la mécanique existait déjà ici :
+`_a_traiter` rend un libellé, un compte, un aperçu et une action. C'est ce qui
+rend les autres chiffres de l'écran dignes de confiance ; un tableau de bord qui
+ne dit pas ce qu'il ignore laisse croire qu'il sait tout.
+
+Pas de « date de clôture manquante » comme chez GHL, où les 505 opportunités
+ouvertes en manquent **toutes** : signaler un champ que personne ne remplit et
+que rien n'utilise n'est pas de la qualité de donnée, c'est du bruit. Le
+vieillissement d'un lead est déjà porté par `is_rotting`, natif.
 
 ## Les deux tableaux kanban
 
@@ -323,16 +449,20 @@ gestes distincts ; ils le restent.
   réservation à la GoHighLevel demanderait Enterprise ou un module tiers.
 - **`visite_campus_effectuee` calculé depuis l'agenda** — non, et pas « pas encore » :
   voir ci-dessus. Le champ est une attestation, pas une déduction.
-- **Chart.js sur l'entonnoir du cockpit** — les barres CSS suffisent tant qu'aucune
-  courbe temporelle n'est demandée (cf. le commentaire dans `dashboard.scss`).
-  L'entonnoir est un instantané, pas une série temporelle. Une répartition en donut
-  par étape ferait double emploi avec le lien pivot déjà présent dans « Explorer ».
+- **Chart.js** — toujours écarté, et pour la même raison qu'avant : l'entonnoir et
+  les quatre répartitions sont des **instantanés**, pas des séries temporelles.
+  Ce qui a changé, c'est qu'ils sont désormais dessinés — en `conic-gradient`,
+  une déclaration CSS par donut. Charger une bibliothèque pour quatre camemberts
+  statiques serait une façon coûteuse de perdre un argument déjà gagné. Le jour
+  où une courbe dans le temps est demandée, Chart.js est déjà livré avec Odoo
+  (vue graph) : le charger plutôt que de dessiner des points à la main.
 - Migration des données GHL : départ à neuf, aucun historique repris.
 - WhatsApp, Facebook, Instagram : pas d'inbox, pas de threading.
 - Séquences de nurturing et automatisation marketing.
 - Capture UTM côté site ou plateformes publicitaires. Les champs UTM natifs
-  (`source_id`, `medium_id`, `campaign_id`) sont laissés tels quels, une
-  intégration ultérieure les remplira.
+  (`source_id`, `medium_id`, `campaign_id`) sont laissés tels quels ; c'est le
+  flux n8n de capture des candidatures qui les remplit, hors de ce dépôt. Le
+  donut « Acquisition par source » les lit sans rien supposer de leur origine.
 - Le rattachement au référentiel Personnes : c'est
   [`his_crm_identity_bridge`](../his_crm_identity_bridge/), module séparé. **Ce
   module-ci n'a aucune dépendance à `his_person_core`** et s'installe seul.
