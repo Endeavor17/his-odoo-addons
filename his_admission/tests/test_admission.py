@@ -214,13 +214,16 @@ class TestAdmission(TransactionCase):
         return user
 
     def test_le_parcours_des_ventes_tient_avec_les_droits_d_une_conseillere(self):
-        """Contact etabli puis pre-admission, joues par la conseillere elle-meme.
+        """La pre-admission, jouee par la conseillere elle-meme.
 
-        Ses deux gestes creent une fiche personne et font avancer un dossier :
-        deux ecritures sur des modeles ou elle n'a pas le droit d'ecrire. Ce
-        sont des consequences de sa decision, pas des modifications qu'elle
-        s'autorise — d'ou le sudo() cote serveur. Sans lui, le seul geste
-        legitime des Ventes leve une erreur de droits.
+        Son geste cree une fiche personne et ouvre un dossier : deux ecritures
+        sur des modeles ou elle n'a pas le droit d'ecrire. Ce sont des
+        consequences de sa decision, pas des modifications qu'elle s'autorise —
+        d'ou le sudo() cote serveur. Sans lui, le seul geste legitime des
+        Ventes leve une erreur de droits.
+
+        L'etape est la PRE-ADMISSION depuis l'hypothese A1 : c'est la que le
+        pont ouvre la fiche, et non plus au premier contact.
         """
         conseillere = self._conseillere()
         Lead = self.env['crm.lead'].with_user(conseillere)
@@ -229,15 +232,17 @@ class TestAdmission(TransactionCase):
             'contact_name': "Nadir Bouzid",
             'email_from': "nadir.bouzid@example.com",
             'team_id': self.env.ref('his_crm_pipeline.crm_team_ventes').id,
-            'stage_id': self.env.ref('his_crm_pipeline.stage_vente_contact_etabli').id,
+            'stage_id': self.env.ref('his_crm_pipeline.stage_vente_pris_en_charge').id,
             'user_id': conseillere.id,
         })
-        self.assertTrue(lead.his_person_id, "Le premier contact doit creer la fiche.")
-        engagement = lead.his_person_id.sudo().engagement_ids
-        self.assertEqual(engagement.etat, 'prospect')
+        self.assertFalse(lead.his_person_id, "Avant la pre-admission, aucune fiche.")
 
         lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_pre_admis')
 
+        self.assertTrue(lead.his_person_id, "La pre-admission ouvre la fiche.")
+        engagement = lead.his_person_id.sudo().engagement_ids
+        # Pas de matricule : il attend l'encaissement des frais d'inscription.
+        self.assertFalse(lead.his_person_id.sudo().matricule_institutionnel)
         self.assertEqual(engagement.etat, 'admis')
         self.assertEqual(engagement.conseiller_id, conseillere)
         self.assertEqual(engagement.lead_id, lead)
@@ -250,9 +255,10 @@ class TestAdmission(TransactionCase):
             'contact_name': "Sami Larbi",
             'email_from': "sami.larbi@example.com",
             'team_id': self.env.ref('his_crm_pipeline.crm_team_ventes').id,
-            'stage_id': self.env.ref('his_crm_pipeline.stage_vente_contact_etabli').id,
+            'stage_id': self.env.ref('his_crm_pipeline.stage_vente_pre_admis').id,
         })
         dossier = lead._his_engagement()
+        self.assertTrue(dossier, "La pre-admission doit avoir ouvert le dossier")
         with self.assertRaises(AccessError):
             dossier.with_user(conseillere).write({'numero_etudiant': "123"})
 
@@ -465,7 +471,8 @@ class TestAdmission(TransactionCase):
             email_from="ines.ferhat@example.com",
             specialite_id=self.spec_st.id,
             bac_moyenne=13.0, note_math=14.0, note_physique=12.0,
-            stage_id=self.env.ref('his_crm_pipeline.stage_vente_contact_etabli').id,
+            # La pre-admission : c'est la que le dossier s'ouvre (hypothese A1).
+            stage_id=self.env.ref('his_crm_pipeline.stage_vente_pre_admis').id,
         )
         dossier = lead._his_engagement()
         self.assertEqual(dossier.specialite_id, self.spec_st)
@@ -553,6 +560,46 @@ class TestAdmission(TransactionCase):
         self.assertEqual(lead.score_academique, 7)
         self.assertIn("non applicable", lead.score_detail)
 
+    # --- Le matricule attend l'argent -----------------------------------------
+
+    def test_le_matricule_est_emis_a_l_encaissement_et_pas_avant(self):
+        """Hypothese A1 : le dossier s'ouvre a la pre-admission, le matricule
+        s'emet a l'encaissement des frais d'inscription.
+
+        Les frais sont non remboursables : c'est le premier engagement
+        irreversible des DEUX cotes, donc le bon moment pour graver un
+        identifiant a vie.
+        """
+        lead = self._lead_avec_dossier()
+        personne = lead.his_person_id
+        dossier = personne.engagement_ids[:1]
+        self.assertTrue(dossier, "La pre-admission ouvre le dossier")
+        self.assertFalse(
+            personne.matricule_institutionnel,
+            "Un candidat pre-admis n'a pas encore de matricule",
+        )
+
+        dossier.action_encaisser_frais_inscription()
+
+        self.assertTrue(
+            personne.matricule_institutionnel,
+            "L'encaissement des frais d'inscription emet le matricule",
+        )
+
+    def test_un_candidat_perdu_avant_l_argent_ne_consomme_aucun_matricule(self):
+        """La raison d'etre de tout ce changement.
+
+        954 opportunites perdues sur 1558 dans le CRM reel : au premier
+        contact, six numeros sur dix partaient a des gens qui ne seront jamais
+        etudiants, et la sequence ne les rend jamais.
+        """
+        lead = self._lead_avec_dossier()
+        personne = lead.his_person_id
+        lead.action_set_lost(lost_reason_id=self.env.ref(
+            'his_crm_pipeline.lost_reason_trop_cher').id)
+
+        self.assertFalse(personne.matricule_institutionnel)
+
     # --- La carte etudiant ----------------------------------------------------
 
     def test_la_carte_ne_s_edite_que_sur_un_dossier_inscrit(self):
@@ -589,7 +636,9 @@ class TestAdmission(TransactionCase):
             'note_math': 12.0,
             **vals,
         })
-        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_contact_etabli')
+        # La pre-admission : c'est la que le pont ouvre la fiche et le dossier
+        # depuis l'hypothese A1. Le matricule, lui, attend l'encaissement.
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_pre_admis')
         return lead
 
     def test_le_dossier_suit_les_corrections_du_lead(self):
@@ -618,21 +667,30 @@ class TestAdmission(TransactionCase):
         self.assertEqual(dossier.specialite_id, self.spec_master)
         self.assertEqual(dossier.cycle, 'master')
 
-    def test_le_dossier_instruit_ne_se_laisse_plus_ecraser(self):
-        """Une fois l'Admission au travail, le lead cesse d'etre la source.
+    def test_le_dossier_inscrit_ne_se_laisse_plus_ecraser(self):
+        """Une fois l'inscription prononcee, le lead cesse d'etre la source.
 
         Sans cette borne, une conseillere rouvrant un vieux lead ecraserait des
-        donnees verifiees sur le dossier d'un candidat deja admis.
+        donnees verifiees sur le dossier d'un etudiant deja inscrit.
+
+        La borne est « inscrit » et non « admis » : depuis l'hypothese A1 le
+        dossier naît a la pre-admission et passe « admis » aussitot. S'arreter
+        la fermait la fenetre avant qu'elle ne s'ouvre.
         """
         lead = self._lead_avec_dossier()
         dossier = lead.his_person_id.engagement_ids[:1]
-        dossier.sudo().etat = 'admis'
+        for doc in dossier.document_ids:
+            doc.sudo().write({'fourni': True})
+        dossier.sudo().write({
+            'frais_inscription_payes': True, 'frais_scolarite_payes': True,
+        })
+        dossier.sudo().etat = 'inscrit'
 
         lead.write({'bac_moyenne': 19.0})
 
         self.assertEqual(
             dossier.bac_moyenne, 13.5,
-            "Le dossier instruit garde ses valeurs",
+            "Le dossier d'un inscrit garde ses valeurs",
         )
 
     # --- Le pipeline partage --------------------------------------------------
@@ -648,12 +706,25 @@ class TestAdmission(TransactionCase):
         })
         return user
 
-    def test_l_admission_voit_les_candidats_qu_elle_instruit(self):
+    def test_la_regle_de_l_admission_suit_bien_contact_etabli(self):
+        """Le nombre 30 de la regle EST la sequence de « Contact etabli ».
+
+        Un domaine de regle ne peut pas nommer une etape : ir.rule le relit
+        sans `ref` ni acces aux modeles. Le nombre y est donc en dur, et ce
+        test est ce qui l'empeche de mentir — reordonner le pipeline fait
+        echouer ici, plutot que d'ouvrir ou de fermer cet acces en silence.
+        """
+        regle = self.env.ref('his_admission.rule_crm_lead_admission')
+        etape = self.env.ref('his_crm_pipeline.stage_vente_contact_etabli')
+        self.assertIn(str(etape.sequence), regle.domain_force)
+
+    def test_l_admission_voit_les_candidats_des_le_premier_contact(self):
         """Un seul enregistrement, deux equipes : rien a synchroniser.
 
-        Avant le premier contact, la candidature appartient aux Ventes et
-        l'Admission n'a rien a en connaitre. Des que le pont ouvre la fiche
-        personne, elle entre dans son champ.
+        Avant le premier contact la candidature appartient aux Ventes, et
+        l'Admission n'a rien a en connaitre. Des que la conseillere a parle au
+        candidat, elle le suit — meme si son dossier ne s'ouvrira qu'a la
+        pre-admission.
         """
         agent = self._agent_admission()
         lead = self._lead_avec_dossier()
@@ -665,7 +736,7 @@ class TestAdmission(TransactionCase):
 
         vus = self.env['crm.lead'].with_user(agent).search([])
 
-        self.assertIn(lead, vus, "Le candidat instruit doit etre visible")
+        self.assertIn(lead, vus, "Le candidat contacte doit etre visible")
         self.assertNotIn(avant, vus, "Avant le premier contact, rien a voir")
 
     def test_l_admission_peut_deplacer_une_carte(self):

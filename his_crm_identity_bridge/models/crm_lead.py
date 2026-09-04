@@ -7,7 +7,22 @@ from odoo import _, api, fields, models
 # candidat, pas seulement recu son lead. Changer d'avis doit rester un
 # parametre, pas une modification de code.
 PARAM_ETAPE_DECLENCHEUSE = 'his_crm.identity_trigger_stage_xmlid'
-ETAPE_DECLENCHEUSE_DEFAUT = 'his_crm_pipeline.stage_vente_contact_etabli'
+# Hypothese A1, TRANCHEE : la pre-admission.
+#
+# « Contact etabli » etait la proposition initiale. Elle a ete rejetee sur
+# preuve : entrer dans le referentiel cree une fiche, et une fiche de candidat
+# ouvre le dossier qui recevra l'encaissement. Or le CRM reel perd 954
+# opportunites sur 1558. Declencher au premier contact revenait a ouvrir un
+# dossier pour six candidats sur dix qui n'en auront jamais l'usage.
+#
+# La pre-admission est le dernier point AVANT l'argent : c'est le moment ou
+# l'institution se prononce, et il reste un endroit ou enregistrer le paiement
+# qui suit. Declencher a l'encaissement lui-meme etait impossible — le
+# paiement s'enregistre SUR le dossier, qui n'existerait donc pas encore.
+#
+# Le matricule, lui, n'est plus emis ici : voir his_person_core, il est
+# attribue a l'encaissement des frais d'inscription.
+ETAPE_DECLENCHEUSE_DEFAUT = 'his_crm_pipeline.stage_vente_pre_admis'
 
 
 class CrmLead(models.Model):

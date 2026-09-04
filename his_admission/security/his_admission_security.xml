@@ -42,6 +42,14 @@
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
+    </data>
+
+    <!-- HORS noupdate : une regle d'enregistrement doit pouvoir etre
+         corrigee par une livraison. Dans le bloc noupdate, le changement
+         de domaine ne s'appliquait pas aux bases deja installees — panne
+         silencieuse, la regle restait celle d'avant. -->
+    <data>
+
         <!-- ============ Le pipeline partage ============
 
              L'Admission voit et deplace les candidatures qu'elle a a
@@ -49,13 +57,20 @@
              enregistrement, deux equipes : rien a synchroniser, donc rien qui
              puisse deriver. C'est ce qui rend le mot « en phase » litteral.
 
-             Le critere est `his_person_id`, et non une liste d'etapes.
-             L'etape declencheuse est un ir.config_parameter (l'hypothese A1
-             n'est pas tranchee) : recopier ici une liste d'etapes creerait une
-             seconde definition de « connu de l'Admission », qui divergerait au
-             premier changement de parametre. Le pont pose la fiche personne
-             exactement au moment ou le candidat entre dans le champ de
-             l'Admission — c'est donc lui, le critere.
+             Le critere est l'ETAPE atteinte : l'Admission suit le candidat des
+             que la conseillere lui a parle. Il a d'abord ete his_person_id, du
+             temps ou le pont d'identite se declenchait au premier contact ;
+             l'hypothese A1 a place ce declencheur a la pre-admission, et
+             garder la fiche comme critere aurait ferme ce tableau sur tout ce
+             qui precede.
+
+             UNE SEQUENCE ET NON DES IDENTIFIANTS : un domaine de regle est
+             relu par ir.rule._compute_domain avec un contexte qui ne contient
+             ni `ref` ni les modeles — seulement `user`, `time` et les
+             societes. On ne peut donc pas y nommer une etape. Le nombre 30 est
+             la sequence de « Contact etabli », et un test le verifie : si
+             quelqu'un reordonne le pipeline, il echoue bruyamment plutot que
+             d'ouvrir ou de fermer cet acces en silence.
 
              Ecriture SANS creation ni suppression (voir ir.model.access.csv) :
              l'Admission fait avancer un candidat, elle n'en invente pas et
@@ -65,7 +80,7 @@
             <field name="name">Candidatures connues de l'Admission</field>
             <field name="model_id" ref="crm.model_crm_lead"/>
             <field name="groups" eval="[(4, ref('his_admission.group_his_admission'))]"/>
-            <field name="domain_force">[('his_person_id', '!=', False)]</field>
+            <field name="domain_force">[('stage_id.sequence', '&gt;=', 30)]</field>
         </record>
 
     </data>

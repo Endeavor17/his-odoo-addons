@@ -179,10 +179,18 @@ class CrmLead(models.Model):
     # sert a ecrire ET a decider s'il faut ecrire.
     CHAMPS_ACADEMIQUES = ('specialite_id', 'bac_moyenne', 'note_math', 'note_physique')
 
-    # Tant que le dossier est dans l'un de ces etats, l'Admission ne l'a pas
-    # encore instruit : le lead reste la source. Au-dela, il devient le
-    # document de travail d'un autre service et cesse d'accepter les pousses.
-    ETATS_SUIVEURS = ('prospect', 'candidat_soumis')
+    # Tant que le dossier est dans l'un de ces etats, l'inscription n'est pas
+    # prononcee : le lead reste la source des donnees academiques. Au-dela —
+    # « inscrit », « blocage administratif » — le dossier est le document de
+    # travail de l'Admission et cesse d'accepter les pousses.
+    #
+    # « admis » EN FAIT PARTIE, et c'est une consequence de l'hypothese A1 :
+    # depuis que le pont se declenche a la pre-admission, le dossier naît
+    # « prospect » et passe « admis » dans la meme ecriture. Exclure « admis »
+    # fermait donc la fenetre avant qu'elle ne s'ouvre, et aucune correction
+    # n'atteignait plus jamais le dossier — la panne meme qu'on venait de
+    # reparer.
+    ETATS_SUIVEURS = ('prospect', 'candidat_soumis', 'admis')
 
     def _his_assurer_engagement(self):
         """Le dossier reprend ce que la capture a recueilli.

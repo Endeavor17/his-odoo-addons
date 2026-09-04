@@ -310,6 +310,28 @@ class HisEngagement(models.Model):
                 droit=LIBELLES_PAIEMENT.get(champ, champ),
                 user=self.env.user.display_name,
             ))
+            # C'est ICI que le candidat devient quelqu'un de l'institution.
+            #
+            # Le matricule est a vie et sa sequence ne se recycle jamais : le
+            # poser au premier contact revenait a en bruler un par candidature,
+            # dont six sur dix pour des gens qui ne seront jamais etudiants.
+            # Les frais d'inscription sont non remboursables — c'est le premier
+            # engagement irreversible des DEUX cotes, donc le bon moment.
+            #
+            # Le dossier, lui, existe depuis la pre-admission : il faut bien un
+            # endroit ou enregistrer cet encaissement. Voir hypothese A1.
+            if champ == 'frais_inscription_payes' and eng.person_id:
+                # sudo() : le guichet Finance n'a AUCUN droit sur le
+                # referentiel d'identite, et c'est voulu. Emettre le matricule
+                # est une consequence de l'encaissement qu'il enregistre, pas
+                # un geste qu'il s'autorise — meme raisonnement que la porte
+                # etroite ci-dessus.
+                personne = eng.person_id.sudo()
+                personne._his_attribuer_matricule()
+                eng.sudo().message_post(body=_(
+                    "Matricule institutionnel attribue : %(matricule)s.",
+                    matricule=personne.matricule_institutionnel,
+                ))
 
     def action_encaisser_frais_inscription(self):
         """Les frais non remboursables. C'est CE geste qui gagne le lead."""

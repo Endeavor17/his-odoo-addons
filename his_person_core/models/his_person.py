@@ -280,10 +280,59 @@ class HisPerson(models.Model):
             return domain if operator == 'in' else ['!'] + domain
         return [('matricule_institutionnel', operator, value)]
 
+    def _his_attribuer_matricule(self, sequence_date=None):
+        """Emet le matricule d'une fiche qui n'en a pas encore.
+
+        Le pendant de la regle ci-dessus : un candidat entre dans le
+        referentiel sans numero, et le recoit au moment ou l'institution
+        s'engage reellement — l'encaissement des frais d'inscription, appele
+        depuis his_admission.
+
+        Idempotent : une fiche qui porte deja un matricule n'en change jamais.
+        Un matricule est a vie ; le reemettre serait pire que de ne pas en
+        avoir.
+        """
+        sequence = self.env['ir.sequence'].sudo()
+        for person in self:
+            if person.matricule_institutionnel:
+                continue
+            base = sequence.next_by_code(
+                MATRICULE_SEQUENCE_CODE,
+                sequence_date=fields.Date.to_date(sequence_date)
+                or fields.Date.context_today(self),
+            )
+            if not base:
+                raise ValidationError(
+                    "Sequence %s introuvable : impossible d'emettre un matricule."
+                    % MATRICULE_SEQUENCE_CODE
+                )
+            person.sudo().matricule_institutionnel = '%s-%s' % (
+                base, _compute_matricule_checksum(base[-6:]),
+            )
+
     @api.model_create_multi
     def create(self, vals_list):
         sequence = self.env['ir.sequence'].sudo()
         for vals in vals_list:
+            # UN CANDIDAT N'EST PAS ENCORE QUELQU'UN DE L'INSTITUTION.
+            #
+            # Le matricule est un identifiant a vie, tire d'une sequence qui ne
+            # se recycle jamais — supprimer une fiche ne « libere » pas son
+            # numero, c'est ecrit plus haut dans ce fichier. L'emettre au
+            # premier contact revenait donc a en bruler un par candidature :
+            # sur les chiffres reels du CRM, 954 opportunites perdues sur
+            # 1558, soit six numeros sur dix distribues a des gens qui ne
+            # seront jamais etudiants. Deux fiches de recette portaient deja un
+            # matricule alors que leur candidature etait perdue.
+            #
+            # Le candidat existe donc dans le referentiel — il faut bien un
+            # dossier pour instruire son admission — mais SANS numero. Il le
+            # recoit a l'encaissement des frais d'inscription, via
+            # _his_attribuer_matricule. Voir hypothese A1.
+            if vals.get('type_personne') == 'candidat' \
+                    and not vals.get('matricule_institutionnel'):
+                vals.pop('matricule_sequence_date', None)
+                continue
             # Cle de service, jamais un champ : elle ne sert qu'a choisir la
             # plage annuelle de la sequence (embauche antidatee ou future).
             sequence_date = vals.pop('matricule_sequence_date', None)
