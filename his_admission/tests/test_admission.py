@@ -553,6 +553,64 @@ class TestAdmission(TransactionCase):
         self.assertEqual(lead.score_academique, 7)
         self.assertIn("non applicable", lead.score_detail)
 
+    # --- Le dossier suit le lead ---------------------------------------------
+
+    def _lead_avec_dossier(self, **vals):
+        """Un lead parvenu a l'etape declencheuse : personne et dossier ouverts."""
+        lead = self.env['crm.lead'].create({
+            'name': "Candidature", 'contact_name': "Nadia Slimani",
+            'email_from': "nadia.slimani@example.dz", 'phone': "0555443322",
+            'team_id': self.env.ref('his_crm_pipeline.crm_team_ventes').id,
+            'specialite_id': self.spec_licence.id, 'bac_moyenne': 13.5,
+            'note_math': 12.0,
+            **vals,
+        })
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_contact_etabli')
+        return lead
+
+    def test_le_dossier_suit_les_corrections_du_lead(self):
+        """Une correction saisie sur le lead doit atteindre le dossier.
+
+        Avant, la recopie etait un ONE-SHOT : le dossier gardait a vie les
+        valeurs du premier contact. Une conseillere qui corrigeait une moyenne
+        de BAC voyait le lead changer et le dossier rester faux, sans le
+        moindre signe.
+        """
+        lead = self._lead_avec_dossier()
+        dossier = lead.his_person_id.engagement_ids[:1]
+        self.assertEqual(dossier.bac_moyenne, 13.5)
+
+        lead.write({'bac_moyenne': 16.75, 'note_math': 17.0})
+
+        self.assertEqual(dossier.bac_moyenne, 16.75)
+        self.assertEqual(dossier.note_math, 17.0)
+
+    def test_changer_de_specialite_sur_le_lead_change_le_dossier(self):
+        lead = self._lead_avec_dossier()
+        dossier = lead.his_person_id.engagement_ids[:1]
+
+        lead.specialite_id = self.spec_master
+
+        self.assertEqual(dossier.specialite_id, self.spec_master)
+        self.assertEqual(dossier.cycle, 'master')
+
+    def test_le_dossier_instruit_ne_se_laisse_plus_ecraser(self):
+        """Une fois l'Admission au travail, le lead cesse d'etre la source.
+
+        Sans cette borne, une conseillere rouvrant un vieux lead ecraserait des
+        donnees verifiees sur le dossier d'un candidat deja admis.
+        """
+        lead = self._lead_avec_dossier()
+        dossier = lead.his_person_id.engagement_ids[:1]
+        dossier.sudo().etat = 'admis'
+
+        lead.write({'bac_moyenne': 19.0})
+
+        self.assertEqual(
+            dossier.bac_moyenne, 13.5,
+            "Le dossier instruit garde ses valeurs",
+        )
+
     # --- Grille tarifaire et revenu deduit -----------------------------------
 
     def _cockpit(self):

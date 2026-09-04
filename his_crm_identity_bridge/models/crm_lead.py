@@ -70,7 +70,22 @@ class CrmLead(models.Model):
             return
         Person = self.env['his.person'].sudo()
         for lead in self:
-            if lead.stage_id != etape or lead.team_id != equipe:
+            # « PARVENU a l'etape », et non « pose exactement dessus ».
+            #
+            # Le kanban autorise de tirer une carte de « Pris en charge » droit
+            # vers « Dossier et pre-admission ». Avec une egalite stricte, ce
+            # geste ordinaire ne creait NI personne NI dossier, et rien ne le
+            # signalait : le candidat n'existait tout simplement pas pour
+            # l'Admission. Constate sur la base de recette — 2 candidatures en
+            # « Dossier » et 1 en « Pre-admis » sans aucun dossier ouvert.
+            #
+            # La comparaison porte sur la sequence et non sur l'id : c'est elle
+            # qui ordonne le pipeline, et c'est elle que le kanban respecte.
+            # Le cloisonnement par equipe reste la garde qui empeche les etapes
+            # du pipeline Contenu d'entrer dans cette comparaison.
+            # Un lead sans etape a une sequence de 0 : il tombe naturellement
+            # du mauvais cote de la comparaison, aucun garde-fou de plus.
+            if lead.team_id != equipe or lead.stage_id.sequence < etape.sequence:
                 continue
             if lead.his_person_id or lead.his_person_candidate_id:
                 continue

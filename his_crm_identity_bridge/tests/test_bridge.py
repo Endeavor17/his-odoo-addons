@@ -177,6 +177,32 @@ class TestBridge(TransactionCase):
         lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_dossier')
         self.assertTrue(lead.his_person_id)
 
+    def test_sauter_l_etape_declencheuse_cree_quand_meme_la_fiche(self):
+        """Le declencheur est « parvenu a l'etape », pas « pose dessus ».
+
+        Le kanban autorise de tirer une carte de « Pris en charge » droit vers
+        « Dossier et pre-admission ». Avec une egalite stricte, ce geste
+        ordinaire ne creait NI personne NI dossier : le candidat n'existait pas
+        pour l'Admission, sans que rien ne le signale. Constate sur la base de
+        recette — 2 candidatures en « Dossier » et 1 en « Pre-admis » sans
+        aucun dossier.
+        """
+        lead = self._lead()
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_dossier')
+
+        self.assertTrue(
+            lead.his_person_id,
+            "Sauter l'etape declencheuse ne doit pas sauter l'identite",
+        )
+        self.assertEqual(lead.his_person_id.engagement_ids.etat, 'prospect')
+
+    def test_rester_avant_l_etape_declencheuse_ne_cree_rien(self):
+        """La borne reste une borne : en deca, toujours rien."""
+        lead = self._lead()
+        self.assertFalse(lead.his_person_id)
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_nouveau')
+        self.assertFalse(lead.his_person_id)
+
     def test_aucune_transition_au_dela_de_prospect(self):
         """Le pont ouvre l'engagement a prospect, et n'y touche plus.
 
