@@ -553,6 +553,30 @@ class TestAdmission(TransactionCase):
         self.assertEqual(lead.score_academique, 7)
         self.assertIn("non applicable", lead.score_detail)
 
+    # --- La carte etudiant ----------------------------------------------------
+
+    def test_la_carte_ne_s_edite_que_sur_un_dossier_inscrit(self):
+        """L'ecran « Cartes etudiant » ne liste que les inscrits.
+
+        Sans verrou, on remplit sur un dossier admis des champs que cet ecran
+        ignorera ensuite, sans que rien ne dise pourquoi — c'est arrive : un
+        dossier admis portait une date de remise de carte, donc une carte
+        remise a quelqu'un qui n'est pas encore inscrit.
+        """
+        arch = self.env.ref('his_admission.view_his_engagement_form_admission').arch
+        for champ in ('carte_recue_it', 'carte_etudiant_informe', 'carte_date_remise'):
+            self.assertIn(champ, arch)
+        self.assertIn(
+            "etat != 'inscrit'", arch,
+            "Les champs de carte doivent etre verrouilles hors inscription",
+        )
+
+    def test_l_ecran_des_cartes_ne_montre_que_les_inscrits(self):
+        """Le domaine de l'ecran est la raison d'etre du verrou ci-dessus : les
+        deux doivent dire la meme chose, sinon le verrou protege le vide."""
+        action = self.env.ref('his_admission.action_engagement_carte')
+        self.assertIn("'inscrit'", action.domain)
+
     # --- Le dossier suit le lead ---------------------------------------------
 
     def _lead_avec_dossier(self, **vals):
