@@ -150,10 +150,31 @@
                     </page>
 
                     <page string="Carte etudiant" name="carte">
+                        <!-- Une carte s'edite sur un dossier INSCRIT, et sur
+                             lui seul. L'ecran « Cartes etudiant » ne liste que
+                             les inscrits : sans ce verrou, on remplit ici des
+                             champs que cet ecran ignorera ensuite, sans que
+                             rien ne dise pourquoi. C'est arrive — un dossier
+                             admis portait une date de remise de carte, donc
+                             une carte remise a quelqu'un qui n'est pas encore
+                             inscrit.
+
+                             Lecture seule et non invisible : ce qui a deja ete
+                             saisi reste lisible, et l'Admission voit ce qu'il
+                             y a a corriger plutot qu'un onglet vide. -->
+                        <div class="alert alert-info" role="status"
+                             invisible="etat == 'inscrit'">
+                            La carte etudiant se renseigne une fois le dossier
+                            <b>Inscrit</b>. L'ecran « Cartes etudiant » ne liste
+                            que les inscrits.
+                        </div>
                         <group>
-                            <field name="carte_recue_it"/>
-                            <field name="carte_etudiant_informe"/>
-                            <field name="carte_date_remise"/>
+                            <field name="carte_recue_it"
+                                   readonly="etat != 'inscrit'"/>
+                            <field name="carte_etudiant_informe"
+                                   readonly="etat != 'inscrit'"/>
+                            <field name="carte_date_remise"
+                                   readonly="etat != 'inscrit'"/>
                         </group>
                     </page>
 

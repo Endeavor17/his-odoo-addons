@@ -460,3 +460,279 @@ class TestPipeline(TransactionCase):
         """
         vue = self.env.ref('his_crm_pipeline.view_crm_lead_list_non_affectes')
         self.assertIn('score_academique desc', vue.arch)
+
+    # --- Telephone et lien WhatsApp -----------------------------------------
+
+    def test_le_numero_algerien_est_normalise_en_e164(self):
+        """Les trois formes saisies par les candidats donnent le meme numero.
+
+        C'est le lien WhatsApp qui en depend : wa.me refuse un zero initial et
+        refuse le signe plus.
+        """
+        for saisi in ('0555123456', '+213555123456', '00213555123456'):
+            lead = self.env['crm.lead'].create({
+                'name': "Candidat %s" % saisi,
+                'team_id': self.team_ventes.id,
+                'phone': saisi,
+            })
+            self.assertEqual(
+                lead.telephone_e164, '+213555123456',
+                "« %s » n'a pas ete normalise" % saisi,
+            )
+            self.assertEqual(
+                lead.whatsapp_url,
+                'https://wa.me/213555123456',
+                "Le lien WhatsApp doit porter les chiffres seuls",
+            )
+
+    def test_sans_telephone_il_n_y_a_pas_de_lien(self):
+        """Un lien vide plutot qu'un lien casse : la carte le masque."""
+        lead = self.env['crm.lead'].create({
+            'name': "Sans telephone",
+            'team_id': self.team_ventes.id,
+        })
+        self.assertFalse(lead.telephone_e164)
+        self.assertFalse(lead.whatsapp_url)
+
+    def test_un_numero_illisible_ne_donne_pas_de_lien(self):
+        """phone_format rend la saisie telle quelle quand il echoue.
+
+        Sans le controle du signe plus, une faute de frappe deviendrait une
+        URL WhatsApp pointant vers rien — un lien mort est pire qu'une absence
+        de lien, parce qu'on clique dessus.
+        """
+        lead = self.env['crm.lead'].create({
+            'name': "Numero casse",
+            'team_id': self.team_ventes.id,
+            'phone': 'a rappeler chez la tante',
+        })
+        self.assertFalse(lead.telephone_e164)
+        self.assertFalse(lead.whatsapp_url)
+
+    # --- Boucle d'appel ------------------------------------------------------
+
+    def _lead_pris_en_charge(self):
+        return self.env['crm.lead'].create({
+            'name': "Candidat a rappeler",
+            'team_id': self.team_ventes.id,
+            'stage_id': self.stage_pris_en_charge.id,
+            'phone': '0555123456',
+        })
+
+    def test_une_tentative_sans_reponse_incremente_et_replanifie(self):
+        lead = self._lead_pris_en_charge()
+        self.assertEqual(lead.tentatives_appel, 0)
+
+        lead.action_appel_sans_reponse()
+
+        self.assertEqual(lead.tentatives_appel, 1)
+        self.assertTrue(lead.derniere_tentative)
+        # L'etape ne bouge pas : une tentative n'est pas un contact.
+        self.assertEqual(lead.stage_id, self.stage_pris_en_charge)
+        rappels = self.env['mail.activity'].search([
+            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
+        ])
+        self.assertEqual(len(rappels), 1)
+
+    def test_trois_tentatives_ne_posent_qu_un_seul_rappel(self):
+        """Sinon la conseillere recoit une activite par tentative et cesse de
+        les lire — exactement le defaut que la relance SLA evite deja."""
+        lead = self._lead_pris_en_charge()
+        for _ in range(3):
+            lead.action_appel_sans_reponse()
+
+        self.assertEqual(lead.tentatives_appel, 3)
+        rappels = self.env['mail.activity'].search([
+            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
+        ])
+        self.assertEqual(len(rappels), 1, "Un seul rappel, replanifie")
+
+    def test_joint_avance_a_contact_etabli_et_efface_le_rappel(self):
+        lead = self._lead_pris_en_charge()
+        lead.action_appel_sans_reponse()
+
+        action = lead.action_appel_joint()
+
+        self.assertEqual(
+            lead.stage_id,
+            self.env.ref('his_crm_pipeline.stage_vente_contact_etabli'),
+        )
+        self.assertFalse(self.env['mail.activity'].search([
+            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
+        ]), "Le rappel n'a plus d'objet une fois le candidat joint")
+        self.assertEqual(action['res_id'], lead.id)
+        self.assertEqual(action['res_model'], 'crm.lead')
+
+    # --- Taxonomie des pertes ------------------------------------------------
+
+    def test_les_motifs_d_issue_d_appel_existent(self):
+        """Les leads meurent au telephone, pas en revue de dossier.
+
+        Les quatre motifs d'origine decrivent tous une mort tardive. Les
+        chiffres de GoHighLevel disent l'inverse : fantome, sans reponse et
+        numero errone sont la majorite des pertes expliquees.
+        """
+        for xmlid in (
+            'lost_reason_fantome', 'lost_reason_sans_reponse',
+            'lost_reason_numero_errone', 'lost_reason_bac_ancien',
+            'lost_reason_trop_cher', 'lost_reason_profil_inadapte',
+            'lost_reason_autre',
+        ):
+            motif = self.env.ref(
+                'his_crm_pipeline.%s' % xmlid, raise_if_not_found=False,
+            )
+            self.assertTrue(motif, "Motif manquant : %s" % xmlid)
+
+    def test_les_motifs_d_origine_survivent(self):
+        """noupdate et ondelete='restrict' : on ajoute, on ne remplace pas.
+
+        Un motif supprime emporterait avec lui tous les leads qui le portaient.
+        """
+        for xmlid in (
+            'lost_reason_hors_quota', 'lost_reason_dossier_non_retenu',
+            'lost_reason_dossier_incomplet', 'lost_reason_paiement_non_confirme',
+            'lost_reason_retour_production',
+        ):
+            self.assertTrue(self.env.ref(
+                'his_crm_pipeline.%s' % xmlid, raise_if_not_found=False,
+            ), "Motif d'origine perdu : %s" % xmlid)
+
+    def test_les_motifs_anglais_natifs_sont_retires_de_la_liste(self):
+        """« Too expensive » doublait « Frais trop eleves », en anglais.
+
+        Le meme compartiment coupe en deux qu'on vient de fusionner pour
+        « Sans reponse », reintroduit par le haut. Desactives et non
+        supprimes : lost_reason_id est en ondelete='restrict' et l'un d'eux
+        portait deja un lead sur la base de recette.
+        """
+        for xmlid in ('crm.lost_reason_1', 'crm.lost_reason_2', 'crm.lost_reason_3'):
+            motif = self.env.ref(xmlid, raise_if_not_found=False)
+            if not motif:
+                continue
+            self.assertFalse(
+                motif.active,
+                "« %s » doit disparaitre de la liste de selection" % motif.name,
+            )
+
+    def test_aucun_motif_selectionnable_n_est_en_anglais(self):
+        """Le garde-fou general : la liste que voit la conseillere est
+        entierement en francais, sans quoi deux vocabulaires cohabitent."""
+        actifs = self.env['crm.lost.reason'].search([]).mapped('name')
+        for interdit in ("Too expensive", "We don't have people/skills",
+                         "Not enough stock"):
+            self.assertNotIn(interdit, actifs)
+
+    def test_les_motifs_sont_ordonnes_par_frequence_reelle(self):
+        """Odoo trie les motifs par id : « Sans reponse », le plus frequent,
+        se retrouverait au milieu d'une liste de onze. Trois motifs couvrent
+        environ 70 % des pertes ; ils doivent etre en tete, sinon la cloture
+        coute assez cher pour etre sautee."""
+        motifs = self.env['crm.lost.reason'].search([])
+        noms = motifs.mapped('name')
+        self.assertEqual(noms[0], "Sans reponse")
+        self.assertEqual(noms[1], "Candidature fantome")
+        self.assertEqual(noms[-1], "Autre - a preciser")
+
+    # --- Une perte doit dire quelque chose -----------------------------------
+
+    def _lead_simple(self, **kw):
+        vals = {'name': "Candidat", 'team_id': self.team_ventes.id}
+        vals.update(kw)
+        return self.env['crm.lead'].create(vals)
+
+    def test_perdre_sans_motif_est_refuse(self):
+        """626 pertes, 193 motifs. Le vide n'est plus une option.
+
+        Contrainte serveur et non regle de vue : le kanban, l'import et l'API
+        contournent une vue. Meme discipline que le verrou d'approbation et que
+        « gagne seulement si encaisse ».
+        """
+        lead = self._lead_simple()
+        with self.assertRaises(ValidationError):
+            lead.action_set_lost()
+
+    def test_perdre_avec_un_motif_passe(self):
+        lead = self._lead_simple()
+        lead.action_set_lost(lost_reason_id=self.env.ref(
+            'his_crm_pipeline.lost_reason_sans_reponse').id)
+        self.assertEqual(lead.won_status, 'lost')
+
+    def test_autre_sans_precision_est_refuse(self):
+        """La soupape d'honnetete a un prix : il faut ecrire la ligne. Sans
+        cela « Autre » devient le raccourci universel et on aurait remplace un
+        vide par un mot qui n'en dit pas davantage."""
+        lead = self._lead_simple()
+        with self.assertRaises(ValidationError):
+            lead.action_set_lost(lost_reason_id=self.env.ref(
+                'his_crm_pipeline.lost_reason_autre').id)
+
+    def test_autre_avec_precision_passe(self):
+        lead = self._lead_simple(
+            perte_precision="Parti a l'etranger, ne rappellera pas.")
+        lead.action_set_lost(lost_reason_id=self.env.ref(
+            'his_crm_pipeline.lost_reason_autre').id)
+        self.assertEqual(lead.won_status, 'lost')
+
+    def test_archiver_n_est_pas_perdre(self):
+        """La contrainte porte sur won_status, pas sur active.
+
+        « Perdu » vaut probabilite 0 ET archive (crm_lead.py:1122). Un lead
+        simplement archive garde sa probabilite : exiger un motif de perte
+        la-dessus interdirait le rangement ordinaire d'une fiche.
+        """
+        lead = self._lead_simple(probability=40)
+        lead.action_archive()
+        self.assertFalse(lead.active)
+        self.assertNotEqual(lead.won_status, 'lost')
+
+    def test_la_note_de_cloture_atterrit_sur_le_lead(self):
+        """Odoo ne se sert de lost_feedback que comme message de suivi : aucun
+        champ ne la porte, donc aucune contrainte ne peut l'exiger. On la pose
+        sur la fiche, ce qui rend « Autre » exigeable depuis l'assistant natif.
+        """
+        lead = self._lead_simple()
+        wizard = self.env['crm.lead.lost'].create({
+            'lead_ids': [(6, 0, [lead.id])],
+            'lost_reason_id': self.env.ref('his_crm_pipeline.lost_reason_autre').id,
+            'lost_feedback': '<p>Recu a l universite d Alger.</p>',
+        })
+        wizard.action_lost_reason_apply()
+        self.assertEqual(lead.won_status, 'lost')
+        self.assertIn("Alger", lead.perte_precision)
+
+    def test_apres_trois_tentatives_la_perte_propose_fantome(self):
+        """La fiche sait deja. Elle ne demande pas.
+
+        C'est ce qui rend le motif obligatoire supportable : un clic sans
+        reflexion plutot qu'un menu de onze lignes a lire.
+        """
+        lead = self._lead_pris_en_charge()
+        for _ in range(3):
+            lead.action_appel_sans_reponse()
+
+        action = lead.action_perdre_rapide()
+
+        self.assertEqual(
+            action['context']['default_lost_reason_id'],
+            self.env.ref('his_crm_pipeline.lost_reason_fantome').id,
+        )
+        self.assertEqual(action['res_model'], 'crm.lead.lost')
+
+    def test_avant_trois_tentatives_aucun_motif_n_est_impose(self):
+        """Deviner a la place de la conseillere serait pire que ne rien
+        proposer : un motif faux ne se distingue pas d'un motif vrai — c'est
+        exactement le defaut de « Unknown » qu'on vient de retirer."""
+        lead = self._lead_pris_en_charge()
+        lead.action_appel_sans_reponse()
+
+        action = lead.action_perdre_rapide()
+
+        self.assertFalse(action['context'].get('default_lost_reason_id'))
+
+    def test_chaque_tentative_laisse_une_trace_datee(self):
+        """Le compteur dit combien ; le fil dit quand. Le second explique le
+        premier a qui relit la fiche trois semaines plus tard."""
+        lead = self._lead_pris_en_charge()
+        avant = len(lead.message_ids)
+        lead.action_appel_sans_reponse()
+        self.assertGreater(len(lead.message_ids), avant)

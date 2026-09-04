@@ -42,7 +42,7 @@
                         <div class="his_tuile_label" t-esc="tuile.label"/>
 
                         <div class="his_tuile_valeur">
-                            <span t-esc="tuile.valeur"/><span
+                            <span t-esc="valeurAffichee(tuile)"/><span
                                 t-if="tuile.unite" class="his_unite"
                                 t-esc="tuile.unite"/>
                         </div>
@@ -97,6 +97,71 @@
                                   class="his_marche_conversion">
                                 <t t-esc="marche.conversion"/>%
                             </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================= Repartitions =========================
+                     Des instantanes, pas des series : un conic-gradient suffit
+                     et evite d'ajouter une bibliotheque pour quatre camemberts
+                     statiques. Chaque part est cliquable, comme chaque tuile. -->
+                <div t-if="state.spec.donuts and state.spec.donuts.length" class="his_bloc">
+                    <h3 class="his_titre">Repartitions</h3>
+                    <div class="his_donuts">
+                        <div t-foreach="state.spec.donuts" t-as="donut"
+                             t-key="donut.label" class="his_donut">
+                            <div class="his_donut_titre" t-esc="donut.label"/>
+                            <div t-if="!donut.total"
+                                 class="his_donut_vide text-muted small">
+                                Aucune donnee sur la periode
+                            </div>
+                            <div t-else="" class="his_donut_corps">
+                                <div class="his_donut_disque"
+                                     t-attf-style="background: {{ gradientDonut(donut) }}">
+                                    <div class="his_donut_trou">
+                                        <span t-esc="donut.total"/>
+                                    </div>
+                                </div>
+                                <ul class="his_donut_legende">
+                                    <li t-foreach="donut.segments" t-as="segment"
+                                        t-key="segment.label"
+                                        class="his_cliquable"
+                                        t-on-click="() => this.ouvrir(segment.action)">
+                                        <span class="his_pastille"
+                                              t-attf-style="background: {{ couleurSegment(segment_index) }}"/>
+                                        <span class="his_legende_nom" t-esc="segment.label"/>
+                                        <span class="his_legende_compte" t-esc="segment.count"/>
+                                        <span class="his_legende_part">
+                                            <t t-esc="segment.pourcentage"/>%
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ====================== Qualite des donnees =====================
+                     Ce qui manque, et qu'on peut aller corriger. C'est ce qui
+                     rend les autres chiffres de l'ecran dignes de confiance :
+                     un tableau de bord qui ne dit pas ce qu'il ignore laisse
+                     croire qu'il sait tout. Meme mecanique que « A traiter ». -->
+                <div t-if="state.spec.qualite and state.spec.qualite.length" class="his_bloc">
+                    <h3 class="his_titre">Qualite des donnees</h3>
+                    <div class="his_files">
+                        <div t-foreach="state.spec.qualite" t-as="file"
+                             t-key="file.label" class="his_file">
+                            <div class="his_file_entete his_cliquable"
+                                 t-on-click="() => this.ouvrir(file.action)">
+                                <span t-esc="file.label"/>
+                                <span class="his_badge"
+                                      t-att-class="{ 'his_badge_vide': !file.count }"
+                                      t-esc="file.count"/>
+                            </div>
+                            <ul class="his_file_apercu">
+                                <li t-foreach="file.apercu" t-as="ligne"
+                                    t-key="ligne.id" t-esc="ligne.nom"/>
+                            </ul>
                         </div>
                     </div>
                 </div>

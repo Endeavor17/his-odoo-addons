@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== Le pipeline partage ====================
+
+         Le MEME tableau que les Ventes, la meme vue kanban, les memes
+         enregistrements. Rien n'est synchronise parce qu'il n'y a rien a
+         synchroniser : deplacer une carte ici deplace le lead, et la carte
+         bouge chez la conseillere. C'est ce qui rend « en phase » litteral
+         plutot qu'espere.
+
+         L'alternative — un kanban sur his.engagement avec ses propres etapes,
+         miroir de celles du lead — aurait demande du code de recopie dans les
+         deux sens, et deux verites pour une seule question (« ou en est ce
+         candidat ? »). Le module refuse cette forme partout ailleurs ; il la
+         refuse ici aussi.
+
+         LE CRITERE EST L'ETAPE, ET NON LA FICHE PERSONNE. Il a d'abord ete
+         his_person_id, du temps ou le pont d'identite se declenchait au premier
+         contact : suivre la fiche revenait alors exactement a suivre l'etape,
+         en une seule expression. L'hypothese A1 a depuis place ce declencheur a
+         la pre-admission — garder his_person_id aurait vide ce tableau de tout
+         ce qui precede, alors que l'Admission doit suivre le candidat des que la
+         conseillere lui a parle. -->
+
+    <record id="action_admission_pipeline" model="ir.actions.act_window">
+        <field name="name">Pipeline</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <!-- Les etapes nommees plutot qu'une comparaison de sequence : une
+             action stocke son domaine en texte et le relit avec
+             ast.literal_eval, qui refuse tout appel de fonction — ref() y
+             compris. `eval` a l'installation resout donc les identifiants ici,
+             une bonne fois. -->
+        <field name="domain" eval="[
+            ('team_id', 'in', [ref('his_crm_pipeline.crm_team_ventes'),
+                               ref('his_crm_pipeline.crm_team_orientation')]),
+            ('stage_id', 'in', [ref('his_crm_pipeline.stage_vente_contact_etabli'),
+                                ref('his_crm_pipeline.stage_vente_accompagnement'),
+                                ref('his_crm_pipeline.stage_vente_evaluation_psy'),
+                                ref('his_crm_pipeline.stage_vente_dossier'),
+                                ref('his_crm_pipeline.stage_vente_pre_admis'),
+                                ref('his_crm_pipeline.stage_vente_frais_payes')]),
+        ]"/>
+        <!-- La vue des Ventes, telle quelle. En livrer une copie ici
+             signifierait entretenir deux tableaux qui doivent rester
+             identiques — ils divergeraient au premier ajustement. -->
+        <field name="view_id" ref="his_crm_pipeline.view_crm_lead_kanban_admissions"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune candidature a instruire.</p>
+            <p>Une candidature apparait ici des que la conseillere a etabli le
+               premier contact. Le dossier, lui, s'ouvre a la pre-admission, et
+               le matricule institutionnel n'est emis qu'a l'encaissement des
+               frais d'inscription.</p>
+            <p>Ce tableau est celui des Ventes. Deplacer une carte ici la
+               deplace pour tout le monde.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_admission_pipeline" name="Pipeline"
+              parent="menu_admission_root"
+              action="action_admission_pipeline" sequence="5"/>
+
+</odoo>

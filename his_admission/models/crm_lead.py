@@ -175,6 +175,23 @@ class CrmLead(models.Model):
             lead.score_academique = points_bac + points_ponderee + points_motivation
             lead.score_detail = " + ".join(detail)
 
+    # Ce que le lead porte et que le dossier recopie. Une seule liste : elle
+    # sert a ecrire ET a decider s'il faut ecrire.
+    CHAMPS_ACADEMIQUES = ('specialite_id', 'bac_moyenne', 'note_math', 'note_physique')
+
+    # Tant que le dossier est dans l'un de ces etats, l'inscription n'est pas
+    # prononcee : le lead reste la source des donnees academiques. Au-dela —
+    # « inscrit », « blocage administratif » — le dossier est le document de
+    # travail de l'Admission et cesse d'accepter les pousses.
+    #
+    # « admis » EN FAIT PARTIE, et c'est une consequence de l'hypothese A1 :
+    # depuis que le pont se declenche a la pre-admission, le dossier naît
+    # « prospect » et passe « admis » dans la meme ecriture. Exclure « admis »
+    # fermait donc la fenetre avant qu'elle ne s'ouvre, et aucune correction
+    # n'atteignait plus jamais le dossier — la panne meme qu'on venait de
+    # reparer.
+    ETATS_SUIVEURS = ('prospect', 'candidat_soumis', 'admis')
+
     def _his_assurer_engagement(self):
         """Le dossier reprend ce que la capture a recueilli.
 
@@ -185,18 +202,45 @@ class CrmLead(models.Model):
         d'identite.
         """
         super()._his_assurer_engagement()
-        engagement = self.his_person_id.engagement_ids.filtered(
-            lambda e: e.etat == 'prospect',
-        )[:1]
-        if not engagement or engagement.specialite_id:
-            return
-        engagement.sudo().write({
-            'specialite_id': self.specialite_id.id,
-            'cycle': self.specialite_id.cycle,
-            'bac_moyenne': self.bac_moyenne,
-            'note_math': self.note_math,
-            'note_physique': self.note_physique,
-        })
+        self._his_pousser_academique()
+
+    def _his_pousser_academique(self):
+        """Pousse les donnees academiques du lead vers son dossier ouvert.
+
+        LE LEAD EST LA SOURCE, et il le reste tant que l'Admission n'a pas
+        instruit le dossier. C'etait auparavant une recopie UNIQUE, faite au
+        premier contact et jamais rejouee : le dossier gardait a vie les
+        valeurs du jour de la capture. Une conseillere qui corrigeait une
+        moyenne de BAC voyait le lead changer et le dossier rester faux, sans
+        le moindre signe — c'est le defaut que ce module presentait comme
+        « les autres onglets ne suivent pas ».
+
+        La borne d'etat compte autant que la pousse elle-meme : passe
+        « admis », le dossier est le document de travail de l'Admission.
+        Laisser un vieux lead l'ecraser detruirait un travail de verification
+        au profit d'une saisie commerciale plus ancienne.
+        """
+        for lead in self:
+            if not lead.his_person_id:
+                continue
+            engagement = lead.his_person_id.engagement_ids.filtered(
+                lambda e: e.etat in lead.ETATS_SUIVEURS,
+            )[:1]
+            if not engagement:
+                continue
+            vals = {
+                'specialite_id': lead.specialite_id.id,
+                'bac_moyenne': lead.bac_moyenne,
+                'note_math': lead.note_math,
+                'note_physique': lead.note_physique,
+            }
+            if lead.specialite_id:
+                vals['cycle'] = lead.specialite_id.cycle
+            # sudo() : la conseillere n'a que la LECTURE sur le dossier — c'est
+            # l'Admission qui l'instruit. Reporter sa propre saisie est une
+            # consequence de son geste, pas une modification qu'elle
+            # s'autorise. Meme raisonnement que la pre-admission.
+            engagement.sudo().write(vals)
 
     def _his_engagement(self):
         """Le dossier rattache a ce lead, s'il y en a un."""
@@ -247,6 +291,11 @@ class CrmLead(models.Model):
         res = super().write(vals)
         if 'stage_id' in vals:
             self._his_passer_engagement_a_admis()
+        # Toute correction academique redescend sur le dossier. Le filtre evite
+        # de rejouer la pousse a chaque ecriture d'un champ sans rapport — une
+        # note dans le fil, un changement de conseillere.
+        if any(champ in vals for champ in self.CHAMPS_ACADEMIQUES):
+            self._his_pousser_academique()
         return res
 
     def _his_passer_engagement_a_admis(self):

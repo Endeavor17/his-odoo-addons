@@ -2,6 +2,7 @@
 
 from . import his_domaine
 from . import his_specialite
+from . import his_tarif
 from . import his_document_type
 from . import his_admission_document
 from . import his_person

@@ -151,6 +151,59 @@ export class HisDashboard extends Component {
         return premiere ? Math.max((marche.count / premiere) * 100, 1) : 0;
     }
 
+    /**
+     * La valeur d'une tuile, avec ses separateurs de milliers.
+     *
+     * « 2100000 » oblige le lecteur a compter les chiffres ; c'est
+     * exactement ce qu'un tableau de bord doit lui epargner. Vu a l'ecran sur
+     * la tuile « Revenu attendu ».
+     *
+     * Le formatage vit ici et non au serveur : his_dashboard.py rend des
+     * NOMBRES, que le pivot, le graphe et un futur outil de BI reutiliseront.
+     * Une chaine deja formatee ne se reagrege pas.
+     */
+    valeurAffichee(tuile) {
+        const valeur = tuile.valeur;
+        if (typeof valeur !== "number") {
+            return valeur;
+        }
+        // Les petits comptes restent bruts : « 5 » n'a pas besoin d'espace, et
+        // un taux garde sa decimale.
+        return valeur.toLocaleString("fr-FR", { maximumFractionDigits: 2 });
+    }
+
+    /**
+     * Le donut, en une seule declaration CSS.
+     *
+     * conic-gradient plutot qu'une bibliotheque de graphiques : ces quatre
+     * donuts sont des INSTANTANES, pas des series temporelles. Le README du
+     * module a deja tranche contre Chart.js pour cette raison, et une
+     * dependance pour dessiner quatre camemberts statiques serait une facon
+     * couteuse de perdre un argument deja gagne. Le jour ou une courbe dans le
+     * temps est demandee, une bibliotheque devient justifiee.
+     *
+     * Les couleurs sont des variables CSS, jamais des valeurs en dur : la
+     * passe visuelle a venir ne touchera qu'a ces jetons.
+     */
+    gradientDonut(donut) {
+        if (!donut.total) {
+            return "conic-gradient(var(--his-donut-vide) 0 100%)";
+        }
+        const parts = [];
+        let angle = 0;
+        donut.segments.forEach((segment, index) => {
+            const fin = angle + (segment.count / donut.total) * 100;
+            parts.push(`${this.couleurSegment(index)} ${angle}% ${fin}%`);
+            angle = fin;
+        });
+        return `conic-gradient(${parts.join(", ")})`;
+    }
+
+    /** La couleur d'une part, pour sa pastille de legende. */
+    couleurSegment(index) {
+        return `var(--his-donut-${index % 8})`;
+    }
+
     /** L'atteinte plafonnee a 100 pour la jauge — la valeur reste affichee. */
     largeurJauge(tuile) {
         return Math.min(tuile.atteinte || 0, 100);

@@ -11,7 +11,11 @@ class TestBridge(TransactionCase):
         super().setUpClass()
         cls.team_ventes = cls.env.ref('his_crm_pipeline.crm_team_ventes')
         cls.stage_pris_en_charge = cls.env.ref('his_crm_pipeline.stage_vente_pris_en_charge')
-        cls.stage_contact = cls.env.ref('his_crm_pipeline.stage_vente_contact_etabli')
+        # L'etape declencheuse, et non « Contact etabli » en dur : l'hypothese
+        # A1 l'a placee a la pre-admission. Ces tests portent sur le MECANISME
+        # — creer, rapprocher, ne pas dupliquer — pas sur le choix de l'etape,
+        # qui reste un ir.config_parameter.
+        cls.stage_declencheuse = cls.env.ref('his_crm_pipeline.stage_vente_pre_admis')
 
     def _lead(self, **vals):
         return self.env['crm.lead'].create({
@@ -31,7 +35,7 @@ class TestBridge(TransactionCase):
         lead = self._lead()
         self.assertFalse(lead.his_person_id)
 
-        lead.stage_id = self.stage_contact
+        lead.stage_id = self.stage_declencheuse
 
         person = lead.his_person_id
         self.assertTrue(person)
@@ -39,7 +43,12 @@ class TestBridge(TransactionCase):
         self.assertEqual(person.source_system, 'odoo_crm')
         self.assertEqual(person.external_ref, str(lead.id))
         self.assertEqual(person.email_personnel, "yacine.belkacem@example.com")
-        self.assertTrue(person.matricule_institutionnel)
+        # PAS de matricule : un candidat entre dans le referentiel sans
+        # numero. La sequence ne se recycle jamais, et six candidatures sur dix
+        # sont perdues — en emettre un ici reviendrait a en bruler un par
+        # candidature. Il est attribue a l'encaissement des frais
+        # d'inscription (his_admission). Voir hypothese A1.
+        self.assertFalse(person.matricule_institutionnel)
 
         # La delegation cree UN partenaire, pas deux. C'est le piege de
         # _inherits : un partenaire de trop et l'humain a deux fiches contact.
@@ -47,7 +56,12 @@ class TestBridge(TransactionCase):
 
         engagements = person.engagement_ids
         self.assertEqual(len(engagements), 1)
-        self.assertEqual(engagements.etat, 'prospect')
+        # Le pont OUVRE le dossier a « prospect ». Son etat final ne lui
+        # appartient plus : his_admission, quand il est installe, le fait
+        # passer a « admis » dans la meme ecriture, puisque l'etape
+        # declencheuse EST la pre-admission. On verifie donc qu'un dossier
+        # existe et qu'il n'a pas saute au-dela de l'admission.
+        self.assertIn(engagements.etat, ('prospect', 'admis'))
 
     def test_le_contact_du_lead_est_repris_et_non_duplique(self):
         partner = self.env['res.partner'].create({
@@ -59,7 +73,7 @@ class TestBridge(TransactionCase):
             email_from="sofia.hamidi@example.com", phone="0661000000",
         )
 
-        lead.stage_id = self.stage_contact
+        lead.stage_id = self.stage_declencheuse
 
         self.assertEqual(lead.his_person_id.partner_id, partner)
         self.assertEqual(self.env['res.partner'].search_count([]), partenaires_avant)
@@ -69,7 +83,7 @@ class TestBridge(TransactionCase):
     def test_correspondance_deterministe_ne_duplique_pas(self):
         """Meme reference source : on retombe sur la fiche, on n'en cree pas une seconde."""
         lead = self._lead()
-        lead.stage_id = self.stage_contact
+        lead.stage_id = self.stage_declencheuse
         person = lead.his_person_id
 
         # Un second lead portant la meme reference source que le premier : la
@@ -82,7 +96,7 @@ class TestBridge(TransactionCase):
             'source_system': 'odoo_crm', 'external_ref': str(autre.id),
         })
         personnes_avant = self.env['his.person'].search_count([])
-        autre.stage_id = self.stage_contact
+        autre.stage_id = self.stage_declencheuse
         self.assertEqual(self.env['his.person'].search_count([]), personnes_avant)
         self.assertTrue(autre.his_person_id)
         self.assertNotEqual(autre.his_person_id, person)
@@ -97,7 +111,7 @@ class TestBridge(TransactionCase):
         })
         lead = self._lead()
 
-        lead.stage_id = self.stage_contact
+        lead.stage_id = self.stage_declencheuse
 
         self.assertFalse(lead.his_person_id)
         self.assertEqual(lead.his_person_candidate_id, existante)
@@ -113,7 +127,7 @@ class TestBridge(TransactionCase):
             'phone': "0555112233",
         })
         lead = self._lead()
-        lead.stage_id = self.stage_contact
+        lead.stage_id = self.stage_declencheuse
         self.assertEqual(lead.his_person_candidate_id, existante)
 
         lead.action_confirm_person_match()
@@ -122,7 +136,7 @@ class TestBridge(TransactionCase):
         self.assertFalse(lead.his_person_candidate_id)
         self.assertEqual(existante.match_method, 'probabilistic')
         self.assertTrue(existante.matched_by)
-        self.assertEqual(existante.engagement_ids.etat, 'prospect')
+        self.assertIn(existante.engagement_ids.etat, ('prospect', 'admis'))
 
     def test_refus_cree_une_fiche_distincte(self):
         self.env['his.person'].sudo().create({
@@ -133,7 +147,7 @@ class TestBridge(TransactionCase):
             'phone': "0555112233",
         })
         lead = self._lead()
-        lead.stage_id = self.stage_contact
+        lead.stage_id = self.stage_declencheuse
 
         lead.action_reject_person_match()
 
@@ -145,12 +159,12 @@ class TestBridge(TransactionCase):
 
     def test_repasser_par_l_etape_ne_cree_pas_de_seconde_fiche(self):
         lead = self._lead()
-        lead.stage_id = self.stage_contact
+        lead.stage_id = self.stage_declencheuse
         person = lead.his_person_id
         personnes_avant = self.env['his.person'].search_count([])
 
         lead.stage_id = self.stage_pris_en_charge
-        lead.stage_id = self.stage_contact
+        lead.stage_id = self.stage_declencheuse
 
         self.assertEqual(lead.his_person_id, person)
         self.assertEqual(self.env['his.person'].search_count([]), personnes_avant)
@@ -159,7 +173,7 @@ class TestBridge(TransactionCase):
     def test_une_autre_equipe_ne_declenche_rien(self):
         """La Cellule d'Orientation ne cree pas d'identite, seules les Ventes."""
         lead = self._lead(team_id=self.env.ref('his_crm_pipeline.crm_team_orientation').id)
-        lead.stage_id = self.stage_contact
+        lead.stage_id = self.stage_declencheuse
         self.assertFalse(lead.his_person_id)
         self.assertFalse(lead.his_person_candidate_id)
 
@@ -171,27 +185,64 @@ class TestBridge(TransactionCase):
         )
         lead = self._lead()
 
-        lead.stage_id = self.stage_contact
+        # « Contact etabli » est AVANT « Dossier » : en deca du declencheur
+        # choisi, donc rien ne doit se creer.
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_contact_etabli')
         self.assertFalse(lead.his_person_id)
 
         lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_dossier')
         self.assertTrue(lead.his_person_id)
 
-    def test_aucune_transition_au_dela_de_prospect(self):
-        """Le pont ouvre l'engagement a prospect, et n'y touche plus.
+    def test_sauter_l_etape_declencheuse_cree_quand_meme_la_fiche(self):
+        """Le declencheur est « parvenu a l'etape », pas « pose dessus ».
 
-        Le test s'arrete a l'etape declencheuse, deliberement. Faire avancer le
-        dossier au-dela appartient a l'Admission (his_admission fait passer a
-        « admis » a la pre-admission) : verifier ici l'etat apres pre-admission
-        reviendrait a tester un module dont celui-ci ne depend pas, et le
-        resultat changerait selon les modules installes.
+        Le kanban autorise de tirer une carte de « Pris en charge » droit vers
+        « Dossier et pre-admission ». Avec une egalite stricte, ce geste
+        ordinaire ne creait NI personne NI dossier : le candidat n'existait pas
+        pour l'Admission, sans que rien ne le signale. Constate sur la base de
+        recette — 2 candidatures en « Dossier » et 1 en « Pre-admis » sans
+        aucun dossier.
+        """
+        # Le declencheur est ramene a « Contact etabli » pour ce test : il ne
+        # reste sinon aucune etape ATTEIGNABLE au-dela de la pre-admission —
+        # « Frais payes » exige un encaissement, donc un dossier, donc
+        # precisement ce qu'on essaie de creer.
+        self.env['ir.config_parameter'].sudo().set_param(
+            'his_crm.identity_trigger_stage_xmlid',
+            'his_crm_pipeline.stage_vente_contact_etabli',
+        )
+        lead = self._lead()
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_dossier')
+
+        self.assertTrue(
+            lead.his_person_id,
+            "Sauter l'etape declencheuse ne doit pas sauter l'identite",
+        )
+        self.assertTrue(lead.his_person_id.engagement_ids)
+
+    def test_rester_avant_l_etape_declencheuse_ne_cree_rien(self):
+        """La borne reste une borne : en deca, toujours rien."""
+        lead = self._lead()
+        self.assertFalse(lead.his_person_id)
+        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_nouveau')
+        self.assertFalse(lead.his_person_id)
+
+    def test_le_pont_ouvre_UN_dossier_et_n_y_touche_plus(self):
+        """Le pont ouvre l'engagement, et n'en cree jamais un second.
+
+        Il ne verifie plus l'etat exact : depuis que l'etape declencheuse est
+        la pre-admission, his_admission fait passer le dossier a « admis » dans
+        la meme ecriture. Affirmer « prospect » ici reviendrait a tester un
+        module dont celui-ci ne depend pas, et le resultat changerait selon les
+        modules installes. Ce qui appartient au pont, c'est qu'il y ait UN
+        dossier, et un seul.
         """
         lead = self._lead()
-        lead.stage_id = self.stage_contact
-        engagement = lead.his_person_id.engagement_ids
-        self.assertEqual(engagement.etat, 'prospect')
+        lead.stage_id = self.stage_declencheuse
+        person = lead.his_person_id
+        self.assertEqual(len(person.engagement_ids), 1)
 
-        # Traverser les etapes intermediaires ne bouge pas l'engagement : seule
-        # l'etape declencheuse le cree, rien dans ce module ne le fait avancer.
-        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_dossier')
-        self.assertEqual(engagement.etat, 'prospect')
+        # Revenir en arriere puis repasser n'en cree pas un second.
+        lead.stage_id = self.stage_pris_en_charge
+        lead.stage_id = self.stage_declencheuse
+        self.assertEqual(len(person.engagement_ids), 1)

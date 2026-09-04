@@ -207,3 +207,115 @@
 }
 
 .his_cliquable { cursor: pointer; }
+
+// ============================== Repartitions ==============================
+//
+// ponytail: conic-gradient. Ces quatre donuts sont des INSTANTANES, pas des
+// series temporelles — meme raisonnement que les barres ci-dessus. Un donut
+// tient en une declaration `background` ; charger une bibliotheque pour en
+// dessiner quatre serait une facon couteuse de perdre un argument deja gagne.
+//
+// Huit couleurs, en variables et jamais en dur : la passe visuelle a venir ne
+// touchera qu'a ces jetons. Les valeurs de depart tirent vers le bleu et le
+// teal de la marque plutot que vers la palette generique d'Odoo.
+.o_his_dashboard {
+    --his-donut-0: #003874;
+    --his-donut-1: #00acc0;
+    --his-donut-2: #2b7cd3;
+    --his-donut-3: #5bc0de;
+    --his-donut-4: #16558f;
+    --his-donut-5: #7c5dc7;
+    --his-donut-6: #4aa8e0;
+    --his-donut-7: #9b8ad4;
+    --his-donut-vide: #e9ecef;
+}
+
+.his_donuts {
+    display: grid;
+    // Deux par ligne sur un ecran de bureau, une seule sur telephone, sans
+    // media query : l'equipe est majoritairement au bureau, parfois mobile.
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1rem;
+}
+
+.his_donut {
+    background: var(--o-webclient-background-color, #fff);
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: .5rem;
+    padding: 1rem;
+}
+
+.his_donut_titre {
+    font-weight: 600;
+    margin-bottom: .75rem;
+}
+
+.his_donut_corps {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.his_donut_disque {
+    position: relative;
+    flex: 0 0 auto;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+}
+
+// Le trou : c'est lui qui fait un donut plutot qu'un camembert, et il porte le
+// total. Un camembert plein obligerait a chercher le total dans la legende.
+.his_donut_trou {
+    position: absolute;
+    inset: 22%;
+    border-radius: 50%;
+    background: var(--o-webclient-background-color, #fff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.his_donut_legende {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: .85rem;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .1rem 0;
+    }
+}
+
+.his_pastille {
+    width: .7rem;
+    height: .7rem;
+    border-radius: 2px;
+    flex: 0 0 auto;
+}
+
+// Un motif de perte peut etre long : il se coupe plutot que de pousser le
+// compte hors de la carte.
+.his_legende_nom {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.his_legende_compte {
+    font-weight: 600;
+}
+
+.his_legende_part {
+    opacity: .6;
+    min-width: 3.4em;
+    text-align: right;
+}

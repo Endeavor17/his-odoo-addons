@@ -158,6 +158,93 @@ class TestDashboard(TransactionCase):
         spec = self.Dashboard.get_direction(self.aujourdhui, self.aujourdhui)
         self.assertTrue(all(f['count'] for f in spec['attention']))
 
+    # ========================== Repartitions ==============================
+
+    def _spec(self):
+        return self.Dashboard.get_admissions('2020-01-01', '2100-01-01')
+
+    def test_les_segments_d_un_donut_somment_a_son_total(self):
+        """La regle du fichier : un indicateur est defini une seule fois.
+
+        Si un donut et sa tuile comptent la meme population differemment, le
+        directeur arbitre entre deux ecrans qui se contredisent.
+        """
+        self._candidatures(3)
+        spec = self._spec()
+        self.assertIn('donuts', spec)
+        self.assertTrue(spec['donuts'], "Aucune repartition produite")
+        for donut in spec['donuts']:
+            somme = sum(s['count'] for s in donut['segments'])
+            self.assertEqual(
+                somme, donut['total'],
+                "Le donut « %s » ne somme pas a son total" % donut['label'],
+            )
+
+    def test_chaque_segment_ouvre_exactement_ce_qu_il_compte(self):
+        """Un chiffre qu'on ne peut pas ouvrir doit etre cru sur parole, et
+        c'est aussi ce qui rend une definition fausse indetectable."""
+        self._candidatures(4)
+        for donut in self._spec()['donuts']:
+            for segment in donut['segments']:
+                self.assertTrue(segment['action'])
+                lus = self.env[segment['action']['res_model']].search_count(
+                    segment['action']['domain'],
+                )
+                self.assertEqual(
+                    lus, segment['count'],
+                    "« %s / %s » : le clic ne ramene pas son propre compte"
+                    % (donut['label'], segment['label']),
+                )
+
+    def test_le_donut_des_pertes_voit_les_fiches_archivees(self):
+        """Une candidature perdue EST une fiche desactivee. Sans active_test a
+        False, le donut des motifs serait vide en permanence — la seule chose
+        plus inutile qu'un motif faux."""
+        lead = self._candidatures(1)
+        lead.action_set_lost(lost_reason_id=self.env.ref(
+            'his_crm_pipeline.lost_reason_sans_reponse').id)
+        pertes = next(
+            d for d in self._spec()['donuts'] if d['label'] == "Motifs de perte"
+        )
+        self.assertEqual(pertes['total'], 1)
+        self.assertEqual(pertes['segments'][0]['label'], "Sans reponse")
+
+    def test_les_donuts_comptent_la_meme_population_que_les_tuiles(self):
+        """Deux totaux differents cote a cote sur le meme ecran sont
+        illisibles : le lecteur ne peut pas deviner lequel il regarde.
+
+        Vu au rendu — « Acquisition par source » totalisait 13 quand
+        « Candidatures recues » en annoncait 7, parce que le donut heritait
+        d'active_test=False et comptait les fiches perdues. Seul « Motifs de
+        perte » a besoin des archivees.
+        """
+        self._candidatures(4)
+        perdu = self._candidatures(1)
+        perdu.action_set_lost(lost_reason_id=self.env.ref(
+            'his_crm_pipeline.lost_reason_sans_reponse').id)
+
+        spec = self._spec()
+        recues = self._tuile(spec, 'candidatures')['valeur']
+        for donut in spec['donuts']:
+            if donut['label'] == "Motifs de perte":
+                continue
+            self.assertEqual(
+                donut['total'], recues,
+                "« %s » ne compte pas la meme population que les tuiles"
+                % donut['label'],
+            )
+
+    def test_les_parts_sont_triees_de_la_plus_grosse_a_la_plus_petite(self):
+        """Une legende dans l'ordre de la base fait chercher la plus grosse
+        part a l'oeil."""
+        self._candidatures(5)
+        self._candidatures(2, stage=self.st_pre_admis)
+        etat = next(
+            d for d in self._spec()['donuts'] if d['label'] == "Etat du portefeuille"
+        )
+        comptes = [s['count'] for s in etat['segments']]
+        self.assertEqual(comptes, sorted(comptes, reverse=True))
+
 
 @tagged('post_install', '-at_install')
 class TestDashboardRoles(TransactionCase):

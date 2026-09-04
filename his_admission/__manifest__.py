@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': "Admission - Dossier candidat",
-    'version': '19.0.1.4.0',
+    'version': '19.0.1.7.0',
     'category': 'Education',
     'summary': "Dossier d'admission, pieces justificatives, eligibilite et exports",
     'description': """
@@ -34,6 +34,8 @@ export XLSX natif rend le fichier attendu par chaque destinataire.
         'data/his_specialite_data.xml',
         'data/his_document_type_data.xml',
         'views/his_admission_config_views.xml',
+        'views/his_tarif_views.xml',
+        'views/his_pipeline_views.xml',
         'views/his_engagement_views.xml',
         'views/his_admission_export_views.xml',
         'views/crm_lead_views.xml',

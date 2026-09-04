@@ -2,10 +2,20 @@
 from datetime import timedelta
 
 from odoo import _, api, fields, models
+from odoo.addons.phone_validation.tools import phone_validation
 from odoo.exceptions import ValidationError
 
 # Delai de premier contact. Au-dela, le responsable d'equipe est relance.
 SLA_PREMIER_CONTACT_HEURES = 4
+
+# Delai avant le rappel suivant, apres une tentative sans reponse.
+JOURS_AVANT_RAPPEL = 1
+# Au-dela, le candidat n'a jamais repondu : c'est une candidature fantome.
+TENTATIVES_AVANT_FANTOME = 3
+# Le resume qui identifie le rappel pose par la boucle d'appel. Une constante
+# et non une chaine recopiee : elle sert a POSER l'activite et a la RETROUVER,
+# et deux copies qui divergent donneraient une activite par tentative.
+RESUME_RAPPEL = "Rappeler le candidat"
 
 
 
@@ -36,6 +46,84 @@ class CrmLead(models.Model):
     )
     visite_campus_effectuee = fields.Boolean(string="Visite du campus effectuee")
     date_visite_campus = fields.Datetime(string="Date de visite du campus")
+
+    # --- Joindre le candidat ------------------------------------------------
+
+    # NON STOCKES. Ces deux champs ne sont qu'une mise en forme de `phone` :
+    # les stocker creerait un second endroit ou vit le numero, et deux
+    # versions du meme numero finissent toujours par diverger. Le cout est nul,
+    # le calcul est une expression reguliere sur une chaine deja en memoire.
+    telephone_e164 = fields.Char(
+        string="Telephone (E.164)", compute='_compute_telephone_e164',
+        help="Le numero au format international, seule forme que WhatsApp accepte.",
+    )
+    whatsapp_url = fields.Char(
+        string="Lien WhatsApp", compute='_compute_telephone_e164',
+    )
+
+    # --- La boucle d'appel ---------------------------------------------------
+
+    # Le compteur est ce qui transforme « candidature fantome » d'un souvenir
+    # en un fait porte par la fiche. Sans lui, la conseillere qui reprend un
+    # lead ne sait pas si personne n'a essaye ou si six personnes ont echoue.
+    tentatives_appel = fields.Integer(
+        string="Tentatives d'appel", default=0, copy=False, readonly=True,
+        help="Nombre d'appels restes sans reponse. Remis a zero par aucun "
+             "geste : c'est un historique, pas un etat.",
+    )
+    derniere_tentative = fields.Datetime(
+        string="Derniere tentative", copy=False, readonly=True,
+    )
+
+    # Ce que les motifs de la liste ne savent pas dire. Obligatoire avec
+    # « Autre » : voir _check_perte_motivee. Alimente par l'assistant natif,
+    # dont la note de cloture n'atterrissait nulle part (voir crm_lead_lost.py).
+    perte_precision = fields.Char(
+        string="Precision sur la perte", copy=False,
+        help="Obligatoire avec le motif « Autre - a preciser ».",
+    )
+
+    @api.depends('phone', 'country_id')
+    def _compute_telephone_e164(self):
+        """Normalise le numero saisi, quelle que soit la forme.
+
+        Les candidats saisissent « 0555... », « +213555... » ou
+        « 00213555... ». wa.me refuse le zero initial ET le signe plus : sans
+        normalisation, deux candidats sur trois donnent un lien mort.
+
+        L'Algerie par defaut, et non le pays de la societe : ce pipeline
+        recrute en Algerie. country_id reste prioritaire quand il est
+        renseigne, pour le candidat etranger.
+        """
+        for lead in self:
+            if not lead.phone:
+                lead.telephone_e164 = False
+                lead.whatsapp_url = False
+                continue
+            pays = lead.country_id
+            try:
+                e164 = phone_validation.phone_format(
+                    lead.phone,
+                    pays.code or 'DZ',
+                    pays.phone_code or 213,
+                    force_format='E164',
+                    raise_exception=False,
+                )
+            except Exception:
+                # Un numero illisible n'est pas une erreur bloquante : la
+                # conseillere le corrigera. Perdre la fiche pour un numero mal
+                # tape serait hors de proportion.
+                e164 = False
+            # phone_format REND LA SAISIE TELLE QUELLE quand il echoue —
+            # verifie sur l'image : « n importe quoi » ressort inchange. Sans
+            # ce controle, une faute de frappe deviendrait une URL WhatsApp
+            # pointant vers rien.
+            if not e164 or not e164.startswith('+'):
+                lead.telephone_e164 = False
+                lead.whatsapp_url = False
+                continue
+            lead.telephone_e164 = e164
+            lead.whatsapp_url = 'https://wa.me/%s' % e164[1:]
 
     # --- Production Contenu (equipe Production Contenu) ---------------------
 
@@ -114,6 +202,89 @@ class CrmLead(models.Model):
                 resume += " - en retard"
             lead.livrables_resume = resume
 
+    # --- La boucle d'appel ---------------------------------------------------
+
+    def action_appel_sans_reponse(self):
+        """Le candidat n'a pas repondu : on compte, on trace, on replanifie.
+
+        Trois effets et pas un de plus. L'etape ne bouge PAS — une tentative
+        n'est pas un contact, et faire avancer le lead sur un appel sans
+        reponse gonflerait le pipeline avec des candidats que personne n'a
+        jamais eus au telephone.
+
+        Aucune perte automatique au-dela de N tentatives : une machine qui
+        declare un candidat perdu est la meme automatisation que la Direction a
+        refusee pour l'affectation. La fiche propose, la conseillere decide.
+        """
+        for lead in self:
+            # sudo() : c'est le systeme qui enregistre un fait, pas
+            # l'utilisateur qui affirme quelque chose. tentatives_appel est en
+            # readonly, donc ce chemin est le seul qui l'ecrit.
+            lead.sudo().write({
+                'tentatives_appel': lead.tentatives_appel + 1,
+                'derniere_tentative': fields.Datetime.now(),
+            })
+            lead.message_post(body=_(
+                "Appel sans reponse (tentative n° %(n)s).",
+                n=lead.tentatives_appel,
+            ))
+            lead._his_replanifier_rappel()
+
+    def _his_replanifier_rappel(self):
+        """Un seul rappel a la fois, repousse plutot que duplique.
+
+        Poser une activite par tentative ferait exactement ce que la relance
+        SLA evite deja : une pile d'activites que le destinataire cesse de
+        lire. On deplace donc celle qui existe.
+        """
+        self.ensure_one()
+        echeance = fields.Date.context_today(self) + timedelta(
+            days=JOURS_AVANT_RAPPEL,
+        )
+        activite = self._his_rappel_existant()
+        if activite:
+            activite.date_deadline = echeance
+            return
+        self.activity_schedule(
+            'mail.mail_activity_data_call',
+            date_deadline=echeance,
+            summary=RESUME_RAPPEL,
+            user_id=self.user_id.id or self.env.uid,
+        )
+
+    def _his_rappel_existant(self):
+        """Le rappel pose par cette boucle, s'il y en a un."""
+        self.ensure_one()
+        return self.env['mail.activity'].search([
+            ('res_model', '=', 'crm.lead'),
+            ('res_id', '=', self.id),
+            ('summary', '=', RESUME_RAPPEL),
+        ], limit=1)
+
+    def action_appel_joint(self):
+        """Le candidat a repondu : on avance, on efface le rappel, on ouvre.
+
+        Ouvrir la fiche est la moitie utile du geste. Le contact vient d'avoir
+        lieu, c'est le seul moment ou la conseillere se souvient de ce qui a
+        ete dit ; l'ecran doit etre devant elle sans qu'elle ait a le chercher.
+        """
+        self.ensure_one()
+        etape = self.env.ref(
+            'his_crm_pipeline.stage_vente_contact_etabli',
+            raise_if_not_found=False,
+        )
+        if etape:
+            self.stage_id = etape
+        self._his_rappel_existant().unlink()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Candidat joint"),
+            'res_model': 'crm.lead',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
     # --- La file d'attente d'affectation -------------------------------------
 
     @api.model_create_multi
@@ -185,6 +356,100 @@ class CrmLead(models.Model):
                     "avant la validation finale.",
                     lead=lead.display_name,
                     manquants=", ".join(manquants),
+                ))
+
+    def action_perdre_rapide(self):
+        """Ouvre l'assistant de perte, pre-rempli quand la fiche sait deja.
+
+        Trois tentatives sans reponse SONT une candidature fantome : demander
+        a la conseillere de retrouver ce motif dans une liste de onze revient a
+        lui faire ressaisir ce que le compteur vient de mesurer.
+
+        En dessous de trois, rien n'est propose. Deviner serait pire que se
+        taire : un motif faux ne se distingue pas d'un motif vrai, et c'est
+        precisement le defaut de « Unknown » qu'on vient de retirer.
+        """
+        self.ensure_one()
+        contexte = dict(self.env.context, default_lead_ids=[(6, 0, self.ids)])
+        if self.tentatives_appel >= TENTATIVES_AVANT_FANTOME:
+            fantome = self.env.ref(
+                'his_crm_pipeline.lost_reason_fantome',
+                raise_if_not_found=False,
+            )
+            if fantome:
+                contexte['default_lost_reason_id'] = fantome.id
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Perdre le candidat"),
+            'res_model': 'crm.lead.lost',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': contexte,
+        }
+
+    def action_set_lost(self, **additional_values):
+        """Le motif AVANT l'archivage, et non l'inverse.
+
+        Odoo archive puis ecrit le motif (crm/models/crm_lead.py:1123-1124).
+        Entre les deux, la fiche vaut deja « perdue » au sens de won_status et
+        ne porte pas encore son motif : la contrainte se declencherait sur un
+        etat transitoire que personne n'a voulu, et perdre un lead deviendrait
+        impossible meme en s'y prenant correctement.
+
+        On pose donc le motif d'abord. Une perte SANS motif echoue toujours —
+        elle echoue simplement a l'archivage, ce qui est le bon moment.
+        """
+        if additional_values.get('lost_reason_id'):
+            self.lost_reason_id = additional_values['lost_reason_id']
+        return super().action_set_lost(**additional_values)
+
+    @api.constrains('won_status', 'lost_reason_id', 'perte_precision')
+    def _check_perte_motivee(self):
+        """On ne perd pas un candidat sans dire pourquoi.
+
+        Dans GoHighLevel, 626 opportunites perdues portent 193 motifs : les
+        deux tiers ne disent rien. Ce n'est pas de la negligence — consigner
+        coutait six gestes et sauter n'en coutait aucun. La contrainte rend le
+        vide impossible ; la boucle d'appel et le pre-remplissage rendent le
+        motif bon marche. Les DEUX sont necessaires : une contrainte seule
+        pousserait a ne plus clore du tout, et le pipeline se remplirait de
+        cadavres — une panne pire que celle qu'on repare.
+
+        Contrainte serveur et non regle de vue, pour la meme raison que le
+        verrou d'approbation : le glisser-deposer du kanban, l'import et l'API
+        ne passent par aucune vue. Ils passent tous par write().
+
+        Le declencheur est won_status et NON active. « Perdu » vaut
+        probabilite 0 ET archive (crm/models/crm_lead.py:1122) ; un lead
+        seulement archive garde sa probabilite. Exiger un motif sur `active`
+        interdirait le rangement ordinaire d'une fiche.
+
+        Les deux pipelines, sans distinction d'equipe. Brancher par equipe
+        serait du code de plus pour rien : la seule perte du pipeline Contenu
+        est « Retour production necessaire », qu'il renseigne deja.
+        """
+        autre = self.env.ref(
+            'his_crm_pipeline.lost_reason_autre', raise_if_not_found=False,
+        )
+        for lead in self:
+            if lead.won_status != 'lost':
+                continue
+            if not lead.lost_reason_id:
+                raise ValidationError(_(
+                    "« %(lead)s » ne peut pas etre perdu sans motif.\n\n"
+                    "Le motif est ce qui permet de savoir OU l'on perd les "
+                    "candidats. Si aucun de la liste ne convient, choisissez "
+                    "« Autre - a preciser » et dites en une ligne ce qui s'est "
+                    "passe.",
+                    lead=lead.display_name,
+                ))
+            if autre and lead.lost_reason_id == autre \
+                    and not (lead.perte_precision or '').strip():
+                raise ValidationError(_(
+                    "« %(lead)s » : le motif « Autre » demande une precision.\n\n"
+                    "Sans elle, « Autre » deviendrait le raccourci universel et "
+                    "n'apprendrait rien de plus qu'un motif vide.",
+                    lead=lead.display_name,
                 ))
 
     # --- Relance SLA premier contact ----------------------------------------

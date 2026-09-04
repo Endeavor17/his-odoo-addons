@@ -3,5 +3,6 @@
 from . import his_content_deliverable
 from . import his_objectif
 from . import his_dashboard
+from . import crm_lost_reason
 from . import crm_lead
 from . import crm_capacites

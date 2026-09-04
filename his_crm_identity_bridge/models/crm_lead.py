@@ -7,7 +7,22 @@ from odoo import _, api, fields, models
 # candidat, pas seulement recu son lead. Changer d'avis doit rester un
 # parametre, pas une modification de code.
 PARAM_ETAPE_DECLENCHEUSE = 'his_crm.identity_trigger_stage_xmlid'
-ETAPE_DECLENCHEUSE_DEFAUT = 'his_crm_pipeline.stage_vente_contact_etabli'
+# Hypothese A1, TRANCHEE : la pre-admission.
+#
+# « Contact etabli » etait la proposition initiale. Elle a ete rejetee sur
+# preuve : entrer dans le referentiel cree une fiche, et une fiche de candidat
+# ouvre le dossier qui recevra l'encaissement. Or le CRM reel perd 954
+# opportunites sur 1558. Declencher au premier contact revenait a ouvrir un
+# dossier pour six candidats sur dix qui n'en auront jamais l'usage.
+#
+# La pre-admission est le dernier point AVANT l'argent : c'est le moment ou
+# l'institution se prononce, et il reste un endroit ou enregistrer le paiement
+# qui suit. Declencher a l'encaissement lui-meme etait impossible — le
+# paiement s'enregistre SUR le dossier, qui n'existerait donc pas encore.
+#
+# Le matricule, lui, n'est plus emis ici : voir his_person_core, il est
+# attribue a l'encaissement des frais d'inscription.
+ETAPE_DECLENCHEUSE_DEFAUT = 'his_crm_pipeline.stage_vente_pre_admis'
 
 
 class CrmLead(models.Model):
@@ -70,7 +85,22 @@ class CrmLead(models.Model):
             return
         Person = self.env['his.person'].sudo()
         for lead in self:
-            if lead.stage_id != etape or lead.team_id != equipe:
+            # « PARVENU a l'etape », et non « pose exactement dessus ».
+            #
+            # Le kanban autorise de tirer une carte de « Pris en charge » droit
+            # vers « Dossier et pre-admission ». Avec une egalite stricte, ce
+            # geste ordinaire ne creait NI personne NI dossier, et rien ne le
+            # signalait : le candidat n'existait tout simplement pas pour
+            # l'Admission. Constate sur la base de recette — 2 candidatures en
+            # « Dossier » et 1 en « Pre-admis » sans aucun dossier ouvert.
+            #
+            # La comparaison porte sur la sequence et non sur l'id : c'est elle
+            # qui ordonne le pipeline, et c'est elle que le kanban respecte.
+            # Le cloisonnement par equipe reste la garde qui empeche les etapes
+            # du pipeline Contenu d'entrer dans cette comparaison.
+            # Un lead sans etape a une sequence de 0 : il tombe naturellement
+            # du mauvais cote de la comparaison, aucun garde-fou de plus.
+            if lead.team_id != equipe or lead.stage_id.sequence < etape.sequence:
                 continue
             if lead.his_person_id or lead.his_person_candidate_id:
                 continue

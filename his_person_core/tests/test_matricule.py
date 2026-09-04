@@ -191,3 +191,46 @@ class TestMatricule(TransactionCase):
         """Une valeur de reprise sans cle n'a rien a tronquer."""
         person = self._person(matricule_institutionnel='HIS-2023-000015')
         self.assertEqual(person.matricule_affiche, 'HIS-2023-000015')
+
+    # --- Le candidat n'a pas encore de matricule ------------------------------
+
+    def test_un_candidat_entre_sans_matricule(self):
+        """Le matricule est a vie et sa sequence ne se recycle jamais.
+
+        L'emettre a l'arrivee d'une candidature revenait a en bruler un par
+        candidature — sur les chiffres reels du CRM, 954 opportunites perdues
+        sur 1558. Un candidat entre donc dans le referentiel sans numero.
+        """
+        candidat = self._person(type_personne='candidat')
+        self.assertFalse(candidat.matricule_institutionnel)
+        self.assertFalse(candidat.matricule_affiche)
+
+    def test_les_autres_types_gardent_leur_matricule_a_la_creation(self):
+        """La regle ne vise QUE les candidats : un employe, un enseignant ou un
+        etudiant appartient deja a l'institution."""
+        for type_personne in ('employe', 'enseignant', 'etudiant'):
+            personne = self._person(type_personne=type_personne)
+            self.assertTrue(
+                personne.matricule_institutionnel,
+                "%s doit recevoir un matricule" % type_personne,
+            )
+
+    def test_le_matricule_s_attribue_ensuite_et_une_seule_fois(self):
+        """Idempotent : un matricule est a vie, le reemettre serait pire que
+        de ne pas en avoir."""
+        candidat = self._person(type_personne='candidat')
+
+        candidat._his_attribuer_matricule()
+        premier = candidat.matricule_institutionnel
+        self.assertTrue(premier)
+        self.assertTrue(MATRICULE_RE.match(premier))
+
+        candidat._his_attribuer_matricule()
+        self.assertEqual(candidat.matricule_institutionnel, premier)
+
+    def test_un_candidat_repris_avec_son_matricule_le_garde(self):
+        """Une reprise qui apporte deja un numero n'est pas concernee."""
+        candidat = self._person(
+            type_personne='candidat', matricule_institutionnel='HIS-2023-000015',
+        )
+        self.assertEqual(candidat.matricule_institutionnel, 'HIS-2023-000015')

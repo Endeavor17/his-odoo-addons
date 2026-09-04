@@ -43,4 +43,61 @@
         </record>
 
     </data>
+
+    <!-- HORS noupdate : une regle d'enregistrement doit pouvoir etre
+         corrigee par une livraison. Dans le bloc noupdate, le changement
+         de domaine ne s'appliquait pas aux bases deja installees — panne
+         silencieuse, la regle restait celle d'avant. -->
+    <data>
+
+        <!-- ============ Le pipeline partage ============
+
+             L'Admission voit et deplace les candidatures qu'elle a a
+             instruire, sur le MEME tableau que les Ventes. Un seul
+             enregistrement, deux equipes : rien a synchroniser, donc rien qui
+             puisse deriver. C'est ce qui rend le mot « en phase » litteral.
+
+             Le critere est l'ETAPE atteinte : l'Admission suit le candidat des
+             que la conseillere lui a parle. Il a d'abord ete his_person_id, du
+             temps ou le pont d'identite se declenchait au premier contact ;
+             l'hypothese A1 a place ce declencheur a la pre-admission, et
+             garder la fiche comme critere aurait ferme ce tableau sur tout ce
+             qui precede.
+
+             L'EQUIPE AUTANT QUE L'ETAPE. Un domaine borne aux seules etapes
+             « a partir de Contact etabli » laissait passer le pipeline
+             Production Contenu : ses etapes portent des sequences bien plus
+             hautes, donc superieures a n'importe quel seuil. L'Admission y
+             voyait les demandes de campagne du Marketing. Constate en montant
+             la demonstration, pas en relisant le code.
+
+             `eval` PLUTOT QU'UN DOMAINE ECRIT A LA MAIN : ir.rule relit
+             domain_force avec un contexte qui ne contient ni `ref` ni les
+             modeles — seulement `user`, `time` et les societes. On ne peut donc
+             pas y nommer une etape au moment de la LECTURE. On les nomme donc
+             au moment de l'INSTALLATION : eval resout les identifiants une fois
+             et stocke un domaine litteral. Meme mecanisme que l'action du
+             tableau, et plus de nombre magique a tenir en phase.
+
+             Ecriture SANS creation ni suppression (voir ir.model.access.csv) :
+             l'Admission fait avancer un candidat, elle n'en invente pas et
+             n'en efface pas. Creer reste un geste des Ventes ou de la capture
+             web ; perdre reste un geste des Ventes. -->
+        <record id="rule_crm_lead_admission" model="ir.rule">
+            <field name="name">Candidatures connues de l'Admission</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="groups" eval="[(4, ref('his_admission.group_his_admission'))]"/>
+            <field name="domain_force" eval="str([
+                ('team_id', 'in', [ref('his_crm_pipeline.crm_team_ventes'),
+                                   ref('his_crm_pipeline.crm_team_orientation')]),
+                ('stage_id', 'in', [ref('his_crm_pipeline.stage_vente_contact_etabli'),
+                                    ref('his_crm_pipeline.stage_vente_accompagnement'),
+                                    ref('his_crm_pipeline.stage_vente_evaluation_psy'),
+                                    ref('his_crm_pipeline.stage_vente_dossier'),
+                                    ref('his_crm_pipeline.stage_vente_pre_admis'),
+                                    ref('his_crm_pipeline.stage_vente_frais_payes')]),
+            ])"/>
+        </record>
+
+    </data>
 </odoo>

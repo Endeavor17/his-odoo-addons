@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_his_tarif_list" model="ir.ui.view">
+        <field name="name">his.tarif.list</field>
+        <field name="model">his.tarif</field>
+        <field name="arch" type="xml">
+            <list string="Tarifs" editable="bottom">
+                <field name="specialite_id"/>
+                <field name="cycle"/>
+                <field name="frais_inscription"/>
+                <field name="frais_scolarite" optional="show"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_his_tarif" model="ir.actions.act_window">
+        <field name="name">Tarifs</field>
+        <field name="res_model">his.tarif</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun tarif enregistre.</p>
+            <p>Tant que cette grille est vide, le cockpit n'affiche AUCUN chiffre
+               d'affaires. C'est voulu : un montant invente se cite en reunion.</p>
+            <p>Un seul tarif actif par specialite. Pour changer de bareme,
+               desactivez l'ancien plutot que de le modifier — l'historique
+               reste lisible.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_his_tarif" name="Tarifs"
+              parent="menu_admission_config"
+              action="action_his_tarif" sequence="40"/>
+
+</odoo>

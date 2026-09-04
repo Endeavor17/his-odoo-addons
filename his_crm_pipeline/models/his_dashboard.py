@@ -22,6 +22,7 @@ une definition fausse indetectable.
 from datetime import timedelta
 
 from odoo import api, fields, models
+from odoo.exceptions import AccessError
 
 # Au-dela, un dossier pre-admis qui n'a pas paye merite qu'on rappelle.
 JOURS_PRE_ADMIS_SANS_ENCAISSEMENT = 7
@@ -143,6 +144,51 @@ class HisDashboard(models.AbstractModel):
             'action': self._action(label, model, domain),
         }
 
+    def _donut(self, label, model, domain, groupby):
+        """Une repartition : un tout, decoupe en parts qui le somment.
+
+        Un seul _read_group sur une colonne deja stockee. Aucun SQL, aucune
+        table d'agregat, comme partout dans ce fichier.
+
+        Les parts sont triees par effectif decroissant : une legende dans
+        l'ordre de la base fait chercher la plus grosse part a l'oeil.
+
+        Chaque part porte SON action, comme chaque tuile : cliquer une part
+        doit ouvrir exactement les enregistrements qu'elle compte. C'est ce qui
+        rend une definition fausse detectable au lieu de simplement fausse — un
+        test le verifie part par part.
+        """
+        Model = self.env[model]
+        groupes = Model._read_group(domain, groupby=[groupby], aggregates=['__count'])
+
+        segments = []
+        total = 0
+        for valeur, compte in groupes:
+            total += compte
+            # _read_group rend un recordset pour un Many2one, la valeur brute
+            # pour un entier ou une selection, et False pour un groupe vide.
+            if hasattr(valeur, 'display_name'):
+                nom = valeur.display_name or "Non renseigne"
+                critere = valeur.id
+            else:
+                nom = str(valeur) if valeur or valeur == 0 else "Non renseigne"
+                critere = valeur
+            segments.append({
+                'label': nom,
+                'count': compte,
+                'action': self._action(
+                    "%s : %s" % (label, nom), model,
+                    domain + [(groupby, '=', critere)],
+                ),
+            })
+
+        segments.sort(key=lambda s: s['count'], reverse=True)
+        for segment in segments:
+            segment['pourcentage'] = (
+                round(segment['count'] / total * 100, 1) if total else 0
+            )
+        return {'label': label, 'total': total, 'segments': segments}
+
     # ============================= Admissions ================================
 
     @api.model
@@ -216,9 +262,85 @@ class HisDashboard(models.AbstractModel):
             'titre': "Cockpit Admissions",
             'tiles': tuiles,
             'funnel': self._entonnoir(equipes, date_from, date_to),
+            'donuts': self._admissions_donuts(equipes, date_from, date_to),
+            'qualite': self._admissions_qualite(equipes),
             'attention': self._admissions_a_traiter(base, equipes),
             'explore': self._admissions_explorer(equipes),
         }
+
+    def _admissions_donuts(self, equipes, date_from, date_to):
+        """Les quatre repartitions du cockpit GoHighLevel.
+
+        Elles repondent a quatre questions DIFFERENTES : quelle qualite de
+        candidats arrive, ou en est le portefeuille, ou l'on perd, et d'ou
+        vient l'acquisition. Une cinquieme ferait double emploi.
+
+        active_test=False sur « Motifs de perte » SEULEMENT : une candidature
+        perdue EST une fiche desactivee (crm/models/crm_lead.py:1122), donc
+        sans cela ce donut serait vide en permanence — la seule chose plus
+        inutile qu'un motif faux.
+
+        Les trois autres restent sur les fiches actives, comme les tuiles.
+        C'est une correction vue a l'ecran : « Acquisition par source »
+        totalisait 13 quand « Candidatures recues » en annoncait 7, deux
+        populations differentes cote a cote sur le meme ecran. Le lecteur ne
+        peut pas deviner laquelle il regarde, et c'est exactement ce que la
+        regle « un indicateur, une definition » existe pour empecher.
+        """
+        base = [('team_id', 'in', equipes.ids)] + self._entre(date_from, date_to)
+
+        return [
+            self._donut(
+                "Candidats par score", 'crm.lead', base, 'score_academique',
+            ),
+            self._donut(
+                "Etat du portefeuille", 'crm.lead', base, 'stage_id',
+            ),
+            self.with_context(active_test=False)._donut(
+                "Motifs de perte", 'crm.lead',
+                base + [('lost_reason_id', '!=', False)], 'lost_reason_id',
+            ),
+            self._donut(
+                "Acquisition par source", 'crm.lead', base, 'source_id',
+            ),
+        ]
+
+    def _admissions_qualite(self, equipes):
+        """Ce qui manque, et qu'on peut aller corriger.
+
+        C'est la meilleure idee du cockpit GoHighLevel — son panneau « Fix your
+        forecast data » — et la mecanique existe deja ici : _a_traiter rend un
+        libelle, un compte, un apercu de cinq lignes et une action. C'est
+        exactement le meme objet, donc quelques appels et rien de plus.
+
+        C'est aussi ce qui rend les autres chiffres de l'ecran dignes de
+        confiance : un tableau de bord qui ne dit pas ce qu'il ignore laisse
+        croire qu'il sait tout.
+
+        Pas de « date de cloture manquante » ici, contrairement a GHL ou les
+        505 opportunites ouvertes en manquent toutes : signaler un champ que
+        personne ne remplit et que rien n'utilise n'est pas de la qualite de
+        donnee, c'est du bruit.
+        """
+        base = [('team_id', 'in', equipes.ids), ('active', '=', True)]
+        files = [
+            self._a_traiter(
+                "Sans telephone ni email", 'crm.lead',
+                base + [('phone', '=', False), ('email_from', '=', False)],
+            ),
+            self._a_traiter(
+                "Sans source d'acquisition", 'crm.lead',
+                base + [('source_id', '=', False)],
+            ),
+        ]
+        # specialite_id vient de his_admission, situe en aval : le pipeline
+        # doit rester installable seul.
+        if 'specialite_id' in self.env['crm.lead']._fields:
+            files.insert(1, self._a_traiter(
+                "Sans specialite visee", 'crm.lead',
+                base + [('specialite_id', '=', False)],
+            ))
+        return files
 
     def _entonnoir(self, equipes, date_from, date_to):
         """Les etapes du parcours, effectif et taux de passage.
@@ -422,9 +544,15 @@ class HisDashboard(models.AbstractModel):
         """
         cockpits = self._cockpits_direction(date_from, date_to)
 
+        # Une liste de cles et non de modules : un cockpit en aval peut donc
+        # faire remonter une tuile a la Direction sans que ce fichier ait a le
+        # connaitre. « revenu_attendu » vient de his_admission ; sans cette
+        # ligne la tuile existait mais n'etait affichee nulle part, le cockpit
+        # Dossiers n'ayant aucune action a lui.
         retenues = {
             'candidatures', 'inscriptions', 'conversion',
             'dossiers_complets', 'demandes', 'publications',
+            'revenu_attendu',
         }
         return {
             'titre': "Direction",
@@ -445,18 +573,47 @@ class HisDashboard(models.AbstractModel):
             ],
         }
 
-    def _cockpits_direction(self, date_from, date_to):
-        """Les cockpits que la vue Direction agrege.
+    def _methodes_cockpits(self):
+        """Les cockpits que la vue Direction agrege, par NOM DE METHODE.
 
         Un point d'extension et non une liste en dur : his_admission ajoute le
         sien en heritant de ce modele. Le module qui apporte un metier apporte
         aussi ses indicateurs — his_crm_pipeline ne connait pas his.engagement,
         qui vit dans un module situe en aval de lui.
+
+        Des noms et non des resultats deja calcules : c'est ce qui permet a
+        _cockpits_direction d'entourer chaque appel. La liste etait auparavant
+        construite en appelant les methodes directement, et le premier metier
+        qu'un role n'avait pas le droit de lire faisait tomber TOUTE la vue
+        d'ensemble.
         """
-        return [
-            self.get_admissions(date_from, date_to),
-            self.get_contenu(date_from, date_to),
-        ]
+        return ['get_admissions', 'get_contenu']
+
+    def _cockpits_direction(self, date_from, date_to):
+        """Les cockpits que cet utilisateur-la peut reellement lire.
+
+        Un metier hors de sa portee DISPARAIT de l'ecran ; il ne le fait pas
+        tomber, et ne lui montre rien non plus. C'est la meme regle que partout
+        ailleurs dans ce fichier — un cockpit ne montre que ce que
+        l'utilisateur peut voir — appliquee au moment de l'agregation.
+
+        Le defaut etait reel et visible : des que his_admission etait installe
+        aux cotes de ce module, ouvrir « Vue d'ensemble » avec un role
+        Direction ou Production Contenu levait une erreur d'acces sur
+        his.person, atteinte par le display_name des dossiers. Deux roles sur
+        trois ne pouvaient pas ouvrir leur propre tableau de bord.
+
+        On n'attrape PAS l'erreur en sudo() : cela afficherait a un demandeur
+        de contenu les noms des candidats a l'admission. Se taire est la bonne
+        reponse, la montrer quand meme serait une fuite.
+        """
+        cockpits = []
+        for nom in self._methodes_cockpits():
+            try:
+                cockpits.append(getattr(self, nom)(date_from, date_to))
+            except AccessError:
+                continue
+        return cockpits
 
     # =============================== Communs =================================
 
