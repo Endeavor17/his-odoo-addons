@@ -286,6 +286,11 @@
                             title="Candidat joint : passe en Contact etabli">
                         Joint
                     </button>
+                    <button type="object" name="action_perdre_rapide"
+                            class="btn btn-sm btn-outline-danger"
+                            title="Perdre le candidat : motif pre-rempli si la fiche le sait">
+                        Perdu
+                    </button>
                     <a t-if="record.whatsapp_url.raw_value"
                        t-att-href="record.whatsapp_url.raw_value"
                        target="_blank" rel="noopener" role="button"

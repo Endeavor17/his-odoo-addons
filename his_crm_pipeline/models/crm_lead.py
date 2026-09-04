@@ -358,6 +358,35 @@ class CrmLead(models.Model):
                     manquants=", ".join(manquants),
                 ))
 
+    def action_perdre_rapide(self):
+        """Ouvre l'assistant de perte, pre-rempli quand la fiche sait deja.
+
+        Trois tentatives sans reponse SONT une candidature fantome : demander
+        a la conseillere de retrouver ce motif dans une liste de onze revient a
+        lui faire ressaisir ce que le compteur vient de mesurer.
+
+        En dessous de trois, rien n'est propose. Deviner serait pire que se
+        taire : un motif faux ne se distingue pas d'un motif vrai, et c'est
+        precisement le defaut de « Unknown » qu'on vient de retirer.
+        """
+        self.ensure_one()
+        contexte = dict(self.env.context, default_lead_ids=[(6, 0, self.ids)])
+        if self.tentatives_appel >= TENTATIVES_AVANT_FANTOME:
+            fantome = self.env.ref(
+                'his_crm_pipeline.lost_reason_fantome',
+                raise_if_not_found=False,
+            )
+            if fantome:
+                contexte['default_lost_reason_id'] = fantome.id
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Perdre le candidat"),
+            'res_model': 'crm.lead.lost',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': contexte,
+        }
+
     def action_set_lost(self, **additional_values):
         """Le motif AVANT l'archivage, et non l'inverse.
 

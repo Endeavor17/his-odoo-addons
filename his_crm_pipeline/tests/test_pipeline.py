@@ -675,6 +675,35 @@ class TestPipeline(TransactionCase):
         self.assertEqual(lead.won_status, 'lost')
         self.assertIn("Alger", lead.perte_precision)
 
+    def test_apres_trois_tentatives_la_perte_propose_fantome(self):
+        """La fiche sait deja. Elle ne demande pas.
+
+        C'est ce qui rend le motif obligatoire supportable : un clic sans
+        reflexion plutot qu'un menu de onze lignes a lire.
+        """
+        lead = self._lead_pris_en_charge()
+        for _ in range(3):
+            lead.action_appel_sans_reponse()
+
+        action = lead.action_perdre_rapide()
+
+        self.assertEqual(
+            action['context']['default_lost_reason_id'],
+            self.env.ref('his_crm_pipeline.lost_reason_fantome').id,
+        )
+        self.assertEqual(action['res_model'], 'crm.lead.lost')
+
+    def test_avant_trois_tentatives_aucun_motif_n_est_impose(self):
+        """Deviner a la place de la conseillere serait pire que ne rien
+        proposer : un motif faux ne se distingue pas d'un motif vrai — c'est
+        exactement le defaut de « Unknown » qu'on vient de retirer."""
+        lead = self._lead_pris_en_charge()
+        lead.action_appel_sans_reponse()
+
+        action = lead.action_perdre_rapide()
+
+        self.assertFalse(action['context'].get('default_lost_reason_id'))
+
     def test_chaque_tentative_laisse_une_trace_datee(self):
         """Le compteur dit combien ; le fil dit quand. Le second explique le
         premier a qui relit la fiche trois semaines plus tard."""
