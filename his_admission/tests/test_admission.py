@@ -706,17 +706,32 @@ class TestAdmission(TransactionCase):
         })
         return user
 
-    def test_la_regle_de_l_admission_suit_bien_contact_etabli(self):
-        """Le nombre 30 de la regle EST la sequence de « Contact etabli ».
-
-        Un domaine de regle ne peut pas nommer une etape : ir.rule le relit
-        sans `ref` ni acces aux modeles. Le nombre y est donc en dur, et ce
-        test est ce qui l'empeche de mentir — reordonner le pipeline fait
-        echouer ici, plutot que d'ouvrir ou de fermer cet acces en silence.
-        """
+    def test_la_regle_de_l_admission_part_de_contact_etabli(self):
+        """La regle nomme ses etapes, resolues a l'installation par eval."""
         regle = self.env.ref('his_admission.rule_crm_lead_admission')
-        etape = self.env.ref('his_crm_pipeline.stage_vente_contact_etabli')
-        self.assertIn(str(etape.sequence), regle.domain_force)
+        domaine = safe_eval(regle.domain_force)
+        etapes = next(v for champ, _op, v in domaine if champ == 'stage_id')
+        self.assertIn(
+            self.env.ref('his_crm_pipeline.stage_vente_contact_etabli').id, etapes)
+        self.assertNotIn(
+            self.env.ref('his_crm_pipeline.stage_vente_pris_en_charge').id, etapes)
+
+    def test_l_admission_ne_voit_pas_la_production_de_contenu(self):
+        """Une borne de sequence seule laissait passer le pipeline Contenu.
+
+        Ses etapes portent des sequences bien plus hautes que celles des
+        admissions : « au-dela de Contact etabli » les incluait toutes, et
+        l'Admission voyait les demandes de campagne du Marketing. Constate en
+        montant la demonstration.
+        """
+        agent = self._agent_admission()
+        demande = self.env['crm.lead'].create({'name': "Campagne rentree"})
+        demande.write({
+            'team_id': self.env.ref('his_crm_pipeline.crm_team_contenu').id,
+            'stage_id': self.env.ref('his_crm_pipeline.stage_contenu_production').id,
+        })
+
+        self.assertNotIn(demande, self.env['crm.lead'].with_user(agent).search([]))
 
     def test_l_admission_voit_les_candidats_des_le_premier_contact(self):
         """Un seul enregistrement, deux equipes : rien a synchroniser.

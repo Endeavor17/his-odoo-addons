@@ -13,9 +13,15 @@ pouvoir le faire.
 """
 from odoo import SUPERUSER_ID, api
 
-# La sequence de « Contact etabli ». Un test de his_admission verifie que ce
-# nombre est bien celui de l'etape : reordonner le pipeline le fait echouer.
-SEQUENCE_CONTACT_ETABLI = 30
+# Les etapes a partir desquelles l'Admission suit le candidat. Nommees, et non
+# bornees par une sequence : le pipeline Production Contenu porte des sequences
+# bien plus hautes, et un simple seuil lui ouvrait ses demandes.
+ETAPES = (
+    'stage_vente_contact_etabli', 'stage_vente_accompagnement',
+    'stage_vente_evaluation_psy', 'stage_vente_dossier',
+    'stage_vente_pre_admis', 'stage_vente_frais_payes',
+)
+EQUIPES = ('crm_team_ventes', 'crm_team_orientation')
 
 
 def migrate(cr, version):
@@ -32,7 +38,11 @@ def migrate(cr, version):
     donnee.noupdate = False
 
     regle = env['ir.rule'].sudo().browse(donnee.res_id)
-    if regle.exists():
-        regle.domain_force = (
-            "[('stage_id.sequence', '>=', %s)]" % SEQUENCE_CONTACT_ETABLI
-        )
+    if not regle.exists():
+        return
+    equipes = [env.ref('his_crm_pipeline.%s' % x).id for x in EQUIPES]
+    etapes = [env.ref('his_crm_pipeline.%s' % x).id for x in ETAPES]
+    regle.domain_force = str([
+        ('team_id', 'in', equipes),
+        ('stage_id', 'in', etapes),
+    ])

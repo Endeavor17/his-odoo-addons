@@ -64,13 +64,20 @@
              garder la fiche comme critere aurait ferme ce tableau sur tout ce
              qui precede.
 
-             UNE SEQUENCE ET NON DES IDENTIFIANTS : un domaine de regle est
-             relu par ir.rule._compute_domain avec un contexte qui ne contient
-             ni `ref` ni les modeles — seulement `user`, `time` et les
-             societes. On ne peut donc pas y nommer une etape. Le nombre 30 est
-             la sequence de « Contact etabli », et un test le verifie : si
-             quelqu'un reordonne le pipeline, il echoue bruyamment plutot que
-             d'ouvrir ou de fermer cet acces en silence.
+             L'EQUIPE AUTANT QUE L'ETAPE. Un domaine borne aux seules etapes
+             « a partir de Contact etabli » laissait passer le pipeline
+             Production Contenu : ses etapes portent des sequences bien plus
+             hautes, donc superieures a n'importe quel seuil. L'Admission y
+             voyait les demandes de campagne du Marketing. Constate en montant
+             la demonstration, pas en relisant le code.
+
+             `eval` PLUTOT QU'UN DOMAINE ECRIT A LA MAIN : ir.rule relit
+             domain_force avec un contexte qui ne contient ni `ref` ni les
+             modeles — seulement `user`, `time` et les societes. On ne peut donc
+             pas y nommer une etape au moment de la LECTURE. On les nomme donc
+             au moment de l'INSTALLATION : eval resout les identifiants une fois
+             et stocke un domaine litteral. Meme mecanisme que l'action du
+             tableau, et plus de nombre magique a tenir en phase.
 
              Ecriture SANS creation ni suppression (voir ir.model.access.csv) :
              l'Admission fait avancer un candidat, elle n'en invente pas et
@@ -80,7 +87,16 @@
             <field name="name">Candidatures connues de l'Admission</field>
             <field name="model_id" ref="crm.model_crm_lead"/>
             <field name="groups" eval="[(4, ref('his_admission.group_his_admission'))]"/>
-            <field name="domain_force">[('stage_id.sequence', '&gt;=', 30)]</field>
+            <field name="domain_force" eval="str([
+                ('team_id', 'in', [ref('his_crm_pipeline.crm_team_ventes'),
+                                   ref('his_crm_pipeline.crm_team_orientation')]),
+                ('stage_id', 'in', [ref('his_crm_pipeline.stage_vente_contact_etabli'),
+                                    ref('his_crm_pipeline.stage_vente_accompagnement'),
+                                    ref('his_crm_pipeline.stage_vente_evaluation_psy'),
+                                    ref('his_crm_pipeline.stage_vente_dossier'),
+                                    ref('his_crm_pipeline.stage_vente_pre_admis'),
+                                    ref('his_crm_pipeline.stage_vente_frais_payes')]),
+            ])"/>
         </record>
 
     </data>
