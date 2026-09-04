@@ -27,6 +27,69 @@
              seche, c'est un renvoi en production. -->
         <record id="lost_reason_retour_production" model="crm.lost.reason">
             <field name="name">Retour production necessaire</field>
+            <field name="sequence">70</field>
+        </record>
+
+        <!-- ===================== Issues d'appel =====================
+
+             Reprises de GoHighLevel, ou elles representent la majorite des
+             pertes reellement expliquees : fantome 48, sans reponse 56,
+             profil inadapte 17, trop cher 15, numero errone 12, BAC trop
+             ancien 12.
+
+             « Sans reponse » FUSIONNE les deux entrees « No Answer » et
+             « No answer » que GHL tenait separees. Les laisser scindees
+             perpetuerait un compartiment coupe en deux dans tous les
+             graphiques a venir, pour aucun gain. Une fois fusionnees, 104 des
+             193 pertes expliquees sont « jamais joint » — plus de la moitie.
+
+             « Unknown » (13) n'est PAS repris : il n'enregistre rien. Sa place
+             est tenue par « Autre », qui exige une precision.
+
+             sequence : l'ordre de frequence reelle, et non l'alphabet ni
+             l'ordre de creation (Odoo trie crm.lost.reason par id). Trois
+             motifs couvrent environ 70 % des cas ; les mettre en tete est ce
+             qui rend la cloture assez rapide pour ne pas etre sautee. -->
+
+        <record id="lost_reason_sans_reponse" model="crm.lost.reason">
+            <field name="name">Sans reponse</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="lost_reason_fantome" model="crm.lost.reason">
+            <field name="name">Candidature fantome</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="lost_reason_profil_inadapte" model="crm.lost.reason">
+            <field name="name">Profil non adapte</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="lost_reason_trop_cher" model="crm.lost.reason">
+            <field name="name">Frais trop eleves</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="lost_reason_numero_errone" model="crm.lost.reason">
+            <field name="name">Numero errone</field>
+            <field name="sequence">45</field>
+        </record>
+
+        <record id="lost_reason_bac_ancien" model="crm.lost.reason">
+            <field name="name">BAC trop ancien</field>
+            <field name="sequence">48</field>
+        </record>
+
+        <!-- La soupape d'honnetete. Un motif obligatoire sans porte de sortie
+             ne produit pas de meilleures donnees, il produit des mensonges
+             confiants : la conseillere qui ne sait pas choisit ce qui est le
+             plus proche du curseur, et ce motif-la est pire qu'un vide parce
+             qu'il ne se distingue pas d'un vrai. Choisir « Autre » oblige a
+             preciser — voir _check_perte_motivee. -->
+        <record id="lost_reason_autre" model="crm.lost.reason">
+            <field name="name">Autre - a preciser</field>
+            <field name="sequence">99</field>
         </record>
 
     </data>

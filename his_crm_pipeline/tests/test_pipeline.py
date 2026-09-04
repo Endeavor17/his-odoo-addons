@@ -563,6 +563,51 @@ class TestPipeline(TransactionCase):
         self.assertEqual(action['res_id'], lead.id)
         self.assertEqual(action['res_model'], 'crm.lead')
 
+    # --- Taxonomie des pertes ------------------------------------------------
+
+    def test_les_motifs_d_issue_d_appel_existent(self):
+        """Les leads meurent au telephone, pas en revue de dossier.
+
+        Les quatre motifs d'origine decrivent tous une mort tardive. Les
+        chiffres de GoHighLevel disent l'inverse : fantome, sans reponse et
+        numero errone sont la majorite des pertes expliquees.
+        """
+        for xmlid in (
+            'lost_reason_fantome', 'lost_reason_sans_reponse',
+            'lost_reason_numero_errone', 'lost_reason_bac_ancien',
+            'lost_reason_trop_cher', 'lost_reason_profil_inadapte',
+            'lost_reason_autre',
+        ):
+            motif = self.env.ref(
+                'his_crm_pipeline.%s' % xmlid, raise_if_not_found=False,
+            )
+            self.assertTrue(motif, "Motif manquant : %s" % xmlid)
+
+    def test_les_motifs_d_origine_survivent(self):
+        """noupdate et ondelete='restrict' : on ajoute, on ne remplace pas.
+
+        Un motif supprime emporterait avec lui tous les leads qui le portaient.
+        """
+        for xmlid in (
+            'lost_reason_hors_quota', 'lost_reason_dossier_non_retenu',
+            'lost_reason_dossier_incomplet', 'lost_reason_paiement_non_confirme',
+            'lost_reason_retour_production',
+        ):
+            self.assertTrue(self.env.ref(
+                'his_crm_pipeline.%s' % xmlid, raise_if_not_found=False,
+            ), "Motif d'origine perdu : %s" % xmlid)
+
+    def test_les_motifs_sont_ordonnes_par_frequence_reelle(self):
+        """Odoo trie les motifs par id : « Sans reponse », le plus frequent,
+        se retrouverait au milieu d'une liste de onze. Trois motifs couvrent
+        environ 70 % des pertes ; ils doivent etre en tete, sinon la cloture
+        coute assez cher pour etre sautee."""
+        motifs = self.env['crm.lost.reason'].search([])
+        noms = motifs.mapped('name')
+        self.assertEqual(noms[0], "Sans reponse")
+        self.assertEqual(noms[1], "Candidature fantome")
+        self.assertEqual(noms[-1], "Autre - a preciser")
+
     def test_chaque_tentative_laisse_une_trace_datee(self):
         """Le compteur dit combien ; le fil dit quand. Le second explique le
         premier a qui relit la fiche trois semaines plus tard."""
