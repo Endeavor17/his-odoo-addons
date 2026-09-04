@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== Le pipeline partage ====================
+
+         Le MEME tableau que les Ventes, la meme vue kanban, les memes
+         enregistrements. Rien n'est synchronise parce qu'il n'y a rien a
+         synchroniser : deplacer une carte ici deplace le lead, et la carte
+         bouge chez la conseillere. C'est ce qui rend « en phase » litteral
+         plutot qu'esperé.
+
+         L'alternative — un kanban sur his.engagement avec ses propres etapes,
+         miroir de celles du lead — aurait demande du code de recopie dans les
+         deux sens, et deux verites pour une seule question (« ou en est ce
+         candidat ? »). Le module refuse cette forme partout ailleurs ; il la
+         refuse ici aussi.
+
+         Le domaine repose sur his_person_id et non sur une liste d'etapes :
+         voir le commentaire de la regle d'enregistrement dans
+         security/his_admission_security.xml. -->
+
+    <record id="action_admission_pipeline" model="ir.actions.act_window">
+        <field name="name">Pipeline</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('his_person_id', '!=', False)]</field>
+        <!-- La vue des Ventes, telle quelle. En livrer une copie ici
+             signifierait entretenir deux tableaux qui doivent rester
+             identiques — ils divergeraient au premier ajustement. -->
+        <field name="view_id" ref="his_crm_pipeline.view_crm_lead_kanban_admissions"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune candidature a instruire.</p>
+            <p>Une candidature apparait ici des que la conseillere etablit le
+               premier contact : c'est ce geste qui ouvre la fiche personne et
+               le dossier.</p>
+            <p>Ce tableau est celui des Ventes. Deplacer une carte ici la
+               deplace pour tout le monde.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_admission_pipeline" name="Pipeline"
+              parent="menu_admission_root"
+              action="action_admission_pipeline" sequence="5"/>
+
+</odoo>

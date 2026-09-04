@@ -611,6 +611,57 @@ class TestAdmission(TransactionCase):
             "Le dossier instruit garde ses valeurs",
         )
 
+    # --- Le pipeline partage --------------------------------------------------
+
+    def _agent_admission(self):
+        user = self.env['res.users'].create({
+            'name': "Agent Admission", 'login': "agent_adm",
+            'email': "agent.adm@example.dz",
+            'group_ids': [(6, 0, [
+                self.env.ref('base.group_user').id,
+                self.env.ref('his_admission.group_his_admission').id,
+            ])],
+        })
+        return user
+
+    def test_l_admission_voit_les_candidats_qu_elle_instruit(self):
+        """Un seul enregistrement, deux equipes : rien a synchroniser.
+
+        Avant le premier contact, la candidature appartient aux Ventes et
+        l'Admission n'a rien a en connaitre. Des que le pont ouvre la fiche
+        personne, elle entre dans son champ.
+        """
+        agent = self._agent_admission()
+        lead = self._lead_avec_dossier()
+        avant = self.env['crm.lead'].create({
+            'name': "Pas encore contacte",
+            'team_id': self.env.ref('his_crm_pipeline.crm_team_ventes').id,
+            'stage_id': self.env.ref('his_crm_pipeline.stage_vente_nouveau').id,
+        })
+
+        vus = self.env['crm.lead'].with_user(agent).search([])
+
+        self.assertIn(lead, vus, "Le candidat instruit doit etre visible")
+        self.assertNotIn(avant, vus, "Avant le premier contact, rien a voir")
+
+    def test_l_admission_peut_deplacer_une_carte(self):
+        """« Les deux cotes deplacent les cartes en phase » : litteralement le
+        meme enregistrement, donc le mouvement est visible des deux cotes."""
+        agent = self._agent_admission()
+        lead = self._lead_avec_dossier()
+        dossier_stage = self.env.ref('his_crm_pipeline.stage_vente_dossier')
+
+        lead.with_user(agent).stage_id = dossier_stage
+
+        self.assertEqual(lead.stage_id, dossier_stage)
+
+    def test_l_admission_ne_cree_ni_ne_supprime_de_candidature(self):
+        """Elle instruit un dossier, elle n'invente pas de candidat et n'en
+        efface pas : creer reste un geste des Ventes ou de la capture web."""
+        agent = self._agent_admission()
+        with self.assertRaises(AccessError):
+            self.env['crm.lead'].with_user(agent).create({'name': "Invente"})
+
     # --- Grille tarifaire et revenu deduit -----------------------------------
 
     def _cockpit(self):

@@ -12,5 +12,6 @@ access_his_engagement_admission,his.engagement.admission,his_person_core.model_h
 access_his_engagement_finance,his.engagement.finance,his_person_core.model_his_engagement,his_admission.group_his_finance,1,0,0,0
 access_his_admission_document_finance,his.admission.document.finance,model_his_admission_document,his_admission.group_his_finance,1,0,0,0
 access_his_specialite_finance,his.specialite.finance,model_his_specialite,his_admission.group_his_finance,1,0,0,0
-access_his_tarif_user,his.tarif.user,model_his_tarif,base.group_user,1,0,0,0
+access_his_tarif_admission,his.tarif.admission,model_his_tarif,his_admission.group_his_admission,1,0,0,0
 access_his_tarif_finance,his.tarif.finance,model_his_tarif,his_admission.group_his_finance,1,1,1,1
+access_crm_lead_admission,crm.lead.admission,crm.model_crm_lead,his_admission.group_his_admission,1,1,0,0

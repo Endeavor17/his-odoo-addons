@@ -42,5 +42,31 @@
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
+        <!-- ============ Le pipeline partage ============
+
+             L'Admission voit et deplace les candidatures qu'elle a a
+             instruire, sur le MEME tableau que les Ventes. Un seul
+             enregistrement, deux equipes : rien a synchroniser, donc rien qui
+             puisse deriver. C'est ce qui rend le mot « en phase » litteral.
+
+             Le critere est `his_person_id`, et non une liste d'etapes.
+             L'etape declencheuse est un ir.config_parameter (l'hypothese A1
+             n'est pas tranchee) : recopier ici une liste d'etapes creerait une
+             seconde definition de « connu de l'Admission », qui divergerait au
+             premier changement de parametre. Le pont pose la fiche personne
+             exactement au moment ou le candidat entre dans le champ de
+             l'Admission — c'est donc lui, le critere.
+
+             Ecriture SANS creation ni suppression (voir ir.model.access.csv) :
+             l'Admission fait avancer un candidat, elle n'en invente pas et
+             n'en efface pas. Creer reste un geste des Ventes ou de la capture
+             web ; perdre reste un geste des Ventes. -->
+        <record id="rule_crm_lead_admission" model="ir.rule">
+            <field name="name">Candidatures connues de l'Admission</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="groups" eval="[(4, ref('his_admission.group_his_admission'))]"/>
+            <field name="domain_force">[('his_person_id', '!=', False)]</field>
+        </record>
+
     </data>
 </odoo>
