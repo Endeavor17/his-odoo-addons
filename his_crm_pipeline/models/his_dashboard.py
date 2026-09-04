@@ -143,6 +143,51 @@ class HisDashboard(models.AbstractModel):
             'action': self._action(label, model, domain),
         }
 
+    def _donut(self, label, model, domain, groupby):
+        """Une repartition : un tout, decoupe en parts qui le somment.
+
+        Un seul _read_group sur une colonne deja stockee. Aucun SQL, aucune
+        table d'agregat, comme partout dans ce fichier.
+
+        Les parts sont triees par effectif decroissant : une legende dans
+        l'ordre de la base fait chercher la plus grosse part a l'oeil.
+
+        Chaque part porte SON action, comme chaque tuile : cliquer une part
+        doit ouvrir exactement les enregistrements qu'elle compte. C'est ce qui
+        rend une definition fausse detectable au lieu de simplement fausse — un
+        test le verifie part par part.
+        """
+        Model = self.env[model]
+        groupes = Model._read_group(domain, groupby=[groupby], aggregates=['__count'])
+
+        segments = []
+        total = 0
+        for valeur, compte in groupes:
+            total += compte
+            # _read_group rend un recordset pour un Many2one, la valeur brute
+            # pour un entier ou une selection, et False pour un groupe vide.
+            if hasattr(valeur, 'display_name'):
+                nom = valeur.display_name or "Non renseigne"
+                critere = valeur.id
+            else:
+                nom = str(valeur) if valeur or valeur == 0 else "Non renseigne"
+                critere = valeur
+            segments.append({
+                'label': nom,
+                'count': compte,
+                'action': self._action(
+                    "%s : %s" % (label, nom), model,
+                    domain + [(groupby, '=', critere)],
+                ),
+            })
+
+        segments.sort(key=lambda s: s['count'], reverse=True)
+        for segment in segments:
+            segment['pourcentage'] = (
+                round(segment['count'] / total * 100, 1) if total else 0
+            )
+        return {'label': label, 'total': total, 'segments': segments}
+
     # ============================= Admissions ================================
 
     @api.model
@@ -216,9 +261,79 @@ class HisDashboard(models.AbstractModel):
             'titre': "Cockpit Admissions",
             'tiles': tuiles,
             'funnel': self._entonnoir(equipes, date_from, date_to),
+            'donuts': self._admissions_donuts(equipes, date_from, date_to),
+            'qualite': self._admissions_qualite(equipes),
             'attention': self._admissions_a_traiter(base, equipes),
             'explore': self._admissions_explorer(equipes),
         }
+
+    def _admissions_donuts(self, equipes, date_from, date_to):
+        """Les quatre repartitions du cockpit GoHighLevel.
+
+        Elles repondent a quatre questions DIFFERENTES : quelle qualite de
+        candidats arrive, ou en est le portefeuille, ou l'on perd, et d'ou
+        vient l'acquisition. Une cinquieme ferait double emploi.
+
+        active_test=False sur les deux dernieres : une candidature perdue EST
+        une fiche desactivee (crm/models/crm_lead.py:1122). Sans cela le donut
+        des motifs de perte serait vide en permanence, ce qui est la seule
+        chose plus inutile qu'un motif faux.
+        """
+        base = [('team_id', 'in', equipes.ids)] + self._entre(date_from, date_to)
+        toutes = self.with_context(active_test=False)
+
+        return [
+            self._donut(
+                "Candidats par score", 'crm.lead', base, 'score_academique',
+            ),
+            self._donut(
+                "Etat du portefeuille", 'crm.lead', base, 'stage_id',
+            ),
+            toutes._donut(
+                "Motifs de perte", 'crm.lead',
+                base + [('lost_reason_id', '!=', False)], 'lost_reason_id',
+            ),
+            toutes._donut(
+                "Acquisition par source", 'crm.lead', base, 'source_id',
+            ),
+        ]
+
+    def _admissions_qualite(self, equipes):
+        """Ce qui manque, et qu'on peut aller corriger.
+
+        C'est la meilleure idee du cockpit GoHighLevel — son panneau « Fix your
+        forecast data » — et la mecanique existe deja ici : _a_traiter rend un
+        libelle, un compte, un apercu de cinq lignes et une action. C'est
+        exactement le meme objet, donc quelques appels et rien de plus.
+
+        C'est aussi ce qui rend les autres chiffres de l'ecran dignes de
+        confiance : un tableau de bord qui ne dit pas ce qu'il ignore laisse
+        croire qu'il sait tout.
+
+        Pas de « date de cloture manquante » ici, contrairement a GHL ou les
+        505 opportunites ouvertes en manquent toutes : signaler un champ que
+        personne ne remplit et que rien n'utilise n'est pas de la qualite de
+        donnee, c'est du bruit.
+        """
+        base = [('team_id', 'in', equipes.ids), ('active', '=', True)]
+        files = [
+            self._a_traiter(
+                "Sans telephone ni email", 'crm.lead',
+                base + [('phone', '=', False), ('email_from', '=', False)],
+            ),
+            self._a_traiter(
+                "Sans source d'acquisition", 'crm.lead',
+                base + [('source_id', '=', False)],
+            ),
+        ]
+        # specialite_id vient de his_admission, situe en aval : le pipeline
+        # doit rester installable seul.
+        if 'specialite_id' in self.env['crm.lead']._fields:
+            files.insert(1, self._a_traiter(
+                "Sans specialite visee", 'crm.lead',
+                base + [('specialite_id', '=', False)],
+            ))
+        return files
 
     def _entonnoir(self, equipes, date_from, date_to):
         """Les etapes du parcours, effectif et taux de passage.
