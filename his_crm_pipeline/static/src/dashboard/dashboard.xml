@@ -42,7 +42,7 @@
                         <div class="his_tuile_label" t-esc="tuile.label"/>
 
                         <div class="his_tuile_valeur">
-                            <span t-esc="tuile.valeur"/><span
+                            <span t-esc="valeurAffichee(tuile)"/><span
                                 t-if="tuile.unite" class="his_unite"
                                 t-esc="tuile.unite"/>
                         </div>

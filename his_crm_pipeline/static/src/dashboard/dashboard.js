@@ -152,6 +152,27 @@ export class HisDashboard extends Component {
     }
 
     /**
+     * La valeur d'une tuile, avec ses separateurs de milliers.
+     *
+     * « 2100000 » oblige le lecteur a compter les chiffres ; c'est
+     * exactement ce qu'un tableau de bord doit lui epargner. Vu a l'ecran sur
+     * la tuile « Revenu attendu ».
+     *
+     * Le formatage vit ici et non au serveur : his_dashboard.py rend des
+     * NOMBRES, que le pivot, le graphe et un futur outil de BI reutiliseront.
+     * Une chaine deja formatee ne se reagrege pas.
+     */
+    valeurAffichee(tuile) {
+        const valeur = tuile.valeur;
+        if (typeof valeur !== "number") {
+            return valeur;
+        }
+        // Les petits comptes restent bruts : « 5 » n'a pas besoin d'espace, et
+        // un taux garde sa decimale.
+        return valeur.toLocaleString("fr-FR", { maximumFractionDigits: 2 });
+    }
+
+    /**
      * Le donut, en une seule declaration CSS.
      *
      * conic-gradient plutot qu'une bibliotheque de graphiques : ces quatre

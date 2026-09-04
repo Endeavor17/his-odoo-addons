@@ -552,3 +552,92 @@ class TestAdmission(TransactionCase):
         self.assertFalse(lead.note_physique)
         self.assertEqual(lead.score_academique, 7)
         self.assertIn("non applicable", lead.score_detail)
+
+    # --- Grille tarifaire et revenu deduit -----------------------------------
+
+    def _cockpit(self):
+        return self.env['his.dashboard'].get_dossiers('2020-01-01', '2100-01-01')
+
+    def test_sans_tarif_le_cockpit_n_affiche_aucun_montant(self):
+        """Un chiffre d'affaires invente est pire qu'un chiffre absent : il se
+        cite en reunion. Tant que la grille est vide, la tuile n'existe pas."""
+        self.env['his.tarif'].search([]).unlink()
+        cles = [t['cle'] for t in self._cockpit()['tiles']]
+        self.assertNotIn('revenu_attendu', cles)
+
+    def test_avec_un_tarif_le_revenu_se_deduit(self):
+        """Deduit, jamais saisi. C'est la difference avec GoHighLevel, ou 454
+        opportunites sur 505 n'ont aucun montant parce qu'il fallait le taper.
+        """
+        self.env['his.tarif'].create({
+            'specialite_id': self.spec_licence.id,
+            'frais_inscription': 400000.0,
+        })
+        equipe = self.env.ref('his_crm_pipeline.crm_team_ventes')
+        self.env['crm.lead'].create([{
+            'name': "Candidat chiffrable %s" % i,
+            'team_id': equipe.id,
+            'specialite_id': self.spec_licence.id,
+        } for i in range(2)])
+
+        tuile = next(
+            t for t in self._cockpit()['tiles'] if t['cle'] == 'revenu_attendu'
+        )
+        self.assertEqual(tuile['valeur'], 800000.0)
+        self.assertEqual(tuile['unite'], "DA")
+
+    def test_la_tuile_de_revenu_ouvre_ce_qu_elle_chiffre(self):
+        """Meme regle que toutes les autres tuiles : un chiffre qu'on ne peut
+        pas ouvrir doit etre cru sur parole."""
+        self.env['his.tarif'].create({
+            'specialite_id': self.spec_licence.id,
+            'frais_inscription': 400000.0,
+        })
+        equipe = self.env.ref('his_crm_pipeline.crm_team_ventes')
+        self.env['crm.lead'].create({
+            'name': "Candidat chiffrable",
+            'team_id': equipe.id,
+            'specialite_id': self.spec_licence.id,
+        })
+
+        tuile = next(
+            t for t in self._cockpit()['tiles'] if t['cle'] == 'revenu_attendu'
+        )
+        lus = self.env['crm.lead'].search_count(tuile['action']['domain'])
+        self.assertEqual(lus * 400000.0, tuile['valeur'])
+
+    def test_un_seul_tarif_actif_par_specialite(self):
+        """Deux tarifs actifs pour la meme specialite donneraient deux revenus
+        possibles, et le cockpit en choisirait un au hasard."""
+        self.env['his.tarif'].create({
+            'specialite_id': self.spec_licence.id, 'frais_inscription': 400000.0,
+        })
+        with self.assertRaises(ValidationError):
+            self.env['his.tarif'].create({
+                'specialite_id': self.spec_licence.id,
+                'frais_inscription': 450000.0,
+            })
+
+    def test_desactiver_l_ancien_tarif_permet_d_en_creer_un_nouveau(self):
+        """Changer de bareme reste possible : on desactive, on ne supprime pas.
+        L'historique de ce qu'on facturait la rentree precedente reste lisible.
+        """
+        ancien = self.env['his.tarif'].create({
+            'specialite_id': self.spec_licence.id, 'frais_inscription': 400000.0,
+        })
+        ancien.active = False
+        nouveau = self.env['his.tarif'].create({
+            'specialite_id': self.spec_licence.id, 'frais_inscription': 450000.0,
+        })
+        self.assertTrue(nouveau.id)
+
+    def test_les_specialites_sans_tarif_remontent_en_qualite(self):
+        """Une specialite non tarifee rend ses candidatures invisibles au
+        revenu attendu, sans que rien ne le dise. La file le dit."""
+        self.env['his.tarif'].search([]).unlink()
+        equipes = self.env['his.dashboard']._equipes_admissions()
+        files = self.env['his.dashboard']._admissions_qualite(equipes)
+        libelles = [f['label'] for f in files]
+        self.assertIn("Specialites sans tarif", libelles)
+        sans = next(f for f in files if f['label'] == "Specialites sans tarif")
+        self.assertGreater(sans['count'], 0)

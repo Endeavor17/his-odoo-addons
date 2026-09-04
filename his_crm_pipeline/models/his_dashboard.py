@@ -543,9 +543,15 @@ class HisDashboard(models.AbstractModel):
         """
         cockpits = self._cockpits_direction(date_from, date_to)
 
+        # Une liste de cles et non de modules : un cockpit en aval peut donc
+        # faire remonter une tuile a la Direction sans que ce fichier ait a le
+        # connaitre. « revenu_attendu » vient de his_admission ; sans cette
+        # ligne la tuile existait mais n'etait affichee nulle part, le cockpit
+        # Dossiers n'ayant aucune action a lui.
         retenues = {
             'candidatures', 'inscriptions', 'conversion',
             'dossiers_complets', 'demandes', 'publications',
+            'revenu_attendu',
         }
         return {
             'titre': "Direction",
