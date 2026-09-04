@@ -40,6 +40,28 @@
                                     icon="fa-calendar-plus-o" class="btn-link"/>
                         </group>
                     </group>
+                    <group>
+                        <group string="Joindre le candidat">
+                            <field name="tentatives_appel"/>
+                            <field name="derniere_tentative"
+                                   invisible="not tentatives_appel"/>
+                            <field name="telephone_e164"/>
+                            <!-- Le lien WhatsApp plutot qu'un bouton : c'est un
+                                 lien profond vers une application externe, pas
+                                 une action serveur. Le widget url le dit. -->
+                            <field name="whatsapp_url" widget="url"
+                                   text="Ouvrir WhatsApp"
+                                   invisible="not whatsapp_url"/>
+                        </group>
+                        <group string="Issue de l'appel">
+                            <button name="action_appel_sans_reponse"
+                                    type="object" class="btn-secondary"
+                                    string="Sans reponse"/>
+                            <button name="action_appel_joint"
+                                    type="object" class="btn-primary"
+                                    string="Joint"/>
+                        </group>
+                    </group>
                     <group string="Motivation">
                         <field name="motivation_notes" nolabel="1"
                                placeholder="Ce que le candidat dit de son projet..."/>
@@ -191,6 +213,9 @@
 
             <xpath expr="//kanban" position="inside">
                 <field name="visite_campus_effectuee"/>
+                <field name="tentatives_appel"/>
+                <field name="telephone_e164"/>
+                <field name="whatsapp_url"/>
             </xpath>
 
             <!-- Le geste de la conseillere, la ou elle regarde deja. -->
@@ -211,10 +236,66 @@
                           title="Score academique">
                         <i class="fa fa-star-o me-1" role="img" aria-label="Score academique"/><field name="score_academique"/>
                     </span>
+                    <!-- Le compteur ne s'affiche qu'a partir de la premiere
+                         tentative : « 0 tentative » est le cas de tout lead
+                         neuf et n'apprend rien. A partir de trois, il vire au
+                         rouge — c'est le seuil de la candidature fantome. -->
+                    <span class="badge rounded-pill"
+                          invisible="not tentatives_appel"
+                          t-att-class="record.tentatives_appel.raw_value >= 3 ? 'text-bg-danger' : 'text-bg-light'"
+                          title="Appels restes sans reponse">
+                        <i class="fa fa-phone me-1" role="img" aria-label="Tentatives d'appel"/><field name="tentatives_appel"/>
+                    </span>
                     <i class="fa fa-calendar-check-o text-success"
                        role="img" aria-label="Visite du campus effectuee"
                        title="Visite du campus effectuee"
                        invisible="not visite_campus_effectuee"/>
+                </div>
+            </xpath>
+
+            <!-- La rangee d'action : le geste de la conseillere, la ou elle
+                 regarde deja. Des <button type="object"> natifs et non un
+                 composant OWL maison — la carte stock les gere, et un widget
+                 ecrit a la main casserait a la premiere refonte amont.
+
+                 WhatsApp et tel: sont des LIENS PROFONDS, pas une integration.
+                 Ils ouvrent l'application avec le numero pret. Aucun message
+                 entrant, aucun accuse de reception, aucun fil dans Odoo :
+                 Odoo 19 Community n'a ni telephonie, ni SMS gratuit, ni
+                 WhatsApp. C'est une perte assumee face a GoHighLevel. -->
+            <!-- En DERNIER dans la carte, et non au milieu : c'est la place
+                 qu'occupe la rangee d'icones dans GoHighLevel, et la carte se
+                 lit alors identite, puis renseignements, puis gestes. Placee
+                 apres les badges, elle separait le nom du contact de son
+                 propre titre. -->
+            <xpath expr="//t[@t-name='card']" position="inside">
+                <div class="o_his_lead_actions d-flex align-items-center gap-1 mt-2">
+                    <button type="object" name="action_appel_sans_reponse"
+                            class="btn btn-sm btn-outline-secondary"
+                            title="Appel sans reponse : compte, trace et replanifie">
+                        Sans reponse
+                    </button>
+                    <button type="object" name="action_appel_joint"
+                            class="btn btn-sm btn-outline-primary"
+                            title="Candidat joint : passe en Contact etabli">
+                        Joint
+                    </button>
+                    <a t-if="record.whatsapp_url.raw_value"
+                       t-att-href="record.whatsapp_url.raw_value"
+                       target="_blank" rel="noopener" role="button"
+                       class="btn btn-sm btn-outline-success"
+                       title="Ouvrir WhatsApp avec ce numero"
+                       aria-label="Ouvrir WhatsApp">
+                        <i class="fa fa-whatsapp" role="img"/>
+                    </a>
+                    <a t-if="record.telephone_e164.raw_value"
+                       t-attf-href="tel:{{ record.telephone_e164.raw_value }}"
+                       role="button"
+                       class="btn btn-sm btn-outline-secondary"
+                       title="Appeler (utile sur mobile)"
+                       aria-label="Appeler">
+                        <i class="fa fa-phone" role="img"/>
+                    </a>
                 </div>
             </xpath>
 
