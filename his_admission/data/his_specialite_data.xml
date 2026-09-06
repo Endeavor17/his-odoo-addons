@@ -91,5 +91,62 @@
             <field name="sequence">90</field>
         </record>
 
+        <!-- Les quatre specialites Master que le formulaire en ligne offre
+             depuis la rentree 2026 et que le catalogue ne portait pas. Relevees
+             le 2026-09-06 dans la liste deroulante « Master Field » du
+             formulaire GHL publie (brZg6SmcGhxHbqfadH6h) : sans ces records,
+             quatre des six choix possibles arrivaient dans Odoo sans
+             specialite, donc sans domaine et sans bareme.
+
+             Le libelle arabe est recopie tel qu'il figure dans le formulaire,
+             precede du domaine comme le reste du catalogue. C'est cette forme
+             que le rapprochement n8n compare par fragment : la changer casse le
+             rapprochement, qui est verifie par tools/test_rapprochement.mjs. -->
+
+        <record id="spec_droit_affaires_master" model="his.specialite">
+            <field name="name">Droit - Master droit des affaires</field>
+            <field name="name_arabe">حقوق - ماستر قانون الأعمال</field>
+            <field name="code">DR-AFF-M</field>
+            <field name="domaine_id" ref="domaine_dr"/>
+            <field name="cycle">master</field>
+            <field name="sequence">100</field>
+        </record>
+
+        <!-- Sciences de l'education rattachees a Sciences sociales : aucun
+             domaine « education » n'existe, et en creer un obligerait a
+             inventer un bareme, ce que ce fichier se refuse a faire ailleurs
+             (voir his_domaine_data.xml, TODO A7). Le bareme SS ne pese ni les
+             maths ni la physique, ce qui convient a un cursus d'orientation. -->
+        <record id="spec_educ_orientation_master" model="his.specialite">
+            <field name="name">Sciences sociales - Master sciences de l'education, orientation et guidance</field>
+            <field name="name_arabe">علوم اجتماعية - ماستر علوم التربية - إرشاد وتوجيه</field>
+            <field name="code">SS-ORI-M</field>
+            <field name="domaine_id" ref="domaine_ss"/>
+            <field name="cycle">master</field>
+            <field name="sequence">110</field>
+        </record>
+
+        <record id="spec_com_marketing_master" model="his.specialite">
+            <field name="name">Sciences commerciales - Master marketing digital</field>
+            <field name="name_arabe">علوم تجارية - ماستر تسويق رقمي</field>
+            <field name="code">COM-MKD-M</field>
+            <field name="domaine_id" ref="domaine_com"/>
+            <field name="cycle">master</field>
+            <field name="sequence">120</field>
+        </record>
+
+        <!-- Le pendant Master de SS-PSY, qui existe en Licence. Deux records
+             distincts et non un cycle partage : le catalogue est filtre par
+             cycle en amont du rapprochement, une specialite Licence est donc
+             invisible a une candidature Master, et inversement. -->
+        <record id="spec_ss_psycho_master" model="his.specialite">
+            <field name="name">Sciences sociales - Master psychologie clinique</field>
+            <field name="name_arabe">علوم اجتماعية - ماستر علم النفس العيادي</field>
+            <field name="code">SS-PSY-M</field>
+            <field name="domaine_id" ref="domaine_ss"/>
+            <field name="cycle">master</field>
+            <field name="sequence">130</field>
+        </record>
+
     </data>
 </odoo>
