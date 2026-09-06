@@ -148,5 +148,19 @@
             <field name="sequence">130</field>
         </record>
 
+        <!-- Septieme choix Master, releve dans la premiere vraie candidature
+             (execution n8n 44, le 2026-09-06) et non dans le releve initial du
+             formulaire : le filtre de longueur de ce releve coupait a 80
+             caracteres et ce libelle en fait 81. C'est precisement celui que la
+             candidate a choisi. Relever une liste deroulante sans plafond. -->
+        <record id="spec_info_donnees_master" model="his.specialite">
+            <field name="name">Informatique - Master ingenierie des donnees et technologie web</field>
+            <field name="name_arabe">إعلام آلي - ماستر هندسة البيانات وتكنولوجيا الويب</field>
+            <field name="code">INF-DATA-M</field>
+            <field name="domaine_id" ref="domaine_mi"/>
+            <field name="cycle">master</field>
+            <field name="sequence">140</field>
+        </record>
+
     </data>
 </odoo>
