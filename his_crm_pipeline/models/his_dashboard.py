@@ -50,7 +50,11 @@ class HisDashboard(models.AbstractModel):
         duree = (date_to - date_from) + timedelta(days=1)
         return date_from - duree, date_from - timedelta(days=1)
 
-    def _action(self, name, model, domain, views=None):
+    def _action(self, name, model, domain, views=None, context=None):
+        # Un pivot ou un graphe sans groupby s'ouvre sur une seule case
+        # « Total » : le chiffre est juste, mais la question posee par le
+        # libelle (« par personne », « par marque ») reste sans reponse.
+        # C'est le context qui la porte.
         return {
             'type': 'ir.actions.act_window',
             'name': name,
@@ -58,6 +62,7 @@ class HisDashboard(models.AbstractModel):
             'domain': domain,
             'views': views or [[False, 'list'], [False, 'form']],
             'target': 'current',
+            'context': context or {},
         }
 
     def _tuile(self, cle, label, valeur, action=None, precedent=None,
@@ -421,11 +426,15 @@ class HisDashboard(models.AbstractModel):
              'action': self._action(
                  "Par conseillere et par etape", 'crm.lead', base,
                  views=[[False, 'pivot'], [False, 'list']],
+                 context={'pivot_row_groupby': ['user_id'],
+                          'pivot_column_groupby': ['stage_id']},
              )},
             {'label': "Candidatures dans le temps",
              'action': self._action(
                  "Candidatures dans le temps", 'crm.lead', base,
                  views=[[False, 'graph'], [False, 'list']],
+                 context={'graph_groupbys': ['create_date:month'],
+                          'graph_mode': 'line'},
              )},
         ]
 
@@ -496,11 +505,14 @@ class HisDashboard(models.AbstractModel):
                  'action': self._action(
                      "Charge par personne", 'his.content.deliverable', [],
                      views=[[False, 'pivot'], [False, 'list']],
+                     context={'pivot_row_groupby': ['assignee_id'],
+                              'pivot_column_groupby': ['statut']},
                  )},
                 {'label': "Debit par marque",
                  'action': self._action(
                      "Debit par marque", 'his.content.deliverable', [],
                      views=[[False, 'graph'], [False, 'list']],
+                     context={'graph_groupbys': ['marque', 'statut']},
                  )},
             ],
         }
