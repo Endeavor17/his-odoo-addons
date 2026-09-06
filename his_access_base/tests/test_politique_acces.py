@@ -44,9 +44,16 @@ SEPARATION_DES_TACHES = [
 ]
 
 # Ce qu'un utilisateur interne SANS AUCUN ROLE doit voir, et rien de plus.
-# « Apps » est sans groupe dans Odoo 19 lui-meme, y compris sur une base vierge
-# — verifie. Ce n'est pas notre fait et son menu ne porte aucune action.
-SOCLE_ATTENDU = {'Apps', 'Discuss', 'Calendar'}
+#
+# « Apps » en a fait partie par erreur. La note precedente affirmait qu'Odoo 19
+# livre ce menu sans groupe « y compris sur une base vierge — verifie » : c'est
+# faux, et la verification avait ete faite sur une base deja abimee. Une base
+# creee avec `-i base` seul porte bien « Role / Administrator » (group_system)
+# sur base.menu_management ; le source le declare (base/views/base_menus.xml).
+# Ce sont nos bases qui l'avaient perdu, maintenance_university l'ayant remplace
+# par un (6, 0, [...]) dont la desinstallation a emporte le dernier groupe.
+# socle_menus.xml le repose ; un graphiste ne voit plus la tuile « Apps ».
+SOCLE_ATTENDU = {'Discuss', 'Calendar'}
 
 
 @tagged('post_install', '-at_install')
