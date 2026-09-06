@@ -18,7 +18,7 @@ que his.document.type dans his_admission, et pour la meme raison : ajouter
 livraison de code.
 """
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, ValidationError
 
 STATUT_LIVRABLE = [
     ('a_faire', "A faire"),
@@ -65,7 +65,14 @@ class HisContentDeliverable(models.Model):
     statut = fields.Selection(
         STATUT_LIVRABLE, string="Statut", default='a_faire', required=True,
     )
-    assignee_id = fields.Many2one('res.users', string="Assigne a", index=True)
+    # Le domaine ne propose que ceux qui font le travail : « Production »
+    # implique « Demandeur », et « Priorisation »/« Approbation »/Direction
+    # impliquent « Production ». Un simple demandeur en est donc exclu — il
+    # commande du contenu, il n'en produit pas.
+    assignee_id = fields.Many2one(
+        'res.users', string="Assigne a", index=True,
+        domain=lambda self: [('all_group_ids', 'in', self._groupes_producteurs())],
+    )
 
     # --- Dates ---------------------------------------------------------------
     # Posees par le passage de statut, pas saisies. Ce sont elles qui permettent
@@ -98,6 +105,36 @@ class HisContentDeliverable(models.Model):
         'unique(lead_id, type_id)',
         "Cette demande porte deja un livrable de ce type.",
     )
+
+    @api.model
+    def _groupes_producteurs(self):
+        """Les groupes dont les membres peuvent porter un livrable."""
+        groupe = self.env.ref(
+            'his_crm_pipeline.group_contenu_production', raise_if_not_found=False,
+        )
+        return groupe.ids if groupe else []
+
+    @api.constrains('assignee_id')
+    def _verifier_assignee_produit_du_contenu(self):
+        """Le domaine du champ ne protege que l'ecran.
+
+        Un import, un batch ou l'API assignaient sans lui — et le livrable
+        atterrissait chez quelqu'un qui n'a meme pas l'application. Personne ne
+        voyait jamais l'oubli : ni l'assigne, qui ne peut pas ouvrir la
+        demande, ni la file « non assignes », qui le compte comme assigne.
+        """
+        for livrable in self:
+            assigne = livrable.assignee_id
+            if assigne and not assigne.has_group(
+                'his_crm_pipeline.group_contenu_production',
+            ):
+                raise ValidationError(_(
+                    "%(nom)s ne peut pas recevoir le livrable "
+                    "« %(livrable)s » : ce compte ne porte aucun role de "
+                    "Production Contenu et n'aurait meme pas acces a la "
+                    "demande.",
+                    nom=assigne.display_name, livrable=livrable.display_name,
+                ))
 
     @api.depends('date_echeance', 'date_fin', 'statut')
     def _compute_en_retard(self):
