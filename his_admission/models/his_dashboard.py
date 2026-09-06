@@ -89,6 +89,8 @@ class HisDashboard(models.AbstractModel):
                  'action': self._action(
                      "Par cycle et specialite", 'his.engagement', [],
                      views=[[False, 'pivot'], [False, 'list']],
+                     context={'pivot_row_groupby': ['cycle'],
+                              'pivot_column_groupby': ['specialite_id']},
                  )},
             ],
         }

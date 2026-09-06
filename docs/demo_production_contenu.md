@@ -61,16 +61,16 @@ oublier.
 - Onglet **Production contenu** :
   - Département demandeur : **Ventes / Admissions**
   - Marque : **HIS**
-  - Dans la liste **Livrables**, ajoutez trois lignes : **Copywriting**,
-    **Design**, **Video**
 
 > « N'importe quel département dépose ici : les Ventes, les RH, la Pédagogie, le
 > Marketing lui-même. Aujourd'hui ça arrive par message, par mail, de vive voix
 > — et ça se perd. »
 
-> « Une ligne par livrable, et **seulement** pour ceux qui sont demandés. Une
-> demande sans vidéo n'a pas de ligne vidéo — l'outil sait donc dire
-> *« pas concerné »*, et pas seulement *« pas encore fait »*. »
+> **Le demandeur ne crée PAS les lignes de livrables** : la liste **Livrables**
+> n'a pas de « Ajouter une ligne » pour lui, et c'est voulu — décider qu'une
+> campagne demande une vidéo est un arbitrage de production, pas un souhait du
+> demandeur. C'est `cherif` qui les pose à l'acte 2, en même temps qu'il les
+> affecte. Ne promettez pas l'inverse devant le client : le serveur refuse.
 
 Laissez la demande en **Demande / Idée**.
 
@@ -79,13 +79,22 @@ Laissez la demande en **Demande / Idée**.
 ## Acte 2 — La priorisation
 
 **Fenêtre `cherif`** *(Priorisation)* · ouvrez la demande, passez-la en
-**Priorisation**, puis affectez chaque livrable dans la liste :
+**Priorisation**, puis, onglet **Production contenu**, ajoutez les trois lignes
+de livrables et affectez chacune :
 
 | Livrable | Assigné à |
 |---|---|
 | Copywriting | **Redaction (copywriting)** |
 | Design | **Design** |
 | Video | **Video** |
+
+> « Une ligne par livrable, et **seulement** pour ceux qui sont demandés. Une
+> demande sans vidéo n'a pas de ligne vidéo — l'outil sait donc dire
+> *« pas concerné »*, et pas seulement *« pas encore fait »*. »
+
+> La liste **Assigné à** ne propose que les gens de la Production Contenu. On ne
+> peut pas affecter un livrable à une conseillère : elle n'a pas l'application,
+> elle ne verrait jamais le travail.
 
 Passez en **Production**.
 

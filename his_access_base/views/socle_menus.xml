@@ -29,4 +29,14 @@
                                        (4, ref('his_access_base.group_annuaire'))]"/>
     </record>
 
+    <!-- Le degat decrit plus haut, repare. Odoo livre « Apps » ferme sur
+         base.group_system ; maintenance_university l'a remplace par un
+         (6, 0, [...]), et sa desinstallation a emporte le seul groupe restant.
+         Le menu s'est retrouve SANS aucun groupe — donc visible de tous : un
+         graphiste voyait la tuile « Apps ». On repose le groupe natif en (4),
+         additivement, pour ne pas refaire la meme faute. -->
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="group_ids" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
 </odoo>

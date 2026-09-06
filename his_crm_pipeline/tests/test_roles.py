@@ -10,7 +10,7 @@ clore une demande, une conseillere bloquee sur le seul geste de son metier.
 Chaque test verifie donc les deux sens : ce que le role PEUT, et ce qu'il NE
 PEUT PAS.
 """
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -185,6 +185,35 @@ class TestRoles(TransactionCase):
             self._livrable(demande, self.type_design).with_user(
                 graphiste
             ).assignee_id = graphiste.id
+
+    def test_un_livrable_ne_part_pas_chez_qui_ne_produit_pas(self):
+        """Le domaine du champ ne tient que l'ecran ; la contrainte tient tout.
+
+        La liste deroulante proposait l'annuaire entier : une conseillere
+        pouvait recevoir un livrable qu'elle ne verrait jamais — elle n'a pas
+        l'application. Personne ne s'en apercevait, la file « non assignes »
+        comptant la ligne comme assignee.
+        """
+        conseillere = self._user(
+            'r_conseil_livr', 'his_crm_pipeline.group_admissions_conseiller',
+            self.team_ventes,
+        )
+        strategiste = self._user(
+            'r_prio_livr', 'his_crm_pipeline.group_contenu_priorisation',
+            self.team_contenu,
+        )
+        livrable = self._livrable(self._demande(), self.type_design)
+
+        with self.assertRaises(ValidationError):
+            livrable.with_user(strategiste).assignee_id = conseillere.id
+
+        # Le meme geste vers quelqu'un de la production passe.
+        graphiste = self._user(
+            'r_prod_livr', 'his_crm_pipeline.group_contenu_production',
+            self.team_contenu,
+        )
+        livrable.with_user(strategiste).assignee_id = graphiste.id
+        self.assertEqual(livrable.assignee_id, graphiste)
 
     def test_les_dates_du_livrable_sont_posees_par_les_transitions(self):
         """Ce que les anciens triplets de champs ne savaient pas dire.

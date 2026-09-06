@@ -100,32 +100,8 @@ COMPTES = [
      ['his_crm_pipeline.group_contenu_demandeur'], [], None),
 ]
 
-# Tous les roles du depot. Un compte reseme est d'abord debarrasse de ceux
-# qu'il ne doit plus porter : ajouter le bon groupe ne suffirait pas, l'ancien
-# resterait et le plus large gagnerait.
-TOUS_LES_ROLES = [
-    'his_crm_pipeline.group_admissions_acquisition',
-    'his_crm_pipeline.group_admissions_conseiller',
-    'his_crm_pipeline.group_admissions_responsable',
-    'his_crm_pipeline.group_admissions_orientation',
-    'his_crm_pipeline.group_contenu_demandeur',
-    'his_crm_pipeline.group_contenu_production',
-    'his_crm_pipeline.group_contenu_priorisation',
-    'his_crm_pipeline.group_contenu_approbation',
-    'his_crm_pipeline.group_direction',
-    'his_admission.group_his_admission',
-    'his_admission.group_his_finance',
-    # Les groupes commerciaux natifs : les roles Admissions les impliquent,
-    # personne ne doit les porter en direct.
-    'sales_team.group_sale_salesman',
-    'sales_team.group_sale_salesman_all_leads',
-    'sales_team.group_sale_manager',
-]
-
 Users = env['res.users']
 Membre = env['crm.team.member']
-
-a_retirer = [env.ref(x).id for x in TOUS_LES_ROLES]
 
 for login, nom, roles, equipes, responsable_de in COMPTES:
     user = Users.with_context(active_test=False).search([('login', '=', login)], limit=1)
@@ -134,9 +110,19 @@ for login, nom, roles, equipes, responsable_de in COMPTES:
             'name': nom, 'login': login, 'email': '%s@example.com' % login,
             'group_ids': [(6, 0, [env.ref('base.group_user').id])],
         })
-    user.write({'group_ids': [(3, g) for g in a_retirer]})
-    user.write({'group_ids': [(4, env.ref('base.group_user').id)]
-                              + [(4, env.ref(r).id) for r in roles]})
+    # Le jeu de groupes DIRECTS est REPOSE, pas complete : (6, 0, [...]) plutot
+    # qu'une liste de (3, ...) a retirer. Une liste de retrait ne peut enlever
+    # que ce qu'elle a prevu — un groupe donne a la main sur un compte, ou
+    # laisse par une version anterieure de ce script, y survivait indefiniment.
+    #
+    # A ne pas confondre avec ce qui n'est PAS reparable ici : les groupes
+    # IMPLIQUES par base.group_user (Multi devises, Fonctionnalites techniques,
+    # Emplacements de stock...) viennent des interrupteurs de Configuration et
+    # touchent tout utilisateur interne. Ils apparaissent dans all_group_ids
+    # sans etre dans group_ids : aucune ecriture par compte ne les enleve, ils
+    # se coupent dans Configuration.
+    user.write({'group_ids': [(6, 0, [env.ref('base.group_user').id]
+                                     + [env.ref(r).id for r in roles])]})
     user.password = MOT_DE_PASSE
 
     # Les equipes sont reposees comme les roles : ce qui n'est plus dans la

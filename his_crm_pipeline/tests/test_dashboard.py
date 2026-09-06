@@ -293,6 +293,37 @@ class TestDashboardRoles(TransactionCase):
             spec = self._appeler(user, methode)
             self.assertTrue(spec['tiles'], "%s : aucune tuile" % login)
 
+    def test_un_explorer_repond_a_la_question_de_son_libelle(self):
+        """« Charge par personne » doit s'ouvrir groupe par personne.
+
+        Un pivot ou un graphe ouvert sans groupby affiche une seule case
+        « Total » : le libelle promet une repartition, l'ecran rend un
+        chiffre unique. Le defaut ne se voyait qu'en rendu reel.
+        """
+        cas = [
+            ('e_resp', 'his_crm_pipeline.group_admissions_responsable',
+             'his_crm_pipeline.crm_team_ventes', 'get_admissions'),
+            ('e_prio', 'his_crm_pipeline.group_contenu_priorisation',
+             'his_crm_pipeline.crm_team_contenu', 'get_contenu'),
+            ('e_dir', 'his_crm_pipeline.group_direction', None, 'get_direction'),
+        ]
+        for login, role, team, methode in cas:
+            spec = self._appeler(self._user(login, role, team), methode)
+            for entree in spec['explore']:
+                action = entree['action']
+                vues = {v[1] for v in action['views']}
+                if not vues & {'pivot', 'graph'}:
+                    continue
+                contexte = action.get('context') or {}
+                self.assertTrue(
+                    any(contexte.get(cle) for cle in (
+                        'pivot_row_groupby', 'pivot_column_groupby',
+                        'graph_groupbys',
+                    )),
+                    "« %s » s'ouvre sans groupby : une seule case Total"
+                    % entree['label'],
+                )
+
     def test_une_file_nomme_ses_enregistrements_sans_champ_name(self):
         """his.engagement n'a pas de champ `name` — display_name le remplace.
 
