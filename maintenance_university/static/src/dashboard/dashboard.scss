@@ -1,16 +1,169 @@
-.o_maintenance_university_chart_box {
-    position: relative;
-    height: 420px;
+// The recap's own furniture. Colours come from the CSS custom properties
+// his_theme publishes, each with a literal fallback: this module does not
+// depend on the theme and has to look deliberate without it.
+//
+// No SCSS variables, for the same reason the rest of this module has none — a
+// stylesheet that fails to compile takes the whole backend with it.
 
-    @media (max-width: 767.98px) {
-        height: 260px;
-    }
+.o_mu_eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--his-ink-40, #7b929b);
 }
 
-.o_maintenance_university_chart_box_sm {
-    height: 280px;
+.o_mu_month_nav {
+    width: 2.375rem;
+    height: 2.375rem;
+    border-radius: 0.5625rem;
+    padding: 0;
+}
 
-    @media (max-width: 767.98px) {
-        height: 200px;
-    }
+.o_mu_card {
+    background-color: var(--his-card, #fff);
+    border: 1px solid var(--his-line, #dde5e8);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.o_mu_card_sub {
+    font-size: 0.75rem;
+    color: var(--his-ink-40, #7b929b);
+}
+
+// = KPI tiles
+// ----------------------------------------------------------------------------
+.o_mu_kpi {
+    height: 100%;
+    background-color: var(--his-card, #fff);
+    border: 1px solid var(--his-line, #dde5e8);
+    border-radius: 0.75rem;
+    padding: 1.125rem 1.25rem;
+}
+
+// Hours Present comes off the workday clock rather than the request timers, so
+// it is marked as the odd one out instead of being left to look interchangeable.
+.o_mu_kpi_accent {
+    border-top: 3px solid var(--his-gold, #dfa22a);
+}
+
+.o_mu_kpi_label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--his-ink-40, #7b929b);
+}
+
+.o_mu_kpi_value {
+    font-family: var(--bs-font-monospace, ui-monospace, monospace);
+    font-size: 2.375rem;
+    font-weight: 600;
+    line-height: 1.05;
+    margin: 0.25rem 0;
+}
+
+.o_mu_kpi_caption {
+    font-size: 0.75rem;
+    color: var(--his-ink-40, #7b929b);
+}
+
+// = Bars
+// ----------------------------------------------------------------------------
+// Thin marks, a rounded data-end and a square baseline: the bar grows from the
+// left edge, so only the end that carries the value is rounded.
+.o_mu_bar {
+    height: 20px;
+    min-width: 2px;
+    border-radius: 0 4px 4px 0;
+    background-color: var(--his-series-1, #0b86b0);
+}
+
+.o_mu_bar_sm {
+    height: 9px;
+}
+
+.o_mu_bar_alt {
+    background-color: var(--his-series-2, #c07d10);
+}
+
+// Two bars of one worker, held apart by the surface rather than by a stroke.
+.o_mu_bar_pair {
+    gap: 2px;
+    padding-right: 1rem;
+}
+
+.o_mu_legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    font-size: 0.75rem;
+    color: var(--his-ink-60, #5e7883);
+}
+
+.o_mu_swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background-color: var(--his-series-1, #0b86b0);
+}
+
+.o_mu_swatch_alt {
+    background-color: var(--his-series-2, #c07d10);
+}
+
+// = The worker table
+// ----------------------------------------------------------------------------
+// Seven columns do not fit a narrow window; the table scrolls inside its own
+// card rather than pushing the page sideways.
+.o_mu_scroller {
+    overflow-x: auto;
+}
+
+.o_mu_worker_row {
+    display: grid;
+    grid-template-columns: minmax(9rem, 1.4fr) minmax(8rem, 3fr) 5rem 5.25rem 4.5rem 5.5rem 5rem;
+    align-items: center;
+    column-gap: 0.5rem;
+    min-width: 46rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--his-line-soft, #f1f5f7);
+}
+
+.o_mu_worker_row:last-child {
+    border-bottom: 0;
+}
+
+.o_mu_worker_head {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--his-line, #dde5e8);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--his-ink-40, #7b929b);
+}
+
+.o_mu_breakdown_row {
+    display: grid;
+    grid-template-columns: minmax(5.5rem, 8rem) minmax(0, 1fr) 2.5rem;
+    align-items: center;
+    column-gap: 0.75rem;
+    padding: 0.40625rem 0;
+    font-size: 0.8125rem;
+    color: var(--his-ink-60, #5e7883);
+}
+
+// Figures wear the mono face and a text colour — never the colour of the bar
+// beside them.
+.o_mu_figure {
+    font-family: var(--bs-font-monospace, ui-monospace, monospace);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.o_mu_figure_muted {
+    font-weight: 400;
+    color: var(--his-ink-60, #5e7883);
+}
+
+.o_mu_figure_alert {
+    color: var(--his-red, #a4342a);
 }

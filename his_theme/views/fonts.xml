@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The two faces, loaded once for every page the client serves: the web
+         client, the POS and the login screen all render through web.layout.
+
+         A <link> rather than an @import inside the stylesheet: a CSS @import is
+         only honoured at the very top of a sheet, and where a rule lands in a
+         compiled Odoo bundle is not something to bet the typography on. If the
+         request fails the fallback stacks in primary_variables.scss take over
+         and nothing else changes. -->
+    <template id="layout_his_fonts" inherit_id="web.layout" name="HIS fonts">
+        <xpath expr="//head/title" position="after">
+            <link rel="preconnect" href="https://fonts.googleapis.com"/>
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+            <link rel="stylesheet"
+                  href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap"/>
+        </xpath>
+    </template>
+
+</odoo>

@@ -1036,3 +1036,164 @@ class TestTheShippedOffer(TransactionCase):
                 'meal_credits': 5.0,
                 'meal_credit_cost': 1.0,
             })
+
+
+class TestMealAllowance(TransactionCase):
+    """Two meals on an empty card, and what they cost afterwards.
+
+    The allowance is the one place the module serves a meal it has not been
+    paid for, so these checks are mostly about where it STOPS: the third meal,
+    the person who never subscribed, and the correction wizard — none of which
+    may be allowed to run a wallet into the ground.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.person = make_person(cls.env, "Yacine")
+        cls.student = cls.person.partner_id
+        cls.weekly = cls.env['product.product'].create({
+            'name': "Weekly Meal Plan",
+            'type': 'service',
+            'list_price': 3000.0,
+            'meal_credits': 6,
+            'meal_validity_days': 0,
+        })
+
+    def _empty_the_card(self):
+        """Buy a plan and eat all of it, which is where the allowance begins."""
+        self.student._grant_meal_credits(self.weekly)
+        self.student._consume_meal_credit(amount=6.0)
+        self.assertEqual(self.student.meal_credits_remaining, 0)
+
+    def test_two_meals_on_an_empty_card_and_then_it_stops(self):
+        self._empty_the_card()
+        self.assertEqual(self.student.meal_allowance_left, 2)
+
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.assertEqual(self.student.meal_allowance_left, 1)
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.assertEqual(self.student.meal_allowance_left, 0)
+        self.assertEqual(self.student.meal_allowance_debt, 2.0)
+
+        ledger_before = self.env['his.meal.transaction'].search_count(
+            [('partner_id', '=', self.student.id)]
+        )
+        # The third is refused, and refusing it writes nothing.
+        with self.assertRaises(UserError):
+            self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.assertEqual(
+            self.env['his.meal.transaction'].search_count([('partner_id', '=', self.student.id)]),
+            ledger_before,
+        )
+        # A card in debt still reads zero, never a negative balance.
+        self.assertEqual(self.student.meal_credits_remaining, 0)
+
+    def test_the_debt_is_what_the_meal_cost_not_what_a_meal_costs(self):
+        """Two meals is two meals; a 300 DA one still only owes half a credit."""
+        self._empty_the_card()
+
+        self.student._consume_meal_credit(amount=0.5, allow_overdraft=True)
+        self.assertEqual(self.student.meal_allowance_debt, 0.5)
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.assertEqual(self.student.meal_allowance_debt, 1.5)
+        self.assertEqual(self.student.meal_allowance_left, 0)
+
+    def test_an_allowance_meal_is_logged_as_one(self):
+        self._empty_the_card()
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+
+        line = self.env['his.meal.transaction'].search(
+            [('partner_id', '=', self.student.id)], order='id desc', limit=1,
+        )
+        self.assertEqual(line.type, 'allowance')
+        self.assertEqual(line.credits, -1.0)
+        # No subscription behind it — that is what makes it an allowance meal.
+        self.assertFalse(line.subscription_id)
+        self.assertEqual(line.balance_after, 0)
+
+    def test_a_top_up_repays_the_debt_and_rearms_the_allowance(self):
+        self._empty_the_card()
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.assertEqual(self.student.meal_allowance_debt, 2.0)
+
+        sub = self.student._grant_meal_credits(self.weekly)
+
+        # Six bought, two owed, four left to eat.
+        self.assertEqual(self.student.meal_credits_remaining, 4.0)
+        self.assertEqual(sub.credits_total, 6.0)
+        self.assertEqual(sub.credits_used, 2.0)
+        # And both allowance meals are available again.
+        self.assertEqual(self.student.meal_allowance_debt, 0.0)
+        self.assertEqual(self.student.meal_allowance_left, 2)
+
+    def test_the_allowance_can_be_used_again_after_repaying(self):
+        """Not a one-off tied to the first plan: every top-up re-arms it."""
+        self._empty_the_card()
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.student._grant_meal_credits(self.weekly)
+        self.student._consume_meal_credit(amount=5.0, allow_overdraft=True)
+        self.assertEqual(self.student.meal_credits_remaining, 0)
+
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.assertEqual(self.student.meal_allowance_debt, 2.0)
+        with self.assertRaises(UserError):
+            self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+
+    def test_a_half_covered_meal_still_costs_one_allowance_meal(self):
+        """One call is one meal, however many places the credits came from."""
+        self.student._grant_meal_credits(self.weekly)
+        self.student._consume_meal_credit(amount=5.5)
+        self.assertEqual(self.student.meal_credits_remaining, 0.5)
+
+        # A 600 DA meal against half a credit: half from the plan, half owed.
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.assertEqual(self.student.meal_credits_remaining, 0)
+        self.assertEqual(self.student.meal_allowance_debt, 0.5)
+        self.assertEqual(self.student.meal_allowance_left, 1)
+
+    def test_someone_who_never_bought_a_plan_has_no_allowance(self):
+        """A hand-granted credit does not buy the right to run a card empty."""
+        stranger = make_person(self.env, "Walk-in").partner_id
+        stranger._add_meal_credits(credits=1.0, date_end=False, tx_type='adjust')
+        stranger._consume_meal_credit(amount=1.0)
+        self.assertEqual(stranger.meal_credits_remaining, 0)
+
+        self.assertEqual(stranger.meal_allowance_left, 0)
+        with self.assertRaises(UserError):
+            stranger._consume_meal_credit(amount=1.0, allow_overdraft=True)
+
+    def test_taking_credits_back_never_opens_an_overdraft(self):
+        """The correction wizard shares this method. It must not overdraft."""
+        self._empty_the_card()
+        # No allow_overdraft: exactly how the wizard's negative branch calls it.
+        with self.assertRaises(UserError):
+            self.student._consume_meal_credit(amount=1.0, tx_type='adjust')
+        self.assertEqual(self.student.meal_allowance_debt, 0.0)
+        self.assertEqual(self.student.meal_allowance_left, 2)
+
+    def test_the_no_negative_balance_constraint_still_holds(self):
+        """The allowance must not have quietly become a negative balance."""
+        self._empty_the_card()
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.student._grant_meal_credits(self.weekly)
+
+        subs = self.env['his.meal.subscription'].search(
+            [('partner_id', '=', self.student.id)]
+        )
+        for sub in subs:
+            self.assertGreaterEqual(sub.credits_used, 0)
+            self.assertLessEqual(sub.credits_used, sub.credits_total)
+            self.assertGreaterEqual(sub.credits_remaining, 0)
+
+    def test_the_till_is_told_the_card_is_empty(self):
+        self._empty_the_card()
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+
+        balance = self.student.get_meal_balance()
+        self.assertEqual(balance['credits'], 0)
+        self.assertEqual(balance['allowance_left'], 1)
+        self.assertEqual(balance['allowance_debt'], 1.0)

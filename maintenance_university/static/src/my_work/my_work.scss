@@ -1,8 +1,13 @@
-// Layout and sizing only. Colour and spacing come from Bootstrap utility
-// classes on the markup, and the accent stripe from CSS custom properties Odoo
-// already publishes - deliberately no SCSS variables, since the module's other
-// stylesheet uses none and nothing here proves which are in scope for this
-// bundle. A stylesheet that fails to compile takes the whole backend with it.
+// Layout, sizing and the day's own colours.
+//
+// The stripe reads the CSS custom properties Odoo already publishes, so it
+// follows whatever primary/warning/secondary the database is themed with —
+// his_theme paints those the university's teal and gold. The gold on the main
+// button is named the same way, with a literal fallback: this module does not
+// depend on his_theme and has to look deliberate without it.
+//
+// Still no SCSS variables. A stylesheet that fails to compile takes the whole
+// backend with it, and nothing here proves which are in scope for this bundle.
 
 .o_mu_workday {
     // The stripe tells the state apart at a glance from across a corridor.
@@ -17,10 +22,74 @@
     }
 }
 
-// Big enough to hit without looking, on a phone in a stairwell.
+// The dot repeats the stripe beside the state, where the stripe itself is off
+// the left edge of a phone held in one hand.
+.o_mu_workday_dot {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background-color: var(--primary, #714b67);
+
+    .o_mu_workday_paused & {
+        background-color: var(--warning, #f0ad4e);
+    }
+
+    .o_mu_workday_done & {
+        background-color: var(--secondary, #adb5bd);
+    }
+}
+
+// Big enough to hit without looking, on a phone in a stairwell. Gold because
+// this is the one action the banner exists for; the state is carried by the
+// stripe, the dot and the words, never by the colour of the button.
 .o_mu_workday_main {
     min-width: 13rem;
+    height: 3.25rem;
+    border-radius: 999px;
+    font-weight: 700;
+    color: #3d2803;
+    background-color: var(--his-gold, #dfa22a);
+    border-color: var(--his-gold, #dfa22a);
+
+    &:hover:not(:disabled),
+    &:focus:not(:disabled),
+    &:active:not(:disabled) {
+        color: #3d2803;
+        background-color: var(--his-gold-dark, #c58c1d);
+        border-color: var(--his-gold-dark, #c58c1d);
+    }
+}
+
+.o_mu_workday_secondary {
+    height: 3.25rem;
+    border-radius: 999px;
     font-weight: 600;
+}
+
+// Hours are figures, not prose: the mono face keeps 03h 24m from shifting
+// width as the minutes tick over.
+.o_mu_workday_figure {
+    font-family: var(--bs-font-monospace, ui-monospace, monospace);
+    font-weight: 600;
+}
+
+// On a phone the one-line summary becomes three tiles — the same three numbers,
+// legible at arm's length instead of squeezed onto a wrapping line.
+.o_mu_workday_tile {
+    flex: 1 1 0;
+    min-width: 0;
+    border-radius: 10px;
+    background-color: var(--his-paper, #f6f9fa);
+    padding: 0.625rem 0.75rem;
+}
+
+.o_mu_workday_tile_label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--his-ink-40, #7b929b);
 }
 
 // The embedded kanban brings its own control panel and scroller; keep it

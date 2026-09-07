@@ -1,0 +1,34 @@
+// The meal account, on the person form and on the partner form.
+//
+// Typography only, applied to the fields Odoo already renders. The form's own
+// groups, labels and readonly handling stay untouched — restyling a field is
+// cheap and reversible; rebuilding a form view's markup to look like a mockup
+// is neither.
+//
+// Colours come from the custom properties his_theme publishes, each with a
+// literal fallback: this module does not depend on the theme.
+
+.o_his_wallet {
+    // A balance is the one number anybody opens this page for.
+    .o_field_widget[name="meal_credits_remaining"] {
+        font-family: var(--bs-font-monospace, ui-monospace, monospace);
+        font-size: 1.75rem;
+        font-weight: 600;
+        line-height: 1.2;
+        color: var(--his-teal, #0d6e8c);
+    }
+
+    // The card number is read off a card and typed into a search box, so it is
+    // set as figures: same width per digit, no confusion between similar
+    // glyphs.
+    .o_field_widget[name="meal_card_code"] {
+        font-family: var(--bs-font-monospace, ui-monospace, monospace);
+        font-size: 1.125rem;
+        letter-spacing: 1.2px;
+        color: var(--his-ink, #10323f);
+    }
+
+    .o_field_widget[name="meal_active_plan"] {
+        font-weight: 600;
+    }
+}

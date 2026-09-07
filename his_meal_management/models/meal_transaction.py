@@ -25,6 +25,10 @@ class HisMealTransaction(models.Model):
             ('purchase', "Plan Purchase"),
             ('consume', "Meal Served"),
             ('adjust', "Correction"),
+            # A meal served on an empty card, against the allowance every
+            # subscriber carries. It has no subscription behind it - that is
+            # the whole point - and what it cost is taken off the next top-up.
+            ('allowance', "Allowance Meal"),
         ],
         required=True, index=True,
     )
