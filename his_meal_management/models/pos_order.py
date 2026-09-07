@@ -79,9 +79,16 @@ class PosOrder(models.Model):
         #
         # A ticket short of credits raises partway through and the whole order
         # rolls back, so no meal is ever charged that the student did not get.
+        #
+        # This is the only caller that opts into the allowance. A student who
+        # has bought a plan may take two meals on an empty card; the third is
+        # refused here exactly as every meal was before. Nothing else in the
+        # module passes allow_overdraft - least of all the correction wizard,
+        # which uses the same method to take credits back.
         for line in meal_lines:
             cost = line.product_id.meal_credit_cost
             for _i in range(int(line.qty)):
                 partner._consume_meal_credit(
                     amount=cost, pos_order=self, product=line.product_id,
+                    allow_overdraft=True,
                 )

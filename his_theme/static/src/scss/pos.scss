@@ -1,0 +1,70 @@
+// HIS chrome for the till.
+//
+// The POS runs from its own asset bundle, so the tokens are restated here
+// rather than inherited from the backend stylesheet. Literal values throughout,
+// for the same reason: a stylesheet that fails to compile takes the screen with
+// it, and the cashier has no other way in.
+
+// The till's header, in the university's colours, with the same hairline that
+// sits above the navbar everywhere else. `bg-view` and `border-bottom` are
+// Bootstrap-style utilities carrying !important, so overriding them takes the
+// same weight — specificity alone does not beat an !important declaration.
+//
+// Only the header's own text is turned white. Buttons inside it bring their own
+// background and colour (btn-light and friends) and are deliberately left
+// alone: a light chip on the teal band reads correctly, and repainting them
+// blind is how a till ends up with white text on white.
+.pos > .pos-topheader {
+    border-top: 6px solid #5a2d1d;
+    background-color: #0d6e8c !important;
+    border-bottom-color: #0a5871 !important;
+    color: #ffffff;
+}
+
+// Gold is the one completing action on the till: the button that takes the
+// money. Everything else — including the meal buttons — stays teal.
+.pos .pay-order-button {
+    --bs-btn-color: #3d2803;
+    --bs-btn-bg: #dfa22a;
+    --bs-btn-border-color: #dfa22a;
+    --bs-btn-hover-color: #3d2803;
+    --bs-btn-hover-bg: #c58c1d;
+    --bs-btn-hover-border-color: #c58c1d;
+    --bs-btn-active-color: #3d2803;
+    --bs-btn-active-bg: #c58c1d;
+    --bs-btn-active-border-color: #c58c1d;
+
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+// The meal buttons his_meal_management adds. One per meal, so they sit side by
+// side and have to read as a pair rather than as two unrelated actions.
+.js_student_meal {
+    --bs-btn-bg: #0d6e8c;
+    --bs-btn-border-color: #0d6e8c;
+    --bs-btn-hover-bg: #0a5871;
+    --bs-btn-hover-border-color: #0a5871;
+    --bs-btn-active-bg: #08475c;
+    --bs-btn-active-border-color: #08475c;
+
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+// The confirm dialog raised before a meal is served takes the gold, because
+// "Serve meal" is the action that spends a credit.
+.btn.btn-his-gold {
+    --bs-btn-color: #3d2803;
+    --bs-btn-bg: #dfa22a;
+    --bs-btn-border-color: #dfa22a;
+    --bs-btn-hover-color: #3d2803;
+    --bs-btn-hover-bg: #c58c1d;
+    --bs-btn-hover-border-color: #c58c1d;
+    --bs-btn-active-color: #3d2803;
+    --bs-btn-active-bg: #c58c1d;
+    --bs-btn-active-border-color: #c58c1d;
+
+    border-radius: 999px;
+    font-weight: 700;
+}

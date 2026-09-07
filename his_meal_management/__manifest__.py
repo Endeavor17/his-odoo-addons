@@ -1,6 +1,6 @@
 {
     'name': 'HIS Meal Management',
-    'version': '19.0.3.0.0',
+    'version': '19.0.3.1.0',
     'summary': 'HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS',
     'description': """
 HIS Meal Management
@@ -75,6 +75,9 @@ Credits do not expire; they keep until they are eaten.
     'assets': {
         'point_of_sale._assets_pos': [
             'his_meal_management/static/src/app/**/*',
+        ],
+        'web.assets_backend': [
+            'his_meal_management/static/src/backend/**/*',
         ],
     },
 

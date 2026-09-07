@@ -1,22 +1,21 @@
-import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
-import { loadBundle } from "@web/core/assets";
 import { useService } from "@web/core/utils/hooks";
-import { Component, useState, useRef, onWillStart, useEffect } from "@odoo/owl";
+import { Component, useState, onWillStart } from "@odoo/owl";
 
-// A fixed palette cycled by worker index, rather than random colors: keeps
-// a given worker's polygon the same color across re-renders (month nav,
-// data refresh) instead of reshuffling every time.
-const WORKER_COLORS = [
-    "#2E6E62", "#B45A3C", "#3B6FA0", "#A0522D", "#5B7F3F", "#8E4585", "#C08A2E", "#3E7C7C",
-];
-
-const RADAR_AXES = [
-    { key: "hours", label: _t("Hours Worked") },
-    { key: "tasks_done", label: _t("Tasks Completed") },
-    { key: "findings_logged", label: _t("Findings Logged") },
-    { key: "findings_critical", label: _t("Critical/High Findings") },
-];
+// The month's recap, drawn in the DOM rather than on a canvas.
+//
+// It used to be three Chart.js charts, the first of them a radar comparing
+// workers on hours, tasks and findings at once. A radar has one radial scale,
+// so those had to be normalised to 0-100 against each axis's own maximum before
+// they could share it — which means the shape it drew was an artefact of the
+// normalisation, not of the data. Two workers with identical polygons could
+// have nothing in common. Hours and counts do not belong on one scale.
+//
+// So: hours are bars on a single shared scale, counts are figures, and the two
+// breakdowns are ordinary bars scaled to their own largest value. Every number
+// is on screen as text, which is also why the visually-hidden tables that used
+// to stand in for the canvases are gone — there is nothing left to stand in for,
+// and no chart library to load.
 
 export class MaintenanceUniversityDashboard extends Component {
     static template = "maintenance_university.Dashboard";
@@ -25,25 +24,10 @@ export class MaintenanceUniversityDashboard extends Component {
     setup() {
         this.orm = useService("orm");
         this.state = useState({ loading: true, refreshing: false, data: null, monthOffset: 0 });
-        this.radarRef = useRef("radarCanvas");
-        this.categoryRef = useRef("categoryCanvas");
-        this.buildingRef = useRef("buildingCanvas");
-        this.charts = {};
 
         onWillStart(async () => {
-            await loadBundle("web.chartjs_lib");
             await this.loadData();
         });
-
-        useEffect(
-            () => {
-                if (this.state.data) {
-                    this.renderCharts();
-                }
-                return () => this.destroyCharts();
-            },
-            () => [this.state.data]
-        );
     }
 
     async loadData() {
@@ -75,95 +59,52 @@ export class MaintenanceUniversityDashboard extends Component {
         await this.loadData();
     }
 
-    destroyCharts() {
-        for (const chart of Object.values(this.charts)) {
-            chart.destroy();
-        }
-        this.charts = {};
+    // One scale for every hour bar on the screen, so a worker's two bars and
+    // any two workers' bars are all directly comparable. The scale's top is
+    // stated in the card's subtitle rather than drawn as an axis: five rows do
+    // not need gridlines to be read.
+    get workerRows() {
+        const workers = this.state.data?.workers || [];
+        const max = this.hoursScale;
+        return workers.map((worker) => ({
+            ...worker,
+            hoursPct: (worker.hours / max) * 100,
+            presentPct: (worker.hours_present / max) * 100,
+        }));
     }
 
-    renderCharts() {
-        this.destroyCharts();
-        this.renderRadarChart();
-        this.renderBreakdownChart(this.categoryRef, this.state.data.category_breakdown, "category");
-        this.renderBreakdownChart(this.buildingRef, this.state.data.building_breakdown, "building");
+    get hoursScale() {
+        const workers = this.state.data?.workers || [];
+        return Math.max(1, ...workers.map((w) => Math.max(w.hours, w.hours_present)));
     }
 
-    renderRadarChart() {
-        if (!this.radarRef.el) {
-            return;
-        }
-        const workers = this.state.data.workers;
-        // Each axis is normalized to 0-100 against that axis's own max across
-        // workers this month: hours (often 100+) and findings (often single
-        // digits) live on wildly different scales, so plotting raw values
-        // would flatten the smaller axes to invisible slivers. The real
-        // number is still shown via the tooltip callback below.
-        const axisMax = {};
-        for (const axis of RADAR_AXES) {
-            axisMax[axis.key] = Math.max(1, ...workers.map((w) => w[axis.key]));
-        }
-        const datasets = workers.map((worker, index) => {
-            const color = WORKER_COLORS[index % WORKER_COLORS.length];
-            return {
-                label: worker.name,
-                data: RADAR_AXES.map((axis) => (worker[axis.key] / axisMax[axis.key]) * 100),
-                rawValues: RADAR_AXES.map((axis) => worker[axis.key]),
-                borderColor: color,
-                backgroundColor: color + "33",
-                pointBackgroundColor: color,
-            };
-        });
-        this.charts.radar = new Chart(this.radarRef.el, {
-            type: "radar",
-            data: {
-                labels: RADAR_AXES.map((axis) => axis.label.toString()),
-                datasets,
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    r: { min: 0, max: 100, ticks: { display: false } },
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: (context) => {
-                                const raw = context.dataset.rawValues[context.dataIndex];
-                                return `${context.dataset.label}: ${raw}`;
-                            },
-                        },
-                    },
-                },
-            },
-        });
+    // Findings the recap calls out but the totals do not carry: the server
+    // returns them per worker, so the month's figure is their sum.
+    get criticalTotal() {
+        return (this.state.data?.workers || []).reduce((n, w) => n + w.findings_critical, 0);
     }
 
-    renderBreakdownChart(ref, breakdown, key) {
-        if (!ref.el) {
-            return;
-        }
-        this.charts[key] = new Chart(ref.el, {
-            type: "bar",
-            data: {
-                labels: breakdown.map((row) => row.name),
-                datasets: [
-                    {
-                        label: _t("Requests"),
-                        data: breakdown.map((row) => row.count),
-                        backgroundColor: "#2E6E62",
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: "y",
-                plugins: { legend: { display: false } },
-                scales: { x: { ticks: { precision: 0 } } },
-            },
-        });
+    // Time on site that never reached a request — travel and idle. Negative
+    // would mean more booked than clocked, which is a data problem rather than
+    // a fact about the month, so the caption is simply dropped in that case.
+    get offTaskHours() {
+        const totals = this.state.data.totals;
+        return totals.hours_present - totals.hours;
+    }
+
+    // Each breakdown is scaled to its own largest bar. The two answer different
+    // questions and share no axis, so nothing is gained by scaling them alike.
+    breakdownRows(breakdown) {
+        const max = Math.max(1, ...breakdown.map((row) => row.count));
+        return breakdown.map((row) => ({ ...row, pct: (row.count / max) * 100 }));
+    }
+
+    get categoryRows() {
+        return this.breakdownRows(this.state.data.category_breakdown);
+    }
+
+    get buildingRows() {
+        return this.breakdownRows(this.state.data.building_breakdown);
     }
 }
 

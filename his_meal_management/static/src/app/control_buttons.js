@@ -1,7 +1,8 @@
 import { _t } from "@web/core/l10n/translation";
 import { ControlButtons } from "@point_of_sale/app/screens/product_screen/control_buttons/control_buttons";
-import { AlertDialog, ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
+import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { patch } from "@web/core/utils/patch";
+import { ServeMealDialog } from "./serve_meal_dialog";
 
 // These buttons are a convenience, not a control. They show the cashier who the
 // student is and what they have left, then drop a zero-priced meal line on the
@@ -37,11 +38,16 @@ patch(ControlButtons.prototype, {
         // 300 and a 600 meal sharing one wallet, half a credit is enough for
         // one of them and not the other.
         const cost = product.meal_credit_cost;
-        if (balance.credits < cost) {
+        // Short of credits is no longer the end of it: a student who has bought
+        // a plan carries two meals of allowance, and the till serves them behind
+        // a warning rather than turning the person away. Only when that is spent
+        // too does the refusal below stand.
+        const onAllowance = balance.credits < cost;
+        if (onAllowance && balance.allowance_left < 1) {
             this.dialog.add(AlertDialog, {
                 title: _t("Not enough meal credits"),
                 body: _t(
-                    "%(name)s has %(credits)s credit(s) left and %(meal)s costs %(cost)s. Sell the meal at its normal price, or sell a new plan at the student centre.",
+                    "%(name)s has %(credits)s credit(s) left and %(meal)s costs %(cost)s. The two allowance meals are already used. Sell the meal at its normal price, or sell a new plan at the student centre.",
                     {
                         name: balance.name,
                         credits: balance.credits,
@@ -53,30 +59,27 @@ patch(ControlButtons.prototype, {
             return;
         }
 
-        // Credits no longer expire by default, so the date is only mentioned
-        // when there actually is one.
-        const body = balance.expires
-            ? _t(
-                  "%(plan)s — %(credits)s credit(s) left, until %(expires)s.\n\nServe %(meal)s for %(cost)s credit(s)?",
-                  {
-                      plan: balance.plan,
-                      credits: balance.credits,
-                      expires: balance.expires,
-                      meal: product.display_name,
-                      cost: cost,
-                  }
-              )
-            : _t("%(plan)s — %(credits)s credit(s) left.\n\nServe %(meal)s for %(cost)s credit(s)?", {
-                  plan: balance.plan,
-                  credits: balance.credits,
-                  meal: product.name,
-                  cost: cost,
-              });
-
-        this.dialog.add(ConfirmationDialog, {
-            title: balance.name,
-            body: body,
-            confirmLabel: _t("Serve meal"),
+        // The dialog lays the facts out itself rather than being handed a
+        // formatted paragraph. `expires` is passed through as it comes: credits
+        // no longer expire by default, so it is usually the empty string, and
+        // the dialog says "no expiry" rather than naming a date there isn't one
+        // of.
+        //
+        // display_name throughout, never `name`: the POS product.product only
+        // delegates methods and getters to its template (enhanceProductTemplate
+        // in core's product_product.js), never plain loaded fields, and core
+        // does not load `name` on the variant. It reads undefined.
+        this.dialog.add(ServeMealDialog, {
+            name: balance.name,
+            cardCode: partner.barcode || "",
+            plan: balance.plan,
+            expires: balance.expires,
+            credits: balance.credits,
+            mealName: product.display_name,
+            cost: cost,
+            onAllowance: onAllowance,
+            allowanceLeft: balance.allowance_left,
+            allowanceDebt: balance.allowance_debt,
             confirm: async () => {
                 await this.pos.addLineToCurrentOrder(
                     {

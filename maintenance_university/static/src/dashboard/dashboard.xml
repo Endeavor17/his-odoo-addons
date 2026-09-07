@@ -2,18 +2,25 @@
 <templates xml:space="preserve">
 
     <t t-name="maintenance_university.Dashboard">
-        <div class="o_maintenance_university_dashboard o_content p-4">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-                <h2 class="mb-0">Monthly Recap</h2>
+        <div class="o_mu_dashboard o_content p-4">
+
+            <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
+                <div>
+                    <div class="o_mu_eyebrow">Monthly Recap</div>
+                    <h2 class="mb-0 fw-bold" t-if="state.data" t-esc="state.data.month_label"/>
+                    <div class="text-muted small" t-if="state.data">
+                        <t t-esc="state.data.workers.length"/> workers ·
+                        <t t-esc="state.data.totals.requests_done"/> requests completed
+                    </div>
+                </div>
                 <div class="d-flex align-items-center gap-2" t-if="state.data">
-                    <button class="btn btn-outline-secondary btn-sm" title="Previous month" aria-label="Previous month" t-on-click="goToPreviousMonth">
+                    <i t-if="state.refreshing" class="fa fa-spinner fa-spin text-muted me-1"/>
+                    <button class="btn btn-outline-secondary o_mu_month_nav" title="Previous month" aria-label="Previous month" t-on-click="goToPreviousMonth">
                         <i class="oi oi-arrow-left"/>
                     </button>
-                    <span class="fw-bold" t-esc="state.data.month_label"/>
-                    <button class="btn btn-outline-secondary btn-sm" title="Next month" aria-label="Next month" t-on-click="goToNextMonth">
+                    <button class="btn btn-outline-secondary o_mu_month_nav" title="Next month" aria-label="Next month" t-on-click="goToNextMonth">
                         <i class="oi oi-arrow-right"/>
                     </button>
-                    <i t-if="state.refreshing" class="fa fa-spinner fa-spin text-muted ms-1"/>
                 </div>
             </div>
 
@@ -22,116 +29,136 @@
             </div>
 
             <div t-if="state.data">
+
                 <div class="row mb-4 g-3">
                     <div class="col-md-3">
-                        <div class="card p-3 text-center">
-                            <div class="fs-3 fw-bold" t-esc="state.data.totals.requests_done"/>
-                            <div class="text-muted">Requests Completed</div>
+                        <div class="o_mu_kpi">
+                            <div class="o_mu_kpi_label">Requests Completed</div>
+                            <div class="o_mu_kpi_value" t-esc="state.data.totals.requests_done"/>
+                            <div class="o_mu_kpi_caption">
+                                across <t t-esc="state.data.building_breakdown.length"/> buildings
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card p-3 text-center">
-                            <div class="fs-3 fw-bold" t-esc="state.data.totals.hours.toFixed(1)"/>
-                            <div class="text-muted">Hours Logged</div>
+                        <div class="o_mu_kpi">
+                            <div class="o_mu_kpi_label">Hours Logged</div>
+                            <div class="o_mu_kpi_value" t-esc="state.data.totals.hours.toFixed(1)"/>
+                            <div class="o_mu_kpi_caption">booked against requests</div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card p-3 text-center">
-                            <div class="fs-3 fw-bold" t-esc="state.data.totals.findings_logged"/>
-                            <div class="text-muted">Findings Logged</div>
+                        <div class="o_mu_kpi">
+                            <div class="o_mu_kpi_label">Findings Logged</div>
+                            <div class="o_mu_kpi_value" t-esc="state.data.totals.findings_logged"/>
+                            <div class="o_mu_kpi_caption">
+                                <t t-esc="criticalTotal"/> critical or high
+                            </div>
                         </div>
                     </div>
                     <!-- Presence, from the My Work clock. Not the same as Hours
                          Logged beside it: that counts time booked against
-                         requests, this counts time on site. -->
+                         requests, this counts time on site. The gold rule marks
+                         it as the one that comes from a different instrument. -->
                     <div class="col-md-3">
-                        <div class="card p-3 text-center">
-                            <div class="fs-3 fw-bold" t-esc="state.data.totals.hours_present.toFixed(1)"/>
-                            <div class="text-muted">Hours Present</div>
+                        <div class="o_mu_kpi o_mu_kpi_accent">
+                            <div class="o_mu_kpi_label">Hours Present</div>
+                            <div class="o_mu_kpi_value" t-esc="state.data.totals.hours_present.toFixed(1)"/>
+                            <div class="o_mu_kpi_caption" t-if="offTaskHours &gt;= 0">
+                                <t t-esc="offTaskHours.toFixed(1)"/> h travel and idle
+                            </div>
+                            <div class="o_mu_kpi_caption" t-else="">more booked than clocked</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="card p-3 mb-4">
-                    <h5>Worker Comparison</h5>
+                <div class="o_mu_card mb-4">
+                    <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-3">
+                        <div>
+                            <h5 class="mb-1 fw-bold">Worker comparison</h5>
+                            <div class="o_mu_card_sub" t-if="state.data.workers.length">
+                                Hours bars share one scale, 0–<t t-esc="hoursScale.toFixed(1)"/> h. Counts are exact.
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3" t-if="state.data.workers.length">
+                            <span class="o_mu_legend"><span class="o_mu_swatch"/>Hours logged</span>
+                            <span class="o_mu_legend"><span class="o_mu_swatch o_mu_swatch_alt"/>Hours present</span>
+                        </div>
+                    </div>
+
                     <div t-if="state.data.workers.length === 0" class="text-muted text-center p-4">
                         No workers yet
                     </div>
-                    <t t-else="">
-                        <div class="o_maintenance_university_chart_box">
-                            <canvas t-ref="radarCanvas"/>
+                    <div t-else="" class="o_mu_scroller">
+                        <div class="o_mu_worker_row o_mu_worker_head">
+                            <div>Worker</div>
+                            <div>Hours</div>
+                            <div class="text-end">Logged</div>
+                            <div class="text-end">Present</div>
+                            <div class="text-end">Done</div>
+                            <div class="text-end">Findings</div>
+                            <div class="text-end">Critical</div>
                         </div>
-                        <table class="visually-hidden">
-                            <caption>Worker Comparison</caption>
-                            <thead>
-                                <tr>
-                                    <th>Worker</th>
-                                    <th>Hours Worked</th>
-                                    <th>Hours Present</th>
-                                    <th>Tasks Completed</th>
-                                    <th>Findings Logged</th>
-                                    <th>Critical/High Findings</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="state.data.workers" t-as="worker" t-key="worker.id">
-                                    <td t-esc="worker.name"/>
-                                    <td t-esc="worker.hours"/>
-                                    <td t-esc="worker.hours_present"/>
-                                    <td t-esc="worker.tasks_done"/>
-                                    <td t-esc="worker.findings_logged"/>
-                                    <td t-esc="worker.findings_critical"/>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </t>
+                        <div class="o_mu_worker_row" t-foreach="workerRows" t-as="worker" t-key="worker.id">
+                            <div class="fw-bold text-truncate" t-esc="worker.name"/>
+                            <div class="d-flex flex-column o_mu_bar_pair">
+                                <div class="o_mu_bar o_mu_bar_sm"
+                                     t-attf-style="width: {{ worker.hoursPct }}%"
+                                     t-attf-title="Hours logged: {{ worker.hours.toFixed(1) }}"/>
+                                <div class="o_mu_bar o_mu_bar_sm o_mu_bar_alt"
+                                     t-attf-style="width: {{ worker.presentPct }}%"
+                                     t-attf-title="Hours present: {{ worker.hours_present.toFixed(1) }}"/>
+                            </div>
+                            <div class="o_mu_figure text-end" t-esc="worker.hours.toFixed(1)"/>
+                            <div class="o_mu_figure o_mu_figure_muted text-end" t-esc="worker.hours_present.toFixed(1)"/>
+                            <div class="o_mu_figure text-end" t-esc="worker.tasks_done"/>
+                            <div class="o_mu_figure o_mu_figure_muted text-end" t-esc="worker.findings_logged"/>
+                            <div class="o_mu_figure text-end"
+                                 t-att-class="{ 'o_mu_figure_alert': worker.findings_critical > 0, 'o_mu_figure_muted': worker.findings_critical === 0 }"
+                                 t-esc="worker.findings_critical"/>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="card p-3">
-                            <h5>By Category</h5>
+                        <div class="o_mu_card">
+                            <h5 class="mb-1 fw-bold">Requests by category</h5>
+                            <div class="o_mu_card_sub mb-3">
+                                <t t-esc="state.data.month_label"/> · <t t-esc="state.data.totals.requests_done"/> completed
+                            </div>
                             <div t-if="state.data.category_breakdown.length === 0" class="text-muted text-center p-4">
                                 No requests this month
                             </div>
-                            <t t-else="">
-                                <div class="o_maintenance_university_chart_box o_maintenance_university_chart_box_sm">
-                                    <canvas t-ref="categoryCanvas"/>
+                            <div t-else="">
+                                <div class="o_mu_breakdown_row" t-foreach="categoryRows" t-as="row" t-key="row.name">
+                                    <div class="text-truncate" t-att-title="row.name" t-esc="row.name"/>
+                                    <div>
+                                        <div class="o_mu_bar" t-attf-style="width: {{ row.pct }}%"/>
+                                    </div>
+                                    <div class="o_mu_figure text-end" t-esc="row.count"/>
                                 </div>
-                                <table class="visually-hidden">
-                                    <caption>By Category</caption>
-                                    <thead><tr><th>Category</th><th>Requests</th></tr></thead>
-                                    <tbody>
-                                        <tr t-foreach="state.data.category_breakdown" t-as="row" t-key="row.name">
-                                            <td t-esc="row.name"/>
-                                            <td t-esc="row.count"/>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </t>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card p-3">
-                            <h5>By Building</h5>
+                        <div class="o_mu_card">
+                            <h5 class="mb-1 fw-bold">Requests by building</h5>
+                            <div class="o_mu_card_sub mb-3">
+                                <t t-esc="state.data.month_label"/> · <t t-esc="state.data.totals.requests_done"/> completed
+                            </div>
                             <div t-if="state.data.building_breakdown.length === 0" class="text-muted text-center p-4">
                                 No requests this month
                             </div>
-                            <t t-else="">
-                                <div class="o_maintenance_university_chart_box o_maintenance_university_chart_box_sm">
-                                    <canvas t-ref="buildingCanvas"/>
+                            <div t-else="">
+                                <div class="o_mu_breakdown_row" t-foreach="buildingRows" t-as="row" t-key="row.name">
+                                    <div class="text-truncate" t-att-title="row.name" t-esc="row.name"/>
+                                    <div>
+                                        <div class="o_mu_bar" t-attf-style="width: {{ row.pct }}%"/>
+                                    </div>
+                                    <div class="o_mu_figure text-end" t-esc="row.count"/>
                                 </div>
-                                <table class="visually-hidden">
-                                    <caption>By Building</caption>
-                                    <thead><tr><th>Building</th><th>Requests</th></tr></thead>
-                                    <tbody>
-                                        <tr t-foreach="state.data.building_breakdown" t-as="row" t-key="row.name">
-                                            <td t-esc="row.name"/>
-                                            <td t-esc="row.count"/>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </t>
+                            </div>
                         </div>
                     </div>
                 </div>

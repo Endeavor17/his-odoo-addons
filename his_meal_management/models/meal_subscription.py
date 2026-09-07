@@ -6,6 +6,13 @@ from odoo.tools import float_compare
 # leaves room for a future third of a credit without touching the columns.
 CREDIT_PRECISION = 2
 
+# How many meals a subscriber may take on an empty card before the till refuses.
+# A count of meals, not a number of credits: two meals is two meals whether the
+# student takes the 300 DA one or the 600 DA one, and what they cost is taken
+# off the next top-up. Flat rather than per-plan, which is what was asked for -
+# a weekly pack and a semester pack both carry the same two.
+ALLOWANCE_MEALS = 2
+
 
 class HisMealSubscription(models.Model):
     """One purchase of one meal plan by one student.

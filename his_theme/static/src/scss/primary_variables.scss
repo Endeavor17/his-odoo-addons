@@ -1,0 +1,33 @@
+// HIS brand variables, sampled from the university site (his.edu.dz).
+//
+// Prepended to web._assets_primary_variables, so this file lands BEFORE Odoo's
+// own primary_variables.scss and wins its `!default` assignments. That is the
+// whole mechanism: everything the backend colours itself with is derived from
+// the handful of values below.
+//
+// Deliberately no function calls here. o-add-unicode-support-font() happens to
+// be in scope, but a stylesheet that fails to compile takes the entire backend
+// down with it, so this file stays to plain values only.
+
+// The petrol teal of the site's header and footer. $o-brand-odoo (the main
+// navbar) and $o-brand-primary (buttons, links, focus rings, checkboxes) both
+// default to $o-community-color, so this single line re-skins the client.
+$o-community-color: #0d6e8c;
+$o-enterprise-color: #0d6e8c;
+
+// Semantic colours pulled onto the palette rather than left on Bootstrap's.
+// $o-warning is not decoration: the workday banner reads --warning for its
+// "on break" stripe, which is exactly why it carries the brand gold.
+$o-warning: #dfa22a;
+$o-success: #1c6b3f;
+$o-danger: #a4342a;
+
+$o-main-text-color: #10323f;
+
+// Figtree is the closest Google face to the site's; IBM Plex Mono carries every
+// card code, credit balance and duration, so digits line up column to column
+// and a card number never reads as prose. Both are pulled in by his_theme's
+// web.layout inherit — the stacks below are what shows if that request fails.
+$o-font-family-sans-serif: ("Figtree", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif);
+$o-headings-font-family: ("Figtree", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif);
+$o-font-family-monospace: ("IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
