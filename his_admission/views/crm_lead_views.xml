@@ -65,6 +65,9 @@
                 <field name="wilaya"/>
                 <field name="bac_annee"/>
                 <field name="bac_filiere"/>
+                <!-- Vide pour une candidature spontanee ou un lead saisi a la
+                     main : n'afficher que s'il y a quelque chose a lire. -->
+                <field name="utm_contenu" invisible="not utm_contenu"/>
                 <field name="consentement_18_07"/>
                 <field name="date_consentement"
                        invisible="not consentement_18_07"/>

@@ -47,6 +47,21 @@ class CrmLead(models.Model):
     wilaya = fields.Char(string="Wilaya")
     bac_annee = fields.Char(string="Annee du BAC")
 
+    # L'UTM « content » designe le CREATIF : c'est lui qui distingue deux
+    # annonces d'une meme campagne (« Flexible ad arabic »). Odoo n'a pas de
+    # champ pour lui — utm.mixin s'arrete a source / medium / campaign — donc
+    # la seule dimension qui repond a « quelle annonce marche » se perdait,
+    # alors qu'elle arrivait dans chaque payload depuis le debut.
+    #
+    # Char et non Many2one : ce libelle est ecrit dans le gestionnaire de
+    # publicites de Meta, il change au rythme des annonces, et une table de
+    # configuration obligerait a creer une ligne avant chaque campagne.
+    utm_contenu = fields.Char(
+        string="Annonce (UTM content)", index=True,
+        help="Le creatif publicitaire, tel que la campagne le nomme. "
+             "Distingue deux annonces d'une meme campagne.",
+    )
+
     # La filiere du bac, et non la specialite visee : les deux se confondent
     # facilement. specialite_id dit ce que le candidat DEMANDE, bac_filiere dit
     # ce qu'il a OBTENU. C'est la seconde qui explique un dossier refuse.
