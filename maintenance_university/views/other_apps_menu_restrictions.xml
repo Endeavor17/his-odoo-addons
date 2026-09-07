@@ -34,8 +34,24 @@
         <field name="group_ids" eval="[(6, 0, [ref('base.group_no_one')])]"/>
     </record>
 
+    <!-- « Apps » n'est PAS sans restriction, contrairement a ce que dit le
+         commentaire d'en-tete : Odoo le livre ferme sur base.group_system
+         (base/views/base_menus.xml), verifie sur une base creee avec `-i base`
+         seul. Le (6, 0, [...]) qui etait ici remplacait donc ce groupe natif au
+         lieu de s'y ajouter, avec deux consequences :
+
+           1. un administrateur Odoo perdait « Apps » des l'installation ;
+           2. a la DESINSTALLATION, le seul groupe restant partait avec le
+              module et le menu se retrouvait SANS aucun groupe — c'est-a-dire
+              visible de TOUS. C'est exactement ce qui s'est produit : les
+              quatre bases locales ont porte un menu « Apps » ouvert au premier
+              venu jusqu'au 2026-09-06, ou his_access_base a repose le groupe.
+
+         (4, ...) ajoute sans remplacer : le manager de maintenance voit
+         « Apps », l'administrateur ne le perd pas, et une desinstallation ne
+         retire que notre propre ligne. -->
     <record id="base.menu_management" model="ir.ui.menu">
-        <field name="group_ids" eval="[(6, 0, [ref('group_maintenance_manager')])]"/>
+        <field name="group_ids" eval="[(4, ref('group_maintenance_manager'))]"/>
     </record>
 
 </odoo>
