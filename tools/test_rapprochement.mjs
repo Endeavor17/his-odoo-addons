@@ -24,6 +24,10 @@ const XML = path.join(ROOT, 'his_admission/data/his_specialite_data.xml');
  * Les recopier tels quels — espaces et tirets compris. */
 const OFFERTES = {
   master: [
+    // Releve sans plafond de longueur : le premier relevé coupait a 80
+    // caracteres et manquait « Ingenierie des Donnees », le libelle le plus
+    // long — et le premier reellement choisi par une candidate.
+    "ماستر هندسة البيانات وتكنولوجيا الويب - Ingénierie des Données et Technologie Web",
     "ماستر إدارة الأعمال - Business Administration",
     "ماستر قانون الأعمال - Droit des affaires",
     "ماستر علوم التربية - إرشاد وتوجيه - Orientation et Guidance",
