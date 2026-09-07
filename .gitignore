@@ -60,6 +60,11 @@ venv/
 /exports/
 *.csv
 !his_person_sync_sheets/tests/exemple_export.csv
+# Les droits d'acces d'un module Odoo sont un .csv, et sans eux le module est
+# inutilisable. Deja suivis, les onze existants ne risquaient rien — mais le
+# `security/ir.model.access.csv` du PROCHAIN module serait ignore en silence,
+# et son absence ne se voit qu'a l'execution, sur le geste d'un utilisateur.
+!*/security/ir.model.access.csv
 *.xlsx
 *.xls
 
