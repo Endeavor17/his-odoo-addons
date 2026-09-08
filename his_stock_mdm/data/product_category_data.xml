@@ -105,4 +105,26 @@
         <field name="property_cost_method">average</field>
         <field name="property_valuation">real_time</field>
     </record>
+
+    <!-- ============ La seule categorie que ce module CREE ================= -->
+    <!-- Exception assumee au principe « aucun record createur » : les
+         emballages de service de la cafeteria (barquette, gobelet, cuillere,
+         sac sandwich) n'ont de feuille nulle part dans l'arborescence 4.1, et
+         il faut bien qu'elle existe quelque part. La creer ici plutot que de
+         l'exiger a la main evite qu'une installation neuve echoue sur un
+         External ID introuvable.
+
+         Elle n'est PAS dans MDM_CATEGORIES (models/product_category.py) : ce
+         dictionnaire ne recense que les categories deja en base a rattacher.
+
+         Verses ailleurs, ces articles heriteraient du lot + peremption des
+         feuilles Restaurant, ce qui imposerait un numero de lot a chaque
+         reception de gobelets. -->
+    <record id="categ_cafe_emballage" model="product.category">
+        <field name="name">Emballage</field>
+        <field name="parent_id" ref="categ_cafe"/>
+        <field name="default_tracking">none</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">real_time</field>
+    </record>
 </odoo>

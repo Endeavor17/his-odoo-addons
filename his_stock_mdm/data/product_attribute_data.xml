@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- MDM section 4.4. « Marque » existe deja et n'est restreint par aucune
-         categorie : allowed_categ_ids vide = pas de restriction, il n'y a donc
-         rien a faire dessus.
+    <!-- MDM section 4.4. Le MDM prevoit un attribut « Marque » sans restriction
+         de categorie. Il n'existe NI ici NI en base (verifie le 2026-09-08 :
+         seuls « Format » et « Variante » sont presents) — contrairement a ce
+         que ce commentaire affirmait jusqu'alors. Non cree tant qu'aucune fiche
+         n'en a besoin : les listes fournisseur portent la marque dans le nom de
+         l'article, et un attribut a valeurs libres sans usage reel ne ferait
+         qu'ajouter une saisie facultative de plus.
 
          NB : le MDM cite « Café / Gaz » parmi les categories eligibles, mais
          cette categorie n'existe pas dans l'arborescence de la section 4.1

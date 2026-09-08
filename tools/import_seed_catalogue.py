@@ -6,9 +6,13 @@ gouvernance MDM deja testee (his_stock_mdm) qui arbitre, pas une reimplementatio
 ici. Une ligne rejetee est annulee via savepoint et n'affecte pas les autres.
 """
 import csv
+import os
 
-SEED_PATH = '/mnt/host-downloads/Seed_Catalogue_Produits.csv'
-REF_PATH = '/mnt/host-downloads/Categories_Reference_57.csv'
+# Par defaut le seed et le referentiel du depot, monte en /mnt/extra-addons :
+# plus besoin du montage /mnt/host-downloads, absent du docker-compose.yml.
+# Surchargeables par variable d'environnement pour rejouer un ancien seed.
+SEED_PATH = os.environ.get('SEED_PATH', '/mnt/extra-addons/tools/seed/Seed_Catalogue_v2.csv')
+REF_PATH = os.environ.get('REF_PATH', '/mnt/extra-addons/tools/seed/Categories_Reference.csv')
 RETAIL_PREFIX = 'All / Retail & Consommables (Storable) / '
 RETAIL_ROOT = 'All / Retail & Consommables (Storable)'
 
