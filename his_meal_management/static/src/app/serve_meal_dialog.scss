@@ -1,0 +1,164 @@
+// The serve-meal dialog. Values are literal: the POS runs from its own bundle
+// and a till that fails to paint has no fallback the cashier can reach.
+
+.his_serve_meal {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.his_serve_meal_head {
+    background-color: #0d6e8c;
+    padding: 1.375rem 1.75rem;
+    color: #ffffff;
+}
+
+.his_serve_meal_who {
+    min-width: 0;
+}
+
+.his_serve_meal_avatar {
+    flex: 0 0 auto;
+    width: 2.875rem;
+    height: 2.875rem;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.his_serve_meal_name {
+    font-size: 1.3125rem;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.his_serve_meal_code {
+    font-family: var(--bs-font-monospace, ui-monospace, monospace);
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.his_serve_meal_muted {
+    font-size: 0.8125rem;
+    color: #5e7883;
+}
+
+.his_serve_meal_figure {
+    font-family: var(--bs-font-monospace, ui-monospace, monospace);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #10323f;
+}
+
+// What is left, then the surface, then what this meal takes. The gap does the
+// separating rather than a stroke around either segment.
+.his_serve_meal_meter {
+    display: flex;
+    height: 10px;
+    border-radius: 999px;
+    background-color: #e8eef0;
+    overflow: hidden;
+}
+
+.his_serve_meal_meter_kept {
+    background-color: #0d6e8c;
+}
+
+.his_serve_meal_meter_gap {
+    flex: 0 0 auto;
+    width: 2px;
+    background-color: #ffffff;
+}
+
+.his_serve_meal_meter_spent {
+    background-color: #dfa22a;
+}
+
+.his_serve_meal_ask {
+    background-color: #f6f9fa;
+    border: 1px solid #e4ecef;
+    border-radius: 12px;
+    padding: 1rem 1.125rem;
+}
+
+.his_serve_meal_ask_title {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    color: #10323f;
+}
+
+.his_serve_meal_icon {
+    flex: 0 0 auto;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 10px;
+    background-color: #eaf4f7;
+    color: #0d6e8c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+// The two footer buttons, sized so the one that spends a credit is the one the
+// thumb finds first.
+.his_serve_meal_cancel,
+.his_serve_meal_confirm {
+    height: 3.25rem;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.his_serve_meal_confirm {
+    flex: 2 1 0;
+    font-weight: 700;
+}
+
+// = Empty card
+// ----------------------------------------------------------------------------
+// The meal still goes through, so this is a warning and not an error state -
+// but it has to be unmissable across a counter, which is why it takes the
+// header rather than sitting politely in the body.
+.his_serve_meal_head_empty {
+    background-color: #a4342a;
+}
+
+.his_serve_meal_empty {
+    background-color: #fbe9e7;
+    border: 1px solid #f0cec9;
+    border-radius: 12px;
+    padding: 1rem 1.125rem;
+}
+
+.his_serve_meal_empty_icon {
+    flex: 0 0 auto;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 10px;
+    background-color: #f6d8d4;
+    color: #a4342a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.his_serve_meal_empty_title {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    color: #a4342a;
+}
+
+.his_serve_meal_empty_sub {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #7d3b32;
+}
+
+.his_serve_meal_figure_owed {
+    color: #a4342a;
+}

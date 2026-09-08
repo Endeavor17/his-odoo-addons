@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The manager's screen. Days are clocked by the worker from the My Work
+         banner, never here - this exists so a leader can correct a day someone
+         forgot to close, which is the agreed recovery path since nothing
+         auto-closes. -->
+
+    <record id="view_maintenance_university_workday_list" model="ir.ui.view">
+        <field name="name">maintenance.university.workday.list</field>
+        <field name="model">maintenance.university.workday</field>
+        <field name="arch" type="xml">
+            <list string="Work Days">
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="date_start" widget="datetime"/>
+                <field name="date_end" widget="datetime"/>
+                <field name="worked_hours" widget="float_time" sum="Total Worked"/>
+                <field name="paused_hours" widget="float_time" sum="Total Breaks"/>
+                <field name="state"
+                       decoration-info="state == 'working'"
+                       decoration-warning="state == 'paused'"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_maintenance_university_workday_form" model="ir.ui.view">
+        <field name="name">maintenance.university.workday.form</field>
+        <field name="model">maintenance.university.workday</field>
+        <field name="arch" type="xml">
+            <form string="Work Day">
+                <header>
+                    <field name="state" widget="statusbar" readonly="1"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"
+                                   help="Fill this in to close a day the worker left running."/>
+                            <field name="worked_hours" widget="float_time" readonly="1"/>
+                            <field name="paused_hours" widget="float_time" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="segments" string="Segments">
+                            <field name="segment_ids">
+                                <list editable="bottom">
+                                    <field name="kind"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="duration" widget="float_time" sum="Total"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_maintenance_university_workday_search" model="ir.ui.view">
+        <field name="name">maintenance.university.workday.search</field>
+        <field name="model">maintenance.university.workday</field>
+        <field name="arch" type="xml">
+            <search string="Work Days">
+                <field name="employee_id"/>
+                <field name="date"/>
+                <filter string="Still Running" name="filter_running" domain="[('date_end', '=', False)]"/>
+                <filter string="Today" name="filter_today"
+                        domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="On Break" name="filter_paused" domain="[('state', '=', 'paused')]"/>
+                <group>
+                    <filter string="Worker" name="groupby_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Day" name="groupby_date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_maintenance_university_workday" model="ir.actions.act_window">
+        <field name="name">Work Days</field>
+        <field name="res_model">maintenance.university.workday</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_maintenance_university_workday_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No work days recorded yet
+            </p><p>
+                Workers clock in from the button at the top of My Work. Days show up here
+                as they happen, and a day someone forgot to close can be corrected by
+                filling in its end time.
+            </p>
+        </field>
+    </record>
+
+</odoo>

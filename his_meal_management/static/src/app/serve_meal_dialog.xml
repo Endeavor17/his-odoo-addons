@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="his_meal_management.ServeMealDialog">
+        <Dialog size="'md'" header="false" withBodyPadding="false" contentClass="'his_serve_meal'">
+
+            <div class="his_serve_meal_head d-flex align-items-center gap-3"
+                 t-att-class="{ 'his_serve_meal_head_empty': props.onAllowance }">
+                <div class="his_serve_meal_avatar" t-esc="initials"/>
+                <div class="his_serve_meal_who">
+                    <div class="his_serve_meal_name" t-esc="props.name"/>
+                    <div class="his_serve_meal_code" t-if="props.cardCode" t-esc="props.cardCode"/>
+                </div>
+            </div>
+
+            <div class="p-4">
+                <t t-if="props.onAllowance">
+                    <!-- The card is empty. The meal is still served, because the
+                         student bought a plan and two of these come with it, but
+                         the cashier is told so in as many words. -->
+                    <div class="his_serve_meal_empty d-flex align-items-center gap-3">
+                        <div class="his_serve_meal_empty_icon">
+                            <i class="fa fa-exclamation-triangle" role="img"
+                               aria-label="Empty card" title="Empty card"/>
+                        </div>
+                        <div>
+                            <div class="his_serve_meal_empty_title">This card is empty</div>
+                            <div class="his_serve_meal_empty_sub">
+                                Allowance meal <t t-esc="allowanceMealNumber"/> of <t t-esc="allowanceTotal"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-baseline gap-2 mt-3">
+                        <span class="his_serve_meal_figure his_serve_meal_figure_owed" t-esc="owedAfter"/>
+                        <span class="his_serve_meal_muted">
+                            credit(s) will be owed, taken off the next top-up
+                        </span>
+                    </div>
+                </t>
+
+                <t t-else="">
+                    <div class="d-flex align-items-baseline justify-content-between gap-3 mb-2">
+                        <span class="fw-bold text-truncate" t-esc="props.plan"/>
+                        <span class="his_serve_meal_muted flex-shrink-0" t-if="props.expires">
+                            until <t t-esc="props.expires"/>
+                        </span>
+                        <span class="his_serve_meal_muted flex-shrink-0" t-else="">no expiry</span>
+                    </div>
+
+                    <div class="his_serve_meal_meter">
+                        <div class="his_serve_meal_meter_kept" t-attf-style="width: {{ keptPct }}%"/>
+                        <div class="his_serve_meal_meter_gap"/>
+                        <div class="his_serve_meal_meter_spent" t-attf-style="width: {{ spentPct }}%"/>
+                    </div>
+
+                    <div class="d-flex align-items-baseline gap-2 mt-2">
+                        <span class="his_serve_meal_figure" t-esc="props.credits"/>
+                        <span class="his_serve_meal_muted">
+                            credits left · <t t-esc="after"/> after this meal
+                        </span>
+                    </div>
+                </t>
+
+                <div class="his_serve_meal_ask d-flex align-items-center gap-3 mt-4">
+                    <div class="his_serve_meal_icon">
+                        <i class="fa fa-cutlery" role="img" aria-label="Meal" title="Meal"/>
+                    </div>
+                    <div>
+                        <div class="his_serve_meal_ask_title">Serve <t t-esc="props.mealName"/>?</div>
+                        <div class="his_serve_meal_muted" t-if="props.onAllowance">
+                            Takes <t t-esc="props.cost"/> credit(s) the card does not have.
+                        </div>
+                        <div class="his_serve_meal_muted" t-else="">
+                            Takes <t t-esc="props.cost"/> credit(s) from this wallet.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <t t-set-slot="footer">
+                <button class="btn btn-lg btn-outline-secondary his_serve_meal_cancel flex-grow-1"
+                        t-on-click="() => props.close()">
+                    Cancel
+                </button>
+                <button class="btn btn-lg btn-his-gold his_serve_meal_confirm"
+                        t-on-click="onConfirm">
+                    Serve meal
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>

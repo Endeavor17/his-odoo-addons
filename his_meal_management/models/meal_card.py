@@ -48,7 +48,7 @@ class HisMealCard(models.Model):
     replaced_card_id = fields.Many2one(
         'his.meal.card', string="Replaces", ondelete='set null',
     )
-    credits_remaining = fields.Integer(
+    credits_remaining = fields.Float(
         related='partner_id.meal_credits_remaining', string="Credits", readonly=True,
     )
 

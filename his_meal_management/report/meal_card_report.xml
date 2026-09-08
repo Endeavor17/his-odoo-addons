@@ -12,23 +12,114 @@
         <field name="binding_type">report</field>
     </record>
 
+    <!-- The card, front and back, at true CR80 size: 85.6 x 54 mm, the format
+         every badge printer and every wallet already expects. Sizes are in mm
+         throughout for the same reason — this is a physical object, not a page.
+
+         Inline styles only: wkhtmltopdf gets no stylesheet from the backend
+         bundle, so every rule a report needs has to travel with its markup. -->
     <template id="report_meal_card">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="card">
                 <t t-call="web.basic_layout">
-                    <div class="page">
-                        <div style="border: 2px solid #333; border-radius: 8px; padding: 16px; width: 340px;">
-                            <h4 style="margin: 0 0 12px 0; letter-spacing: 2px;">HIS CARD</h4>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <div><strong t-field="card.partner_id.name"/></div>
-                                    <div style="font-size: 11px; color: #666;" t-field="card.code"/>
+                    <div class="page" style="font-family: Figtree, 'Segoe UI', Helvetica, Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+
+                        <!-- inline-block and a margin, not flex and a gap: the
+                             PDF is rendered by wkhtmltopdf 0.12, whose WebKit
+                             predates flex-gap and would stack these two on top
+                             of each other with nothing between them. -->
+                        <div>
+
+                            <!-- Front -->
+                            <div style="display: inline-block; vertical-align: top; margin: 0 8mm 8mm 0; width: 85.6mm; height: 54mm; background-color: #0d6e8c; color: #ffffff; position: relative; overflow: hidden;">
+                                <div style="height: 1mm; background-color: #5a2d1d;"></div>
+
+                                <div style="padding: 4mm 4.5mm 3.5mm;">
+                                    <table style="width: 100%; border: 0;">
+                                        <tr>
+                                            <td style="border: 0; padding: 0; vertical-align: top;">
+                                                <span style="font-size: 9pt; font-weight: bold; letter-spacing: 1.2pt;">HIS UNIVERSITY</span><br/>
+                                                <span style="font-size: 5pt; letter-spacing: 1pt; color: #9fcede;">EST. 2019</span>
+                                            </td>
+                                            <td style="border: 0; padding: 0; text-align: right; vertical-align: top;">
+                                                <span style="font-size: 6pt; font-weight: bold; letter-spacing: 1.1pt; color: #dfa22a;">MEAL CARD</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <div style="width: 10mm; height: 0.6mm; background-color: #dfa22a; margin-top: 3mm;"></div>
+
+                                    <table style="width: 100%; border: 0; margin-top: 9mm;">
+                                        <tr>
+                                            <td style="border: 0; padding: 0; vertical-align: bottom;">
+                                                <span style="font-size: 5pt; letter-spacing: 1pt; color: #9fcede;">CARD NUMBER</span><br/>
+                                                <span style="font-family: 'DejaVu Sans Mono', Consolas, monospace; font-size: 12pt; letter-spacing: 1.6pt;" t-field="card.code"/><br/>
+                                                <span style="font-size: 10pt; font-weight: bold; line-height: 1.4;" t-field="card.partner_id.name"/>
+                                            </td>
+                                            <td style="border: 0; padding: 0; width: 20mm; text-align: right; vertical-align: bottom;">
+                                                <div style="background-color: #ffffff; padding: 1mm; display: inline-block;">
+                                                    <img t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=200&amp;height=200' % card.code"
+                                                         style="width: 16mm; height: 16mm; display: block;" alt="Card QR code"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
-                                <img t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=120&amp;height=120' % card.code"
-                                     style="width: 120px; height: 120px;" alt="Card QR code"/>
                             </div>
-                            <div style="margin-top: 12px; font-size: 10px; color: #666;">
-                                This card carries no credits. It identifies the person only.
+
+                            <!-- Back -->
+                            <div style="display: inline-block; vertical-align: top; margin: 0 0 8mm 0; width: 85.6mm; height: 54mm; background-color: #ffffff; border: 0.3mm solid #dde5e8; overflow: hidden;">
+                                <div style="height: 1mm; background-color: #5a2d1d;"></div>
+                                <div style="height: 6mm; background-color: #0d6e8c; padding: 0 4mm;">
+                                    <table style="width: 100%; border: 0; height: 6mm;">
+                                        <tr>
+                                            <td style="border: 0; padding: 0; vertical-align: middle;">
+                                                <span style="font-size: 5.5pt; font-weight: bold; letter-spacing: 1.2pt; color: #ffffff;">HIS UNIVERSITY</span>
+                                            </td>
+                                            <td style="border: 0; padding: 0; text-align: right; vertical-align: middle;">
+                                                <span style="font-size: 5.5pt; font-weight: bold; letter-spacing: 1pt; color: #dfa22a;">MEAL CARD</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div style="padding: 4mm;">
+                                    <table style="width: 100%; border: 0;">
+                                        <tr>
+                                            <td style="border: 0; padding: 0; width: 24mm; vertical-align: top;">
+                                                <div style="border: 0.3mm solid #dde5e8; padding: 1mm; display: inline-block;">
+                                                    <img t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=240&amp;height=240' % card.code"
+                                                         style="width: 20mm; height: 20mm; display: block;" alt="Card QR code"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 0; padding: 0 0 0 4mm; vertical-align: top;">
+                                                <span style="font-size: 5pt; letter-spacing: 1pt; color: #7b929b;">CARD NUMBER</span><br/>
+                                                <span style="font-family: 'DejaVu Sans Mono', Consolas, monospace; font-size: 9pt; letter-spacing: 1.2pt; color: #10323f;" t-field="card.code"/>
+                                                <div style="width: 8mm; height: 0.6mm; background-color: #dfa22a; margin: 2mm 0;"></div>
+                                                <span style="font-size: 6pt; line-height: 1.5; color: #4a636d;">
+                                                    This card carries no credits. It identifies the person only —
+                                                    a lost card costs nothing to replace.
+                                                </span><br/>
+                                                <span style="font-size: 6pt; line-height: 1.5; color: #7b929b;">
+                                                    Found it? Please return it to the Student Centre.
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div style="background-color: #0d6e8c; padding: 1.6mm 4mm;">
+                                    <table style="width: 100%; border: 0;">
+                                        <tr>
+                                            <td style="border: 0; padding: 0;">
+                                                <span style="font-size: 5.5pt; line-height: 1.4; color: #cfe6ee;">Route 114 Bordj El-Bahri, Bordj El Kiffan, 16031, Algiers</span>
+                                            </td>
+                                            <td style="border: 0; padding: 0; text-align: right;">
+                                                <span style="font-size: 5.5pt; font-weight: bold; line-height: 1.4; color: #ffffff;">0770 54 71 99<br/>contact@his.edu.dz</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

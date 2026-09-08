@@ -1,0 +1,60 @@
+// HIS chrome for the web client.
+//
+// The palette is published as CSS custom properties rather than SCSS ones: the
+// module stylesheets that consume it (maintenance_university) sit in their own
+// files and nothing there proves which SCSS variables are in scope for the
+// bundle. Custom properties always are.
+
+:root {
+    --his-teal: #0d6e8c;
+    --his-teal-deep: #0a5871;
+    --his-teal-deepest: #08475c;
+    --his-gold: #dfa22a;
+    --his-gold-dark: #c58c1d;
+    --his-gold-ink: #3d2803;
+    --his-maroon: #5a2d1d;
+    --his-ink: #10323f;
+    --his-ink-60: #5e7883;
+    --his-ink-40: #7b929b;
+    --his-paper: #eef2f4;
+    --his-card: #ffffff;
+    --his-line: #dde5e8;
+    --his-line-soft: #f1f5f7;
+    --his-green: #1c6b3f;
+    --his-red: #a4342a;
+
+    // Chart ink. Not the brand pair: the brand teal reads grey as a data fill
+    // and the brand gold falls under 3:1 on white. These are the nearest steps
+    // that clear contrast and stay apart under red-green and blue-yellow
+    // colour blindness.
+    --his-series-1: #0b86b0;
+    --his-series-2: #c07d10;
+}
+
+// The hairline above the navbar, straight off the university site. The navbar
+// is the topmost element of the client, so its own top border is the strip.
+.o_main_navbar {
+    border-top: 6px solid var(--his-maroon);
+}
+
+// Gold is the single completing action on a screen — the one that finishes what
+// the user came to do — never a second brand colour. Bootstrap 5 buttons are
+// driven by custom properties, so a variant is just the set of them.
+.btn.btn-his-gold {
+    --bs-btn-color: #3d2803;
+    --bs-btn-bg: #dfa22a;
+    --bs-btn-border-color: #dfa22a;
+    --bs-btn-hover-color: #3d2803;
+    --bs-btn-hover-bg: #c58c1d;
+    --bs-btn-hover-border-color: #c58c1d;
+    --bs-btn-active-color: #3d2803;
+    --bs-btn-active-bg: #c58c1d;
+    --bs-btn-active-border-color: #c58c1d;
+    --bs-btn-disabled-color: #3d2803;
+    --bs-btn-disabled-bg: #dfa22a;
+    --bs-btn-disabled-border-color: #dfa22a;
+    --bs-btn-focus-shadow-rgb: 223, 162, 42;
+
+    border-radius: 999px;
+    font-weight: 700;
+}

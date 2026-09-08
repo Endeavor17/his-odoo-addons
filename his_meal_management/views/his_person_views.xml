@@ -35,23 +35,39 @@
                 <notebook>
                     <page string="Meal Account" name="meal_account"
                           invisible="not meal_card_ids">
-                        <group>
-                            <group string="Card">
-                                <field name="meal_card_code" string="Active Card"/>
+                        <!-- The wrapper carries no layout of its own: it only
+                             gives the stylesheet something to hang the wallet's
+                             typography on. The groups underneath stay Odoo's,
+                             so labels, readonly rendering and responsiveness
+                             remain core's problem rather than this module's. -->
+                        <div class="o_his_wallet">
+                            <group>
+                                <group string="Card">
+                                    <field name="meal_card_code" string="Active Card"/>
+                                </group>
+                                <group string="Balance">
+                                    <field name="meal_credits_remaining"/>
+                                    <field name="meal_active_plan"/>
+                                    <!-- Only shown once there is something to
+                                         show: a wallet in good standing should
+                                         not carry a row reading "0.00 owed". -->
+                                    <field name="meal_allowance_debt"
+                                           invisible="meal_allowance_debt == 0.0"/>
+                                    <field name="meal_allowance_left"
+                                           invisible="meal_allowance_debt == 0.0"/>
+                                    <button name="action_open_meal_transactions" type="object"
+                                            string="Meal History" class="btn-link"
+                                            icon="fa-history"/>
+                                </group>
                             </group>
-                            <group string="Balance">
-                                <field name="meal_credits_remaining"/>
-                                <field name="meal_active_plan"/>
-                                <button name="action_open_meal_transactions" type="object"
-                                        string="Meal History" class="btn-link"
-                                        icon="fa-history"/>
-                            </group>
-                        </group>
+                        </div>
                         <separator string="Cards"/>
                         <field name="meal_card_ids" readonly="1">
                             <list>
                                 <field name="code"/>
-                                <field name="state"/>
+                                <field name="state" widget="badge"
+                                       decoration-success="state == 'active'"
+                                       decoration-danger="state in ('blocked', 'lost')"/>
                                 <field name="create_date"/>
                             </list>
                         </field>
