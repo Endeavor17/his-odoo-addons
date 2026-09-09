@@ -55,6 +55,9 @@ CAFE_REGLES = [
      r'tartulate|mille feuille|meringue|baklava|celebrity|qaada|les palmiers|'
      r'jalousie|pain |petit pain|crepa|jouzia|louzia|lamina|swareen|regalo|'
      r'cigarette|kollogg)', BISCUITS),
+    # « A حلويات », « B ساندويتش » … : articles generiques du comptoir, vendus
+    # par famille a la caisse. Une fois l'arabe retire il ne reste qu'une lettre.
+    (r'^[a-i]\s*$', DIVERS),
     (r'^(caf[eé]|th[eé]|.*infussion|.*insussion|nescaf|nespresso|mokate|maxwell|'
      r'espresso|dose |carte noire|carr[eé] noir|davidoff|lore |royal|caps |'
      r'alluminium caps|ice cream|yaourt|sucre|huile|fromage|cacao|lingette|'
@@ -125,29 +128,51 @@ def categorie_cafe(designation):
     """Designation de la liste cafeteria -> chemin de categorie, ou None."""
     texte = unicodedata.normalize('NFKD', designation).encode('ascii', 'ignore').decode()
     texte = texte.lower().strip()
+    # Article de comptoir libelle en arabe (« حلويات », « شاي / تيزانة B »),
+    # vendu par famille a la caisse : il ne reste au plus qu'une lettre latine,
+    # la lettre de comptoir. A distinguer de « Baklava (بقلاوة) », qui porte un
+    # vrai nom latin et doit passer par les regles.
+    if re.search(r'[؀-ۿ]', designation) and len(re.sub(r'[^a-z]', '', texte)) <= 1:
+        return DIVERS
     for motif, categorie in CAFE_REGLES:
         if re.search(motif, texte):
             return categorie
     return None
 
 
-def nettoyer_mojibake(designation):
-    """Retire la parenthese arabe perdue a l'export (« Baklava (??????) »).
+def charger_restaurateur_arabe():
+    """Reconstruit les noms arabes detruits par l'export des listes.
 
-    L'export fourni a transcode l'arabe en points d'interrogation. Le nom
-    francais, lui, est intact : on garde le nom et on jette la parenthese
-    vide de sens plutot que d'importer des « ? » dans le catalogue.
+    Les listes cafeteria et nettoyage ont ete exportees dans un encodage qui a
+    transforme chaque lettre arabe en « ? ». L'ANCIEN seed de reprise
+    (`noms_arabes_reference.csv`, extrait de Seed_Catalogue_Produits.csv) porte
+    les memes produits avec leur arabe intact : on retrouve donc le nom
+    d'origine en comparant le MASQUE (chaque lettre arabe remplacee par « ? »).
+
+    Un masque peut correspondre a plusieurs noms — « A ?????? » vaut aussi bien
+    « A حلويات » que « A مملحات », six lettres chacun. Les deux listes etant
+    triees alphabetiquement, la Nieme occurrence d'un masque correspond au Nieme
+    candidat : on les consomme donc dans l'ordre plutot que d'en choisir un.
     """
-    nettoye = re.sub(r'\s*\([\s?]*\)\s*', ' ', designation)
-    nettoye = re.sub(r'\s*\(\s*\?[^)]*\)\s*', ' ', nettoye)
-    return re.sub(r'\s+', ' ', nettoye).strip()
+    candidats = {}
+    chemin = RACINE / 'noms_arabes_reference.csv'
+    if chemin.exists():
+        with open(chemin, encoding='utf-8', newline='') as f:
+            for row in csv.DictReader(f):
+                candidats.setdefault(row['Masque'], []).append(row['Nom_Complet'])
+    consommes = {}
 
+    def restaurer(designation):
+        if '?' not in designation:
+            return designation, False
+        liste = candidats.get(designation)
+        if not liste:
+            return designation, False
+        i = consommes.get(designation, 0)
+        consommes[designation] = i + 1
+        return (liste[i], True) if i < len(liste) else (liste[-1], True)
 
-def est_ligne_fantome(designation):
-    """« A ?????? », « ??? / ?????? B » : en-tetes arabes illisibles, pas des
-    produits. Reste-t-il une seule lettre latine porteuse de sens ?"""
-    reste = re.sub(r'[?/\s]', '', designation)
-    return len(reste) <= 1
+    return restaurer
 
 
 def format_controle(designation, categorie):
@@ -178,8 +203,11 @@ def lire(nom):
 
 
 def normaliser(texte):
-    texte = unicodedata.normalize('NFKD', texte).encode('ascii', 'ignore').decode()
-    return re.sub(r'[^A-Z0-9]+', ' ', texte.upper()).strip()
+    """Cle de comparaison. L'arabe est CONSERVE : le reduire en ASCII ferait
+    de « A حلويات », « A ساندويتش » et « A مملحات » un seul et meme article."""
+    texte = unicodedata.normalize('NFKD', texte)
+    texte = ''.join(c for c in texte if not unicodedata.combining(c))
+    return re.sub(r'[^A-Z0-9؀-ۿ]+', ' ', texte.upper()).strip()
 
 
 def construire():
@@ -221,20 +249,26 @@ def construire():
         if re.search(r'\b(X|REF)\s*/?\s*$', designation):
             alertes.append(('liste_articles_HIS', designation, 'designation possiblement tronquee'))
 
+    restaurer = charger_restaurateur_arabe()
+    non_restaures = []
+
     # --- Cafeteria et gateaux (porte les codes-barres) ----------------------
     for i, row in enumerate(lire('cafeteria_gateaux.csv'), start=1):
-        brut = row['Designation'].strip()
-        if est_ligne_fantome(brut):
-            continue  # en-tete arabe illisible, pas un produit
-        designation = nettoyer_mojibake(brut)
+        designation, restaure = restaurer(row['Designation'].strip())
+        if '?' in designation:
+            non_restaures.append(designation)
         categorie = categorie_cafe(designation)
         if not categorie:
             alertes.append(('cafeteria', designation, 'aucune regle de categorie — a classer'))
             continue
         code = row.get('Code_Barres', '').strip()
         if code and not code.isdigit():
-            alertes.append(('cafeteria', designation,
-                            'code-barres « %s » non numerique — ignore' % code))
+            # CAF-/COP-/RES-/NET-/SAN- : l'ancienne codification interne, que le
+            # MDM refuse deja comme reference (LEGACY_SEMANTIC_PREFIX). Ce n'est
+            # pas un code-barres, on le jette sans bruit.
+            if not re.match(r'^(CAF|COP|RES|NET|SAN)-', code, re.IGNORECASE):
+                alertes.append(('cafeteria', designation,
+                                'code-barres « %s » non numerique — ignore' % code))
             code = ''
         lignes.append({
             'Nom': designation,
@@ -249,7 +283,9 @@ def construire():
 
     # --- Produits d'entretien -----------------------------------------------
     for row in lire('nettoyage.csv'):
-        designation = nettoyer_mojibake(row['Designation'].strip())
+        designation, _ = restaurer(row['Designation'].strip())
+        if '?' in designation:
+            non_restaures.append(designation)
         lignes.append({
             'Nom': designation,
             'Categorie_Suggeree': MENAGE,
@@ -294,10 +330,14 @@ def construire():
             continue
         code, code_precedent = ligne.get('Code_Barres', ''), precedente.get('Code_Barres', '')
         if code and code_precedent and code != code_precedent:
+            # Deux SKU au meme nom : on garde le plus recent, c'est-a-dire le
+            # code-barres le plus haut (meme prefixe fabricant, numerotation
+            # sequentielle). Arbitrage de Mohamed le 2026-09-09.
+            garde, jete = sorted([code, code_precedent], reverse=True)
+            precedente['Code_Barres'] = garde
             alertes.append((ligne['Source'], ligne['Nom'],
-                            'meme nom que %s mais code-barres different (%s vs %s) '
-                            '— a renommer' % (code_precedent, code, code_precedent)))
-            retenues.append(ligne)
+                            'nom en double, code-barres %s conserve (%s ecarte)'
+                            % (garde, jete)))
         elif code and not code_precedent:
             precedente['Code_Barres'] = code  # la ligne gardee recupere le code
             alertes.append((ligne['Source'], ligne['Nom'],
@@ -305,6 +345,9 @@ def construire():
         else:
             alertes.append((ligne['Source'], ligne['Nom'], 'doublon ecarte'))
     lignes = retenues
+
+    for nom in non_restaures:
+        alertes.append(('arabe', nom, 'arabe non restaure — absent du referentiel'))
 
     # La liste bureau classee ne sert pas de source, mais rien ne doit lui
     # echapper : chaque entree doit se retrouver dans la liste brute.

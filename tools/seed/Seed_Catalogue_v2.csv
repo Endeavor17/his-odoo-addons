@@ -343,11 +343,17 @@ TROUSSE EV 91005 EVEREST,Copy/Articles Bureautique,Storable,,,,liste_articles_HI
 DOSSIER SUSPENDU TIROIR PVC CV 0282 /FABS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,132
 NOTE BOOK A5 ELASTIQUE 25021 / 25022 / 25023 / 25024/25028SAM,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,133
 FEUILLE EXAMEN A3 ARABE 1000F,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,134
+A حلويات,Café/Divers,Storable,,,,cafeteria_gateaux,1
+A ساندويتش,Café/Divers,Storable,,,,cafeteria_gateaux,2
+A مملحات,Café/Divers,Storable,,,,cafeteria_gateaux,3
 Alluminium Caps Café Capsules,Café/Divers,Storable,,,,cafeteria_gateaux,4
 Amandes,Café/Snacks,Storable,,,,cafeteria_gateaux,5
 Assiette Jetable GM,Café/Emballage,Storable,,,,cafeteria_gateaux,6
 Assiette Jetable PM,Café/Emballage,Storable,,,,cafeteria_gateaux,7
-Baklava,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,11
+B حلويات,Café/Divers,Storable,,,,cafeteria_gateaux,8
+B ساندويتش,Café/Divers,Storable,,,,cafeteria_gateaux,9
+B مملحات,Café/Divers,Storable,,,,cafeteria_gateaux,10
+Baklava (بقلاوة),Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,11
 Baklava Cigarette,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,12
 Biscuit Amidam Petit Palmier,Café/Biscuits & Gâteaux,Storable,,,613255040014,cafeteria_gateaux,13
 Biscuit Bimo Chico,Café/Biscuits & Gâteaux,Storable,,,6130015060615,cafeteria_gateaux,14
@@ -385,9 +391,12 @@ Brava Chocolat Amandes Tablette,Café/Chocolat,Storable,,,6132175401734,cafeteri
 Brava Chocolat Blanche Bar,Café/Chocolat,Storable,,,6132175401642,cafeteria_gateaux,46
 Brava Chocolat Noisette Tablette,Café/Chocolat,Storable,,,6132175401321,cafeteria_gateaux,47
 Brava Chocolat Raisins Noisette Tablette,Café/Chocolat,Storable,,,6132175401758,cafeteria_gateaux,48
+C حلويات,Café/Divers,Storable,,,,cafeteria_gateaux,49
+C ساندويتش,Café/Divers,Storable,,,,cafeteria_gateaux,50
+C مملحات,Café/Divers,Storable,,,,cafeteria_gateaux,51
 Cacahuetes Nutis Gm,Café/Snacks,Storable,,,6132376100191,cafeteria_gateaux,52
 Cacahuetes Nutis PM,Café/Snacks,Storable,,,6132271600048,cafeteria_gateaux,53
-Cacao,Café/Divers,Storable,,,,cafeteria_gateaux,54
+Cacao (كاكاو),Café/Divers,Storable,,,,cafeteria_gateaux,54
 Cacao Fumé,Café/Divers,Storable,,,,cafeteria_gateaux,55
 Cacao Pisto,Café/Divers,Storable,,,,cafeteria_gateaux,56
 Café Poudre,Café/Divers,Storable,,,,cafeteria_gateaux,57
@@ -492,8 +501,7 @@ Chips Master Harissa PM,Café/Snacks,Storable,,,6133079001273,cafeteria_gateaux,
 Chips Master Kabab,Café/Snacks,Storable,,,6133079000269,cafeteria_gateaux,157
 Chips Master Kabab PM,Café/Snacks,Storable,,,6133079000115,cafeteria_gateaux,158
 Chips Master Natural G,Café/Snacks,Storable,,,6133079001488,cafeteria_gateaux,159
-Chips Master Natural Ketchup,Café/Snacks,Storable,,,6133079001815,cafeteria_gateaux,160
-Chips Master Natural Ketchup,Café/Snacks,Storable,,,6133079001853,cafeteria_gateaux,161
+Chips Master Natural Ketchup,Café/Snacks,Storable,,,6133079001853,cafeteria_gateaux,160
 Chips Master Natural Onion G,Café/Snacks,Storable,,,6133079001471,cafeteria_gateaux,162
 Chips Master Natural Pepper,Café/Snacks,Storable,,,6133079001426,cafeteria_gateaux,163
 Chips Master Pepper,Café/Snacks,Storable,,,6133079001808,cafeteria_gateaux,164
@@ -539,7 +547,7 @@ Chips Vag d'or Poulet PM,Café/Snacks,Storable,,,6132503580162,cafeteria_gateaux
 Chips Vag d'or Salé GM,Café/Snacks,Storable,,,6132503580025,cafeteria_gateaux,204
 Chips Vag d'or Salé PM,Café/Snacks,Storable,,,6132503580018,cafeteria_gateaux,205
 Chips Vag d'or Tomate PM,Café/Snacks,Storable,,,6132503580322,cafeteria_gateaux,206
-Chiwawa,Café/Snacks,Storable,,,,cafeteria_gateaux,207
+Chiwawa (زريعة),Café/Snacks,Storable,,,,cafeteria_gateaux,207
 Chiwawa Balls,Café/Snacks,Storable,,,6134067002074,cafeteria_gateaux,208
 Chococlat Celebrity Mini Bare,Café/Chocolat,Storable,,,6132175400799,cafeteria_gateaux,209
 Chococlat Celebrity Twin,Café/Chocolat,Storable,,,6132175403677,cafeteria_gateaux,210
@@ -671,9 +679,15 @@ Croissant Matinée,Café/Biscuits & Gâteaux,Storable,,,6132546530018,cafeteria_
 Crème (Café au Lait),Café/Divers,Storable,,,,cafeteria_gateaux,336
 Cuillére a Café,Café/Emballage,Storable,,,,cafeteria_gateaux,337
 Cure Dents,Café/Emballage,Storable,,,,cafeteria_gateaux,338
+D حلويات,Café/Divers,Storable,,,,cafeteria_gateaux,339
+D ساندويتش,Café/Divers,Storable,,,,cafeteria_gateaux,340
+D مملحات,Café/Divers,Storable,,,,cafeteria_gateaux,341
 Davidoff Café Capsules,Café/Divers,Storable,,,,cafeteria_gateaux,342
 Dose Maxwell Fine,Café/Divers,Storable,,,,cafeteria_gateaux,343
 Dose Maxwell House,Café/Divers,Storable,,,,cafeteria_gateaux,344
+E حلويات,Café/Divers,Storable,,,,cafeteria_gateaux,345
+E ساندويتش,Café/Divers,Storable,,,,cafeteria_gateaux,346
+E مملحات,Café/Divers,Storable,,,,cafeteria_gateaux,347
 Eau 5L,Café/Boissons,Storable,5L,,,cafeteria_gateaux,348
 Eau Aninos GM,Café/Boissons,Storable,,,6136286000022,cafeteria_gateaux,349
 Eau Aninos PM,Café/Boissons,Storable,,,,cafeteria_gateaux,350
@@ -723,12 +737,16 @@ Eau Soumam PM,Café/Boissons,Storable,,,6134318000064,cafeteria_gateaux,393
 Eau Taya PM,Café/Boissons,Storable,,,6135366000020,cafeteria_gateaux,394
 Eau Youkous GM,Café/Boissons,Storable,,,6130686000170,cafeteria_gateaux,395
 Espresso Dz,Café/Divers,Storable,,,,cafeteria_gateaux,396
+F حلويات,Café/Divers,Storable,,,,cafeteria_gateaux,397
+F مملحات,Café/Divers,Storable,,,,cafeteria_gateaux,398
 Fourchette Plastique,Café/Emballage,Storable,,,,cafeteria_gateaux,399
 Fromage Bidon,Café/Divers,Storable,,,,cafeteria_gateaux,400
 Fromage Slays,Café/Divers,Storable,,,,cafeteria_gateaux,401
 Fruseco Acajo,Café/Snacks,Storable,,,6132501840091,cafeteria_gateaux,402
 Fruseco Amande,Café/Snacks,Storable,,,6132501840053,cafeteria_gateaux,403
 Fruseco Pistache,Café/Snacks,Storable,,,6132501840015,cafeteria_gateaux,404
+G حلويات,Café/Divers,Storable,,,,cafeteria_gateaux,405
+G مملحات,Café/Divers,Storable,,,,cafeteria_gateaux,406
 Gateau Brino GM,Café/Biscuits & Gâteaux,Storable,,,6132501540311,cafeteria_gateaux,407
 Gateau Brino PM,Café/Biscuits & Gâteaux,Storable,,,6132501541462,cafeteria_gateaux,408
 Gateau Cherchell Chocolat,Café/Biscuits & Gâteaux,Storable,,,6130619003049,cafeteria_gateaux,409
@@ -834,7 +852,10 @@ Ghaufrette Wafer Noisette,Café/Biscuits & Gâteaux,Storable,,,6133414011103,caf
 Gobelet Cristal,Café/Emballage,Storable,,,,cafeteria_gateaux,509
 Gobelet Jus,Café/Emballage,Storable,,,,cafeteria_gateaux,510
 Gobelet Pour Thé,Café/Emballage,Storable,,,,cafeteria_gateaux,511
+H حلويات,Café/Divers,Storable,,,,cafeteria_gateaux,512
+H مملحات,Café/Divers,Storable,,,,cafeteria_gateaux,513
 Huile Cafétéria,Café/Divers,Storable,,,,cafeteria_gateaux,514
+I حلويات,Café/Divers,Storable,,,,cafeteria_gateaux,515
 Ice Cream Cornito Chocolat,Café/Divers,Storable,,,6132501703792,cafeteria_gateaux,516
 Ice Cream Cornito Vanille,Café/Divers,Storable,,,6135958000407,cafeteria_gateaux,517
 Ice Cream Eskimo Chocolat,Café/Divers,Storable,,,6130624000903,cafeteria_gateaux,518
@@ -925,10 +946,10 @@ Jus Tazej Orange Ananas,Café/Boissons,Storable,,,6132504574795,cafeteria_gateau
 Jus Tazej Raisin,Café/Boissons,Storable,,,6132504574351,cafeteria_gateaux,603
 Jus rouiba 33 CL Orange,Café/Boissons,Storable,33CL,,6130002005254,cafeteria_gateaux,604
 KOOL MINI,Café/Divers,Storable,,,,cafeteria_gateaux,605
-Kabir Infussion Gingembre au Miel,Café/Divers,Storable,,,,cafeteria_gateaux,606
-Kabir Infussion Graines de Fenouil,Café/Divers,Storable,,,,cafeteria_gateaux,607
-Kabir Infussion Thé Vert a La Manthe,Café/Divers,Storable,,,,cafeteria_gateaux,608
-Kabir Infussion Zaater,Café/Divers,Storable,,,,cafeteria_gateaux,609
+Kabir Infussion Gingembre au Miel (الزنجبيل بالعسل),Café/Divers,Storable,,,,cafeteria_gateaux,606
+Kabir Infussion Graines de Fenouil (زريعة البسباس),Café/Divers,Storable,,,,cafeteria_gateaux,607
+Kabir Infussion Thé Vert a La Manthe (النعناع),Café/Divers,Storable,,,,cafeteria_gateaux,608
+Kabir Infussion Zaater (زعتر),Café/Divers,Storable,,,,cafeteria_gateaux,609
 Kollogg's Coco Pops Barre,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,610
 Kollogg's Frosties Barre,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,611
 Lait Candia,Café/Boissons,Storable,,,6130433000019,cafeteria_gateaux,612
@@ -981,10 +1002,10 @@ Nescafé Classique Dose,Café/Divers,Storable,,,,cafeteria_gateaux,658
 Nescafé Gold Dose,Café/Divers,Storable,,,,cafeteria_gateaux,659
 Nespresso Café Capsul,Café/Divers,Storable,,,,cafeteria_gateaux,660
 Noisette,Café/Snacks,Storable,,,,cafeteria_gateaux,661
-Noisette au Miel,Café/Snacks,Storable,,,,cafeteria_gateaux,662
+Noisette au Miel (مكسرات بالعسل),Café/Snacks,Storable,,,,cafeteria_gateaux,662
 Noix De Cajou,Café/Snacks,Storable,,,,cafeteria_gateaux,663
 Nougat Blanc,Café/Bonbons,Storable,,,6007583006348,cafeteria_gateaux,664
-Noyer,Café/Snacks,Storable,,,,cafeteria_gateaux,665
+Noyer (جوز),Café/Snacks,Storable,,,,cafeteria_gateaux,665
 Nutiss Amande,Café/Snacks,Storable,,,6132271600185,cafeteria_gateaux,666
 Nutiss Noix de Cajou,Café/Snacks,Storable,,,6132271600192,cafeteria_gateaux,667
 Nutiss Pistache,Café/Snacks,Storable,,,6132271600178,cafeteria_gateaux,668
@@ -1040,12 +1061,12 @@ Twist Candia Fraise-Banane,Café/Boissons,Storable,,,6130433000484,cafeteria_gat
 Twist Candia Orange-Ananas,Café/Boissons,Storable,,,6130433000323,cafeteria_gateaux,718
 Twist Candia Orange-Mangue,Café/Boissons,Storable,,,6130433000491,cafeteria_gateaux,719
 Twist Candia Peche-Abrico,Café/Boissons,Storable,,,6130433000330,cafeteria_gateaux,720
-Vitale Infussion Thé Camomille,Café/Divers,Storable,,,,cafeteria_gateaux,721
-Vitale Infussion Thé Poliot,Café/Divers,Storable,,,,cafeteria_gateaux,722
-Vitale Infussion Thé Thym,Café/Divers,Storable,,,,cafeteria_gateaux,723
+Vitale Infussion Thé Camomille (البابونج),Café/Divers,Storable,,,,cafeteria_gateaux,721
+Vitale Infussion Thé Poliot (فيلو النعناع),Café/Divers,Storable,,,,cafeteria_gateaux,722
+Vitale Infussion Thé Thym (الزعتر),Café/Divers,Storable,,,,cafeteria_gateaux,723
 Vitale Infussion Thé Verveine,Café/Divers,Storable,,,,cafeteria_gateaux,724
-Vitale Infussion Thé au Caramel,Café/Divers,Storable,,,,cafeteria_gateaux,725
-Vitale Infussion Thé au Fruits des Bois,Café/Divers,Storable,,,,cafeteria_gateaux,726
+Vitale Infussion Thé au Caramel (الكراميل),Café/Divers,Storable,,,,cafeteria_gateaux,725
+Vitale Infussion Thé au Fruits des Bois (الفواكه الغابية),Café/Divers,Storable,,,,cafeteria_gateaux,726
 Westminister South African,Café/Divers,Storable,,,,cafeteria_gateaux,727
 Westminister South Thé Vert Orange,Café/Divers,Storable,,,,cafeteria_gateaux,728
 Westminister South Thé Vert Vanille,Café/Divers,Storable,,,,cafeteria_gateaux,729
@@ -1054,12 +1075,23 @@ Westminster Infussion Thé Digestion,Café/Divers,Storable,,,,cafeteria_gateaux,
 Yaourt Yago Fraise PM,Café/Divers,Storable,,,6130760000355,cafeteria_gateaux,732
 Yaourt Yago Grenadine PM,Café/Divers,Storable,,,6130760006074,cafeteria_gateaux,733
 Yaourt Yago Péche PM,Café/Divers,Storable,,,61307930000430,cafeteria_gateaux,734
-Force Expresse,Ménage & Nettoyage,Storable,,,,nettoyage,1
+حلويات,Café/Divers,Storable,,,,cafeteria_gateaux,735
+حليب / قهوة / شكولاتة,Café/Divers,Storable,,,,cafeteria_gateaux,736
+حليب / قهوة / شكولاتة A,Café/Divers,Storable,,,,cafeteria_gateaux,737
+حليب / قهوة / شكولاتة B,Café/Divers,Storable,,,,cafeteria_gateaux,738
+حليب / قهوة / شكولاتة C,Café/Divers,Storable,,,,cafeteria_gateaux,739
+ساندويتش,Café/Divers,Storable,,,,cafeteria_gateaux,740
+شاي / تيزانة,Café/Divers,Storable,,,,cafeteria_gateaux,741
+شاي / تيزانة A,Café/Divers,Storable,,,,cafeteria_gateaux,742
+شاي / تيزانة B,Café/Divers,Storable,,,,cafeteria_gateaux,743
+شاي / تيزانة C,Café/Divers,Storable,,,,cafeteria_gateaux,744
+مملحات,Café/Divers,Storable,,,,cafeteria_gateaux,745
+Force Expresse (مزيل الدهون),Ménage & Nettoyage,Storable,,,,nettoyage,1
 Lave Sol,Ménage & Nettoyage,Storable,,,,nettoyage,2
 Lave Sol 5L,Ménage & Nettoyage,Storable,5L,,,nettoyage,3
 Aigle Top Sols 1L,Ménage & Nettoyage,Storable,1L,,,nettoyage,4
 Air Wick,Ménage & Nettoyage,Storable,,,,nettoyage,5
-Anti Fourmis,Ménage & Nettoyage,Storable,,,,nettoyage,6
+Anti Fourmis (مضاد للنمل),Ménage & Nettoyage,Storable,,,,nettoyage,6
 Awane,Ménage & Nettoyage,Storable,,,,nettoyage,7
 Balais,Ménage & Nettoyage,Storable,,,,nettoyage,8
 Bassine Plastique,Ménage & Nettoyage,Storable,,,,nettoyage,9
@@ -1076,12 +1108,12 @@ Chifon Microfiber Meuble,Ménage & Nettoyage,Storable,,,,nettoyage,19
 Corbeille,Ménage & Nettoyage,Storable,,,,nettoyage,20
 Corbeille Plastique,Ménage & Nettoyage,Storable,,,,nettoyage,21
 Désodorisant,Ménage & Nettoyage,Storable,,,,nettoyage,22
-Détart-Actif,Ménage & Nettoyage,Storable,,,,nettoyage,23
+Détart-Actif (نضاف),Ménage & Nettoyage,Storable,,,,nettoyage,23
 Détartrant Aigle,Ménage & Nettoyage,Storable,,,,nettoyage,24
 Eau de Javel,Ménage & Nettoyage,Storable,,,,nettoyage,25
 Egouttoire Vaisselle,Ménage & Nettoyage,Storable,,,,nettoyage,26
 Eponge,Ménage & Nettoyage,Storable,,,,nettoyage,27
-Esprit de Sel,Ménage & Nettoyage,Storable,,,,nettoyage,28
+Esprit de Sel (روح الملح),Ménage & Nettoyage,Storable,,,,nettoyage,28
 Extrait Parfumerie,Ménage & Nettoyage,Storable,,,,nettoyage,29
 Fix Manche,Ménage & Nettoyage,Storable,,,,nettoyage,30
 Fly-Tox,Ménage & Nettoyage,Storable,,,,nettoyage,31
@@ -1089,7 +1121,7 @@ Frottoir Glace,Ménage & Nettoyage,Storable,,,,nettoyage,32
 Frottoir Sol,Ménage & Nettoyage,Storable,,,,nettoyage,33
 Gants Jetable,Ménage & Nettoyage,Storable,,,,nettoyage,34
 Gants Ménage,Ménage & Nettoyage,Storable,,,,nettoyage,35
-Gel Hydroalcoolique,Ménage & Nettoyage,Storable,,,,nettoyage,36
+Gel Hydroalcoolique (معقم اليد),Ménage & Nettoyage,Storable,,,,nettoyage,36
 Kleen Anti-Calcaire,Ménage & Nettoyage,Storable,,,,nettoyage,37
 Kleen Javel 5L,Ménage & Nettoyage,Storable,5L,,,nettoyage,38
 Kleen Jel Javel,Ménage & Nettoyage,Storable,,,,nettoyage,39
@@ -1105,7 +1137,7 @@ Liquid Machine,Ménage & Nettoyage,Storable,,,,nettoyage,48
 Liquide Vaisselle 5L,Ménage & Nettoyage,Storable,5L,,,nettoyage,49
 Lorage Désodorisant,Ménage & Nettoyage,Storable,,,,nettoyage,50
 Manche Balai-Frottoire,Ménage & Nettoyage,Storable,,,,nettoyage,51
-Microfiber,Ménage & Nettoyage,Storable,,,,nettoyage,52
+Microfiber (نشاف),Ménage & Nettoyage,Storable,,,,nettoyage,52
 Mop Magic,Ménage & Nettoyage,Storable,,,,nettoyage,53
 Palc Desodorisant,Ménage & Nettoyage,Storable,,,,nettoyage,54
 Papier Bureau Clinet,Ménage & Nettoyage,Storable,,,,nettoyage,55
@@ -1128,7 +1160,7 @@ Seau Nettoyage MM,Ménage & Nettoyage,Storable,,,,nettoyage,71
 Seau Nettoyage PM,Ménage & Nettoyage,Storable,,,,nettoyage,72
 Tenue Femme de Ménage,Ménage & Nettoyage,Storable,,,,nettoyage,73
 Tete De Loup + Manche,Ménage & Nettoyage,Storable,,,,nettoyage,74
-Vadrouille,Ménage & Nettoyage,Storable,,,,nettoyage,75
+Vadrouille (ممسحة الأرض),Ménage & Nettoyage,Storable,,,,nettoyage,75
 Essuie Mains Enchevêtré 3001F004 Cotex Pro,Ménage & Nettoyage,Storable,,,,articles_cotex,1
 Essuie main 3003R001 Cotex Pro,Ménage & Nettoyage,Storable,,,,articles_cotex,2
 Papier Hygiénique 5001R004 Cotex Pro,Ménage & Nettoyage,Storable,,,,articles_cotex,3
