@@ -1,6 +1,6 @@
 {
     'name': 'HIS Meal Management',
-    'version': '19.0.3.1.0',
+    'version': '19.0.3.2.0',
     'summary': 'HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS',
     'description': """
 HIS Meal Management
@@ -51,6 +51,11 @@ Credits do not expire; they keep until they are eaten.
         # Identity is not ours: his_person_core owns the person record and the
         # only sequence allowed to issue a matricule institutionnel.
         'his_person_core',
+        # The plans are sold at the tills his_stock_mdm defines, and their POS
+        # tab has to sit alongside its retail ones. The coupling already
+        # existed through available_in_pos; declaring it makes the load order
+        # explicit instead of accidental.
+        'his_stock_mdm',
     ],
 
     'data': [

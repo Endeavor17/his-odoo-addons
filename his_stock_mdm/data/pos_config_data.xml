@@ -8,14 +8,29 @@
         <record id="pos_config_cafeteria" model="pos.config">
             <field name="name">Cafétéria</field>
             <field name="picking_type_id" ref="picking_type_pos_cafeteria"/>
+            <field name="limit_categories" eval="True"/>
+            <field name="iface_available_categ_ids" eval="[Command.set([
+                ref('pos_categ_boissons'), ref('pos_categ_snacks'),
+                ref('pos_categ_chocolat'), ref('pos_categ_biscuits'),
+                ref('pos_categ_bonbons'), ref('pos_categ_divers'),
+            ])]"/>
         </record>
         <record id="pos_config_restaurant" model="pos.config">
             <field name="name">Restaurant</field>
             <field name="picking_type_id" ref="picking_type_pos_restaurant"/>
+            <field name="limit_categories" eval="True"/>
+            <field name="iface_available_categ_ids" eval="[Command.set([
+                ref('pos_categ_boissons'), ref('pos_categ_biscuits'),
+                ref('pos_categ_divers'),
+            ])]"/>
         </record>
         <record id="pos_config_copy_center" model="pos.config">
             <field name="name">Copy Center</field>
             <field name="picking_type_id" ref="picking_type_pos_copy_center"/>
+            <field name="limit_categories" eval="True"/>
+            <field name="iface_available_categ_ids" eval="[Command.set([
+                ref('pos_categ_fournitures'), ref('pos_categ_boissons'),
+            ])]"/>
         </record>
     </data>
 </odoo>

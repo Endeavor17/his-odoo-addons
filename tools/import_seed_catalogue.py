@@ -124,3 +124,44 @@ print()
 print("=== REJETS (nom | motif) ===")
 for name, reason in rejected:
     print("%s | %s" % (name, reason))
+
+# --- Mise en vente au comptoir ------------------------------------------
+#
+# available_in_pos et pos_categ_ids ne sont PAS derives du seed : ils se
+# deduisent de la categorie produit, et doivent valoir aussi pour les fiches
+# importees lors d'un passage precedent. Cette passe balaie donc tout le
+# catalogue a chaque execution, et reste sans effet si rien n'a change.
+#
+# Ne sont vendables que les familles reellement proposees a un etudiant. Les
+# ingredients de cuisine, l'entretien et les emballages de service en sont
+# volontairement absents : ils se consomment, ils ne se vendent pas.
+POS_PAR_CATEGORIE = {
+    'Café / Boissons': 'pos_categ_boissons',
+    'Café / Snacks': 'pos_categ_snacks',
+    'Café / Chocolat': 'pos_categ_chocolat',
+    'Café / Biscuits & Gâteaux': 'pos_categ_biscuits',
+    'Café / Bonbons': 'pos_categ_bonbons',
+    'Café / Divers': 'pos_categ_divers',
+    'Copy / Articles Bureautique': 'pos_categ_fournitures',
+}
+
+mis_en_vente = 0
+for suffixe, xmlid in POS_PAR_CATEGORIE.items():
+    categ = Category.search([('complete_name', '=', RETAIL_PREFIX + suffixe)], limit=1)
+    if not categ:
+        continue
+    pos_categ = env.ref('his_stock_mdm.' + xmlid)
+    a_traiter = Template.search([
+        ('categ_id', '=', categ.id),
+        '|', ('available_in_pos', '=', False), ('pos_categ_ids', 'not in', pos_categ.ids),
+    ])
+    if a_traiter:
+        a_traiter.write({
+            'available_in_pos': True,
+            'pos_categ_ids': [(4, pos_categ.id)],
+        })
+        mis_en_vente += len(a_traiter)
+
+env.cr.commit()
+print()
+print("Mis en vente au comptoir :", mis_en_vente)
