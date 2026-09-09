@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- pos.category est la taxonomie de la CAISSE : les onglets que voit le
+         caissier. Elle est distincte de product.category, qui sert a la
+         gouvernance et a la valorisation. On la calque neanmoins sur les
+         feuilles vendues, pour qu'un article change de rayon au comptoir quand
+         il change de categorie au catalogue.
+
+         Seules les familles REELLEMENT vendues a un etudiant ont un onglet.
+         Les ingredients de cuisine (Restaurant/Alimentations, Viandes,
+         Épices), l'entretien et les emballages de service n'en ont pas : ils
+         se consomment, ils ne se vendent pas. Les poser sur une caisse la
+         rendrait illisible et permettrait de vendre un sac de farine.
+
+         noupdate : les libelles appartiennent a l'exploitant une fois crees. -->
+    <data noupdate="1">
+        <record id="pos_categ_boissons" model="pos.category">
+            <field name="name">Boissons</field><field name="sequence">10</field>
+        </record>
+        <record id="pos_categ_snacks" model="pos.category">
+            <field name="name">Snacks</field><field name="sequence">20</field>
+        </record>
+        <record id="pos_categ_chocolat" model="pos.category">
+            <field name="name">Chocolat</field><field name="sequence">30</field>
+        </record>
+        <record id="pos_categ_biscuits" model="pos.category">
+            <field name="name">Biscuits &amp; Gâteaux</field><field name="sequence">40</field>
+        </record>
+        <record id="pos_categ_bonbons" model="pos.category">
+            <field name="name">Bonbons</field><field name="sequence">50</field>
+        </record>
+        <record id="pos_categ_divers" model="pos.category">
+            <field name="name">Divers</field><field name="sequence">60</field>
+        </record>
+        <record id="pos_categ_fournitures" model="pos.category">
+            <field name="name">Fournitures</field><field name="sequence">70</field>
+        </record>
+    </data>
+
+</odoo>

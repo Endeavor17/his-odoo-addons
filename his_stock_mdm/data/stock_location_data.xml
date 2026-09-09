@@ -78,6 +78,48 @@
             <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
         </record>
 
+        <!-- Types d'operation d'APPROVISIONNEMENT : le sens inverse des trois
+             precedents. Sans eux, un point de vente qui reclame du stock n'a
+             que le « Transferts internes » generique (WH/Stock -> WH/Stock),
+             ou il faut ressaisir source et destination a chaque fois.
+
+             Ce n'est PAS un bon de livraison : un bon de livraison est une
+             sortie vers un client (code 'outgoing'). Deplacer du stock du
+             magasin vers un comptoir reste interne a la societe.
+
+             Un type par point de vente plutot qu'un seul partage, pour la
+             meme raison que les trois types de vente ci-dessus : chaque
+             comptoir a sa file d'attente et sa sequence, le magasinier voit
+             ce que chacun attend, et le reporting se ventile. -->
+
+        <record id="picking_type_reappro_cafeteria" model="stock.picking.type">
+            <field name="name">Réappro Cafétéria</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">CAFIN</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="default_location_src_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+            <field name="default_location_dest_id" ref="loc_cafeteria"/>
+        </record>
+        <record id="picking_type_reappro_restaurant" model="stock.picking.type">
+            <field name="name">Réappro Restaurant</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">RESIN</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="default_location_src_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+            <field name="default_location_dest_id" ref="loc_restaurant"/>
+        </record>
+        <record id="picking_type_reappro_copy_center" model="stock.picking.type">
+            <field name="name">Réappro Copy Center</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">COPIN</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="default_location_src_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+            <field name="default_location_dest_id" ref="loc_copy_center"/>
+        </record>
+
     </data>
 
     <!-- Sans ce groupe les emplacements ci-dessus sont invisibles dans l'UI et

@@ -152,16 +152,29 @@ class TestGovernance(TransactionCase):
             'name': 'Ghadir', 'attribute_id': attribute.id})
         self._add_attribute_line(self._product(categ_id=self.other_leaf.id), attribute, value)
 
-    # --- Phase 5 : tracabilite heritee de la categorie ----------------------
+    # --- Phase 5 : tracabilite retiree --------------------------------------
 
-    def test_tracking_inherited_from_category(self):
+    def test_no_category_forces_lot_tracking(self):
+        """Le MDM Phase 5 imposait lot + peremption sur le frais Restaurant.
+
+        Retire le 2026-09-09 : aucun article alimentaire n'est vendu en caisse,
+        la contrainte ne pesait donc qu'a la reception, ou elle exigeait un
+        numero de lot sur chaque sac de farine. Ce test garde la porte fermee --
+        remettre 'lot' sur une categorie le fait echouer, et c'est le seul
+        endroit qui dit pourquoi ce serait un retour en arriere.
+        """
         meat = self._product(categ_id=self.viandes.id)
-        self.assertEqual(meat.tracking, 'lot')
-        self.assertTrue(meat.use_expiration_date)
+        self.assertEqual(meat.tracking, 'none')
+        self.assertFalse(meat.use_expiration_date)
 
         drink = self._product(categ_id=self.boissons.id)
         self.assertEqual(drink.tracking, 'none')
         self.assertFalse(drink.use_expiration_date)
+
+        tracees = self.env['product.category'].search([('default_tracking', '=', 'lot')])
+        self.assertFalse(
+            tracees, "ces categories retraceraient le prochain produit cree : %s"
+            % tracees.mapped('complete_name'))
 
     # --- Phase 6 : valorisation par categorie -------------------------------
 

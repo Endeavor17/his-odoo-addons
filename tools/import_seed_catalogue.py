@@ -6,9 +6,13 @@ gouvernance MDM deja testee (his_stock_mdm) qui arbitre, pas une reimplementatio
 ici. Une ligne rejetee est annulee via savepoint et n'affecte pas les autres.
 """
 import csv
+import os
 
-SEED_PATH = '/mnt/host-downloads/Seed_Catalogue_Produits.csv'
-REF_PATH = '/mnt/host-downloads/Categories_Reference_57.csv'
+# Par defaut le seed et le referentiel du depot, monte en /mnt/extra-addons :
+# plus besoin du montage /mnt/host-downloads, absent du docker-compose.yml.
+# Surchargeables par variable d'environnement pour rejouer un ancien seed.
+SEED_PATH = os.environ.get('SEED_PATH', '/mnt/extra-addons/tools/seed/Seed_Catalogue_v2.csv')
+REF_PATH = os.environ.get('REF_PATH', '/mnt/extra-addons/tools/seed/Categories_Reference.csv')
 RETAIL_PREFIX = 'All / Retail & Consommables (Storable) / '
 RETAIL_ROOT = 'All / Retail & Consommables (Storable)'
 
@@ -28,13 +32,21 @@ with open(SEED_PATH, encoding='utf-8-sig', newline='') as f:
 
 accepted = []
 rejected = []  # (nom, motif)
+skipped = []   # deja en base : le script doit rester rejouable a chaque
+               # nouvelle liste fournisseur sans dupliquer l'existant.
+
+existing_names = set(Template.search([]).mapped('name'))
 
 for row in rows:
     name = row['Nom'].strip()
+    if name in existing_names:
+        skipped.append(name)
+        continue
     categ_suggeree = row['Categorie_Suggeree'].strip()
     type_ = row['Type'].strip()
     fmt = row['Format'].strip()
     variante = row['Variante'].strip()
+    barcode = row.get('Code_Barres', '').strip()
 
     full_path = RETAIL_PREFIX + ' / '.join(categ_suggeree.split('/'))
 
@@ -60,6 +72,10 @@ for row in rows:
             'sale_ok': False,
             'list_price': 0.0,
         }
+        if barcode:
+            # Champ natif product.product ; Odoo en controle l'unicite en
+            # Python (_check_barcode_uniqueness), y compris contre le colisage.
+            vals['barcode'] = barcode
     elif type_ == 'Service':
         vals = {
             'name': name,
@@ -100,9 +116,76 @@ for row in rows:
 env.cr.commit()
 
 print("=== RESUME IMPORT ===")
-print("Acceptes :", len(accepted))
-print("Rejetes  :", len(rejected))
+print("Acceptes     :", len(accepted))
+print("Deja en base :", len(skipped))
+print("Rejetes      :", len(rejected))
+print("Codes-barres :", sum(1 for r in rows if r.get('Code_Barres', '').strip()))
 print()
 print("=== REJETS (nom | motif) ===")
 for name, reason in rejected:
     print("%s | %s" % (name, reason))
+
+# --- Mise en vente au comptoir ------------------------------------------
+#
+# available_in_pos et pos_categ_ids ne sont PAS derives du seed : ils se
+# deduisent de la categorie produit, et doivent valoir aussi pour les fiches
+# importees lors d'un passage precedent. Cette passe balaie donc tout le
+# catalogue a chaque execution, et reste sans effet si rien n'a change.
+#
+# Ne sont vendables que les familles reellement proposees a un etudiant. Les
+# ingredients de cuisine, l'entretien et les emballages de service en sont
+# volontairement absents : ils se consomment, ils ne se vendent pas.
+POS_PAR_CATEGORIE = {
+    'Café / Boissons': 'pos_categ_boissons',
+    'Café / Snacks': 'pos_categ_snacks',
+    'Café / Chocolat': 'pos_categ_chocolat',
+    'Café / Biscuits & Gâteaux': 'pos_categ_biscuits',
+    'Café / Bonbons': 'pos_categ_bonbons',
+    'Café / Divers': 'pos_categ_divers',
+    'Copy / Articles Bureautique': 'pos_categ_fournitures',
+}
+
+mis_en_vente = 0
+for suffixe, xmlid in POS_PAR_CATEGORIE.items():
+    categ = Category.search([('complete_name', '=', RETAIL_PREFIX + suffixe)], limit=1)
+    if not categ:
+        continue
+    pos_categ = env.ref('his_stock_mdm.' + xmlid)
+    a_traiter = Template.search([
+        ('categ_id', '=', categ.id),
+        '|', ('available_in_pos', '=', False), ('pos_categ_ids', 'not in', pos_categ.ids),
+    ])
+    if a_traiter:
+        a_traiter.write({
+            'available_in_pos': True,
+            'pos_categ_ids': [(4, pos_categ.id)],
+        })
+        mis_en_vente += len(a_traiter)
+
+env.cr.commit()
+print()
+print("Mis en vente au comptoir :", mis_en_vente)
+
+# --- Mise en vente effective --------------------------------------------
+#
+# Le domaine de chargement du POS exige available_in_pos ET sale_ok
+# (product_template._load_pos_data_domain). Or l'import cree tout en
+# sale_ok=False, pour ne pas violer la regle MDM « prix obligatoire si
+# stockable et vendable » avec un prix a 0 invente.
+#
+# Consequence : saisir un prix ne suffit pas, rien ne rebascule l'article, et
+# il reste invisible en caisse. C'est cette passe qui ferme la boucle.
+#
+# La regle MDM n'est pas contournee, elle est respectee dans l'autre sens : un
+# article sans prix reste non vendable, et c'est voulu -- une caisse ne doit
+# pas pouvoir encaisser 0 DA par inadvertance.
+a_vendre = Template.search([
+    ('available_in_pos', '=', True),
+    ('sale_ok', '=', False),
+    ('list_price', '>', 0),
+])
+if a_vendre:
+    a_vendre.write({'sale_ok': True})
+
+env.cr.commit()
+print("Bascules en vente (prix saisi) :", len(a_vendre))
