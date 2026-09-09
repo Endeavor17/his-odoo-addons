@@ -1197,3 +1197,61 @@ class TestMealAllowance(TransactionCase):
         self.assertEqual(balance['credits'], 0)
         self.assertEqual(balance['allowance_left'], 1)
         self.assertEqual(balance['allowance_debt'], 1.0)
+
+
+@tagged('post_install', '-at_install')
+class TestAtteignabilitéAuComptoir(TransactionCase):
+    """Un produit correctement configure ne sert a rien s'il n'arrive pas dans la caisse.
+
+    Le reste du fichier verifie que les credits bougent bien cote serveur, en
+    appelant `_apply_meal_credits` directement. C'est necessaire mais pas
+    suffisant : `test_any_till_serves_a_meal_with_nothing_configured` passait
+    encore alors que la Cafétéria etait devenue incapable de servir un repas,
+    parce qu'il n'assertait rien sur le CHARGEMENT des produits.
+
+    Depuis que his_stock_mdm donne un perimetre de categories a chaque caisse,
+    un produit sans pos.category -- ou dont la categorie n'est pas au perimetre
+    de cette caisse -- disparait de la grille ET du bouton de service, qui ne
+    propose que les repas charges (`mealProducts` dans control_buttons.js).
+
+    Ces tests interrogent donc le vrai domaine de chargement d'Odoo.
+    """
+
+    def _chargeables(self, config_xmlid):
+        config = self.env.ref(config_xmlid)
+        Template = self.env['product.template']
+        return Template.search(Template._load_pos_data_domain({}, config))
+
+    def test_les_deux_points_de_restauration_servent_les_repas(self):
+        """« any food point of sale serves meals against the balance »."""
+        repas = self.env['product.template'].search([('meal_credit_cost', '>', 0)])
+        self.assertTrue(repas, "aucun repas en base : le module n'est pas charge")
+        for xmlid in ('his_stock_mdm.pos_config_cafeteria',
+                      'his_stock_mdm.pos_config_restaurant'):
+            chargeables = self._chargeables(xmlid)
+            for plat in repas:
+                self.assertIn(
+                    plat, chargeables,
+                    "%s ne charge pas « %s » : son bouton de service sera vide"
+                    % (self.env.ref(xmlid).name, plat.name),
+                )
+
+    def test_les_packs_se_vendent_au_copy_center(self):
+        """« the IT centre sells the plans »."""
+        packs = self.env['product.template'].search([('meal_credits', '>', 0)])
+        self.assertTrue(packs, "aucun forfait en base : le module n'est pas charge")
+        chargeables = self._chargeables('his_stock_mdm.pos_config_copy_center')
+        for pack in packs:
+            self.assertIn(
+                pack, chargeables,
+                "le Copy Center ne peut pas vendre « %s »" % pack.name,
+            )
+
+    def test_rien_de_comestible_au_copy_center(self):
+        """Regle metier : le Copy Center ne vend que des articles d'etude."""
+        chargeables = self._chargeables('his_stock_mdm.pos_config_copy_center')
+        comestibles = chargeables.filtered(lambda p: p.meal_credit_cost > 0)
+        self.assertFalse(
+            comestibles,
+            "le Copy Center propose des repas : %s" % comestibles.mapped('name'),
+        )

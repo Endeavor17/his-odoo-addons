@@ -1,6 +1,6 @@
 {
     'name': 'HIS Meal Management',
-    'version': '19.0.3.3.0',
+    'version': '19.0.3.4.0',
     'summary': 'HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS',
     'description': """
 HIS Meal Management
@@ -30,9 +30,12 @@ Credits do not expire; they keep until they are eaten.
 * A meal plan is an ordinary product carrying a credit count and a validity, so
   pricing, payment, invoicing and accounting stay stock Odoo. A meal is the
   mirror of it: an ordinary product carrying the credits it costs to serve.
-* Nothing about meals is configured per point of sale. Any till can serve any
-  meal, because what a meal costs is a property of the meal and not of the
-  shop.
+* What a meal COSTS is a property of the meal and not of the shop, so one till
+  can serve several meals at different prices and none of them needs a per-shop
+  field. WHERE a meal may be served is configured, however, since his_stock_mdm
+  19.0.1.2.0 gave each till a category scope: the Copy Center sells the plans
+  and nothing edible, while the Cafeteria and the Restaurant both serve meals.
+  The scope says where; the product still says how much.
 * Credits move on the server when a POS order is saved, never in the browser:
   a cashier cannot grant, edit or invent credits.
 * A negative balance is impossible at the database level, not merely refused in

@@ -11,11 +11,20 @@ jour des bases existantes (migrations/19.0.3.3.0). Elle est idempotente : elle
 n'ajoute que ce qui manque et ne retire jamais un onglet pose par l'exploitant.
 """
 
-# Une recharge de compte et un repas ne se vendent pas au meme endroit : le
-# Restaurant ne sert que des repas, le Copy Center encaisse les recharges mais
-# ne vend rien de comestible.
+# « The IT centre sells the plans, and any food point of sale serves meals
+# against the balance » (manifeste). Les deux moities de cette phrase ne se
+# rattachent donc pas aux memes caisses :
+#
+#   - les RECHARGES a un seul point d'encaissement, le Copy Center ;
+#   - les REPAS a tout point de restauration, Cafétéria comprise. C'est la
+#     regle d'Abdo, et l'oublier avait rendu la Cafétéria incapable de servir
+#     un etudiant sur ses credits alors que son bouton de service etait la.
+#
+# Le Copy Center n'est pas un point de restauration : il ne sert donc aucun
+# repas, ce qui satisfait a la fois Abdo et la regle « rien de comestible ».
 RATTACHEMENTS = [
     ('his_meal_management.pos_categ_repas', 'his_stock_mdm.pos_config_restaurant'),
+    ('his_meal_management.pos_categ_repas', 'his_stock_mdm.pos_config_cafeteria'),
     ('his_meal_management.pos_categ_recharges', 'his_stock_mdm.pos_config_copy_center'),
 ]
 
