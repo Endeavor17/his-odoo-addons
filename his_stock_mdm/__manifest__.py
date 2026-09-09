@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': "MDM Produits, Stock & POS - Groupe HIS-HTC-IRA",
-    'version': '19.0.1.2.0',
+    'version': '19.0.1.3.0',
     'category': 'Inventory/Inventory',
     'summary': "Gouvernance du catalogue produit, structure multi-points de vente et valorisation",
     'description': """

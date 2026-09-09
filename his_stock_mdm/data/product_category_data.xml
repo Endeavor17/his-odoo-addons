@@ -3,33 +3,40 @@
     <!-- Uniquement des mises a jour de categories existantes (cf. mdm_bind_data.xml).
          Aucun <record> createur : l'arborescence est deja en production.
 
-         Tracabilite  : MDM Phase 5. Valeur par defaut 'none' partout ailleurs.
+         Tracabilite  : AUCUNE. Le MDM Phase 5 imposait lot + peremption sur le
+                        frais Restaurant ; retire le 2026-09-09, cf. migration
+                        19.0.1.3.0 et la section « Ecarts assumes » du README.
          Valorisation : MDM Phase 6. FIFO sur le frais Restaurant, CUMP (average)
                         ailleurs. LIFO n'existe pas comme methode de valorisation
                         dans Odoo et n'est pas autorise sous IFRS/SCF. -->
 
-    <!-- ============ Restaurant : frais, lot + peremption, FIFO ============ -->
+    <!-- ============ Restaurant : frais, FIFO, sans lot ==================== -->
+    <!-- La tracabilite par lot a ete retiree le 2026-09-09 (cf. migration
+         19.0.1.3.0) : aucun article alimentaire n'est vendu en caisse, la
+         contrainte ne pesait donc qu'a la reception, ou elle exigeait un numero
+         de lot sur chaque sac de farine. FIFO reste : c'est une decision de
+         cout, pas de tracabilite. -->
     <record id="categ_resto_alimentations" model="product.category">
-        <field name="default_tracking">lot</field>
-        <field name="default_use_expiration_date" eval="True"/>
+        <field name="default_tracking">none</field>
+        <field name="default_use_expiration_date" eval="False"/>
         <field name="property_cost_method">fifo</field>
         <field name="property_valuation">real_time</field>
     </record>
     <record id="categ_resto_fruits" model="product.category">
-        <field name="default_tracking">lot</field>
-        <field name="default_use_expiration_date" eval="True"/>
+        <field name="default_tracking">none</field>
+        <field name="default_use_expiration_date" eval="False"/>
         <field name="property_cost_method">fifo</field>
         <field name="property_valuation">real_time</field>
     </record>
     <record id="categ_resto_legumes" model="product.category">
-        <field name="default_tracking">lot</field>
-        <field name="default_use_expiration_date" eval="True"/>
+        <field name="default_tracking">none</field>
+        <field name="default_use_expiration_date" eval="False"/>
         <field name="property_cost_method">fifo</field>
         <field name="property_valuation">real_time</field>
     </record>
     <record id="categ_resto_viandes" model="product.category">
-        <field name="default_tracking">lot</field>
-        <field name="default_use_expiration_date" eval="True"/>
+        <field name="default_tracking">none</field>
+        <field name="default_use_expiration_date" eval="False"/>
         <field name="property_cost_method">fifo</field>
         <field name="property_valuation">real_time</field>
     </record>
@@ -117,9 +124,10 @@
          Elle n'est PAS dans MDM_CATEGORIES (models/product_category.py) : ce
          dictionnaire ne recense que les categories deja en base a rattacher.
 
-         Verses ailleurs, ces articles heriteraient du lot + peremption des
-         feuilles Restaurant, ce qui imposerait un numero de lot a chaque
-         reception de gobelets. -->
+         Elle avait aussi, a sa creation, l'avantage de soustraire les
+         emballages au lot + peremption des feuilles Restaurant ; ce motif a
+         disparu avec la tracabilite elle-meme, la feuille reste utile pour le
+         classement et le reporting. -->
     <record id="categ_cafe_emballage" model="product.category">
         <field name="name">Emballage</field>
         <field name="parent_id" ref="categ_cafe"/>

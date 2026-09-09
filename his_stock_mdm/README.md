@@ -34,10 +34,29 @@ docker run --rm --link mdm-pg:db -v "<repo>:/src" odoo:19.0 \
   --test-enable --test-tags /his_stock_mdm --stop-after-init
 ```
 
-**Prérequis comptable :** les catégories sont configurées en valorisation
-`real_time` (perpétuelle). Les comptes de valorisation et le journal de stock
-doivent être paramétrés au niveau société avant la première réception, sinon
-celle-ci échoue. À valider avec la comptabilité avant mise en production.
+**Prérequis comptable — non satisfait à ce jour, et c'est une bombe à retardement.**
+
+Les 19 catégories sont en valorisation `real_time` (perpétuelle) et **aucune ne
+porte de compte de valorisation ni de journal de stock** (vérifié le
+2026-09-09). Rien n'a encore échoué pour une seule raison : **les 1175 articles
+ont un coût de 0**, et un mouvement à valeur nulle ne génère aucune écriture.
+La première réception portant un coût réel échouera sur *« You don't have any
+stock valuation account defined on your product category »*.
+
+Le plan comptable algérien (`l10n_dz`) est installé et contient les comptes
+candidats — `300000` Inventories of goods, `380000` Stored goods, `603000`
+Changes in inventory — ainsi qu'un journal `STJ « Inventory Valuation »` créé
+exactement pour cet usage. **Le choix appartient à la comptabilité**, pas à ce
+module : il n'est donc volontairement pas fait ici. Deux issues, à trancher
+avant la première réception valorisée : renseigner ces comptes, ou basculer les
+catégories en valorisation périodique.
+
+**Stock négatif : rien n'est bloqué, et c'est délibéré.** Le POS vend même à
+quantité nulle, et Odoo Community n'offre aucun réglage natif pour l'empêcher.
+Une caisse qui refuse un article physiquement présent sur l'étagère est pire que
+le quant négatif qu'elle évite. Le remède est le réassort par règles
+(`stock.warehouse.orderpoint`, Phase 4) et l'inventaire tournant, pas un
+verrou en caisse.
 
 ## Ce que le module applique
 
@@ -47,7 +66,7 @@ celle-ci échoue. À valider avec la comptabilité avant mise en production.
 | Catégorie terminale obligatoire | `models/product_template.py` | Bloquant |
 | Prix de vente obligatoire si stockable + vendable | `models/product_template.py` | Bloquant |
 | Attributs Format/Variante restreints par catégorie | `models/product_template_attribute_line.py` | Bloquant. Éligibilité = donnée (`allowed_categ_ids`), vide = sans restriction |
-| Traçabilité et péremption par catégorie | `models/product_category.py` + `product_template.py` | Valeur par défaut héritée, modifiable à la main |
+| Traçabilité par catégorie | `models/product_category.py` + `product_template.py` | Mécanisme en place, **plus aucune catégorie ne l'active** (cf. Écarts) |
 | Valorisation FIFO / CUMP par catégorie | `data/product_category_data.xml` | Donnée |
 | Motif de perte obligatoire, commentaire si « Autre » | `models/stock_scrap.py` | Bloquant |
 | 3 points de vente à stock séparé | `data/stock_location_data.xml` + `pos_config_data.xml` | Chaque caisse décrémente son propre emplacement |
@@ -112,8 +131,16 @@ Procédure quand les seuils réels seront connus :
   variante unique) et les variantes générées par attribut naissent sans
   référence. L'exiger bloquerait le mécanisme de variantes que le MDM
   recommande lui-même (4.4). Couvre la totalité du catalogue actuel.
-- Traçabilité et péremption héritées **à la création seulement** : changer la
-  catégorie d'un produit existant ne réajuste pas son `tracking`.
+- **Traçabilité par lot retirée le 2026-09-09** (migration `19.0.1.3.0`). Le MDM
+  Phase 5 l'imposait sur le frais Restaurant ; à l'usage elle ne pesait qu'à la
+  réception — **aucun article alimentaire n'est vendu en caisse** — où elle
+  exigeait un numéro de lot et une date sur chaque sac de farine. Le mécanisme
+  d'héritage catégorie → produit reste en place et `product_expiry` reste en
+  dépendance : réactiver un suivi, sur une catégorie ou un produit, ne demande
+  aucun code. La valorisation FIFO du frais n'a pas bougé, c'est une décision de
+  coût et non de traçabilité.
+- L'héritage ne joue qu'**à la création** : changer la catégorie d'un produit
+  existant ne réajuste pas son `tracking`.
 - « Café / Gaz », cité comme catégorie éligible au MDM 4.4, n'existe pas dans
   l'arborescence 4.1 — non repris.
 - POS Restaurant en mode caisse standard : pas de plan de salle (Enterprise).
@@ -131,7 +158,7 @@ ceux qui exigent des mouvements réels, à dérouler manuellement :
 | 2 | Entrées/sorties | Réception fournisseur + vente POS, contrôle des mouvements |
 | 3 | Inventaires | Comptage cyclique par le Collaborateur, application par le Manager (`do_scrap`/`action_apply_inventory` refusent au Collaborateur), clôture annuelle via Inventaire ▸ Configuration ▸ Inventaires annuels |
 | 4 | Seuils minimums | Stock sous seuil ⇒ suggestion de réapprovisionnement |
-| 5 | Traçabilité | Lot de viande avec péremption, vente, traçabilité amont/aval |
+| 5 | Traçabilité | *Sans objet depuis le 2026-09-09* — plus aucun produit n'est suivi par lot |
 | 6 | Mouvements historiques | Historique complet d'un produit |
 | 7 | Reporting stock | Rapport par produit et par emplacement |
 | 8 | Valorisation | Deux réceptions à prix différents sur un produit FIFO et un produit CUMP ⇒ Reporting ▸ Valorisation |

@@ -165,3 +165,27 @@ for suffixe, xmlid in POS_PAR_CATEGORIE.items():
 env.cr.commit()
 print()
 print("Mis en vente au comptoir :", mis_en_vente)
+
+# --- Mise en vente effective --------------------------------------------
+#
+# Le domaine de chargement du POS exige available_in_pos ET sale_ok
+# (product_template._load_pos_data_domain). Or l'import cree tout en
+# sale_ok=False, pour ne pas violer la regle MDM « prix obligatoire si
+# stockable et vendable » avec un prix a 0 invente.
+#
+# Consequence : saisir un prix ne suffit pas, rien ne rebascule l'article, et
+# il reste invisible en caisse. C'est cette passe qui ferme la boucle.
+#
+# La regle MDM n'est pas contournee, elle est respectee dans l'autre sens : un
+# article sans prix reste non vendable, et c'est voulu -- une caisse ne doit
+# pas pouvoir encaisser 0 DA par inadvertance.
+a_vendre = Template.search([
+    ('available_in_pos', '=', True),
+    ('sale_ok', '=', False),
+    ('list_price', '>', 0),
+])
+if a_vendre:
+    a_vendre.write({'sale_ok': True})
+
+env.cr.commit()
+print("Bascules en vente (prix saisi) :", len(a_vendre))
