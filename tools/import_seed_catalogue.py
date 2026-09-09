@@ -32,13 +32,21 @@ with open(SEED_PATH, encoding='utf-8-sig', newline='') as f:
 
 accepted = []
 rejected = []  # (nom, motif)
+skipped = []   # deja en base : le script doit rester rejouable a chaque
+               # nouvelle liste fournisseur sans dupliquer l'existant.
+
+existing_names = set(Template.search([]).mapped('name'))
 
 for row in rows:
     name = row['Nom'].strip()
+    if name in existing_names:
+        skipped.append(name)
+        continue
     categ_suggeree = row['Categorie_Suggeree'].strip()
     type_ = row['Type'].strip()
     fmt = row['Format'].strip()
     variante = row['Variante'].strip()
+    barcode = row.get('Code_Barres', '').strip()
 
     full_path = RETAIL_PREFIX + ' / '.join(categ_suggeree.split('/'))
 
@@ -64,6 +72,10 @@ for row in rows:
             'sale_ok': False,
             'list_price': 0.0,
         }
+        if barcode:
+            # Champ natif product.product ; Odoo en controle l'unicite en
+            # Python (_check_barcode_uniqueness), y compris contre le colisage.
+            vals['barcode'] = barcode
     elif type_ == 'Service':
         vals = {
             'name': name,
@@ -104,8 +116,10 @@ for row in rows:
 env.cr.commit()
 
 print("=== RESUME IMPORT ===")
-print("Acceptes :", len(accepted))
-print("Rejetes  :", len(rejected))
+print("Acceptes     :", len(accepted))
+print("Deja en base :", len(skipped))
+print("Rejetes      :", len(rejected))
+print("Codes-barres :", sum(1 for r in rows if r.get('Code_Barres', '').strip()))
 print()
 print("=== REJETS (nom | motif) ===")
 for name, reason in rejected:

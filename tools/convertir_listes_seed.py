@@ -35,6 +35,32 @@ DIVERS = 'Café/Divers'
 EMBALLAGE = 'Café/Emballage'
 BUREAUTIQUE = 'Copy/Articles Bureautique'
 MENAGE = 'Ménage & Nettoyage'
+SNACKS = 'Café/Snacks'
+BONBONS = 'Café/Bonbons'
+
+# Liste cafeteria : le classement se joue presque toujours sur le PREMIER mot
+# (« Chips … », « Gaz … », « Chocolat … »). Un simple `contains` se trompe —
+# « Biscuits NutelLa au Chocolat » partirait en Chocolat. Regles ordonnees,
+# la premiere qui matche gagne.
+CAFE_REGLES = [
+    # Emballage et service : la feuille creee pour le Listing 2 sert aussi ici.
+    (r'^(assiette|gobelet|fourchette|cuill[eé]re|spatule|paille|caissette|'
+     r'cure dents|sac |papier aluminium|papier cuissant|paillette)', EMBALLAGE),
+    (r'^(eau|gaz|jus|rouiba|ice tea|lait|candia choco|twist candia)\b', BOISSONS),
+    (r'^(chips|pop corn|cacahuetes|amandes|pistache|noisette|noix de cajou|'
+     r'noyer|nutiss|raya |fruseco|chiwawa)', SNACKS),
+    (r'^(chewing gum|pectol|nougat)', BONBONS),
+    (r'^(chocolat|chococlat|milka|brava|moment |m et m|cigaro)', CHOCOLAT),
+    (r'^(biscuit|gateau|gau?f+rette|ghaufrette|madeleine|croissant|tartelette|'
+     r'tartulate|mille feuille|meringue|baklava|celebrity|qaada|les palmiers|'
+     r'jalousie|pain |petit pain|crepa|jouzia|louzia|lamina|swareen|regalo|'
+     r'cigarette|kollogg)', BISCUITS),
+    (r'^(caf[eé]|th[eé]|.*infussion|.*insussion|nescaf|nespresso|mokate|maxwell|'
+     r'espresso|dose |carte noire|carr[eé] noir|davidoff|lore |royal|caps |'
+     r'alluminium caps|ice cream|yaourt|sucre|huile|fromage|cacao|lingette|'
+     r'papier mouchoir|cr[eè]me|kool mini|south africa|raouaie|lipton|'
+     r'westmin|vitale|kabir|tabnija|nougat)', DIVERS),
+]
 
 # Listing 2 : le bloc epices occupe les lignes 88 a 111 du document (« Poivre
 # Noire » a « epice fromage »). Repere par numero et non par mot-cle : « PIMENT
@@ -93,6 +119,35 @@ def categorie_listing(ligne, section):
     if section in ('Pates', 'Agro alimentaire', 'Produit laitier'):
         return ALIMENTATIONS
     return None
+
+
+def categorie_cafe(designation):
+    """Designation de la liste cafeteria -> chemin de categorie, ou None."""
+    texte = unicodedata.normalize('NFKD', designation).encode('ascii', 'ignore').decode()
+    texte = texte.lower().strip()
+    for motif, categorie in CAFE_REGLES:
+        if re.search(motif, texte):
+            return categorie
+    return None
+
+
+def nettoyer_mojibake(designation):
+    """Retire la parenthese arabe perdue a l'export (« Baklava (??????) »).
+
+    L'export fourni a transcode l'arabe en points d'interrogation. Le nom
+    francais, lui, est intact : on garde le nom et on jette la parenthese
+    vide de sens plutot que d'importer des « ? » dans le catalogue.
+    """
+    nettoye = re.sub(r'\s*\([\s?]*\)\s*', ' ', designation)
+    nettoye = re.sub(r'\s*\(\s*\?[^)]*\)\s*', ' ', nettoye)
+    return re.sub(r'\s+', ' ', nettoye).strip()
+
+
+def est_ligne_fantome(designation):
+    """« A ?????? », « ??? / ?????? B » : en-tetes arabes illisibles, pas des
+    produits. Reste-t-il une seule lettre latine porteuse de sens ?"""
+    reste = re.sub(r'[?/\s]', '', designation)
+    return len(reste) <= 1
 
 
 def format_controle(designation, categorie):
@@ -166,6 +221,46 @@ def construire():
         if re.search(r'\b(X|REF)\s*/?\s*$', designation):
             alertes.append(('liste_articles_HIS', designation, 'designation possiblement tronquee'))
 
+    # --- Cafeteria et gateaux (porte les codes-barres) ----------------------
+    for i, row in enumerate(lire('cafeteria_gateaux.csv'), start=1):
+        brut = row['Designation'].strip()
+        if est_ligne_fantome(brut):
+            continue  # en-tete arabe illisible, pas un produit
+        designation = nettoyer_mojibake(brut)
+        categorie = categorie_cafe(designation)
+        if not categorie:
+            alertes.append(('cafeteria', designation, 'aucune regle de categorie — a classer'))
+            continue
+        code = row.get('Code_Barres', '').strip()
+        if code and not code.isdigit():
+            alertes.append(('cafeteria', designation,
+                            'code-barres « %s » non numerique — ignore' % code))
+            code = ''
+        lignes.append({
+            'Nom': designation,
+            'Categorie_Suggeree': categorie,
+            'Type': 'Storable',
+            'Format': format_controle(designation, categorie),
+            'Variante': '',
+            'Code_Barres': code,
+            'Source': 'cafeteria_gateaux',
+            'Ligne': i,
+        })
+
+    # --- Produits d'entretien -----------------------------------------------
+    for row in lire('nettoyage.csv'):
+        designation = nettoyer_mojibake(row['Designation'].strip())
+        lignes.append({
+            'Nom': designation,
+            'Categorie_Suggeree': MENAGE,
+            'Type': 'Storable',
+            'Format': format_controle(designation, MENAGE),
+            'Variante': '',
+            'Code_Barres': '',
+            'Source': 'nettoyage',
+            'Ligne': int(row['N']),
+        })
+
     # --- Cotex : 4 articles ecrits deux fois --------------------------------
     for row in lire('articles_cotex.csv'):
         if row['Section'].strip() != 'Cotex bon de livraison':
@@ -182,14 +277,34 @@ def construire():
         })
 
     # --- Controles ----------------------------------------------------------
+    # Deux lignes de meme nom normalise. Trois cas, trois traitements :
+    #  - codes-barres differents -> deux SKU reels, on garde les deux et on
+    #    signale : seul le code-barres les distingue en caisse ;
+    #  - une seule porte un code-barres -> on garde celle-la, l'autre est la
+    #    meme reference saisie sans son code (« Cow-Boy 12 » vs « Cow Boy 12 ») ;
+    #  - aucune ne le porte -> doublon franc, on garde la premiere.
     vus = {}
+    retenues = []
     for ligne in lignes:
         cle = normaliser(ligne['Nom'])
-        if cle in vus:
+        precedente = vus.get(cle)
+        if precedente is None:
+            vus[cle] = ligne
+            retenues.append(ligne)
+            continue
+        code, code_precedent = ligne.get('Code_Barres', ''), precedente.get('Code_Barres', '')
+        if code and code_precedent and code != code_precedent:
             alertes.append((ligne['Source'], ligne['Nom'],
-                            'doublon de « %s »' % vus[cle]))
+                            'meme nom que %s mais code-barres different (%s vs %s) '
+                            '— a renommer' % (code_precedent, code, code_precedent)))
+            retenues.append(ligne)
+        elif code and not code_precedent:
+            precedente['Code_Barres'] = code  # la ligne gardee recupere le code
+            alertes.append((ligne['Source'], ligne['Nom'],
+                            'doublon fusionne, code-barres %s conserve' % code))
         else:
-            vus[cle] = ligne['Nom']
+            alertes.append((ligne['Source'], ligne['Nom'], 'doublon ecarte'))
+    lignes = retenues
 
     # La liste bureau classee ne sert pas de source, mais rien ne doit lui
     # echapper : chaque entree doit se retrouver dans la liste brute.
@@ -206,9 +321,10 @@ def construire():
 
 def ecrire(lignes):
     SORTIE.parent.mkdir(parents=True, exist_ok=True)
-    colonnes = ['Nom', 'Categorie_Suggeree', 'Type', 'Format', 'Variante', 'Source', 'Ligne']
+    colonnes = ['Nom', 'Categorie_Suggeree', 'Type', 'Format', 'Variante',
+                'Code_Barres', 'Source', 'Ligne']
     with open(SORTIE, 'w', encoding='utf-8', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=colonnes)
+        writer = csv.DictWriter(f, fieldnames=colonnes, restval='')
         writer.writeheader()
         writer.writerows(lignes)
 

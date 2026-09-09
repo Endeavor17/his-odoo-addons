@@ -1,349 +1,1135 @@
-Nom,Categorie_Suggeree,Type,Format,Variante,Source,Ligne
-spaghitti sim 500g C/10KG,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,1
-Petit Coude N°4 sim C/10,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,2
-Pate Rossort Sim C/10,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,3
-Vermicelle Sim/500g C/20,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,4
-Couscous Taami Sim MOYEN 1Kg C/12kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,5
-Tagliatelle 450 g C/10,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,6
-Les lasagnes,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,7
-cafe caps B/10 F/20,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,8
-cafe 1001 F/20,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,9
-"Olive Noire C/2,5kg",Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,10
-Olive Noire C/5kg,Restaurant/Alimentations,Storable,5KG,,listing_restaurant_cafeteria,11
-Olive Violette B/3 kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,12
-"Olive Denoiyautee B/2,5kg",Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,13
-Olive Cassé Grillet B/4Kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,14
-"Olive Tranchee 2,5kg",Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,15
-Olive Tranchee 5kg,Restaurant/Alimentations,Storable,5KG,,listing_restaurant_cafeteria,16
-Echalote B/3kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,17
-Cornicho B/3kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,18
-olive noire tranche b/2kg F/3,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,19
-olive noire 2kg f/3boites,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,20
-Huile D'olive 1L c/10,Restaurant/Alimentations,Storable,1L,,listing_restaurant_cafeteria,21
-Hamiss B/ 2KG,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,22
-PIMENT CONSTANTINE (MARKADE )B/2Kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,23
-HIULE D'OLIVE VIERGE 5L F/4,Restaurant/Alimentations,Storable,5L,,listing_restaurant_cafeteria,24
-HIULE D'OLIVE VIERGE 1L F/6 VERRE,Restaurant/Alimentations,Storable,1L,,listing_restaurant_cafeteria,25
-HIULE D'OLIVE VIERGE 75CL F/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,26
-JAMBON POULET 1KG,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,27
-SALAMI VIANDE 1/KG,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,28
-LOUNCHON POULET,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,29
-"Champignon HARA 2,4Kg F/6",Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,30
-Thon le Grand bleu 2kg C/6,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,31
-Thon Francisco 400gr C/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,32
-"Thon Marinara 1,8kg C/6",Restaurant/Alimentations,Storable,1.8KG,,listing_restaurant_cafeteria,33
-Tomate Hara 800g C/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,34
-Harissa Hara 760g C/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,35
-Harissa Teloise 760 g C/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,36
-"Mais 2,4 kg hara F/6",Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,37
-Mayounnaise LESIEUR 710 gr F/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,38
-"Mayounnaise LESIEUR 2,5 kg",Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,39
-Motard dijon 810gr F/6,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,40
-Ketchup DAILY 1L F/9,Restaurant/Alimentations,Storable,1L,,listing_restaurant_cafeteria,41
-Sauce PIZZA B4KG latina,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,42
-Ananas Tranches golden land820g F/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,43
-Huil Elio 5L,Restaurant/Alimentations,Storable,5L,,listing_restaurant_cafeteria,44
-Margarine Fleurial PLAQ500g C/16,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,45
-Margarine La belle 500 g C/24,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,46
-Margarine DIMA 500g C/24,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,47
-BEURRE STAR 200G C/20,Restaurant/Alimentations,Storable,200G,,listing_restaurant_cafeteria,48
-"Smane MORDJANE C/1,8 Kg C/4",Restaurant/Alimentations,Storable,1.8KG,,listing_restaurant_cafeteria,49
-Sucre Skor 1Kg F/10,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,50
-Sucre Roux Skor 1Kg F/10,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,51
-Sucre Skor Glace MORDJANE 1 Kg F/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,52
-Sucre Stick 8g BONAL B/200ps,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,53
-Farine Sim 1kg F/9,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,54
-Farine MAMA 25KG,Restaurant/Alimentations,Storable,25KG,,listing_restaurant_cafeteria,55
-Farine MAMA T451kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,56
-Semoule Fine Sim 10 Kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,57
-Lentille Rouge 10Kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,58
-Lentille vert 10kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,59
-Pois Chiche N° 12 1Kg LA BELLE C/10,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,60
-Riz basmatti SAC 10Kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,61
-Frick EZZAD 800Kg C/10PS,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,62
-Raisin Sec 1kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,63
-Cacahuete BLANC1Kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,64
-Amande 1kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,65
-Amande Blanche 1kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,66
-Amande Effilée 1kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,67
-Noix 1kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,68
-Noix de cajou 1Kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,69
-Noix de coco 1Kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,70
-Noisette 1Kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,71
-Pistachio 1Kg,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,72
-Eau De Fleur PET 720ml casbah f/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,73
-SEL de cuisine ENASEL F/15,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,74
-Vinaigre Rouge Casbah F/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,75
-Vinaigre Blanc Casbah F/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,76
-Levure Chimique Nouara F/100,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,77
-levure Boulengerie SAF PLUS 500gr c/20,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,78
-BECARBONATTE SODA 1Kg EL FARES,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,82
-DIOULE EL AILA C/10*80,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,84
-the EL FERDOUAS,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,85
-THE EL RAKKI 125g F/8,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,86
-Jumbo 48 P,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,87
-Poivre Noire En Poudre 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,88
-Poivre Blanc 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,89
-Cannelle En Poudre 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,90
-Cannelle Batonnes 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,91
-Zafron 1KG En poudre EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,92
-Cumin 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,93
-Piment Doux 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,94
-Gingembre En Poudre 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,95
-Graine de Sesame 1kg EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,96
-Thym en Poudre 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,97
-Ail en Poudre 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,98
-Ras El Hanout 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,99
-Curcumin 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,100
-piment piquant 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,101
-Curry 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,102
-Carvi 1KG EL FARES,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,103
-Clou de Girofle,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,104
-Anis Etoile 1kg,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,105
-Graine de Noire 1kg sanoudj,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,106
-oigon en Poudre 1kg,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,107
-Epice marinee poulet 1kg,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,108
-Epice Chawarma 1kg,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,109
-KOSBER 1kg,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,110
-epice fromage b/1kg,Restaurant/Épices,Storable,,,listing_restaurant_cafeteria,111
-Lait Candia 1L,Restaurant/Alimentations,Storable,1L,,listing_restaurant_cafeteria,112
-LAIT SOUMAM F/6,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,113
-Lait Candia En Poudre 500g C/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,114
-Lait milko spray en poudre 500g C/12,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,115
-Lait LOVLY en poudre 10KG,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,116
-Lben Candia 1L,Restaurant/Alimentations,Storable,1L,,listing_restaurant_cafeteria,117
-RAIB CANDIA 1L,Restaurant/Alimentations,Storable,1L,,listing_restaurant_cafeteria,118
-Créme Fraiche Fondélice 900 ml,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,119
-Créme Fraiche Le Maitre 1L f/6,Restaurant/Alimentations,Storable,1L,,listing_restaurant_cafeteria,120
-"Créme Fraiche Le maitre 0,5L f/12",Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,121
-Créme Fraiche COCINA 35% 1L F/4L,Restaurant/Alimentations,Storable,1L,,listing_restaurant_cafeteria,122
-Fromage Ramdy 600 g,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,123
-"Fromage CHEEZY 1,5g",Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,124
-Fromage Sliece C/28 cheezy,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,125
-"Fromage Fondu MONT DOR 1,8KG",Restaurant/Alimentations,Storable,1.8KG,,listing_restaurant_cafeteria,126
-"Fromage Fondu MONT DOR 3,6KG",Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,127
-Fromage RICOS 1KG,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,128
-Fromage Cook Cheese 1KG,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,129
-Camembert Zakkar 250 G,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,130
-Camembert Zakkar 350 G,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,131
-Camembert Zakkar 120 G,Restaurant/Alimentations,Storable,120G,,listing_restaurant_cafeteria,132
-Mascarpone 500G SO TACOS F/8,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,133
-poulet,Restaurant/Viandes,Storable,,,listing_restaurant_cafeteria,134
-Blanc De Poulet,Restaurant/Viandes,Storable,,,listing_restaurant_cafeteria,135
-Cuisse De Poulet,Restaurant/Viandes,Storable,,,listing_restaurant_cafeteria,136
-Escalope De Poulet,Restaurant/Viandes,Storable,,,listing_restaurant_cafeteria,137
-Escalope De Dinde,Restaurant/Viandes,Storable,,,listing_restaurant_cafeteria,138
-Ouefs,Restaurant/Alimentations,Storable,,,listing_restaurant_cafeteria,139
-JUS BIFA 125ML F/48,Café/Boissons,Storable,125ML,,listing_restaurant_cafeteria,140
-CANDIA CHOCOLAT 20CL F/18,Café/Boissons,Storable,20CL,,listing_restaurant_cafeteria,141
-jus rouiba 20cl f/30,Café/Boissons,Storable,20CL,,listing_restaurant_cafeteria,142
-Schweppes PET 33CL F/12,Café/Boissons,Storable,33CL,,listing_restaurant_cafeteria,143
-Schweppes Canette 14 CL F/24,Café/Boissons,Storable,,,listing_restaurant_cafeteria,144
-Hamoud Canette 24CL F/24,Café/Boissons,Storable,24CL,,listing_restaurant_cafeteria,145
-Hamoud PET 33 CL F/12,Café/Boissons,Storable,33CL,,listing_restaurant_cafeteria,146
-JUS TCHINA 2L F/6,Café/Boissons,Storable,2L,,listing_restaurant_cafeteria,147
-Jus Waniss 1L F/6,Café/Boissons,Storable,1L,,listing_restaurant_cafeteria,148
-JUS IFRUIT 33CL F/12,Café/Boissons,Storable,33CL,,listing_restaurant_cafeteria,149
-NGAOUAS 33CL F/12,Café/Boissons,Storable,33CL,,listing_restaurant_cafeteria,150
-ORANGINA 33CL F/12,Café/Boissons,Storable,33CL,,listing_restaurant_cafeteria,151
-"Eau GUIDILA 0,5L F/12",Café/Boissons,Storable,,,listing_restaurant_cafeteria,152
-"Eau GUIDILA 1,5L F/6",Café/Boissons,Storable,,,listing_restaurant_cafeteria,153
-Eau NEW 1L /6 LLK,Café/Boissons,Storable,1L,,listing_restaurant_cafeteria,154
-"Eau Lala Khedidja 1,5 L /6",Café/Boissons,Storable,,,listing_restaurant_cafeteria,155
-"Eau Lala Khedidja 0,5 CL F/12",Café/Boissons,Storable,,,listing_restaurant_cafeteria,156
-"IFRI VICHY 0,33CL F/12",Café/Boissons,Storable,,,listing_restaurant_cafeteria,157
-"IFRI VICHY CITRON 0,33CL F/13",Café/Boissons,Storable,,,listing_restaurant_cafeteria,158
-Beurre 100% 10g C/480 PS dosette,Café/Divers,Storable,,,listing_restaurant_cafeteria,159
-Beurre Melenege 10g C/480 dosette,Café/Divers,Storable,,,listing_restaurant_cafeteria,160
-Confiture 20g fraise/pomme/abricot dosette,Café/Divers,Storable,,,listing_restaurant_cafeteria,161
-Succedane Miel 20g C/480ps dosettte,Café/Divers,Storable,,,listing_restaurant_cafeteria,162
-Chocolat 10g C/480ps dosette,Café/Divers,Storable,,,listing_restaurant_cafeteria,163
-Sucre STick 8g C/10kg,Café/Divers,Storable,,,listing_restaurant_cafeteria,164
-Madelaine Foureé 6u c/120ps,Café/Biscuits & Gâteaux,Storable,,,listing_restaurant_cafeteria,165
-Roule Foureé c/36,Café/Biscuits & Gâteaux,Storable,,,listing_restaurant_cafeteria,166
-CACAO MARON En Pondre 1Kg,Café/Divers,Storable,,,listing_restaurant_cafeteria,167
-GELATINE EN POUDRE,Café/Divers,Storable,,,listing_restaurant_cafeteria,168
-colorant Fructa 20g,Café/Divers,Storable,,,listing_restaurant_cafeteria,169
-la vanille liquide 1L,Café/Divers,Storable,,,listing_restaurant_cafeteria,170
-LA VANILLE EN POUDRE LA BOREF 500g C/12,Café/Divers,Storable,,,listing_restaurant_cafeteria,171
-PATE AROME PISTACHE F/6,Café/Divers,Storable,,,listing_restaurant_cafeteria,172
-CHANTILLY SAC 5KG RACIM,Café/Divers,Storable,,,listing_restaurant_cafeteria,173
-CHANTILLY SEAU 3KG RACIM,Café/Divers,Storable,,,listing_restaurant_cafeteria,174
-"cerise confite seau 1,8kg",Café/Divers,Storable,,,listing_restaurant_cafeteria,175
-colorant alimentaire 1kg,Café/Divers,Storable,,,listing_restaurant_cafeteria,176
-Lait en poudre en poudre lovly 0% sac10kg,Café/Divers,Storable,,,listing_restaurant_cafeteria,177
-Amidon de mais sac 1kg,Café/Divers,Storable,,,listing_restaurant_cafeteria,178
-fourrage décoration 450g TOPY CITRON/FRAISE F/12,Café/Divers,Storable,,,listing_restaurant_cafeteria,179
-fourrage décoration 450g TOPY CERICE /MURE F/12,Café/Divers,Storable,,,listing_restaurant_cafeteria,180
-creme de pistache 2Kg TOPY,Café/Divers,Storable,,,listing_restaurant_cafeteria,181
-Caramel Toffee 3Kg TOPY,Café/Divers,Storable,,,listing_restaurant_cafeteria,182
-FAUX PISTACHE 2Kg,Café/Divers,Storable,,,listing_restaurant_cafeteria,183
-Beurre de Cacahuete Racim,Café/Divers,Storable,,,listing_restaurant_cafeteria,184
-La Feuilletine 1kg,Café/Divers,Storable,,,listing_restaurant_cafeteria,185
-FLAN NOUARA F/24,Café/Divers,Storable,,,listing_restaurant_cafeteria,186
-chocolat noir Embassadeur c/25,Café/Chocolat,Storable,,,listing_restaurant_cafeteria,187
-chocolat blanc Embassadeur c/25,Café/Chocolat,Storable,,,listing_restaurant_cafeteria,188
-chocolat noisette DADA 240g,Café/Chocolat,Storable,,,listing_restaurant_cafeteria,189
-chocolat au lait DADA 240g,Café/Chocolat,Storable,,,listing_restaurant_cafeteria,190
-chocolat noir DADA 240g,Café/Chocolat,Storable,,,listing_restaurant_cafeteria,191
-chocolat blanc DADA 240g,Café/Chocolat,Storable,,,listing_restaurant_cafeteria,192
-CHOCOLAT TARTINER EL MORDJANE 700g f/6,Café/Chocolat,Storable,,,listing_restaurant_cafeteria,193
-CHOCOLAT TARTINER EL MORDJANE noisette700g f/6,Café/Chocolat,Storable,,,listing_restaurant_cafeteria,194
-CHOCOLAT TARTINER EL MORDJANE B/ 12kg,Café/Chocolat,Storable,,,listing_restaurant_cafeteria,195
-CHOCOLAT TARTINER EL MORDJANE noisette B/12,Café/Chocolat,Storable,,,listing_restaurant_cafeteria,196
-Miel ASSILA el mordjane1 KG c/12,Café/Divers,Storable,,,listing_restaurant_cafeteria,197
-Miel ASSILA el mordjane5 KG,Café/Divers,Storable,,,listing_restaurant_cafeteria,198
-Eau De Fleur casbah,Café/Divers,Storable,,,listing_restaurant_cafeteria,199
-SUCRE GLACE EL MORDJANE 700G C/12,Café/Divers,Storable,,,listing_restaurant_cafeteria,200
-MIEL EL MORDJANE 1KG C/12,Café/Divers,Storable,,,listing_restaurant_cafeteria,201
-MIEL EL MORDJANE 5KG,Café/Divers,Storable,,,listing_restaurant_cafeteria,202
-petite Beurre C/12,Café/Biscuits & Gâteaux,Storable,,,listing_restaurant_cafeteria,203
-barquette aluminium 650cl F/100,Café/Emballage,Storable,,,listing_restaurant_cafeteria,204
-Papier Aluminium420 CL,Café/Emballage,Storable,,,listing_restaurant_cafeteria,205
-Papier Film 200 M,Café/Emballage,Storable,,,listing_restaurant_cafeteria,206
-Papier Cuisson50 M,Café/Emballage,Storable,,,listing_restaurant_cafeteria,207
-GOBLET 6 oz LE PRINCE,Café/Emballage,Storable,,,listing_restaurant_cafeteria,208
-SAC SANDWICH CT 400P LE PRINCE,Café/Emballage,Storable,,,listing_restaurant_cafeteria,209
-CUILLERE GM 40PS/50CT RKMD,Café/Emballage,Storable,,,listing_restaurant_cafeteria,210
-CUILLERE PM 40PS/50CT RKDM,Café/Emballage,Storable,,,listing_restaurant_cafeteria,211
-BOITE PLASTIQUE CARRE 375ML C/1000PS,Café/Emballage,Storable,,,listing_restaurant_cafeteria,212
-VERINE EN PLASTIQUE AVEC COVERT ROND F/25,Café/Emballage,Storable,,,listing_restaurant_cafeteria,213
-GOBLET PLSTIQUE BLANC 30*100RKMD,Café/Emballage,Storable,,,listing_restaurant_cafeteria,214
-AGRAFEUSE TRENDY-45M KAN,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,1
-FLUORESCENT PRESENTOIRE DE 36 EVEREST EV 4013,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,2
-RECHARGE MARQ TAB EV 4035 NOIR EVEREST,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,3
-STYLO ULTRON X2 BLEU,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,4
-STYLO ULTRON X2 NOIR,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,5
-STYLO ULTRON X2 ROUGE,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,6
-STYLO ULTRON X2 VERT,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,7
-NOTE BOOK A4 SP 70 F 152985 ABS/ 1152,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,8
-CALCUL SCIENTIFIQUE KAJIB 552F 991ES,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,9
-RAME EXTRA A3 80G RAMOS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,10
-PAPIER DE LUXE PRISMA A4 130 G 9517 TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,11
-PAP MOUCHOIR LILAS,Ménage & Nettoyage,Storable,,,liste_articles_HIS,12
-SOUS CHEMISE PLIEE 25F 80G EP-0231 EXCELLES,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,13
-CAHIER 5 EN 1 250P 5X5 A5 IM 25-04,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,14
-CAHIER 6 EN 1 A5 IM 25-05 MER,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,15
-REGISTRE 3 MAINS HILLAL C16,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,16
-REGISTRE 2 MAINS C20 RAMOS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,17
-REGISTRE 4 MAINS C12 PROP ET HILAL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,18
-FLASH DISQUE 8 GB ADATA,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,19
-FLASH DISQUE 16 GB METAL HP REF 285,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,20
-SCOTCH 28 Y X 18 TRANS V-2410 VERTEX,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,21
-MARQUEUR CRAIE ED 4095 ROUGE,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,22
-MARQUEUR CRAIE ED 4095 VERT,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,23
-CAHIER 120P SP C90 HILAL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,24
-CAHIER 120P 70GRS CT90 / 80 HILAL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,25
-CORRECTEUR STYLO 07ML BT12 3631 TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,26
-CAHIER 64P ITAL /MOUJ /COQ,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,27
-CAHIER 96P 70GRS CT100/ 96 HILAL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,28
-PAPIER DE LUXE PRISMA A4 260G 20F 9516 TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,29
-PORTE STYLO METAL ROND 802 EV 1800,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,30
-SOUS CHEMISE 250F INOV/RAKAN 0198/RAK,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,31
-LINGETTE DE POCHE ENFANT COMFORT,Ménage & Nettoyage,Storable,,,liste_articles_HIS,32
-AUTOCOLLANT 100F A4 MAT 2310 BO /IMP FERH,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,33
-ENV (F15255) FEN .ADH PAQ50 (110 X 220),Copy/Articles Bureautique,Storable,,,liste_articles_HIS,34
-RECHARGE TABLEAU CHEVALETS 10040 / 25F FABS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,35
-PORTE FICHES 120 V EV 3060 EVEREST,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,36
-POST IT JAUNE 50X75 TECHNO 5153,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,37
-NOTE BOOK 300P 5X5 GF HILLAL(CTN16 / 14),Copy/Articles Bureautique,Storable,,,liste_articles_HIS,38
-SAC A DOS PORTE PC EVEREST EV 2246,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,39
-TRIEUR 3 ETAGES MET BK 083 / EV 1803/2003,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,40
-NOTE BOOK ELASTIQUE A5,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,41
-MARQUEUR PERMANENT TOUTES SURFACE BLANC TECHNO T4518,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,42
-MARQUEUR PERMANENT TOUTES SURFACES ARGENTE 3529,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,43
-MARQUEUR PERMANENT TOUTES SURFACE JAUNE TECHNO T4522,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,44
-MARQUEUR PERMANENT TOUTES SURFACE NOIR TECHNO T4520,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,45
-MARQUEUR PERMANENT TOUTES SURFACE ROUGE TECHNO 4521,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,46
-SAC A CADEAU BLANCHE A5 17 X 24 CM,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,47
-CHEMISE A RABAT PVC 4163,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,48
-ENV (F23715) POCH. BLANCHE ADH 229X324 P50,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,49
-FIL BADGE YOUYOU BLEU 90815B,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,50
-SCF SYSTEME COMPTABLE FINANCIER,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,51
-FEUILLE EXAMEN HIS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,52
-RAME PAP PELURE COLEUR.T,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,53
-CORRECTEUR STYLO 07ML BT24 7004 TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,54
-"CLASSEUR PERSO 50MM ""02"" 500F 06450 CV",Copy/Articles Bureautique,Storable,,,liste_articles_HIS,55
-AUTOCOLLANT A4 20 F MAT 6134 GAL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,56
-STYLO MY TECH VERT BT 25 2240 PENSAN,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,57
-STYLO MY TECH NOIR BT 25 2240 PENSAN,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,58
-STYLO MY TECH BLEU BT 25 2240 PENSAN,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,59
-STYLO A BILLE TRIROW BLEU 5144 TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,60
-STYLO A BILLE TRIROW VERT 5146 TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,61
-STYLO A BILLE NEXT 1.0 MM ROUGE BT50 5696 TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,62
-STYLO A BILLE NEXT 1.0 MM NOIR BT50 5694 TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,63
-GOMME VS1503 BT20 VERTEX,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,64
-BAVETTE BLEU ADULTE,Ménage & Nettoyage,Storable,,,liste_articles_HIS,65
-NOTE BOOK A5 SP 70F 01 / R 02-19 ABS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,66
-RAME EXTRA A4 80G 500F TARGET,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,67
-RAME EXTRA A4 80G GOLDEN / RAMOS ROUGE,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,68
-BON DE REÇU LUXE 03-21,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,69
-ENV (F16735) POCH. KR.ADH.PQ50 (162 X 229),Copy/Articles Bureautique,Storable,,,liste_articles_HIS,70
-ENV (F16715) POCH. BLANCHE ADH P50 (162 X 229),Copy/Articles Bureautique,Storable,,,liste_articles_HIS,71
-SAC A CADEAU BLANCHE A4 25 X 37 CM,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,72
-PORTE STYLO METAL ROND NOIR OK 9502 C12,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,73
-STYLO A BILLE SWING 1.0 MM BLEU 4965 TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,74
-POCHETTE ENVELOPPE TRANSP NEUTRE EV 1269,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,75
-SCOTCH 100 Y TRANS IPLAS / YIDA / GIXIME / ROLX,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,76
-PORTE BLOC A4 CRISTAL EV 1235,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,77
-NOTE BOOK UNI +ELASTQ MULTICOL NBU 0058,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,78
-PORTE BLOC A4 BOIS 76302 /3500,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,79
-TONER 045/054/067 NOIR MF 631/LBP611 INKWELL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,80
-TONER 045/067 JAUNE MF631/LBP611 INKWELL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,81
-TONER 045/067 ROUGE MF 631/LBP 611 INKWELL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,82
-TONER 045/067BLEU MF 631/LBP611 INKWELL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,83
-PAP MOUCHOIR LOVELY PPM BT12,Ménage & Nettoyage,Storable,,,liste_articles_HIS,84
-CRAIE BLANCHE DE 10 VS-0980 VERTEX,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,85
-LINGETTE DE POCHE ULTRA COMPFORE NEW BEBE,Ménage & Nettoyage,Storable,,,liste_articles_HIS,86
-PAPIER DE LUXE IVOIRY A4 120 G 20 F 9513 TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,87
-POCHETTE DE COIN 12F/ 20F / E310-12 / P0144 TRANB/TOUMI,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,88
-STYLO A BILLE XO 6 COUL EN PRESENTOIR 7240 HAUSER,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,89
-CAHIER 5 EN 1 A4 IM24-04 / 0024 KING,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,90
-TRANSPARENT NEUTRE A4 125 MIC 41250 FABS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,91
-PORTE BADGE A3 ZIP PL-1138,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,92
-FLUORESCENT NOIR PRESENTOIRE 36 EV 4023 EVEREST,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,93
-FIL BADGE 1.5 CM CROCHET PLASTIQUE BLEU,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,94
-FIL BADGE 1.5 BLEU PL2566,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,95
-PRESENNTOIR SUPPORT FIL BADJ,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,96
-ENV (F26735) POCH. KR.ADH PQ50 (280 X 365),Copy/Articles Bureautique,Storable,,,liste_articles_HIS,97
-AGENDA JOURNALIER COUSU HEX/ITAL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,98
-STYLO DETECTEUR FAUX BILLET MAXX,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,99
-CAISSE MONNAIE SAX 810-09- 03 - 04,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,100
-STYLO SERIGRAPHIE EV 1011 EVEREST,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,101
-TROMBONE CHROME 28MM EV 1601 EVEREST,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,102
-MARQUEUR PERM T/COUP 4880 BLEU TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,103
-MARQUEUR PERM T/COUP 4881 NOIR TECHNO,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,104
-SPIRALE N 6 NOIR / BLANC / BLEU,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,105
-RELIDOU N° 04 BETA BT100 40F,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,106
-CAHIER 288P CC C40 HILAL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,107
-CAHIER 48P 70GRS CT180 HILAL,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,108
-PORTE DIPLOME VIERGE LUX 062 BLEU WOLV,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,109
-PORTE AFFICHE 3 ETAGE A5,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,110
-AUTOCOLLANT 20F N°2-2 6142 GALAXIE,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,111
-CRAYON NOIR HB2 851759 POT 72 MAPED,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,112
-ROULEAU KRAFT COULEUR 1MX2M REF 48221,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,113
-DOSSIER SUSPENDU TIROIR CTN 25 CV 2020,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,114
-STYLO X7 OR NOIR BT50 KRISH,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,115
-GOMME BLANCHE MINI 011300 BT 36 MAPED,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,116
-AGRAFEUSE BUREAU METAL 90 MM 44074 FABS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,117
-CRAYON NOIR HB BT12 EV 1508 EVEREST,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,118
-OTE AGRAFE EV 1606 EVEREST,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,119
-SCOTCH DOUBLE FACE 1MX300X2MM REF 13020,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,120
-PORTE FICHES 100 V EV 3050 EVEREST,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,121
-CAHIER 3 EN 1 A4 IM 25-12 MER,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,122
-CAHIER 3 EN 1 A5 IM 25-02 MER,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,123
-NOTE BOOK 192P PF GC ELAST C40 / C44 RAY,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,124
-CAHIER 192P PF CC EMB 66 RAY,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,125
-BLOC NOTES A4 SP 21*29.7 ABS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,126
-BLOC NOTES A5 SP 50F ABS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,127
-TROUSSE EN PVC VS-1840 VERTEX,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,128
-TROUSSE ROND 06.112 PQ08 C144 RODESS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,129
-TROUSSE ECOLIER VS-1827 VERTEX,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,130
-TROUSSE EV 91005 EVEREST,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,131
-DOSSIER SUSPENDU TIROIR PVC CV 0282 /FABS,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,132
-NOTE BOOK A5 ELASTIQUE 25021 / 25022 / 25023 / 25024/25028SAM,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,133
-FEUILLE EXAMEN A3 ARABE 1000F,Copy/Articles Bureautique,Storable,,,liste_articles_HIS,134
-Essuie Mains Enchevêtré 3001F004 Cotex Pro,Ménage & Nettoyage,Storable,,,articles_cotex,1
-Essuie main 3003R001 Cotex Pro,Ménage & Nettoyage,Storable,,,articles_cotex,2
-Papier Hygiénique 5001R004 Cotex Pro,Ménage & Nettoyage,Storable,,,articles_cotex,3
-Serviette de Table Cotex Delux,Ménage & Nettoyage,Storable,,,articles_cotex,4
+Nom,Categorie_Suggeree,Type,Format,Variante,Code_Barres,Source,Ligne
+spaghitti sim 500g C/10KG,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,1
+Petit Coude N°4 sim C/10,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,2
+Pate Rossort Sim C/10,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,3
+Vermicelle Sim/500g C/20,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,4
+Couscous Taami Sim MOYEN 1Kg C/12kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,5
+Tagliatelle 450 g C/10,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,6
+Les lasagnes,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,7
+cafe caps B/10 F/20,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,8
+cafe 1001 F/20,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,9
+"Olive Noire C/2,5kg",Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,10
+Olive Noire C/5kg,Restaurant/Alimentations,Storable,5KG,,,listing_restaurant_cafeteria,11
+Olive Violette B/3 kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,12
+"Olive Denoiyautee B/2,5kg",Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,13
+Olive Cassé Grillet B/4Kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,14
+"Olive Tranchee 2,5kg",Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,15
+Olive Tranchee 5kg,Restaurant/Alimentations,Storable,5KG,,,listing_restaurant_cafeteria,16
+Echalote B/3kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,17
+Cornicho B/3kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,18
+olive noire tranche b/2kg F/3,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,19
+olive noire 2kg f/3boites,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,20
+Huile D'olive 1L c/10,Restaurant/Alimentations,Storable,1L,,,listing_restaurant_cafeteria,21
+Hamiss B/ 2KG,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,22
+PIMENT CONSTANTINE (MARKADE )B/2Kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,23
+HIULE D'OLIVE VIERGE 5L F/4,Restaurant/Alimentations,Storable,5L,,,listing_restaurant_cafeteria,24
+HIULE D'OLIVE VIERGE 1L F/6 VERRE,Restaurant/Alimentations,Storable,1L,,,listing_restaurant_cafeteria,25
+HIULE D'OLIVE VIERGE 75CL F/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,26
+JAMBON POULET 1KG,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,27
+SALAMI VIANDE 1/KG,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,28
+LOUNCHON POULET,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,29
+"Champignon HARA 2,4Kg F/6",Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,30
+Thon le Grand bleu 2kg C/6,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,31
+Thon Francisco 400gr C/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,32
+"Thon Marinara 1,8kg C/6",Restaurant/Alimentations,Storable,1.8KG,,,listing_restaurant_cafeteria,33
+Tomate Hara 800g C/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,34
+Harissa Hara 760g C/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,35
+Harissa Teloise 760 g C/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,36
+"Mais 2,4 kg hara F/6",Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,37
+Mayounnaise LESIEUR 710 gr F/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,38
+"Mayounnaise LESIEUR 2,5 kg",Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,39
+Motard dijon 810gr F/6,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,40
+Ketchup DAILY 1L F/9,Restaurant/Alimentations,Storable,1L,,,listing_restaurant_cafeteria,41
+Sauce PIZZA B4KG latina,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,42
+Ananas Tranches golden land820g F/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,43
+Huil Elio 5L,Restaurant/Alimentations,Storable,5L,,,listing_restaurant_cafeteria,44
+Margarine Fleurial PLAQ500g C/16,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,45
+Margarine La belle 500 g C/24,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,46
+Margarine DIMA 500g C/24,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,47
+BEURRE STAR 200G C/20,Restaurant/Alimentations,Storable,200G,,,listing_restaurant_cafeteria,48
+"Smane MORDJANE C/1,8 Kg C/4",Restaurant/Alimentations,Storable,1.8KG,,,listing_restaurant_cafeteria,49
+Sucre Skor 1Kg F/10,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,50
+Sucre Roux Skor 1Kg F/10,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,51
+Sucre Skor Glace MORDJANE 1 Kg F/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,52
+Sucre Stick 8g BONAL B/200ps,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,53
+Farine Sim 1kg F/9,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,54
+Farine MAMA 25KG,Restaurant/Alimentations,Storable,25KG,,,listing_restaurant_cafeteria,55
+Farine MAMA T451kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,56
+Semoule Fine Sim 10 Kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,57
+Lentille Rouge 10Kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,58
+Lentille vert 10kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,59
+Pois Chiche N° 12 1Kg LA BELLE C/10,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,60
+Riz basmatti SAC 10Kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,61
+Frick EZZAD 800Kg C/10PS,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,62
+Raisin Sec 1kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,63
+Cacahuete BLANC1Kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,64
+Amande 1kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,65
+Amande Blanche 1kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,66
+Amande Effilée 1kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,67
+Noix 1kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,68
+Noix de cajou 1Kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,69
+Noix de coco 1Kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,70
+Noisette 1Kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,71
+Pistachio 1Kg,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,72
+Eau De Fleur PET 720ml casbah f/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,73
+SEL de cuisine ENASEL F/15,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,74
+Vinaigre Rouge Casbah F/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,75
+Vinaigre Blanc Casbah F/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,76
+Levure Chimique Nouara F/100,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,77
+levure Boulengerie SAF PLUS 500gr c/20,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,78
+BECARBONATTE SODA 1Kg EL FARES,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,82
+DIOULE EL AILA C/10*80,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,84
+the EL FERDOUAS,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,85
+THE EL RAKKI 125g F/8,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,86
+Jumbo 48 P,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,87
+Poivre Noire En Poudre 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,88
+Poivre Blanc 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,89
+Cannelle En Poudre 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,90
+Cannelle Batonnes 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,91
+Zafron 1KG En poudre EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,92
+Cumin 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,93
+Piment Doux 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,94
+Gingembre En Poudre 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,95
+Graine de Sesame 1kg EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,96
+Thym en Poudre 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,97
+Ail en Poudre 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,98
+Ras El Hanout 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,99
+Curcumin 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,100
+piment piquant 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,101
+Curry 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,102
+Carvi 1KG EL FARES,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,103
+Clou de Girofle,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,104
+Anis Etoile 1kg,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,105
+Graine de Noire 1kg sanoudj,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,106
+oigon en Poudre 1kg,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,107
+Epice marinee poulet 1kg,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,108
+Epice Chawarma 1kg,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,109
+KOSBER 1kg,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,110
+epice fromage b/1kg,Restaurant/Épices,Storable,,,,listing_restaurant_cafeteria,111
+Lait Candia 1L,Restaurant/Alimentations,Storable,1L,,,listing_restaurant_cafeteria,112
+LAIT SOUMAM F/6,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,113
+Lait Candia En Poudre 500g C/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,114
+Lait milko spray en poudre 500g C/12,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,115
+Lait LOVLY en poudre 10KG,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,116
+Lben Candia 1L,Restaurant/Alimentations,Storable,1L,,,listing_restaurant_cafeteria,117
+RAIB CANDIA 1L,Restaurant/Alimentations,Storable,1L,,,listing_restaurant_cafeteria,118
+Créme Fraiche Fondélice 900 ml,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,119
+Créme Fraiche Le Maitre 1L f/6,Restaurant/Alimentations,Storable,1L,,,listing_restaurant_cafeteria,120
+"Créme Fraiche Le maitre 0,5L f/12",Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,121
+Créme Fraiche COCINA 35% 1L F/4L,Restaurant/Alimentations,Storable,1L,,,listing_restaurant_cafeteria,122
+Fromage Ramdy 600 g,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,123
+"Fromage CHEEZY 1,5g",Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,124
+Fromage Sliece C/28 cheezy,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,125
+"Fromage Fondu MONT DOR 1,8KG",Restaurant/Alimentations,Storable,1.8KG,,,listing_restaurant_cafeteria,126
+"Fromage Fondu MONT DOR 3,6KG",Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,127
+Fromage RICOS 1KG,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,128
+Fromage Cook Cheese 1KG,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,129
+Camembert Zakkar 250 G,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,130
+Camembert Zakkar 350 G,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,131
+Camembert Zakkar 120 G,Restaurant/Alimentations,Storable,120G,,,listing_restaurant_cafeteria,132
+Mascarpone 500G SO TACOS F/8,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,133
+poulet,Restaurant/Viandes,Storable,,,,listing_restaurant_cafeteria,134
+Blanc De Poulet,Restaurant/Viandes,Storable,,,,listing_restaurant_cafeteria,135
+Cuisse De Poulet,Restaurant/Viandes,Storable,,,,listing_restaurant_cafeteria,136
+Escalope De Poulet,Restaurant/Viandes,Storable,,,,listing_restaurant_cafeteria,137
+Escalope De Dinde,Restaurant/Viandes,Storable,,,,listing_restaurant_cafeteria,138
+Ouefs,Restaurant/Alimentations,Storable,,,,listing_restaurant_cafeteria,139
+JUS BIFA 125ML F/48,Café/Boissons,Storable,125ML,,,listing_restaurant_cafeteria,140
+CANDIA CHOCOLAT 20CL F/18,Café/Boissons,Storable,20CL,,,listing_restaurant_cafeteria,141
+jus rouiba 20cl f/30,Café/Boissons,Storable,20CL,,,listing_restaurant_cafeteria,142
+Schweppes PET 33CL F/12,Café/Boissons,Storable,33CL,,,listing_restaurant_cafeteria,143
+Schweppes Canette 14 CL F/24,Café/Boissons,Storable,,,,listing_restaurant_cafeteria,144
+Hamoud Canette 24CL F/24,Café/Boissons,Storable,24CL,,,listing_restaurant_cafeteria,145
+Hamoud PET 33 CL F/12,Café/Boissons,Storable,33CL,,,listing_restaurant_cafeteria,146
+JUS TCHINA 2L F/6,Café/Boissons,Storable,2L,,,listing_restaurant_cafeteria,147
+Jus Waniss 1L F/6,Café/Boissons,Storable,1L,,,listing_restaurant_cafeteria,148
+JUS IFRUIT 33CL F/12,Café/Boissons,Storable,33CL,,,listing_restaurant_cafeteria,149
+NGAOUAS 33CL F/12,Café/Boissons,Storable,33CL,,,listing_restaurant_cafeteria,150
+ORANGINA 33CL F/12,Café/Boissons,Storable,33CL,,,listing_restaurant_cafeteria,151
+"Eau GUIDILA 0,5L F/12",Café/Boissons,Storable,,,,listing_restaurant_cafeteria,152
+"Eau GUIDILA 1,5L F/6",Café/Boissons,Storable,,,,listing_restaurant_cafeteria,153
+Eau NEW 1L /6 LLK,Café/Boissons,Storable,1L,,,listing_restaurant_cafeteria,154
+"Eau Lala Khedidja 1,5 L /6",Café/Boissons,Storable,,,,listing_restaurant_cafeteria,155
+"Eau Lala Khedidja 0,5 CL F/12",Café/Boissons,Storable,,,,listing_restaurant_cafeteria,156
+"IFRI VICHY 0,33CL F/12",Café/Boissons,Storable,,,,listing_restaurant_cafeteria,157
+"IFRI VICHY CITRON 0,33CL F/13",Café/Boissons,Storable,,,,listing_restaurant_cafeteria,158
+Beurre 100% 10g C/480 PS dosette,Café/Divers,Storable,,,,listing_restaurant_cafeteria,159
+Beurre Melenege 10g C/480 dosette,Café/Divers,Storable,,,,listing_restaurant_cafeteria,160
+Confiture 20g fraise/pomme/abricot dosette,Café/Divers,Storable,,,,listing_restaurant_cafeteria,161
+Succedane Miel 20g C/480ps dosettte,Café/Divers,Storable,,,,listing_restaurant_cafeteria,162
+Chocolat 10g C/480ps dosette,Café/Divers,Storable,,,,listing_restaurant_cafeteria,163
+Sucre STick 8g C/10kg,Café/Divers,Storable,,,,listing_restaurant_cafeteria,164
+Madelaine Foureé 6u c/120ps,Café/Biscuits & Gâteaux,Storable,,,,listing_restaurant_cafeteria,165
+Roule Foureé c/36,Café/Biscuits & Gâteaux,Storable,,,,listing_restaurant_cafeteria,166
+CACAO MARON En Pondre 1Kg,Café/Divers,Storable,,,,listing_restaurant_cafeteria,167
+GELATINE EN POUDRE,Café/Divers,Storable,,,,listing_restaurant_cafeteria,168
+colorant Fructa 20g,Café/Divers,Storable,,,,listing_restaurant_cafeteria,169
+la vanille liquide 1L,Café/Divers,Storable,,,,listing_restaurant_cafeteria,170
+LA VANILLE EN POUDRE LA BOREF 500g C/12,Café/Divers,Storable,,,,listing_restaurant_cafeteria,171
+PATE AROME PISTACHE F/6,Café/Divers,Storable,,,,listing_restaurant_cafeteria,172
+CHANTILLY SAC 5KG RACIM,Café/Divers,Storable,,,,listing_restaurant_cafeteria,173
+CHANTILLY SEAU 3KG RACIM,Café/Divers,Storable,,,,listing_restaurant_cafeteria,174
+"cerise confite seau 1,8kg",Café/Divers,Storable,,,,listing_restaurant_cafeteria,175
+colorant alimentaire 1kg,Café/Divers,Storable,,,,listing_restaurant_cafeteria,176
+Lait en poudre en poudre lovly 0% sac10kg,Café/Divers,Storable,,,,listing_restaurant_cafeteria,177
+Amidon de mais sac 1kg,Café/Divers,Storable,,,,listing_restaurant_cafeteria,178
+fourrage décoration 450g TOPY CITRON/FRAISE F/12,Café/Divers,Storable,,,,listing_restaurant_cafeteria,179
+fourrage décoration 450g TOPY CERICE /MURE F/12,Café/Divers,Storable,,,,listing_restaurant_cafeteria,180
+creme de pistache 2Kg TOPY,Café/Divers,Storable,,,,listing_restaurant_cafeteria,181
+Caramel Toffee 3Kg TOPY,Café/Divers,Storable,,,,listing_restaurant_cafeteria,182
+FAUX PISTACHE 2Kg,Café/Divers,Storable,,,,listing_restaurant_cafeteria,183
+Beurre de Cacahuete Racim,Café/Divers,Storable,,,,listing_restaurant_cafeteria,184
+La Feuilletine 1kg,Café/Divers,Storable,,,,listing_restaurant_cafeteria,185
+FLAN NOUARA F/24,Café/Divers,Storable,,,,listing_restaurant_cafeteria,186
+chocolat noir Embassadeur c/25,Café/Chocolat,Storable,,,,listing_restaurant_cafeteria,187
+chocolat blanc Embassadeur c/25,Café/Chocolat,Storable,,,,listing_restaurant_cafeteria,188
+chocolat noisette DADA 240g,Café/Chocolat,Storable,,,,listing_restaurant_cafeteria,189
+chocolat au lait DADA 240g,Café/Chocolat,Storable,,,,listing_restaurant_cafeteria,190
+chocolat noir DADA 240g,Café/Chocolat,Storable,,,,listing_restaurant_cafeteria,191
+chocolat blanc DADA 240g,Café/Chocolat,Storable,,,,listing_restaurant_cafeteria,192
+CHOCOLAT TARTINER EL MORDJANE 700g f/6,Café/Chocolat,Storable,,,,listing_restaurant_cafeteria,193
+CHOCOLAT TARTINER EL MORDJANE noisette700g f/6,Café/Chocolat,Storable,,,,listing_restaurant_cafeteria,194
+CHOCOLAT TARTINER EL MORDJANE B/ 12kg,Café/Chocolat,Storable,,,,listing_restaurant_cafeteria,195
+CHOCOLAT TARTINER EL MORDJANE noisette B/12,Café/Chocolat,Storable,,,,listing_restaurant_cafeteria,196
+Miel ASSILA el mordjane1 KG c/12,Café/Divers,Storable,,,,listing_restaurant_cafeteria,197
+Miel ASSILA el mordjane5 KG,Café/Divers,Storable,,,,listing_restaurant_cafeteria,198
+Eau De Fleur casbah,Café/Divers,Storable,,,,listing_restaurant_cafeteria,199
+SUCRE GLACE EL MORDJANE 700G C/12,Café/Divers,Storable,,,,listing_restaurant_cafeteria,200
+MIEL EL MORDJANE 1KG C/12,Café/Divers,Storable,,,,listing_restaurant_cafeteria,201
+MIEL EL MORDJANE 5KG,Café/Divers,Storable,,,,listing_restaurant_cafeteria,202
+petite Beurre C/12,Café/Biscuits & Gâteaux,Storable,,,,listing_restaurant_cafeteria,203
+barquette aluminium 650cl F/100,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,204
+Papier Aluminium420 CL,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,205
+Papier Film 200 M,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,206
+Papier Cuisson50 M,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,207
+GOBLET 6 oz LE PRINCE,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,208
+SAC SANDWICH CT 400P LE PRINCE,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,209
+CUILLERE GM 40PS/50CT RKMD,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,210
+CUILLERE PM 40PS/50CT RKDM,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,211
+BOITE PLASTIQUE CARRE 375ML C/1000PS,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,212
+VERINE EN PLASTIQUE AVEC COVERT ROND F/25,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,213
+GOBLET PLSTIQUE BLANC 30*100RKMD,Café/Emballage,Storable,,,,listing_restaurant_cafeteria,214
+AGRAFEUSE TRENDY-45M KAN,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,1
+FLUORESCENT PRESENTOIRE DE 36 EVEREST EV 4013,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,2
+RECHARGE MARQ TAB EV 4035 NOIR EVEREST,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,3
+STYLO ULTRON X2 BLEU,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,4
+STYLO ULTRON X2 NOIR,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,5
+STYLO ULTRON X2 ROUGE,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,6
+STYLO ULTRON X2 VERT,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,7
+NOTE BOOK A4 SP 70 F 152985 ABS/ 1152,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,8
+CALCUL SCIENTIFIQUE KAJIB 552F 991ES,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,9
+RAME EXTRA A3 80G RAMOS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,10
+PAPIER DE LUXE PRISMA A4 130 G 9517 TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,11
+PAP MOUCHOIR LILAS,Ménage & Nettoyage,Storable,,,,liste_articles_HIS,12
+SOUS CHEMISE PLIEE 25F 80G EP-0231 EXCELLES,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,13
+CAHIER 5 EN 1 250P 5X5 A5 IM 25-04,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,14
+CAHIER 6 EN 1 A5 IM 25-05 MER,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,15
+REGISTRE 3 MAINS HILLAL C16,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,16
+REGISTRE 2 MAINS C20 RAMOS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,17
+REGISTRE 4 MAINS C12 PROP ET HILAL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,18
+FLASH DISQUE 8 GB ADATA,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,19
+FLASH DISQUE 16 GB METAL HP REF 285,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,20
+SCOTCH 28 Y X 18 TRANS V-2410 VERTEX,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,21
+MARQUEUR CRAIE ED 4095 ROUGE,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,22
+MARQUEUR CRAIE ED 4095 VERT,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,23
+CAHIER 120P SP C90 HILAL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,24
+CAHIER 120P 70GRS CT90 / 80 HILAL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,25
+CORRECTEUR STYLO 07ML BT12 3631 TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,26
+CAHIER 64P ITAL /MOUJ /COQ,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,27
+CAHIER 96P 70GRS CT100/ 96 HILAL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,28
+PAPIER DE LUXE PRISMA A4 260G 20F 9516 TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,29
+PORTE STYLO METAL ROND 802 EV 1800,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,30
+SOUS CHEMISE 250F INOV/RAKAN 0198/RAK,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,31
+LINGETTE DE POCHE ENFANT COMFORT,Ménage & Nettoyage,Storable,,,,liste_articles_HIS,32
+AUTOCOLLANT 100F A4 MAT 2310 BO /IMP FERH,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,33
+ENV (F15255) FEN .ADH PAQ50 (110 X 220),Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,34
+RECHARGE TABLEAU CHEVALETS 10040 / 25F FABS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,35
+PORTE FICHES 120 V EV 3060 EVEREST,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,36
+POST IT JAUNE 50X75 TECHNO 5153,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,37
+NOTE BOOK 300P 5X5 GF HILLAL(CTN16 / 14),Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,38
+SAC A DOS PORTE PC EVEREST EV 2246,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,39
+TRIEUR 3 ETAGES MET BK 083 / EV 1803/2003,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,40
+NOTE BOOK ELASTIQUE A5,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,41
+MARQUEUR PERMANENT TOUTES SURFACE BLANC TECHNO T4518,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,42
+MARQUEUR PERMANENT TOUTES SURFACES ARGENTE 3529,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,43
+MARQUEUR PERMANENT TOUTES SURFACE JAUNE TECHNO T4522,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,44
+MARQUEUR PERMANENT TOUTES SURFACE NOIR TECHNO T4520,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,45
+MARQUEUR PERMANENT TOUTES SURFACE ROUGE TECHNO 4521,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,46
+SAC A CADEAU BLANCHE A5 17 X 24 CM,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,47
+CHEMISE A RABAT PVC 4163,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,48
+ENV (F23715) POCH. BLANCHE ADH 229X324 P50,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,49
+FIL BADGE YOUYOU BLEU 90815B,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,50
+SCF SYSTEME COMPTABLE FINANCIER,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,51
+FEUILLE EXAMEN HIS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,52
+RAME PAP PELURE COLEUR.T,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,53
+CORRECTEUR STYLO 07ML BT24 7004 TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,54
+"CLASSEUR PERSO 50MM ""02"" 500F 06450 CV",Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,55
+AUTOCOLLANT A4 20 F MAT 6134 GAL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,56
+STYLO MY TECH VERT BT 25 2240 PENSAN,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,57
+STYLO MY TECH NOIR BT 25 2240 PENSAN,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,58
+STYLO MY TECH BLEU BT 25 2240 PENSAN,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,59
+STYLO A BILLE TRIROW BLEU 5144 TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,60
+STYLO A BILLE TRIROW VERT 5146 TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,61
+STYLO A BILLE NEXT 1.0 MM ROUGE BT50 5696 TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,62
+STYLO A BILLE NEXT 1.0 MM NOIR BT50 5694 TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,63
+GOMME VS1503 BT20 VERTEX,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,64
+BAVETTE BLEU ADULTE,Ménage & Nettoyage,Storable,,,,liste_articles_HIS,65
+NOTE BOOK A5 SP 70F 01 / R 02-19 ABS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,66
+RAME EXTRA A4 80G 500F TARGET,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,67
+RAME EXTRA A4 80G GOLDEN / RAMOS ROUGE,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,68
+BON DE REÇU LUXE 03-21,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,69
+ENV (F16735) POCH. KR.ADH.PQ50 (162 X 229),Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,70
+ENV (F16715) POCH. BLANCHE ADH P50 (162 X 229),Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,71
+SAC A CADEAU BLANCHE A4 25 X 37 CM,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,72
+PORTE STYLO METAL ROND NOIR OK 9502 C12,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,73
+STYLO A BILLE SWING 1.0 MM BLEU 4965 TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,74
+POCHETTE ENVELOPPE TRANSP NEUTRE EV 1269,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,75
+SCOTCH 100 Y TRANS IPLAS / YIDA / GIXIME / ROLX,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,76
+PORTE BLOC A4 CRISTAL EV 1235,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,77
+NOTE BOOK UNI +ELASTQ MULTICOL NBU 0058,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,78
+PORTE BLOC A4 BOIS 76302 /3500,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,79
+TONER 045/054/067 NOIR MF 631/LBP611 INKWELL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,80
+TONER 045/067 JAUNE MF631/LBP611 INKWELL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,81
+TONER 045/067 ROUGE MF 631/LBP 611 INKWELL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,82
+TONER 045/067BLEU MF 631/LBP611 INKWELL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,83
+PAP MOUCHOIR LOVELY PPM BT12,Ménage & Nettoyage,Storable,,,,liste_articles_HIS,84
+CRAIE BLANCHE DE 10 VS-0980 VERTEX,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,85
+LINGETTE DE POCHE ULTRA COMPFORE NEW BEBE,Ménage & Nettoyage,Storable,,,,liste_articles_HIS,86
+PAPIER DE LUXE IVOIRY A4 120 G 20 F 9513 TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,87
+POCHETTE DE COIN 12F/ 20F / E310-12 / P0144 TRANB/TOUMI,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,88
+STYLO A BILLE XO 6 COUL EN PRESENTOIR 7240 HAUSER,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,89
+CAHIER 5 EN 1 A4 IM24-04 / 0024 KING,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,90
+TRANSPARENT NEUTRE A4 125 MIC 41250 FABS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,91
+PORTE BADGE A3 ZIP PL-1138,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,92
+FLUORESCENT NOIR PRESENTOIRE 36 EV 4023 EVEREST,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,93
+FIL BADGE 1.5 CM CROCHET PLASTIQUE BLEU,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,94
+FIL BADGE 1.5 BLEU PL2566,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,95
+PRESENNTOIR SUPPORT FIL BADJ,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,96
+ENV (F26735) POCH. KR.ADH PQ50 (280 X 365),Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,97
+AGENDA JOURNALIER COUSU HEX/ITAL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,98
+STYLO DETECTEUR FAUX BILLET MAXX,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,99
+CAISSE MONNAIE SAX 810-09- 03 - 04,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,100
+STYLO SERIGRAPHIE EV 1011 EVEREST,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,101
+TROMBONE CHROME 28MM EV 1601 EVEREST,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,102
+MARQUEUR PERM T/COUP 4880 BLEU TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,103
+MARQUEUR PERM T/COUP 4881 NOIR TECHNO,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,104
+SPIRALE N 6 NOIR / BLANC / BLEU,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,105
+RELIDOU N° 04 BETA BT100 40F,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,106
+CAHIER 288P CC C40 HILAL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,107
+CAHIER 48P 70GRS CT180 HILAL,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,108
+PORTE DIPLOME VIERGE LUX 062 BLEU WOLV,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,109
+PORTE AFFICHE 3 ETAGE A5,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,110
+AUTOCOLLANT 20F N°2-2 6142 GALAXIE,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,111
+CRAYON NOIR HB2 851759 POT 72 MAPED,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,112
+ROULEAU KRAFT COULEUR 1MX2M REF 48221,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,113
+DOSSIER SUSPENDU TIROIR CTN 25 CV 2020,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,114
+STYLO X7 OR NOIR BT50 KRISH,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,115
+GOMME BLANCHE MINI 011300 BT 36 MAPED,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,116
+AGRAFEUSE BUREAU METAL 90 MM 44074 FABS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,117
+CRAYON NOIR HB BT12 EV 1508 EVEREST,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,118
+OTE AGRAFE EV 1606 EVEREST,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,119
+SCOTCH DOUBLE FACE 1MX300X2MM REF 13020,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,120
+PORTE FICHES 100 V EV 3050 EVEREST,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,121
+CAHIER 3 EN 1 A4 IM 25-12 MER,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,122
+CAHIER 3 EN 1 A5 IM 25-02 MER,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,123
+NOTE BOOK 192P PF GC ELAST C40 / C44 RAY,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,124
+CAHIER 192P PF CC EMB 66 RAY,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,125
+BLOC NOTES A4 SP 21*29.7 ABS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,126
+BLOC NOTES A5 SP 50F ABS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,127
+TROUSSE EN PVC VS-1840 VERTEX,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,128
+TROUSSE ROND 06.112 PQ08 C144 RODESS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,129
+TROUSSE ECOLIER VS-1827 VERTEX,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,130
+TROUSSE EV 91005 EVEREST,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,131
+DOSSIER SUSPENDU TIROIR PVC CV 0282 /FABS,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,132
+NOTE BOOK A5 ELASTIQUE 25021 / 25022 / 25023 / 25024/25028SAM,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,133
+FEUILLE EXAMEN A3 ARABE 1000F,Copy/Articles Bureautique,Storable,,,,liste_articles_HIS,134
+Alluminium Caps Café Capsules,Café/Divers,Storable,,,,cafeteria_gateaux,4
+Amandes,Café/Snacks,Storable,,,,cafeteria_gateaux,5
+Assiette Jetable GM,Café/Emballage,Storable,,,,cafeteria_gateaux,6
+Assiette Jetable PM,Café/Emballage,Storable,,,,cafeteria_gateaux,7
+Baklava,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,11
+Baklava Cigarette,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,12
+Biscuit Amidam Petit Palmier,Café/Biscuits & Gâteaux,Storable,,,613255040014,cafeteria_gateaux,13
+Biscuit Bimo Chico,Café/Biscuits & Gâteaux,Storable,,,6130015060615,cafeteria_gateaux,14
+Biscuit Celebrity Blanc,Café/Biscuits & Gâteaux,Storable,,,6132175402137,cafeteria_gateaux,15
+Biscuit Celebrity Chocolat,Café/Biscuits & Gâteaux,Storable,,,6132175401598,cafeteria_gateaux,16
+Biscuit Flouka,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,17
+Biscuit Good Day Banane,Café/Biscuits & Gâteaux,Storable,,,6135712000988,cafeteria_gateaux,18
+Biscuit Good Day Choco,Café/Biscuits & Gâteaux,Storable,,,6135712000858,cafeteria_gateaux,19
+Biscuit Good Day Fraise,Café/Biscuits & Gâteaux,Storable,,,6135712000971,cafeteria_gateaux,20
+Biscuit Good Day Oreo,Café/Biscuits & Gâteaux,Storable,,,6135712001039,cafeteria_gateaux,21
+Biscuit Good Day Vanille,Café/Biscuits & Gâteaux,Storable,,,6135712000872,cafeteria_gateaux,22
+Biscuit Mini Tuc GM,Café/Biscuits & Gâteaux,Storable,,,6194008516046,cafeteria_gateaux,23
+Biscuit Mini Tuc PM,Café/Biscuits & Gâteaux,Storable,,,6132011101491,cafeteria_gateaux,24
+Biscuit Pipino pm,Café/Biscuits & Gâteaux,Storable,,,6132175403356,cafeteria_gateaux,25
+Biscuit Torta,Café/Biscuits & Gâteaux,Storable,,,6130619003384,cafeteria_gateaux,26
+Biscuits Besto Chocolat GM,Café/Biscuits & Gâteaux,Storable,,,6132175400812,cafeteria_gateaux,27
+Biscuits Besto Chocolat PM,Café/Biscuits & Gâteaux,Storable,,,6132175400720,cafeteria_gateaux,28
+Biscuits Besto Vanille MM,Café/Biscuits & Gâteaux,Storable,,,6132501548508,cafeteria_gateaux,29
+Biscuits Besto Vanille PM,Café/Biscuits & Gâteaux,Storable,,,6132501548942,cafeteria_gateaux,30
+Biscuits Gusti PM,Café/Biscuits & Gâteaux,Storable,,,6132501549437,cafeteria_gateaux,31
+Biscuits Kool GM,Café/Biscuits & Gâteaux,Storable,,,6133414001999,cafeteria_gateaux,32
+Biscuits Kool PM,Café/Biscuits & Gâteaux,Storable,,,6133414002002,cafeteria_gateaux,33
+Biscuits Maxon GM,Café/Biscuits & Gâteaux,Storable,,,6133414002552,cafeteria_gateaux,34
+Biscuits Maxon Loumja,Café/Biscuits & Gâteaux,Storable,,,6133414011585,cafeteria_gateaux,35
+Biscuits Maxon PM,Café/Biscuits & Gâteaux,Storable,,,6133414001708,cafeteria_gateaux,36
+Biscuits Milka Jaffa,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,37
+Biscuits Milka Waffer,Café/Biscuits & Gâteaux,Storable,,,7622210818553,cafeteria_gateaux,38
+Biscuits NutelLa au Chocolat,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,39
+Biscuits Qaada,Café/Biscuits & Gâteaux,Storable,,,6135129000205,cafeteria_gateaux,40
+Biscuits Regalo Digestif PM,Café/Biscuits & Gâteaux,Storable,,,6133414011622,cafeteria_gateaux,41
+Biscuits Regalo GM,Café/Biscuits & Gâteaux,Storable,,,6133414005355,cafeteria_gateaux,42
+Biscuits Regalo PM,Café/Biscuits & Gâteaux,Storable,,,6133414006000,cafeteria_gateaux,43
+Biscuits Rs Duo,Café/Biscuits & Gâteaux,Storable,,,6132175400355,cafeteria_gateaux,44
+Brava Chocolat Amandes Tablette,Café/Chocolat,Storable,,,6132175401734,cafeteria_gateaux,45
+Brava Chocolat Blanche Bar,Café/Chocolat,Storable,,,6132175401642,cafeteria_gateaux,46
+Brava Chocolat Noisette Tablette,Café/Chocolat,Storable,,,6132175401321,cafeteria_gateaux,47
+Brava Chocolat Raisins Noisette Tablette,Café/Chocolat,Storable,,,6132175401758,cafeteria_gateaux,48
+Cacahuetes Nutis Gm,Café/Snacks,Storable,,,6132376100191,cafeteria_gateaux,52
+Cacahuetes Nutis PM,Café/Snacks,Storable,,,6132271600048,cafeteria_gateaux,53
+Cacao,Café/Divers,Storable,,,,cafeteria_gateaux,54
+Cacao Fumé,Café/Divers,Storable,,,,cafeteria_gateaux,55
+Cacao Pisto,Café/Divers,Storable,,,,cafeteria_gateaux,56
+Café Poudre,Café/Divers,Storable,,,,cafeteria_gateaux,57
+Caissette Gateau,Café/Emballage,Storable,,,,cafeteria_gateaux,58
+Candia Choco,Café/Boissons,Storable,,,6130433000354,cafeteria_gateaux,59
+Candia Choco 125 ML,Café/Boissons,Storable,125ML,,6130433000583,cafeteria_gateaux,60
+Caps Café Capsules,Café/Divers,Storable,,,,cafeteria_gateaux,61
+Carré Noir Dose,Café/Divers,Storable,,,,cafeteria_gateaux,62
+Carte Noire Café Soluble Mousse,Café/Divers,Storable,,,,cafeteria_gateaux,63
+Celebrity Brownie,Café/Biscuits & Gâteaux,Storable,,,6132175403653,cafeteria_gateaux,64
+Celebrity Fondant,Café/Biscuits & Gâteaux,Storable,,,6132175403820,cafeteria_gateaux,65
+Chewing Gum Action,Café/Bonbons,Storable,,,,cafeteria_gateaux,66
+Chewing Gum Caprice Ment,Café/Bonbons,Storable,,,6130742000533,cafeteria_gateaux,67
+Chewing Gum Cow-Boy,Café/Bonbons,Storable,,,61302075,cafeteria_gateaux,68
+Chewing Gum Cow-Boy 12,Café/Bonbons,Storable,,,61302068,cafeteria_gateaux,69
+Chewing Gum Cow-Boy Fraise,Café/Bonbons,Storable,,,61302051,cafeteria_gateaux,70
+Chewing Gum Flaura Blueberry,Café/Bonbons,Storable,,,6136046000231,cafeteria_gateaux,71
+Chewing Gum Flaura Fraise,Café/Bonbons,Storable,,,6136046000149,cafeteria_gateaux,72
+Chewing Gum Flaura Grenadine,Café/Bonbons,Storable,,,,cafeteria_gateaux,73
+Chewing Gum Flaura Menthe Poivree,Café/Bonbons,Storable,,,6136046000316,cafeteria_gateaux,74
+Chewing Gum Flaura Menthe Verte,Café/Bonbons,Storable,,,6136046000163,cafeteria_gateaux,75
+Chewing Gum Flaura Watermelon,Café/Bonbons,Storable,,,6136046000217,cafeteria_gateaux,76
+Chewing Gum Florida,Café/Bonbons,Storable,,,6136360000016,cafeteria_gateaux,77
+Chewing Gum Freedent Blueberry,Café/Bonbons,Storable,,,42189657,cafeteria_gateaux,78
+Chewing Gum Freedent Bubble Ment,Café/Bonbons,Storable,,,,cafeteria_gateaux,79
+Chewing Gum Freedent Citron Poire,Café/Bonbons,Storable,,,,cafeteria_gateaux,80
+Chewing Gum Freedent Eucalyptus,Café/Bonbons,Storable,,,50173563,cafeteria_gateaux,81
+Chewing Gum Freedent Fraise,Café/Bonbons,Storable,,,40099576,cafeteria_gateaux,82
+Chewing Gum Freedent Ment Givree,Café/Bonbons,Storable,,,42154860,cafeteria_gateaux,83
+Chewing Gum Freedent Ment Vert,Café/Bonbons,Storable,,,40099293,cafeteria_gateaux,84
+Chewing Gum Freedent Réglise,Café/Bonbons,Storable,,,,cafeteria_gateaux,85
+Chewing Gum Freedent White Ment Vert,Café/Bonbons,Storable,,,42113225,cafeteria_gateaux,86
+Chewing Gum Freedent White Blueberry,Café/Bonbons,Storable,,,42247524,cafeteria_gateaux,87
+Chewing Gum Freedent White Bubble Ment,Café/Bonbons,Storable,,,4009900485708,cafeteria_gateaux,88
+Chewing Gum Freedent White Cassice,Café/Bonbons,Storable,,,,cafeteria_gateaux,89
+Chewing Gum Freedent White Citron Poire,Café/Bonbons,Storable,,,42070474,cafeteria_gateaux,90
+Chewing Gum Freedent White Fraise,Café/Bonbons,Storable,,,,cafeteria_gateaux,91
+Chewing Gum Freedent White Ment Douce,Café/Bonbons,Storable,,,42069782,cafeteria_gateaux,92
+Chewing Gum Freedent White Ment Forte,Café/Bonbons,Storable,,,42070399,cafeteria_gateaux,93
+Chewing Gum Freedent White Réglise,Café/Bonbons,Storable,,,,cafeteria_gateaux,94
+Chewing Gum Holiday,Café/Bonbons,Storable,,,6130185000138,cafeteria_gateaux,95
+Chewing Gum May,Café/Bonbons,Storable,,,61302778,cafeteria_gateaux,96
+Chewing Gum May Chlorophylle,Café/Bonbons,Storable,,,61302761,cafeteria_gateaux,97
+Chewing Gum May Fraise,Café/Bonbons,Storable,,,61302785,cafeteria_gateaux,98
+Chewing Gum May Mojito,Café/Bonbons,Storable,,,6130374000130,cafeteria_gateaux,99
+Chewing Gum Montos Mints,Café/Bonbons,Storable,,,,cafeteria_gateaux,100
+Chips Amayas,Café/Snacks,Storable,,,6136357000128,cafeteria_gateaux,102
+Chips Bugles Hot Dersa PM,Café/Snacks,Storable,,,6133079001280,cafeteria_gateaux,103
+Chips Bugles Natcho,Café/Snacks,Storable,,,6130336002356,cafeteria_gateaux,104
+Chips Bugles Natcho PM,Café/Snacks,Storable,,,6133079001297,cafeteria_gateaux,105
+Chips Bugles Original,Café/Snacks,Storable,,,6130336005012,cafeteria_gateaux,106
+Chips Bugles PM,Café/Snacks,Storable,,,,cafeteria_gateaux,107
+Chips Bugles Smoking BBQ GM,Café/Snacks,Storable,,,6130336002363,cafeteria_gateaux,108
+Chips Bugles steak PM,Café/Snacks,Storable,,,6133079001303,cafeteria_gateaux,109
+Chips Corn Bidon,Café/Snacks,Storable,,,,cafeteria_gateaux,110
+Chips Crunchy,Café/Snacks,Storable,,,6130336004213,cafeteria_gateaux,111
+Chips Dyna,Café/Snacks,Storable,,,6132052900015,cafeteria_gateaux,112
+Chips Extrem Harissa,Café/Snacks,Storable,,,6130336004671,cafeteria_gateaux,113
+Chips Extreme Red Pepper PM,Café/Snacks,Storable,,,6130336005203,cafeteria_gateaux,114
+Chips Flayk Barbecue MM,Café/Snacks,Storable,,,6130833000534,cafeteria_gateaux,115
+Chips Flayk Burger GM,Café/Snacks,Storable,,,6130833001197,cafeteria_gateaux,116
+Chips Flayk Burger PM,Café/Snacks,Storable,,,6130833001173,cafeteria_gateaux,117
+Chips Flayk Créme Oignon MM,Café/Snacks,Storable,,,6130833000558,cafeteria_gateaux,118
+Chips Flayk Fromage,Café/Snacks,Storable,,,6130833000435,cafeteria_gateaux,119
+Chips Flayk Fromage GM,Café/Snacks,Storable,,,6130833000343,cafeteria_gateaux,120
+Chips Flayk Ketchup GM,Café/Snacks,Storable,,,6130833000374,cafeteria_gateaux,121
+Chips Flayk Ketchup PM,Café/Snacks,Storable,,,6130833000404,cafeteria_gateaux,122
+Chips Flayk Original GM,Café/Snacks,Storable,,,6130833000305,cafeteria_gateaux,123
+Chips Flayk Original MM,Café/Snacks,Storable,,,6130833000565,cafeteria_gateaux,124
+Chips Flayk Original PM,Café/Snacks,Storable,,,6130833000473,cafeteria_gateaux,125
+Chips Flayk Poulet MM,Café/Snacks,Storable,,,6130833000541,cafeteria_gateaux,126
+Chips Flayk Poulet PM,Café/Snacks,Storable,,,6130833000459,cafeteria_gateaux,127
+Chips Kritch,Café/Snacks,Storable,,,6132065400120,cafeteria_gateaux,128
+Chips Kritch Fille,Café/Snacks,Storable,,,6132065400151,cafeteria_gateaux,129
+Chips Kritch Fromage,Café/Snacks,Storable,,,6132065400137,cafeteria_gateaux,130
+Chips Kritch Har,Café/Snacks,Storable,,,6132065400199,cafeteria_gateaux,131
+Chips Kritch Natural,Café/Snacks,Storable,,,613206540014,cafeteria_gateaux,132
+Chips Kritch Viande,Café/Snacks,Storable,,,6132065400144,cafeteria_gateaux,133
+Chips Laziza,Café/Snacks,Storable,,,6132000601681,cafeteria_gateaux,134
+Chips Mahbool,Café/Snacks,Storable,,,,cafeteria_gateaux,135
+Chips Mahboul BBQ,Café/Snacks,Storable,,,6130336002059,cafeteria_gateaux,136
+Chips Mahboul Cheese,Café/Snacks,Storable,,,6130336001991,cafeteria_gateaux,137
+Chips Mahboul Onion G,Café/Snacks,Storable,,,6130336002905,cafeteria_gateaux,138
+Chips Mahboul Paprika,Café/Snacks,Storable,,,6130336001984,cafeteria_gateaux,139
+Chips Master 4 Fromages GM,Café/Snacks,Storable,,,6133079001235,cafeteria_gateaux,140
+Chips Master Camember GM,Café/Snacks,Storable,,,6133079000740,cafeteria_gateaux,141
+Chips Master Chawarmaa GM,Café/Snacks,Storable,,,6133079000702,cafeteria_gateaux,142
+Chips Master Cheese Balls GM,Café/Snacks,Storable,,,6133079001242,cafeteria_gateaux,143
+Chips Master Chwarma PM,Café/Snacks,Storable,,,6133079000146,cafeteria_gateaux,144
+Chips Master Corn Kabab Fumé,Café/Snacks,Storable,,,6133079001112,cafeteria_gateaux,145
+Chips Master Donuts Cheese PM,Café/Snacks,Storable,,,6133079001266,cafeteria_gateaux,146
+Chips Master Donuts Pizza PM,Café/Snacks,Storable,,,6133079001259,cafeteria_gateaux,147
+Chips Master Frite Fromage PM,Café/Snacks,Storable,,,6133079000122,cafeteria_gateaux,148
+Chips Master Fromage,Café/Snacks,Storable,,,6133079000306,cafeteria_gateaux,149
+Chips Master Fromage Cheddar PM,Café/Snacks,Storable,,,6133079000337,cafeteria_gateaux,150
+Chips Master Fromage Corn Piment PM,Café/Snacks,Storable,,,6133079000443,cafeteria_gateaux,151
+Chips Master Fromage Corn PM,Café/Snacks,Storable,,,6133079000436,cafeteria_gateaux,152
+Chips Master Fromage Piment PM,Café/Snacks,Storable,,,6133079000153,cafeteria_gateaux,153
+Chips Master Fromage Pizza GM,Café/Snacks,Storable,,,6133079001310,cafeteria_gateaux,154
+Chips Master Fromage Rouge GM,Café/Snacks,Storable,,,6133079001228,cafeteria_gateaux,155
+Chips Master Harissa PM,Café/Snacks,Storable,,,6133079001273,cafeteria_gateaux,156
+Chips Master Kabab,Café/Snacks,Storable,,,6133079000269,cafeteria_gateaux,157
+Chips Master Kabab PM,Café/Snacks,Storable,,,6133079000115,cafeteria_gateaux,158
+Chips Master Natural G,Café/Snacks,Storable,,,6133079001488,cafeteria_gateaux,159
+Chips Master Natural Ketchup,Café/Snacks,Storable,,,6133079001815,cafeteria_gateaux,160
+Chips Master Natural Ketchup,Café/Snacks,Storable,,,6133079001853,cafeteria_gateaux,161
+Chips Master Natural Onion G,Café/Snacks,Storable,,,6133079001471,cafeteria_gateaux,162
+Chips Master Natural Pepper,Café/Snacks,Storable,,,6133079001426,cafeteria_gateaux,163
+Chips Master Pepper,Café/Snacks,Storable,,,6133079001808,cafeteria_gateaux,164
+Chips Master Poulet,Café/Snacks,Storable,,,6133079000290,cafeteria_gateaux,165
+Chips Master Shawarma,Café/Snacks,Storable,,,6133079000252,cafeteria_gateaux,166
+Chips Master Shrimp GM,Café/Snacks,Storable,,,6133079000726,cafeteria_gateaux,167
+Chips Master Veggie,Café/Snacks,Storable,,,6133079001693,cafeteria_gateaux,168
+Chips Rifkus BBQ,Café/Snacks,Storable,,,6135418001760,cafeteria_gateaux,169
+Chips Rifkus Cheese,Café/Snacks,Storable,,,6135418001906,cafeteria_gateaux,170
+Chips Rifkus Chicken,Café/Snacks,Storable,,,6135418001661,cafeteria_gateaux,171
+Chips Rifkus Corn Balls,Café/Snacks,Storable,,,6135418001586,cafeteria_gateaux,172
+Chips Rifkus Crispy Rings,Café/Snacks,Storable,,,6135418001630,cafeteria_gateaux,173
+Chips Rifkus Puffs Corn,Café/Snacks,Storable,,,6135418001579,cafeteria_gateaux,174
+Chips Rifkus Three Cheese,Café/Snacks,Storable,,,6135418001692,cafeteria_gateaux,175
+Chips Silver Barbecue MM,Café/Snacks,Storable,,,6135199000525,cafeteria_gateaux,176
+Chips Silver Chawarma GM,Café/Snacks,Storable,,,61351990012101,cafeteria_gateaux,177
+Chips Silver Creme Oignon GM,Café/Snacks,Storable,,,6135199000440,cafeteria_gateaux,178
+Chips Silver Creme Oignon PM,Café/Snacks,Storable,,,6135199001324,cafeteria_gateaux,179
+Chips Silver Creme Oinon MM,Café/Snacks,Storable,,,6135199000549,cafeteria_gateaux,180
+Chips Silver Fromage GM,Café/Snacks,Storable,,,6135199000402,cafeteria_gateaux,181
+Chips Silver Fromage PM,Café/Snacks,Storable,,,6135199001300,cafeteria_gateaux,182
+Chips Silver Ghili Lime PM,Café/Snacks,Storable,,,6135199001270,cafeteria_gateaux,183
+Chips Silver Ketchup GM,Café/Snacks,Storable,,,6135199001232,cafeteria_gateaux,184
+Chips Silver Ketchup MM,Café/Snacks,Storable,,,6135199001256,cafeteria_gateaux,185
+Chips Silver Ketchup PM,Café/Snacks,Storable,,,6135199001249,cafeteria_gateaux,186
+Chips Silver Nature Salé GM,Café/Snacks,Storable,,,6135199000297,cafeteria_gateaux,187
+Chips Silver Nature Salé PM,Café/Snacks,Storable,,,6135199000631,cafeteria_gateaux,188
+Chips Silver Pizza MM,Café/Snacks,Storable,,,6135199000723,cafeteria_gateaux,189
+Chips Silver Sauce Algerienne MM,Café/Snacks,Storable,,,6135199001294,cafeteria_gateaux,190
+Chips Sultan French Cheese,Café/Snacks,Storable,,,6134447000089,cafeteria_gateaux,191
+Chips Sultan Masala,Café/Snacks,Storable,,,6134447000690,cafeteria_gateaux,192
+Chips Sultan Onion,Café/Snacks,Storable,,,6134447000355,cafeteria_gateaux,193
+Chips Sultan Sweet Chilli,Café/Snacks,Storable,,,6134447000898,cafeteria_gateaux,194
+Chips Sultan Tacos,Café/Snacks,Storable,,,6134447000645,cafeteria_gateaux,195
+Chips Tassala Crisp Taxi,Café/Snacks,Storable,,,6135206002726,cafeteria_gateaux,196
+Chips Taxi GM,Café/Snacks,Storable,,,6135206000869,cafeteria_gateaux,197
+Chips Vag d'or Barbecue GM,Café/Snacks,Storable,,,6132503580032,cafeteria_gateaux,198
+Chips Vag d'or Fromage PM,Café/Snacks,Storable,,,6132503580148,cafeteria_gateaux,199
+Chips Vag d'or Ketchup GM,Café/Snacks,Storable,,,6132503580063,cafeteria_gateaux,200
+Chips Vag d'or Poulet Fumé GM,Café/Snacks,Storable,,,6132503580070,cafeteria_gateaux,201
+Chips Vag d'or Poulet Fumé PM,Café/Snacks,Storable,,,,cafeteria_gateaux,202
+Chips Vag d'or Poulet PM,Café/Snacks,Storable,,,6132503580162,cafeteria_gateaux,203
+Chips Vag d'or Salé GM,Café/Snacks,Storable,,,6132503580025,cafeteria_gateaux,204
+Chips Vag d'or Salé PM,Café/Snacks,Storable,,,6132503580018,cafeteria_gateaux,205
+Chips Vag d'or Tomate PM,Café/Snacks,Storable,,,6132503580322,cafeteria_gateaux,206
+Chiwawa,Café/Snacks,Storable,,,,cafeteria_gateaux,207
+Chiwawa Balls,Café/Snacks,Storable,,,6134067002074,cafeteria_gateaux,208
+Chococlat Celebrity Mini Bare,Café/Chocolat,Storable,,,6132175400799,cafeteria_gateaux,209
+Chococlat Celebrity Twin,Café/Chocolat,Storable,,,6132175403677,cafeteria_gateaux,210
+Chocolat Ambassadeur Blanc Tablette,Café/Chocolat,Storable,,,6130014080010,cafeteria_gateaux,211
+Chocolat Ambassadeur Fourré Tablette,Café/Chocolat,Storable,,,6130014350069,cafeteria_gateaux,212
+Chocolat Ambassadeur Noir Tablette,Café/Chocolat,Storable,,,6130014080119,cafeteria_gateaux,213
+Chocolat Amine,Café/Chocolat,Storable,,,,cafeteria_gateaux,214
+Chocolat Bara Kids Cereal,Café/Chocolat,Storable,,,6132659100016,cafeteria_gateaux,215
+Chocolat Bara Kids Rice,Café/Chocolat,Storable,,,6132659100023,cafeteria_gateaux,216
+Chocolat Barre Elite Amandes Blanche,Café/Chocolat,Storable,,,6132374000103,cafeteria_gateaux,217
+Chocolat Barre Elite Cacahuete,Café/Chocolat,Storable,,,6132374000073,cafeteria_gateaux,218
+Chocolat Barre Elite Cereal,Café/Chocolat,Storable,,,6132374000172,cafeteria_gateaux,219
+Chocolat Barre Elite Cereale Noire,Café/Chocolat,Storable,,,6132374000165,cafeteria_gateaux,220
+Chocolat Barre Elite Noisette,Café/Chocolat,Storable,,,6132374000097,cafeteria_gateaux,221
+Chocolat Barre Elite Noix De Coco,Café/Chocolat,Storable,,,6132374000059,cafeteria_gateaux,222
+Chocolat Bibila Donuts,Café/Chocolat,Storable,,,6134387000170,cafeteria_gateaux,223
+Chocolat Bounty Barre,Café/Chocolat,Storable,,,,cafeteria_gateaux,224
+Chocolat Brownie,Café/Chocolat,Storable,,,6132501541608,cafeteria_gateaux,225
+Chocolat Browniz,Café/Chocolat,Storable,,,6134426000123,cafeteria_gateaux,226
+Chocolat Bueno Joker Bare,Café/Chocolat,Storable,,,6135197001616,cafeteria_gateaux,227
+Chocolat Celebrity Barre,Café/Chocolat,Storable,,,6132501547112,cafeteria_gateaux,228
+Chocolat Cocoaty Sport,Café/Chocolat,Storable,,,6135275002108,cafeteria_gateaux,229
+Chocolat Cot d'or Baton,Café/Chocolat,Storable,,,,cafeteria_gateaux,230
+Chocolat Cote D'or Barre,Café/Chocolat,Storable,,,,cafeteria_gateaux,231
+Chocolat Cote Dor Tablette,Café/Chocolat,Storable,,,7622210995063,cafeteria_gateaux,232
+Chocolat Crunch,Café/Chocolat,Storable,,,8000300300390,cafeteria_gateaux,233
+Chocolat Galaxy Caramel,Café/Chocolat,Storable,,,5900951313103,cafeteria_gateaux,234
+Chocolat Galaxy Smouth Caramel Tablette,Café/Chocolat,Storable,,,5900951027710,cafeteria_gateaux,235
+Chocolat Galaxy Smouth Milk Tablette,Café/Chocolat,Storable,,,5000159553018,cafeteria_gateaux,236
+Chocolat Grandina Bare,Café/Chocolat,Storable,,,6132175401918,cafeteria_gateaux,237
+Chocolat Granola,Café/Chocolat,Storable,,,6132428200015,cafeteria_gateaux,238
+Chocolat Granola Energy,Café/Chocolat,Storable,,,6133172000135,cafeteria_gateaux,239
+Chocolat Happy Bare Choco,Café/Chocolat,Storable,,,6133414008837,cafeteria_gateaux,240
+Chocolat Happy Chocolat,Café/Chocolat,Storable,,,6133414006932,cafeteria_gateaux,241
+Chocolat Happy White,Café/Chocolat,Storable,,,6133414008219,cafeteria_gateaux,242
+Chocolat Kinder Bueno,Café/Chocolat,Storable,,,8000500037560,cafeteria_gateaux,243
+Chocolat Kinder Bueno White,Café/Chocolat,Storable,,,8076161,cafeteria_gateaux,244
+Chocolat Kinder Country,Café/Chocolat,Storable,,,,cafeteria_gateaux,245
+Chocolat Kinder Maxi,Café/Chocolat,Storable,,,,cafeteria_gateaux,246
+Chocolat Kit Kat,Café/Chocolat,Storable,,,,cafeteria_gateaux,247
+Chocolat Kit Kat Chocolat Blanche,Café/Chocolat,Storable,,,8445290552150,cafeteria_gateaux,248
+Chocolat Kit Kat Chocolat Noir,Café/Chocolat,Storable,,,,cafeteria_gateaux,249
+Chocolat Kit Kat Chocolat au Lait,Café/Chocolat,Storable,,,,cafeteria_gateaux,250
+Chocolat Kit Kat Chunky,Café/Chocolat,Storable,,,3800020456224,cafeteria_gateaux,251
+Chocolat Kool Cracks,Café/Chocolat,Storable,,,6133414008264,cafeteria_gateaux,252
+Chocolat Kool Crokin,Café/Chocolat,Storable,,,6133414008653,cafeteria_gateaux,253
+Chocolat Krispino Bare,Café/Chocolat,Storable,,,6132175401819,cafeteria_gateaux,254
+Chocolat Lindt Créme tablette,Café/Chocolat,Storable,,,3046920042567,cafeteria_gateaux,255
+Chocolat Lindt Lindor Tablette,Café/Chocolat,Storable,,,3046920042963,cafeteria_gateaux,256
+Chocolat Lindt Noir Tablette,Café/Chocolat,Storable,,,3046920042932,cafeteria_gateaux,257
+Chocolat Lindt Pistachio Tablette,Café/Chocolat,Storable,,,30469200201383,cafeteria_gateaux,258
+Chocolat Lion Bare,Café/Chocolat,Storable,,,,cafeteria_gateaux,259
+Chocolat Liya Banane,Café/Chocolat,Storable,,,6134067003200,cafeteria_gateaux,260
+Chocolat Liya Cerise,Café/Chocolat,Storable,,,6134067000506,cafeteria_gateaux,261
+Chocolat Liya Pomme,Café/Chocolat,Storable,,,613406700250,cafeteria_gateaux,262
+Chocolat M&m's,Café/Chocolat,Storable,,,5000159477598,cafeteria_gateaux,263
+Chocolat M&n,Café/Chocolat,Storable,,,6132256700114,cafeteria_gateaux,264
+Chocolat Magma Feuilletine Barre,Café/Chocolat,Storable,,,6133414012209,cafeteria_gateaux,265
+Chocolat Magma Oreo Barre,Café/Chocolat,Storable,,,6133414012216,cafeteria_gateaux,266
+Chocolat Magma Tablette Caramel,Café/Chocolat,Storable,,,6133414012148,cafeteria_gateaux,267
+Chocolat Magma Tablette Lait,Café/Chocolat,Storable,,,6133414012384,cafeteria_gateaux,268
+Chocolat Magma Tablette Noisete,Café/Chocolat,Storable,,,6133414012155,cafeteria_gateaux,269
+Chocolat Magma Tablette Oreo,Café/Chocolat,Storable,,,6133414012179,cafeteria_gateaux,270
+Chocolat Magma Tablette Praline,Café/Chocolat,Storable,,,613414012155,cafeteria_gateaux,271
+Chocolat Mars Barre,Café/Chocolat,Storable,,,,cafeteria_gateaux,272
+Chocolat Maruja,Café/Chocolat,Storable,,,6132516860060,cafeteria_gateaux,273
+Chocolat Maxon 100g Noisete,Café/Chocolat,Storable,,,6133414000794,cafeteria_gateaux,274
+Chocolat Maxon Gold Lait,Café/Chocolat,Storable,,,6133414011684,cafeteria_gateaux,275
+Chocolat Maxon Gold Oreo,Café/Chocolat,Storable,,,6133414011677,cafeteria_gateaux,276
+Chocolat Mini Cones,Café/Chocolat,Storable,,,6132521470018,cafeteria_gateaux,277
+Chocolat Mini Cones Pistache,Café/Chocolat,Storable,,,6132521470087,cafeteria_gateaux,278
+Chocolat Mini Cornes Mouta,Café/Chocolat,Storable,,,6132604700025,cafeteria_gateaux,279
+Chocolat Mini Cornes Noisette,Café/Chocolat,Storable,,,6132521470032,cafeteria_gateaux,280
+Chocolat Moment Bare Caraibes,Café/Chocolat,Storable,,,6133414015408,cafeteria_gateaux,281
+Chocolat Moment Bare djazair,Café/Chocolat,Storable,,,6133414015415,cafeteria_gateaux,282
+Chocolat Moment Barre Caramelle,Café/Chocolat,Storable,,,6133414008066,cafeteria_gateaux,283
+Chocolat Moment Barre Dore Noisete,Café/Chocolat,Storable,,,6133414010380,cafeteria_gateaux,284
+Chocolat Moment Barre Dore Pate Noisete,Café/Chocolat,Storable,,,6133414010366,cafeteria_gateaux,285
+Chocolat Moment Barre Noisete Chocolat Blanche,Café/Chocolat,Storable,,,6133414010175,cafeteria_gateaux,286
+Chocolat Moment Barre Noisette,Café/Chocolat,Storable,,,6133414008172,cafeteria_gateaux,287
+Chocolat Moment Barre Oreo,Café/Chocolat,Storable,,,6133414008073,cafeteria_gateaux,288
+Chocolat Moment Barre le Doré Feuillante,Café/Chocolat,Storable,,,6133414010373,cafeteria_gateaux,289
+Chocolat Moment Croquant Amandes,Café/Chocolat,Storable,,,6133414008943,cafeteria_gateaux,290
+Chocolat Moment Croquant Noir,Café/Chocolat,Storable,,,6133414009070,cafeteria_gateaux,291
+Chocolat Moment Croquant Noisette Raisin Tablette,Café/Chocolat,Storable,,,6133414008981,cafeteria_gateaux,292
+Chocolat Moment Croquant Noisettes Tablette,Café/Chocolat,Storable,,,6133414008967,cafeteria_gateaux,293
+Chocolat Moment Doré Mini Bare,Café/Chocolat,Storable,,,,cafeteria_gateaux,294
+Chocolat Moment Evasion Noisette,Café/Chocolat,Storable,,,6133414012865,cafeteria_gateaux,295
+Chocolat Moment Evasion Pistache Barre,Café/Chocolat,Storable,,,6133414012889,cafeteria_gateaux,296
+Chocolat Moment Evasion Pistache Tablette,Café/Chocolat,Storable,,,6133414012858,cafeteria_gateaux,297
+Chocolat Moment Evasion Praline,Café/Chocolat,Storable,,,6133414012872,cafeteria_gateaux,298
+Chocolat Moment Le Doré Tablette,Café/Chocolat,Storable,,,6133414010359,cafeteria_gateaux,299
+Chocolat Moment Le Doré Tablette Chocolate,Café/Chocolat,Storable,,,6133414010335,cafeteria_gateaux,300
+Chocolat Moment Le Doré Tablette Noisette,Café/Chocolat,Storable,,,6133414010779,cafeteria_gateaux,301
+Chocolat Moment Tablette Amandes,Café/Chocolat,Storable,,,6133414006987,cafeteria_gateaux,302
+Chocolat Moment Tablette Chocolat Mousse,Café/Chocolat,Storable,,,6133414015354,cafeteria_gateaux,303
+Chocolat Moment Tablette Chocolat nois,Café/Chocolat,Storable,,,6133414015910,cafeteria_gateaux,304
+Chocolat Moment Tablette Dore Caramel,Café/Chocolat,Storable,,,6133414006963,cafeteria_gateaux,305
+Chocolat Moment Tablette Dore Lait,Café/Chocolat,Storable,,,6133414003979,cafeteria_gateaux,306
+Chocolat Moment Tablette Dore noisete,Café/Chocolat,Storable,,,,cafeteria_gateaux,307
+Chocolat Moment Tablette Noisette,Café/Chocolat,Storable,,,6133414004051,cafeteria_gateaux,308
+Chocolat Moment Tablette Orio,Café/Chocolat,Storable,,,6133414007007,cafeteria_gateaux,309
+Chocolat Moment Tablette Praline-Noisete,Café/Chocolat,Storable,,,6133414010120,cafeteria_gateaux,310
+Chocolat Moment Tablette Raisin,Café/Chocolat,Storable,,,6133414007045,cafeteria_gateaux,311
+Chocolat Montiko Barre,Café/Chocolat,Storable,,,6134886000336,cafeteria_gateaux,312
+Chocolat Montimix,Café/Chocolat,Storable,,,6134886001876,cafeteria_gateaux,313
+Chocolat Nutela B-Ready,Café/Chocolat,Storable,,,,cafeteria_gateaux,314
+Chocolat Nutella Biscuit,Café/Chocolat,Storable,,,8000500310397,cafeteria_gateaux,315
+Chocolat Nutella Country,Café/Chocolat,Storable,,,,cafeteria_gateaux,316
+Chocolat Poudre,Café/Chocolat,Storable,,,,cafeteria_gateaux,317
+Chocolat Qaada Tablette,Café/Chocolat,Storable,,,6135129001097,cafeteria_gateaux,318
+Chocolat Quickly Barre,Café/Chocolat,Storable,,,,cafeteria_gateaux,319
+Chocolat Saison Dubai,Café/Chocolat,Storable,,,6135275002375,cafeteria_gateaux,320
+Chocolat Snickers Barre,Café/Chocolat,Storable,,,,cafeteria_gateaux,321
+Chocolat Snowball,Café/Chocolat,Storable,,,6134427001297,cafeteria_gateaux,322
+Chocolat Soltana au Lait,Café/Chocolat,Storable,,,6133414008462,cafeteria_gateaux,323
+Chocolat Tablette Elite Amande,Café/Chocolat,Storable,,,6132374000219,cafeteria_gateaux,324
+Chocolat Tablette Elite Noisette,Café/Chocolat,Storable,,,6132374000226,cafeteria_gateaux,325
+Chocolat Tartine,Café/Chocolat,Storable,,,,cafeteria_gateaux,326
+Chocolat Toblerone,Café/Chocolat,Storable,,,76145513,cafeteria_gateaux,327
+Chocolat Twix,Café/Chocolat,Storable,,,,cafeteria_gateaux,328
+Chocolat Yami,Café/Chocolat,Storable,,,6132413700032,cafeteria_gateaux,329
+Cigarette Prima Rolio,Café/Biscuits & Gâteaux,Storable,,,6130200203018,cafeteria_gateaux,330
+Cigaro Choco,Café/Chocolat,Storable,,,6135083001607,cafeteria_gateaux,331
+Crepa,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,332
+Croissant,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,333
+Croissant Fourré,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,334
+Croissant Matinée,Café/Biscuits & Gâteaux,Storable,,,6132546530018,cafeteria_gateaux,335
+Crème (Café au Lait),Café/Divers,Storable,,,,cafeteria_gateaux,336
+Cuillére a Café,Café/Emballage,Storable,,,,cafeteria_gateaux,337
+Cure Dents,Café/Emballage,Storable,,,,cafeteria_gateaux,338
+Davidoff Café Capsules,Café/Divers,Storable,,,,cafeteria_gateaux,342
+Dose Maxwell Fine,Café/Divers,Storable,,,,cafeteria_gateaux,343
+Dose Maxwell House,Café/Divers,Storable,,,,cafeteria_gateaux,344
+Eau 5L,Café/Boissons,Storable,5L,,,cafeteria_gateaux,348
+Eau Aninos GM,Café/Boissons,Storable,,,6136286000022,cafeteria_gateaux,349
+Eau Aninos PM,Café/Boissons,Storable,,,,cafeteria_gateaux,350
+Eau Ariaf 1L,Café/Boissons,Storable,1L,,,cafeteria_gateaux,351
+Eau Ariaf GM,Café/Boissons,Storable,,,6135829000024,cafeteria_gateaux,352
+Eau Ariaf PM,Café/Boissons,Storable,,,6135829000017,cafeteria_gateaux,353
+Eau Arwa GM,Café/Boissons,Storable,,,6133489001504,cafeteria_gateaux,354
+Eau Arwa PM,Café/Boissons,Storable,,,,cafeteria_gateaux,355
+Eau Ayris 1L,Café/Boissons,Storable,1L,,6130534000253,cafeteria_gateaux,356
+Eau Besbassa GM,Café/Boissons,Storable,,,6134082000017,cafeteria_gateaux,357
+Eau Besbassa PM,Café/Boissons,Storable,,,6134082000024,cafeteria_gateaux,358
+Eau Bouglez 1L,Café/Boissons,Storable,1L,,6130576001386,cafeteria_gateaux,359
+Eau Bouglez GM,Café/Boissons,Storable,,,6130576000020,cafeteria_gateaux,360
+Eau Bouglez PM,Café/Boissons,Storable,,,6130576000099,cafeteria_gateaux,361
+Eau Djazia PM,Café/Boissons,Storable,,,6135910000025,cafeteria_gateaux,362
+Eau Ghadir GM,Café/Boissons,Storable,,,6134720000010,cafeteria_gateaux,363
+Eau Ghadir PM,Café/Boissons,Storable,,,6134720000027,cafeteria_gateaux,364
+Eau Guedila 1L,Café/Boissons,Storable,1L,,6130758000077,cafeteria_gateaux,365
+Eau Guedila GM,Café/Boissons,Storable,,,6130758000022,cafeteria_gateaux,366
+Eau Guedila PM,Café/Boissons,Storable,,,6130758000015,cafeteria_gateaux,367
+Eau Ichemoul GM,Café/Boissons,Storable,,,6135534000036,cafeteria_gateaux,368
+Eau Ichemoul PM,Café/Boissons,Storable,,,6135534000029,cafeteria_gateaux,369
+Eau Ifren GM,Café/Boissons,Storable,,,6133561000036,cafeteria_gateaux,370
+Eau Ifren PM,Café/Boissons,Storable,,,6133561000029,cafeteria_gateaux,371
+Eau Ifri GM,Café/Boissons,Storable,,,,cafeteria_gateaux,372
+Eau Ifri PM,Café/Boissons,Storable,,,,cafeteria_gateaux,373
+Eau Kantara GM,Café/Boissons,Storable,,,6130131000014,cafeteria_gateaux,374
+Eau Kantara Pm,Café/Boissons,Storable,,,6130131000021,cafeteria_gateaux,375
+Eau Lalla Khedidja PM,Café/Boissons,Storable,,,6130234001161,cafeteria_gateaux,376
+Eau Lalla khedidja GM,Café/Boissons,Storable,,,6130234001147,cafeteria_gateaux,377
+Eau Mansourah PM,Café/Boissons,Storable,,,6130364000072,cafeteria_gateaux,378
+Eau Medjana PM,Café/Boissons,Storable,,,6135617000021,cafeteria_gateaux,379
+Eau Mileza GM,Café/Boissons,Storable,,,6130900000016,cafeteria_gateaux,380
+Eau Mileza PM,Café/Boissons,Storable,,,6130900000023,cafeteria_gateaux,381
+Eau Nestle GM,Café/Boissons,Storable,,,6130794000116,cafeteria_gateaux,382
+Eau Nestlé PM,Café/Boissons,Storable,,,,cafeteria_gateaux,383
+Eau Noua GM,Café/Boissons,Storable,,,6132389300014,cafeteria_gateaux,384
+Eau Noua PM,Café/Boissons,Storable,,,6132389300021,cafeteria_gateaux,385
+Eau Ouwis GM,Café/Boissons,Storable,,,6135240000016,cafeteria_gateaux,386
+Eau Ouwis PM,Café/Boissons,Storable,,,6135240000030,cafeteria_gateaux,387
+Eau Ovitale GM,Café/Boissons,Storable,,,6130142000201,cafeteria_gateaux,388
+Eau Ovitale PM,Café/Boissons,Storable,,,6130142000218,cafeteria_gateaux,389
+Eau Saida GM,Café/Boissons,Storable,,,6133275000018,cafeteria_gateaux,390
+Eau Saida PM,Café/Boissons,Storable,,,6133275000025,cafeteria_gateaux,391
+Eau Soumam GM,Café/Boissons,Storable,,,,cafeteria_gateaux,392
+Eau Soumam PM,Café/Boissons,Storable,,,6134318000064,cafeteria_gateaux,393
+Eau Taya PM,Café/Boissons,Storable,,,6135366000020,cafeteria_gateaux,394
+Eau Youkous GM,Café/Boissons,Storable,,,6130686000170,cafeteria_gateaux,395
+Espresso Dz,Café/Divers,Storable,,,,cafeteria_gateaux,396
+Fourchette Plastique,Café/Emballage,Storable,,,,cafeteria_gateaux,399
+Fromage Bidon,Café/Divers,Storable,,,,cafeteria_gateaux,400
+Fromage Slays,Café/Divers,Storable,,,,cafeteria_gateaux,401
+Fruseco Acajo,Café/Snacks,Storable,,,6132501840091,cafeteria_gateaux,402
+Fruseco Amande,Café/Snacks,Storable,,,6132501840053,cafeteria_gateaux,403
+Fruseco Pistache,Café/Snacks,Storable,,,6132501840015,cafeteria_gateaux,404
+Gateau Brino GM,Café/Biscuits & Gâteaux,Storable,,,6132501540311,cafeteria_gateaux,407
+Gateau Brino PM,Café/Biscuits & Gâteaux,Storable,,,6132501541462,cafeteria_gateaux,408
+Gateau Cherchell Chocolat,Café/Biscuits & Gâteaux,Storable,,,6130619003049,cafeteria_gateaux,409
+Gateau Cherchell Fraise,Café/Biscuits & Gâteaux,Storable,,,6130619003056,cafeteria_gateaux,410
+Gateau Cherchell Fraise Pie,Café/Biscuits & Gâteaux,Storable,,,6130619002677,cafeteria_gateaux,411
+Gateau Cherchell Vanille,Café/Biscuits & Gâteaux,Storable,,,6130619003100,cafeteria_gateaux,412
+Gateau Cherchell Yaourt,Café/Biscuits & Gâteaux,Storable,,,6130619003094,cafeteria_gateaux,413
+Gateau Chocolat Bejaouia,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,414
+Gateau Chocolat Oreo,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,415
+Gateau Cigar,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,416
+Gateau Cigarette,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,417
+Gateau Kool 4 Winners,Café/Biscuits & Gâteaux,Storable,,,6133414007137,cafeteria_gateaux,418
+Gateau Le Mosaique,Café/Biscuits & Gâteaux,Storable,,,6132501547853,cafeteria_gateaux,419
+Gateau Star Lu,Café/Biscuits & Gâteaux,Storable,,,6132011100531,cafeteria_gateaux,420
+Gauffrette Wafer Choco,Café/Biscuits & Gâteaux,Storable,,,6133414011530,cafeteria_gateaux,421
+Gaufrette Amine,Café/Biscuits & Gâteaux,Storable,,,6132500891254,cafeteria_gateaux,422
+Gaufrette Bifa Wafer Choco,Café/Biscuits & Gâteaux,Storable,,,6132501543077,cafeteria_gateaux,423
+Gaufrette Bilux Cacahuéte/Fraise,Café/Biscuits & Gâteaux,Storable,,,6135418001524,cafeteria_gateaux,424
+Gaufrette Bilux Chocolat,Café/Biscuits & Gâteaux,Storable,,,6135418001494,cafeteria_gateaux,425
+Gaufrette Bilux Noisette,Café/Biscuits & Gâteaux,Storable,,,6135418001500,cafeteria_gateaux,426
+Gaufrette Croustille LU,Café/Biscuits & Gâteaux,Storable,,,6132011101293,cafeteria_gateaux,427
+Gaufrette Croustille LU Pocket,Café/Biscuits & Gâteaux,Storable,,,6132011101088,cafeteria_gateaux,428
+Gaufrette Gofretto,Café/Biscuits & Gâteaux,Storable,,,613250151036,cafeteria_gateaux,429
+Gaufrette Kool Break Chocolat,Café/Biscuits & Gâteaux,Storable,,,6133414005607,cafeteria_gateaux,430
+Gaufrette Kool Break Dark,Café/Biscuits & Gâteaux,Storable,,,6133414009537,cafeteria_gateaux,431
+Gaufrette Kool Break Maxi,Café/Biscuits & Gâteaux,Storable,,,6133414012537,cafeteria_gateaux,432
+Gaufrette Kool Break Maxi Blanc,Café/Biscuits & Gâteaux,Storable,,,6133414013510,cafeteria_gateaux,433
+Gaufrette Kool Break Maxi Pistache,Café/Biscuits & Gâteaux,Storable,,,6133414015576,cafeteria_gateaux,434
+Gaufrette Kool Break White,Café/Biscuits & Gâteaux,Storable,,,6133414007540,cafeteria_gateaux,435
+Gaufrette Kool Supreme Chocolat,Café/Biscuits & Gâteaux,Storable,,,6133414007113,cafeteria_gateaux,436
+Gaufrette Kool Supreme Mini,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,437
+Gaufrette Kool Supreme White,Café/Biscuits & Gâteaux,Storable,,,6133414010229,cafeteria_gateaux,438
+Gaufrette Kool Supreme White Hazelnut,Café/Biscuits & Gâteaux,Storable,,,6133414008509,cafeteria_gateaux,439
+Gaufrette Kool Supreme XL,Café/Biscuits & Gâteaux,Storable,,,6133414011059,cafeteria_gateaux,440
+Gaufrette Maxon Orio,Café/Biscuits & Gâteaux,Storable,,,6133414010878,cafeteria_gateaux,441
+Gaz Ghadir 33 CL Ananas,Café/Boissons,Storable,33CL,,6133253000429,cafeteria_gateaux,442
+Gaz Ghadir 33 CL Cidre,Café/Boissons,Storable,33CL,,6133253000443,cafeteria_gateaux,443
+Gaz Ghadir 33 CL Citronade,Café/Boissons,Storable,33CL,,6133253001549,cafeteria_gateaux,444
+Gaz Ghadir 33 CL Cola,Café/Boissons,Storable,33CL,,6133253000689,cafeteria_gateaux,445
+Gaz Ghadir 33 CL Framboise,Café/Boissons,Storable,33CL,,6133253000481,cafeteria_gateaux,446
+Gaz Ghadir 33 CL Grenadine,Café/Boissons,Storable,33CL,,6133253001556,cafeteria_gateaux,447
+Gaz Ghadir 33 CL Orange,Café/Boissons,Storable,33CL,,6133253000368,cafeteria_gateaux,448
+Gaz Ghadir 33 CL Orangeade,Café/Boissons,Storable,33CL,,6133253001563,cafeteria_gateaux,449
+Gaz Hamoud Boualem 24 CL Cola CT,Café/Boissons,Storable,24CL,,6130695113878,cafeteria_gateaux,450
+Gaz Hamoud Boualem 24CL 0 Blanche,Café/Boissons,Storable,24CL,,6130695114301,cafeteria_gateaux,451
+Gaz Hamoud Boualem 24CL 0 Celecto,Café/Boissons,Storable,24CL,,6130695114295,cafeteria_gateaux,452
+Gaz Hamoud Boualem 24CL 0 Cola,Café/Boissons,Storable,24CL,,6130695114318,cafeteria_gateaux,453
+Gaz Hamoud Boualem 24CL Ananas CT,Café/Boissons,Storable,24CL,,6130695113830,cafeteria_gateaux,454
+Gaz Hamoud Boualem 24CL Blanche CT,Café/Boissons,Storable,24CL,,6130695113885,cafeteria_gateaux,455
+Gaz Hamoud Boualem 24CL Celecto CT,Café/Boissons,Storable,24CL,,6130695113892,cafeteria_gateaux,456
+Gaz Hamoud Boualem 24CL Citron CT,Café/Boissons,Storable,24CL,,6130695113854,cafeteria_gateaux,457
+Gaz Hamoud Boualem 24CL Litchi CT,Café/Boissons,Storable,24CL,,6130695113861,cafeteria_gateaux,458
+Gaz Hamoud Boualem 24CL Orange CT,Café/Boissons,Storable,24CL,,6130695113823,cafeteria_gateaux,459
+Gaz Hamoud Boualem 24CL Pomme CT,Café/Boissons,Storable,24CL,,6130695113847,cafeteria_gateaux,460
+Gaz Hamoud Boualem 25CL Ananas,Café/Boissons,Storable,25CL,,6130695113946,cafeteria_gateaux,461
+Gaz Hamoud Boualem 25CL Celecto,Café/Boissons,Storable,25CL,,6130695113939,cafeteria_gateaux,462
+Gaz Hamoud Boualem 25CL Citron,Café/Boissons,Storable,25CL,,6130695113953,cafeteria_gateaux,463
+Gaz Hamoud Boualem 25CL Fraise,Café/Boissons,Storable,25CL,,6130695114004,cafeteria_gateaux,464
+Gaz Hamoud Boualem 2L Ananas,Café/Boissons,Storable,2L,,,cafeteria_gateaux,465
+Gaz Hamoud Boualem 2L Blanche,Café/Boissons,Storable,2L,,,cafeteria_gateaux,466
+Gaz Hamoud Boualem 2L Pomme,Café/Boissons,Storable,2L,,,cafeteria_gateaux,467
+Gaz Hamoud Boualem 33 CL Ananas,Café/Boissons,Storable,33CL,,6130695112567,cafeteria_gateaux,468
+Gaz Hamoud Boualem 33 CL Blanche,Café/Boissons,Storable,33CL,,6130695111287,cafeteria_gateaux,469
+Gaz Hamoud Boualem 33 CL Celecto,Café/Boissons,Storable,33CL,,6130695111270,cafeteria_gateaux,470
+Gaz Hamoud Boualem 33 CL Citron,Café/Boissons,Storable,33CL,,6130695111300,cafeteria_gateaux,471
+Gaz Hamoud Boualem 33 CL Fraise,Café/Boissons,Storable,33CL,,,cafeteria_gateaux,472
+Gaz Hamoud Boualem 33 CL Orange,Café/Boissons,Storable,33CL,,6130695111294,cafeteria_gateaux,473
+Gaz Hamoud Boualem 33 CL Pomme,Café/Boissons,Storable,33CL,,6130695113588,cafeteria_gateaux,474
+Gaz Hamoud Boualem 33CL Cola,Café/Boissons,Storable,33CL,,6130695113533,cafeteria_gateaux,475
+Gaz Izem Cafeine CT,Café/Boissons,Storable,,,6130093063720,cafeteria_gateaux,476
+Gaz Izem Cerise,Café/Boissons,Storable,,,6130093067353,cafeteria_gateaux,477
+Gaz Izem Cerise CT,Café/Boissons,Storable,,,6130093067254,cafeteria_gateaux,478
+Gaz Izem Coco Myrtille,Café/Boissons,Storable,,,6130093068145,cafeteria_gateaux,479
+Gaz Izem Coco Myrtille CT,Café/Boissons,Storable,,,6130093067636,cafeteria_gateaux,480
+Gaz Izem Fruits Rouges,Café/Boissons,Storable,,,6130093068916,cafeteria_gateaux,481
+Gaz Izem Mangue,Café/Boissons,Storable,,,6130093068909,cafeteria_gateaux,482
+Gaz Izem Original,Café/Boissons,Storable,,,6130093063706,cafeteria_gateaux,483
+Gaz Izem Pasteque fraise,Café/Boissons,Storable,,,6130093068138,cafeteria_gateaux,484
+Gaz Izem Pasteque fraise CT,Café/Boissons,Storable,,,6130093067629,cafeteria_gateaux,485
+Gaz Izem Poir,Café/Boissons,Storable,,,6130093068961,cafeteria_gateaux,486
+Gaz Izem Pomme Figue,Café/Boissons,Storable,,,6130093067346,cafeteria_gateaux,487
+Gaz Izem Pomme Figue CT,Café/Boissons,Storable,,,6130093067261,cafeteria_gateaux,488
+Gaz Izem Tropical,Café/Boissons,Storable,,,613009369173,cafeteria_gateaux,489
+Gaz N'Gaous CT,Café/Boissons,Storable,,,,cafeteria_gateaux,490
+"Gaz N'Gaous PM 17,5 CL",Café/Boissons,Storable,17.5CL,,6132457700210,cafeteria_gateaux,491
+Gaz N'Gaous PM 33 CL,Café/Boissons,Storable,33CL,,,cafeteria_gateaux,492
+Gaz Ngaous 33CL Orange,Café/Boissons,Storable,33CL,,6132457700180,cafeteria_gateaux,493
+Gaz Ngaous CT,Café/Boissons,Storable,,,,cafeteria_gateaux,494
+Gaz Orangina PM,Café/Boissons,Storable,,,6132007100132,cafeteria_gateaux,495
+Gaz Schweppes Ananas 33CL,Café/Boissons,Storable,33CL,,6130003016136,cafeteria_gateaux,496
+Gaz Schweppes Grenadine 33CL,Café/Boissons,Storable,33CL,,6133166001292,cafeteria_gateaux,497
+Gaz Schweppes Grenadine CT,Café/Boissons,Storable,,,6130003014385,cafeteria_gateaux,498
+Gaz Schweppes Menthe 33CL,Café/Boissons,Storable,33CL,,613000316143,cafeteria_gateaux,499
+Gaz Schweppes Mohito 33CL,Café/Boissons,Storable,33CL,,613000016143,cafeteria_gateaux,500
+Gaz Tazej Pulpe Agrumes,Café/Boissons,Storable,,,6132504576867,cafeteria_gateaux,501
+Gaz Tazej Pulpe Orange,Café/Boissons,Storable,,,6132504576355,cafeteria_gateaux,502
+Gaz Vichy Ifri 33 CL Citron,Café/Boissons,Storable,33CL,,6130093068206,cafeteria_gateaux,503
+Gaz Vichy Ifri GM,Café/Boissons,Storable,,,6130093060644,cafeteria_gateaux,504
+Gaz Vichy Ifri PM,Café/Boissons,Storable,,,6130093010335,cafeteria_gateaux,505
+Ghaufrette Obimo Wafer,Café/Biscuits & Gâteaux,Storable,,,6130505000312,cafeteria_gateaux,506
+Ghaufrette Wafer Fruits,Café/Biscuits & Gâteaux,Storable,,,6133414011073,cafeteria_gateaux,507
+Ghaufrette Wafer Noisette,Café/Biscuits & Gâteaux,Storable,,,6133414011103,cafeteria_gateaux,508
+Gobelet Cristal,Café/Emballage,Storable,,,,cafeteria_gateaux,509
+Gobelet Jus,Café/Emballage,Storable,,,,cafeteria_gateaux,510
+Gobelet Pour Thé,Café/Emballage,Storable,,,,cafeteria_gateaux,511
+Huile Cafétéria,Café/Divers,Storable,,,,cafeteria_gateaux,514
+Ice Cream Cornito Chocolat,Café/Divers,Storable,,,6132501703792,cafeteria_gateaux,516
+Ice Cream Cornito Vanille,Café/Divers,Storable,,,6135958000407,cafeteria_gateaux,517
+Ice Cream Eskimo Chocolat,Café/Divers,Storable,,,6130624000903,cafeteria_gateaux,518
+Ice Cream Eskimo Vanille,Café/Divers,Storable,,,6130624000200,cafeteria_gateaux,519
+Ice Cream Gobelet Citron,Café/Divers,Storable,,,6132501703228,cafeteria_gateaux,520
+Ice Cream Gobelet Fraise,Café/Divers,Storable,,,6132501703099,cafeteria_gateaux,521
+Ice Cream Gobelet Vanille Chocolat,Café/Divers,Storable,,,6132501703136,cafeteria_gateaux,522
+Ice Cream Mini Chocolat,Café/Divers,Storable,,,6132501703587,cafeteria_gateaux,523
+Ice Cream Mini Fraise,Café/Divers,Storable,,,6132501703600,cafeteria_gateaux,524
+Ice Cream Mini Vanille,Café/Divers,Storable,,,6132501703594,cafeteria_gateaux,525
+Ice Cream Misou Vanille Chocolat,Café/Divers,Storable,,,6132501704881,cafeteria_gateaux,526
+Ice Cream Sandwich,Café/Divers,Storable,,,6132501703921,cafeteria_gateaux,527
+Ice TEA Rouiba,Café/Boissons,Storable,,,6130002005070,cafeteria_gateaux,528
+Jalousie,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,529
+Jouzia,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,530
+Jus Azro Red,Café/Boissons,Storable,,,6130093058344,cafeteria_gateaux,531
+Jus Azro blue,Café/Boissons,Storable,,,6130093056807,cafeteria_gateaux,532
+Jus BK Energie,Café/Boissons,Storable,,,6132122400360,cafeteria_gateaux,533
+Jus Daily Boite,Café/Boissons,Storable,,,6132501549512,cafeteria_gateaux,534
+Jus Daily Boite Mangue,Café/Boissons,Storable,,,6134427001679,cafeteria_gateaux,535
+Jus Daily Joy Boite,Café/Boissons,Storable,,,6134427000122,cafeteria_gateaux,536
+Jus Ifruit 2L Ananas,Café/Boissons,Storable,2L,,,cafeteria_gateaux,537
+Jus Ifruit 2L Carotte,Café/Boissons,Storable,2L,,,cafeteria_gateaux,538
+Jus Ifruit 2L Citron,Café/Boissons,Storable,2L,,,cafeteria_gateaux,539
+Jus Ifruit 2L Cocktail,Café/Boissons,Storable,2L,,,cafeteria_gateaux,540
+Jus Ifruit 2L Raisin,Café/Boissons,Storable,2L,,,cafeteria_gateaux,541
+Jus Ifruit 30 CL Péche Abricot,Café/Boissons,Storable,30CL,,6130093067971,cafeteria_gateaux,542
+Jus Ifruit 33 CL Ananas,Café/Boissons,Storable,33CL,,6130093067988,cafeteria_gateaux,543
+Jus Ifruit 33 CL Carotte,Café/Boissons,Storable,33CL,,6130093067933,cafeteria_gateaux,544
+Jus Ifruit 33 CL Cerise,Café/Boissons,Storable,33CL,,6130093068466,cafeteria_gateaux,545
+Jus Ifruit 33 CL Citron,Café/Boissons,Storable,33CL,,6130093067957,cafeteria_gateaux,546
+Jus Ifruit 33 CL Mangue,Café/Boissons,Storable,33CL,,6130093067995,cafeteria_gateaux,547
+Jus Ifruit 33 CL Orange,Café/Boissons,Storable,33CL,,6130093067926,cafeteria_gateaux,548
+Jus Ifruit 33 CL Péche,Café/Boissons,Storable,33CL,,6130093067964,cafeteria_gateaux,549
+Jus Ifruit 33 CL Raisin,Café/Boissons,Storable,33CL,,6130093068008,cafeteria_gateaux,550
+Jus Ifruit 33 CL Tropical,Café/Boissons,Storable,33CL,,6130093056890,cafeteria_gateaux,551
+Jus Ifruit Boite 33 CL Ananas,Café/Boissons,Storable,33CL,,6130093067803,cafeteria_gateaux,552
+Jus Ifruit Boite 33 CL Ananas au Lait,Café/Boissons,Storable,33CL,,6130093069258,cafeteria_gateaux,553
+Jus Ifruit Boite 33 CL Citronade,Café/Boissons,Storable,33CL,,6130093067766,cafeteria_gateaux,554
+Jus Ifruit Boite 33 CL Fraise,Café/Boissons,Storable,33CL,,6130093067872,cafeteria_gateaux,555
+Jus Ifruit Boite 33 CL Noix de Coco,Café/Boissons,Storable,33CL,,6130093069579,cafeteria_gateaux,556
+Jus Ifruit Boite 33 CL Orange,Café/Boissons,Storable,33CL,,6130093067773,cafeteria_gateaux,557
+Jus Ifruit Boite 33 CL Orange Citron Carrot,Café/Boissons,Storable,33CL,,6130093067796,cafeteria_gateaux,558
+Jus Ifruit Boite 33 CL Peche Orange,Café/Boissons,Storable,33CL,,6130093067810,cafeteria_gateaux,559
+Jus Ifruit Boite 33 CL Raisin,Café/Boissons,Storable,33CL,,6130093067834,cafeteria_gateaux,560
+Jus Ifruit Boite 33 CL Tropical,Café/Boissons,Storable,33CL,,6130093067780,cafeteria_gateaux,561
+Jus Ifruit Boite Banane Pomme,Café/Boissons,Storable,,,6130093066172,cafeteria_gateaux,562
+Jus Ifruit Boite Fraise Raisin,Café/Boissons,Storable,,,6130093066288,cafeteria_gateaux,563
+Jus Ifruit Boite Fruit Rouge,Café/Boissons,Storable,,,6130093066820,cafeteria_gateaux,564
+Jus Ifruit Boite Orange Mangue,Café/Boissons,Storable,,,6130093066134,cafeteria_gateaux,565
+Jus Ifruit au Lait 33 CL Banane,Café/Boissons,Storable,33CL,,6130093062433,cafeteria_gateaux,566
+Jus Ifruit au Lait 33 CL Fruit Rouge,Café/Boissons,Storable,33CL,,,cafeteria_gateaux,567
+Jus Ifruit au Lait 33 CL Mangue,Café/Boissons,Storable,33CL,,6130093068046,cafeteria_gateaux,568
+Jus Ifruit au Lait 33 CL Orange,Café/Boissons,Storable,33CL,,6130093056937,cafeteria_gateaux,569
+Jus Ifruit au Lait 33 CL Raisen Fraise,Café/Boissons,Storable,33CL,,6130093068022,cafeteria_gateaux,570
+Jus Izem Poir,Café/Boissons,Storable,,,6130093068848,cafeteria_gateaux,571
+Jus Kidy Boite 20cl,Café/Boissons,Storable,20CL,,6132344700262,cafeteria_gateaux,572
+Jus King Cocktail,Café/Boissons,Storable,,,6135643000149,cafeteria_gateaux,573
+Jus King Fraise,Café/Boissons,Storable,,,6135643000101,cafeteria_gateaux,574
+Jus King Orange,Café/Boissons,Storable,,,6135643000132,cafeteria_gateaux,575
+Jus Pressé Banane,Café/Boissons,Storable,,,,cafeteria_gateaux,576
+Jus Pressé Cocktail,Café/Boissons,Storable,,,,cafeteria_gateaux,577
+Jus Pure Poire,Café/Boissons,Storable,,,6132507022101,cafeteria_gateaux,578
+Jus Rami 33 CT,Café/Boissons,Storable,,,,cafeteria_gateaux,579
+Jus Rouiba 33 CL Citronad Ment,Café/Boissons,Storable,33CL,,6130002005476,cafeteria_gateaux,580
+Jus Rouiba 33 CL Raisin,Café/Boissons,Storable,33CL,,6130002005377,cafeteria_gateaux,581
+Jus Rouiba Boite Cocktail,Café/Boissons,Storable,,,6130002001690,cafeteria_gateaux,582
+Jus Rouiba Boite Raisin Grenadine,Café/Boissons,Storable,,,6130002006114,cafeteria_gateaux,583
+Jus Rouiba Exellence 25 CL Grenadine,Café/Boissons,Storable,25CL,,6130002003175,cafeteria_gateaux,584
+Jus Rouiba Exellence 25 CL Mangue,Café/Boissons,Storable,25CL,,6130002003632,cafeteria_gateaux,585
+Jus Rouiba Exellence 25 CL Orange,Café/Boissons,Storable,25CL,,6130002005759,cafeteria_gateaux,586
+Jus Rouiba Exellence 25 CL Orange Pomme,Café/Boissons,Storable,25CL,,6130002005834,cafeteria_gateaux,587
+Jus Rouiba Exellence 25 CL Poir,Café/Boissons,Storable,25CL,,6130002003441,cafeteria_gateaux,588
+Jus Rouiba Exellence 25 CL Pomme,Café/Boissons,Storable,25CL,,6130002004325,cafeteria_gateaux,589
+Jus Rouiba Exellence 25 CL Raisin,Café/Boissons,Storable,25CL,,6130002004240,cafeteria_gateaux,590
+Jus Rouiba Exellence 25 CL Raisin Grenadine,Café/Boissons,Storable,25CL,,,cafeteria_gateaux,591
+Jus Rouiba Notre Energie 33CL,Café/Boissons,Storable,33CL,,,cafeteria_gateaux,592
+Jus Star Abricot,Café/Boissons,Storable,,,6133018000053,cafeteria_gateaux,593
+Jus Star Péche,Café/Boissons,Storable,,,,cafeteria_gateaux,594
+Jus Tazej Ananas,Café/Boissons,Storable,,,6132504574252,cafeteria_gateaux,595
+Jus Tazej Cocktail,Café/Boissons,Storable,,,6132504574276,cafeteria_gateaux,596
+Jus Tazej Fraise Banane,Café/Boissons,Storable,,,6132504575686,cafeteria_gateaux,597
+Jus Tazej Kiwi,Café/Boissons,Storable,,,6132504574306,cafeteria_gateaux,598
+Jus Tazej Mandarine,Café/Boissons,Storable,,,6132504574313,cafeteria_gateaux,599
+Jus Tazej Mangue,Café/Boissons,Storable,,,6132504575693,cafeteria_gateaux,600
+Jus Tazej Orange,Café/Boissons,Storable,,,6132504574320,cafeteria_gateaux,601
+Jus Tazej Orange Ananas,Café/Boissons,Storable,,,6132504574795,cafeteria_gateaux,602
+Jus Tazej Raisin,Café/Boissons,Storable,,,6132504574351,cafeteria_gateaux,603
+Jus rouiba 33 CL Orange,Café/Boissons,Storable,33CL,,6130002005254,cafeteria_gateaux,604
+KOOL MINI,Café/Divers,Storable,,,,cafeteria_gateaux,605
+Kabir Infussion Gingembre au Miel,Café/Divers,Storable,,,,cafeteria_gateaux,606
+Kabir Infussion Graines de Fenouil,Café/Divers,Storable,,,,cafeteria_gateaux,607
+Kabir Infussion Thé Vert a La Manthe,Café/Divers,Storable,,,,cafeteria_gateaux,608
+Kabir Infussion Zaater,Café/Divers,Storable,,,,cafeteria_gateaux,609
+Kollogg's Coco Pops Barre,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,610
+Kollogg's Frosties Barre,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,611
+Lait Candia,Café/Boissons,Storable,,,6130433000019,cafeteria_gateaux,612
+Lait Soumam,Café/Boissons,Storable,,,6130760003189,cafeteria_gateaux,613
+Lait au Chocolat,Café/Boissons,Storable,,,,cafeteria_gateaux,614
+Lamina Swareen,Café/Biscuits & Gâteaux,Storable,,,6134845005648,cafeteria_gateaux,615
+Les Palmiers,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,616
+Lingette,Café/Divers,Storable,,,6134102000232,cafeteria_gateaux,617
+Lipton Insussion Thé Black,Café/Divers,Storable,,,,cafeteria_gateaux,618
+Lipton Insussion Thé Yellow Label,Café/Divers,Storable,,,,cafeteria_gateaux,619
+Lore Café Capsules,Café/Divers,Storable,,,,cafeteria_gateaux,620
+Louzia,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,621
+M et M'S,Café/Chocolat,Storable,,,,cafeteria_gateaux,622
+Madeleine Double Dulcesol Abricot,Café/Biscuits & Gâteaux,Storable,,,8410087650012,cafeteria_gateaux,623
+Madeleine Double Dulcesol Cacao,Café/Biscuits & Gâteaux,Storable,,,8410087021812,cafeteria_gateaux,624
+Madeleine Double Dulcesol Fraise,Café/Biscuits & Gâteaux,Storable,,,8410087021829,cafeteria_gateaux,625
+Madeleine Double Dulcesol Noir,Café/Biscuits & Gâteaux,Storable,,,8410087650050,cafeteria_gateaux,626
+Madeleine Dulcesol Carre Cacao,Café/Biscuits & Gâteaux,Storable,,,6134961000053,cafeteria_gateaux,627
+Madeleine Dulcesol Carre Caramel,Café/Biscuits & Gâteaux,Storable,,,6134961001333,cafeteria_gateaux,628
+Madeleine Dulcesol Carre Moka,Café/Biscuits & Gâteaux,Storable,,,6134961001265,cafeteria_gateaux,629
+Madeleine Dulcesol Carre Truffe,Café/Biscuits & Gâteaux,Storable,,,6134961000152,cafeteria_gateaux,630
+Madeleine Dulcesol Mini Pandorino,Café/Biscuits & Gâteaux,Storable,,,6134961000923,cafeteria_gateaux,631
+Madeleine Dulcesol Pandorino,Café/Biscuits & Gâteaux,Storable,,,6134961000336,cafeteria_gateaux,632
+Madeleine Dulcesol Snack,Café/Biscuits & Gâteaux,Storable,,,6134961000145,cafeteria_gateaux,633
+Madeleine Gusti,Café/Biscuits & Gâteaux,Storable,,,6134427001266,cafeteria_gateaux,634
+Madeleine Gusti Cake,Café/Biscuits & Gâteaux,Storable,,,6134427001273,cafeteria_gateaux,635
+Madeleine Roulé Dulcesol Creme PM,Café/Biscuits & Gâteaux,Storable,,,6134961000084,cafeteria_gateaux,636
+Madeleine Roulé Dulcesol GM,Café/Biscuits & Gâteaux,Storable,,,6134961000077,cafeteria_gateaux,637
+Madeleine Roulé Dulcesol PM,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,638
+Maxwell House Café Capsules,Café/Divers,Storable,,,,cafeteria_gateaux,639
+Maxwell House Café Soluble Mousse,Café/Divers,Storable,,,,cafeteria_gateaux,640
+Maxwell House Cappucino,Café/Divers,Storable,,,,cafeteria_gateaux,641
+Meringue,Café/Biscuits & Gâteaux,Storable,,,6132482400048,cafeteria_gateaux,642
+Milka Caramel Tablette,Café/Chocolat,Storable,,,7622210615084,cafeteria_gateaux,643
+Milka Chips Ahoy Tablette,Café/Chocolat,Storable,,,7622210269249,cafeteria_gateaux,644
+Milka Chocolat Dessert Tablette,Café/Chocolat,Storable,,,7622300026752,cafeteria_gateaux,645
+Milka Fraise Tablette,Café/Chocolat,Storable,,,,cafeteria_gateaux,646
+Milka Noisete Tablette,Café/Chocolat,Storable,,,3045140118502,cafeteria_gateaux,647
+Milka Oreo Brownie Tablette,Café/Chocolat,Storable,,,7622210956163,cafeteria_gateaux,648
+Milka Raisin Noisette Tablette,Café/Chocolat,Storable,,,,cafeteria_gateaux,649
+Milka Triple Choco Tablette,Café/Chocolat,Storable,,,7622210609908,cafeteria_gateaux,650
+Mille Feuille,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,651
+Mokate Gold Cappucino Caraml,Café/Divers,Storable,,,5900649060036,cafeteria_gateaux,652
+Mokate Gold Chocolat,Café/Divers,Storable,,,5900649052680,cafeteria_gateaux,653
+Mokate Gold Classique,Café/Divers,Storable,,,,cafeteria_gateaux,654
+Mokate Gold Vanie,Café/Divers,Storable,,,,cafeteria_gateaux,655
+Moment Caraibes,Café/Chocolat,Storable,,,6133414014562,cafeteria_gateaux,656
+Moment Tablette Dubai,Café/Chocolat,Storable,,,,cafeteria_gateaux,657
+Nescafé Classique Dose,Café/Divers,Storable,,,,cafeteria_gateaux,658
+Nescafé Gold Dose,Café/Divers,Storable,,,,cafeteria_gateaux,659
+Nespresso Café Capsul,Café/Divers,Storable,,,,cafeteria_gateaux,660
+Noisette,Café/Snacks,Storable,,,,cafeteria_gateaux,661
+Noisette au Miel,Café/Snacks,Storable,,,,cafeteria_gateaux,662
+Noix De Cajou,Café/Snacks,Storable,,,,cafeteria_gateaux,663
+Nougat Blanc,Café/Bonbons,Storable,,,6007583006348,cafeteria_gateaux,664
+Noyer,Café/Snacks,Storable,,,,cafeteria_gateaux,665
+Nutiss Amande,Café/Snacks,Storable,,,6132271600185,cafeteria_gateaux,666
+Nutiss Noix de Cajou,Café/Snacks,Storable,,,6132271600192,cafeteria_gateaux,667
+Nutiss Pistache,Café/Snacks,Storable,,,6132271600178,cafeteria_gateaux,668
+Paille,Café/Emballage,Storable,,,,cafeteria_gateaux,669
+Paillette de Jus,Café/Emballage,Storable,,,,cafeteria_gateaux,670
+Pain Burger,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,671
+Pain Libanais,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,672
+Pain Simple,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,673
+Pain Suisse,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,674
+Papier Aluminium,Café/Emballage,Storable,,,,cafeteria_gateaux,675
+Papier Cuissant,Café/Emballage,Storable,,,,cafeteria_gateaux,676
+Papier Mouchoir,Café/Divers,Storable,,,6133559000376,cafeteria_gateaux,677
+Pectol Frech Eacaltus Flavour,Café/Bonbons,Storable,,,84115539,cafeteria_gateaux,678
+Pectol Frech Ginger et Proplis,Café/Bonbons,Storable,,,84115225,cafeteria_gateaux,679
+Pectol Frech Herbal Flavour,Café/Bonbons,Storable,,,84115232,cafeteria_gateaux,680
+Pectol Frech Orange Flavour,Café/Bonbons,Storable,,,84115713,cafeteria_gateaux,681
+Petit Pain,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,682
+Pistache,Café/Snacks,Storable,,,,cafeteria_gateaux,683
+Pop Corn,Café/Snacks,Storable,,,,cafeteria_gateaux,684
+Pop Corn Mélange,Café/Snacks,Storable,,,,cafeteria_gateaux,685
+Qaada Cookie,Café/Biscuits & Gâteaux,Storable,,,6135129001318,cafeteria_gateaux,686
+Raouaie Acham Insussion Thé,Café/Divers,Storable,,,,cafeteria_gateaux,687
+Raya Acajou,Café/Snacks,Storable,,,6135179000057,cafeteria_gateaux,688
+Raya Amande,Café/Snacks,Storable,,,6135179000026,cafeteria_gateaux,689
+Raya Pistache,Café/Snacks,Storable,,,6135179000033,cafeteria_gateaux,690
+Regalo Pistache,Café/Biscuits & Gâteaux,Storable,,,613341013824,cafeteria_gateaux,691
+Rouiba 33 CL Cocktail,Café/Boissons,Storable,33CL,,6130002005285,cafeteria_gateaux,692
+Rouiba 33 CL Fraise Citron,Café/Boissons,Storable,33CL,,6130002005599,cafeteria_gateaux,693
+Royal Café Capsul,Café/Divers,Storable,,,,cafeteria_gateaux,694
+Sac 0.5 KG,Café/Emballage,Storable,,,,cafeteria_gateaux,695
+Sac Croissant,Café/Emballage,Storable,,,,cafeteria_gateaux,696
+Sac Fruit Sec,Café/Emballage,Storable,,,,cafeteria_gateaux,697
+Sac Poubelle 5kg,Café/Emballage,Storable,,,,cafeteria_gateaux,698
+Sac Sandwich GM,Café/Emballage,Storable,,,,cafeteria_gateaux,699
+Sac Sandwich PM,Café/Emballage,Storable,,,,cafeteria_gateaux,700
+South Africa Insussion Thé,Café/Divers,Storable,,,,cafeteria_gateaux,701
+Spatule a Café,Café/Emballage,Storable,,,,cafeteria_gateaux,702
+Sucre Dode,Café/Divers,Storable,,,,cafeteria_gateaux,703
+Sucre Poudre,Café/Divers,Storable,,,,cafeteria_gateaux,704
+Swareen Daffodil,Café/Biscuits & Gâteaux,Storable,,,6134845000858,cafeteria_gateaux,705
+Swareen Scusa Blanc,Café/Biscuits & Gâteaux,Storable,,,6134845005846,cafeteria_gateaux,706
+Swareen Scusa Choco,Café/Biscuits & Gâteaux,Storable,,,613484006393,cafeteria_gateaux,707
+Tabnija Miel,Café/Divers,Storable,,,7563245412319,cafeteria_gateaux,708
+Tartelette Caramel,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,709
+Tartulate Au Chocolat,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,710
+Tartulate Fruit Sec,Café/Biscuits & Gâteaux,Storable,,,,cafeteria_gateaux,711
+Thé,Café/Divers,Storable,,,,cafeteria_gateaux,712
+Thé Al Firdaous,Café/Divers,Storable,,,6973447240015,cafeteria_gateaux,713
+Thé Maison,Café/Divers,Storable,,,,cafeteria_gateaux,714
+Thé Staff,Café/Divers,Storable,,,,cafeteria_gateaux,715
+Thé Verveine Louiza,Café/Divers,Storable,,,133070001708,cafeteria_gateaux,716
+Twist Candia Fraise-Banane,Café/Boissons,Storable,,,6130433000484,cafeteria_gateaux,717
+Twist Candia Orange-Ananas,Café/Boissons,Storable,,,6130433000323,cafeteria_gateaux,718
+Twist Candia Orange-Mangue,Café/Boissons,Storable,,,6130433000491,cafeteria_gateaux,719
+Twist Candia Peche-Abrico,Café/Boissons,Storable,,,6130433000330,cafeteria_gateaux,720
+Vitale Infussion Thé Camomille,Café/Divers,Storable,,,,cafeteria_gateaux,721
+Vitale Infussion Thé Poliot,Café/Divers,Storable,,,,cafeteria_gateaux,722
+Vitale Infussion Thé Thym,Café/Divers,Storable,,,,cafeteria_gateaux,723
+Vitale Infussion Thé Verveine,Café/Divers,Storable,,,,cafeteria_gateaux,724
+Vitale Infussion Thé au Caramel,Café/Divers,Storable,,,,cafeteria_gateaux,725
+Vitale Infussion Thé au Fruits des Bois,Café/Divers,Storable,,,,cafeteria_gateaux,726
+Westminister South African,Café/Divers,Storable,,,,cafeteria_gateaux,727
+Westminister South Thé Vert Orange,Café/Divers,Storable,,,,cafeteria_gateaux,728
+Westminister South Thé Vert Vanille,Café/Divers,Storable,,,,cafeteria_gateaux,729
+Westminster Infussion Thé,Café/Divers,Storable,,,,cafeteria_gateaux,730
+Westminster Infussion Thé Digestion,Café/Divers,Storable,,,,cafeteria_gateaux,731
+Yaourt Yago Fraise PM,Café/Divers,Storable,,,6130760000355,cafeteria_gateaux,732
+Yaourt Yago Grenadine PM,Café/Divers,Storable,,,6130760006074,cafeteria_gateaux,733
+Yaourt Yago Péche PM,Café/Divers,Storable,,,61307930000430,cafeteria_gateaux,734
+Force Expresse,Ménage & Nettoyage,Storable,,,,nettoyage,1
+Lave Sol,Ménage & Nettoyage,Storable,,,,nettoyage,2
+Lave Sol 5L,Ménage & Nettoyage,Storable,5L,,,nettoyage,3
+Aigle Top Sols 1L,Ménage & Nettoyage,Storable,1L,,,nettoyage,4
+Air Wick,Ménage & Nettoyage,Storable,,,,nettoyage,5
+Anti Fourmis,Ménage & Nettoyage,Storable,,,,nettoyage,6
+Awane,Ménage & Nettoyage,Storable,,,,nettoyage,7
+Balais,Ménage & Nettoyage,Storable,,,,nettoyage,8
+Bassine Plastique,Ménage & Nettoyage,Storable,,,,nettoyage,9
+Bavette,Ménage & Nettoyage,Storable,,,,nettoyage,10
+Brosse,Ménage & Nettoyage,Storable,,,,nettoyage,11
+Brosse Pelle + Manche,Ménage & Nettoyage,Storable,,,,nettoyage,12
+Brosse WC,Ménage & Nettoyage,Storable,,,,nettoyage,13
+Chaussures de Travail,Ménage & Nettoyage,Storable,,,,nettoyage,14
+Chiffon Microfibre 40*40,Ménage & Nettoyage,Storable,,,,nettoyage,15
+Chiffon Microfibre 50*70,Ménage & Nettoyage,Storable,,,,nettoyage,16
+Chiffon Microfibre 60*40,Ménage & Nettoyage,Storable,,,,nettoyage,17
+Chiffon Microfibre Glace,Ménage & Nettoyage,Storable,,,,nettoyage,18
+Chifon Microfiber Meuble,Ménage & Nettoyage,Storable,,,,nettoyage,19
+Corbeille,Ménage & Nettoyage,Storable,,,,nettoyage,20
+Corbeille Plastique,Ménage & Nettoyage,Storable,,,,nettoyage,21
+Désodorisant,Ménage & Nettoyage,Storable,,,,nettoyage,22
+Détart-Actif,Ménage & Nettoyage,Storable,,,,nettoyage,23
+Détartrant Aigle,Ménage & Nettoyage,Storable,,,,nettoyage,24
+Eau de Javel,Ménage & Nettoyage,Storable,,,,nettoyage,25
+Egouttoire Vaisselle,Ménage & Nettoyage,Storable,,,,nettoyage,26
+Eponge,Ménage & Nettoyage,Storable,,,,nettoyage,27
+Esprit de Sel,Ménage & Nettoyage,Storable,,,,nettoyage,28
+Extrait Parfumerie,Ménage & Nettoyage,Storable,,,,nettoyage,29
+Fix Manche,Ménage & Nettoyage,Storable,,,,nettoyage,30
+Fly-Tox,Ménage & Nettoyage,Storable,,,,nettoyage,31
+Frottoir Glace,Ménage & Nettoyage,Storable,,,,nettoyage,32
+Frottoir Sol,Ménage & Nettoyage,Storable,,,,nettoyage,33
+Gants Jetable,Ménage & Nettoyage,Storable,,,,nettoyage,34
+Gants Ménage,Ménage & Nettoyage,Storable,,,,nettoyage,35
+Gel Hydroalcoolique,Ménage & Nettoyage,Storable,,,,nettoyage,36
+Kleen Anti-Calcaire,Ménage & Nettoyage,Storable,,,,nettoyage,37
+Kleen Javel 5L,Ménage & Nettoyage,Storable,5L,,,nettoyage,38
+Kleen Jel Javel,Ménage & Nettoyage,Storable,,,,nettoyage,39
+Kleen Kitchen Pro,Ménage & Nettoyage,Storable,,,,nettoyage,40
+Kleen Lave Main,Ménage & Nettoyage,Storable,,,,nettoyage,41
+Kleen Lave Sol,Ménage & Nettoyage,Storable,,,,nettoyage,42
+Kleen Liquide Vaisselle,Ménage & Nettoyage,Storable,,,,nettoyage,43
+Lave Glace,Ménage & Nettoyage,Storable,,,,nettoyage,44
+Lavette (Carré),Ménage & Nettoyage,Storable,,,,nettoyage,45
+Lavette (Inox),Ménage & Nettoyage,Storable,,,,nettoyage,46
+Lavette (Réctangulaire),Ménage & Nettoyage,Storable,,,,nettoyage,47
+Liquid Machine,Ménage & Nettoyage,Storable,,,,nettoyage,48
+Liquide Vaisselle 5L,Ménage & Nettoyage,Storable,5L,,,nettoyage,49
+Lorage Désodorisant,Ménage & Nettoyage,Storable,,,,nettoyage,50
+Manche Balai-Frottoire,Ménage & Nettoyage,Storable,,,,nettoyage,51
+Microfiber,Ménage & Nettoyage,Storable,,,,nettoyage,52
+Mop Magic,Ménage & Nettoyage,Storable,,,,nettoyage,53
+Palc Desodorisant,Ménage & Nettoyage,Storable,,,,nettoyage,54
+Papier Bureau Clinet,Ménage & Nettoyage,Storable,,,,nettoyage,55
+Papier Essuie Mains,Ménage & Nettoyage,Storable,,,,nettoyage,56
+Papier Essuie Tout,Ménage & Nettoyage,Storable,,,,nettoyage,57
+Papier Hygiénique,Ménage & Nettoyage,Storable,,,,nettoyage,58
+Rechange Mop Magic,Ménage & Nettoyage,Storable,,,,nettoyage,59
+Sac Poubell 15 kg,Ménage & Nettoyage,Storable,15KG,,,nettoyage,60
+Sac Poubell 25 KG,Ménage & Nettoyage,Storable,25KG,,,nettoyage,61
+Sac Poubell Sonatrach GM,Ménage & Nettoyage,Storable,,,,nettoyage,62
+Sac Poubell Sonatrach PM,Ménage & Nettoyage,Storable,,,,nettoyage,63
+Sac Poubelle,Ménage & Nettoyage,Storable,,,,nettoyage,64
+Sac Poubelle Noir GM,Ménage & Nettoyage,Storable,,,,nettoyage,65
+Sanibon 1L,Ménage & Nettoyage,Storable,1L,,,nettoyage,66
+Sanibon 5L,Ménage & Nettoyage,Storable,5L,,,nettoyage,67
+Sashet Congelation,Ménage & Nettoyage,Storable,,,,nettoyage,68
+Savon Liquide Lave Mains,Ménage & Nettoyage,Storable,,,,nettoyage,69
+Seau Nettoyage GM,Ménage & Nettoyage,Storable,,,,nettoyage,70
+Seau Nettoyage MM,Ménage & Nettoyage,Storable,,,,nettoyage,71
+Seau Nettoyage PM,Ménage & Nettoyage,Storable,,,,nettoyage,72
+Tenue Femme de Ménage,Ménage & Nettoyage,Storable,,,,nettoyage,73
+Tete De Loup + Manche,Ménage & Nettoyage,Storable,,,,nettoyage,74
+Vadrouille,Ménage & Nettoyage,Storable,,,,nettoyage,75
+Essuie Mains Enchevêtré 3001F004 Cotex Pro,Ménage & Nettoyage,Storable,,,,articles_cotex,1
+Essuie main 3003R001 Cotex Pro,Ménage & Nettoyage,Storable,,,,articles_cotex,2
+Papier Hygiénique 5001R004 Cotex Pro,Ménage & Nettoyage,Storable,,,,articles_cotex,3
+Serviette de Table Cotex Delux,Ménage & Nettoyage,Storable,,,,articles_cotex,4
