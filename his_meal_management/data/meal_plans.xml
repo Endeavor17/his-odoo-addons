@@ -35,7 +35,7 @@
             <field name="meal_credits">3.0</field>
             <field name="meal_validity_days">0</field>
             <field name="available_in_pos" eval="True"/>
-            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_repas'))]"/>
+            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_recharges'))]"/>
             <field name="sale_ok" eval="True"/>
             <field name="purchase_ok" eval="False"/>
             <field name="taxes_id" eval="[(5, 0, 0)]"/>
@@ -50,7 +50,7 @@
             <field name="meal_credits">12.5</field>
             <field name="meal_validity_days">0</field>
             <field name="available_in_pos" eval="True"/>
-            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_repas'))]"/>
+            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_recharges'))]"/>
             <field name="sale_ok" eval="True"/>
             <field name="purchase_ok" eval="False"/>
             <field name="taxes_id" eval="[(5, 0, 0)]"/>
@@ -65,7 +65,7 @@
             <field name="meal_credits">40.0</field>
             <field name="meal_validity_days">0</field>
             <field name="available_in_pos" eval="True"/>
-            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_repas'))]"/>
+            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_recharges'))]"/>
             <field name="sale_ok" eval="True"/>
             <field name="purchase_ok" eval="False"/>
             <field name="taxes_id" eval="[(5, 0, 0)]"/>
@@ -85,7 +85,7 @@
             <field name="meal_credits">6.0</field>
             <field name="meal_validity_days">0</field>
             <field name="available_in_pos" eval="True"/>
-            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_repas'))]"/>
+            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_recharges'))]"/>
             <field name="sale_ok" eval="True"/>
             <field name="purchase_ok" eval="False"/>
             <field name="taxes_id" eval="[(5, 0, 0)]"/>
@@ -100,7 +100,7 @@
             <field name="meal_credits">25.0</field>
             <field name="meal_validity_days">0</field>
             <field name="available_in_pos" eval="True"/>
-            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_repas'))]"/>
+            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_recharges'))]"/>
             <field name="sale_ok" eval="True"/>
             <field name="purchase_ok" eval="False"/>
             <field name="taxes_id" eval="[(5, 0, 0)]"/>
@@ -115,7 +115,7 @@
             <field name="meal_credits">80.0</field>
             <field name="meal_validity_days">0</field>
             <field name="available_in_pos" eval="True"/>
-            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_repas'))]"/>
+            <field name="pos_categ_ids" eval="[Command.link(ref('pos_categ_recharges'))]"/>
             <field name="sale_ok" eval="True"/>
             <field name="purchase_ok" eval="False"/>
             <field name="taxes_id" eval="[(5, 0, 0)]"/>
@@ -158,24 +158,26 @@
 
     </data>
 
-    <!-- Onglet de caisse des forfaits et des repas.
+    <!-- Onglets de caisse. DEUX, et non un seul : une recharge de compte et
+         un repas ne se vendent pas au meme endroit. Le Restaurant ne sert que
+         des repas ; le Copy Center vend des fournitures et prend les
+         recharges, mais rien de comestible.
 
-         Il appartient a ce module et non a his_stock_mdm : c'est ici que les
-         produits sont definis, donc ici que se decide le rayon sous lequel le
-         caissier les trouve. his_stock_mdm possede la taxonomie de vente au
-         detail et le perimetre des caisses ; ce module y ajoute le sien.
+         Ils appartiennent a ce module et non a his_stock_mdm : c'est ici que
+         les produits sont definis, donc ici que se decide le rayon sous lequel
+         le caissier les trouve.
 
          HORS noupdate, comme le perimetre des caisses cote his_stock_mdm : ces
          rattachements sont une decision du module et doivent se reappliquer a
-         chaque mise a jour. Command.link n'ecrase pas les onglets deja poses
-         par his_stock_mdm sur les memes caisses.
-
-         Les forfaits se vendent la ou l'etudiant recharge (Copy Center) ; le
-         repas se sert la ou il se mange (Restaurant). -->
+         chaque mise a jour. -->
 
     <record id="pos_categ_repas" model="pos.category">
-        <field name="name">Repas &amp; Recharges</field>
+        <field name="name">Repas</field>
         <field name="sequence">5</field>
+    </record>
+    <record id="pos_categ_recharges" model="pos.category">
+        <field name="name">Recharges</field>
+        <field name="sequence">6</field>
     </record>
 
 </odoo>
