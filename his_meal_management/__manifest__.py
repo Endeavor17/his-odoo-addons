@@ -1,6 +1,6 @@
 {
     'name': 'HIS Meal Management',
-    'version': '19.0.3.4.0',
+    'version': '19.0.3.5.0',
     'summary': 'HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS',
     'description': """
 HIS Meal Management
@@ -16,8 +16,8 @@ Credits do not expire; they keep until they are eaten.
 
 * Identity belongs to his_person_core: the person record, the matricule
   institutionnel and its sequence are all its business, not this module's.
-  Added here are only the academic attributes the meal service needs -
-  rang_academique, specialite, and the many-to-many Person/Faculty referential.
+  The academic attributes (rang_academique, specialite, the Person/Faculty
+  referential) come from his_academic_base; the six faculties are seeded here.
 * The wallet stays on res.partner, because that is what the card's barcode
   resolves to and what the POS sells to. Every his.person carries one, so a
   balance reads straight off a person record through delegation.
@@ -56,6 +56,8 @@ Credits do not expire; they keep until they are eaten.
         # Identity is not ours: his_person_core owns the person record and the
         # only sequence allowed to issue a matricule institutionnel.
         'his_person_core',
+        # his.faculty and the academic fields moved there (19.0.3.5.0).
+        'his_academic_base',
         # The plans are sold at the tills his_stock_mdm defines, and their POS
         # tab has to sit alongside its retail ones. The coupling already
         # existed through available_in_pos; declaring it makes the load order

@@ -9,6 +9,9 @@ class HisFaculty(models.Model):
     many-to-many and not a single field: the specification calls that out as
     dictated by an inconsistency found in the real data, not as a theoretical
     allowance.
+
+    Moved here unchanged from his_meal_management (same _name, table and
+    relation table), so existing rows are kept.
     """
 
     _name = 'his.faculty'
@@ -21,9 +24,6 @@ class HisFaculty(models.Model):
         default=True,
         help="Unticked when the full name is not yet confirmed by a received catalogue.",
     )
-    # Relation table renamed along with the retarget. Reusing the old
-    # his_person_faculty_rel would leave Odoo pointing a partner_id column at
-    # his.person ids; the 19.0.2.0.0 migration moves the existing rows across.
     person_ids = fields.Many2many(
         'his.person', 'his_faculty_person_rel', 'faculty_id', 'person_id',
         string="People",
