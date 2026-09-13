@@ -18,9 +18,12 @@ class HrEmployee(models.Model):
         rang academique que sur un enseignant.
         """
         self.ensure_one()
-        person = self.sudo().applicant_ids.his_person_id[:1] \
-            or self.sudo().work_contact_id.his_person_ids[:1]
-        if not person:
+        # Only the person of THIS employee's own application. Falling back on
+        # whatever person the contact carries would let a second employee on a
+        # shared contact slip past his_hr_base's refusal (one contact, one
+        # identity) — caught by test_shared_work_contact_is_refused.
+        person = self.sudo().applicant_ids.his_person_id[:1]
+        if not person or self.sudo().work_contact_id.employee_ids - self:
             return super()._create_his_person()
         person.write({'type_personne': 'enseignant'})
         person._his_attribuer_matricule(
