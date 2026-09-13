@@ -1,4 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_his_person_insite_manager,his.person.insite.manager,his_person_core.model_his_person,campus_teacher_management.group_campus_manager,1,1,0,0
 access_academic_period_recruiter,academic.period.recruiter,model_academic_period,campus_teacher_management.group_campus_recruiter,1,0,0,0
 access_academic_period_manager,academic.period.manager,model_academic_period,campus_teacher_management.group_campus_manager,1,1,1,1
 access_academic_engagement_recruiter,academic.engagement.recruiter,model_academic_engagement,campus_teacher_management.group_campus_recruiter,1,1,1,0

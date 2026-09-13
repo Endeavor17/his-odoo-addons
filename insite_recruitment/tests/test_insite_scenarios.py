@@ -229,6 +229,13 @@ class TestInsiteScenarios(InsiteCommon):
         engagement.with_user(self.manager).action_confirm()
         self.assertEqual(candidature.latest_engagement_state, 'Confirmed')
 
+    def test_insite_manager_can_classify_a_person(self):
+        """Decision 2026-09-13: InSite managers write on his.person (no create,
+        no delete) so they can mark a teacher internal or external."""
+        person = self._person('Classify Me')
+        person.with_user(self.manager).is_internal_teacher = 'internal'
+        self.assertEqual(person.is_internal_teacher, 'internal')
+
     def test_candidature_blocked_for_unclassified_person(self):
         person = self._person('Unclassified Person')
         self.assertFalse(person.is_internal_teacher)
