@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 """Un seul test par regle du MDM. Il echoue si une regle saute."""
 from odoo.exceptions import ValidationError
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import Form, TransactionCase, tagged
 
 
 @tagged('post_install', '-at_install')
@@ -124,6 +124,52 @@ class TestGovernance(TransactionCase):
 
     def test_sale_price_not_required_for_service(self):
         self._product(list_price=0.0, type='service', is_storable=False)
+
+    # --- Regle 3 bis : mise en vente automatique au prix saisi --------------
+
+    def _article_pos_sans_prix(self, **vals):
+        """L'etat que laisse l'import du catalogue."""
+        return self._product(**{
+            'sale_ok': False, 'list_price': 0.0, 'available_in_pos': True, **vals})
+
+    def test_prix_saisi_rend_vendable_un_article_pos(self):
+        product = self._article_pos_sans_prix()
+        product.write({'list_price': 70})
+        self.assertTrue(product.sale_ok)
+
+    def test_prix_saisi_hors_pos_ne_rend_pas_vendable(self):
+        """Ingredients, entretien, emballages : consommes, jamais vendus."""
+        product = self._article_pos_sans_prix(available_in_pos=False)
+        product.write({'list_price': 70})
+        self.assertFalse(product.sale_ok)
+
+    def test_sale_ok_explicite_respecte(self):
+        product = self._article_pos_sans_prix()
+        product.write({'list_price': 70, 'sale_ok': False})
+        self.assertFalse(product.sale_ok)
+
+    def test_mise_en_pos_avec_prix_rend_vendable(self):
+        product = self._article_pos_sans_prix(list_price=70.0, available_in_pos=False)
+        self.assertFalse(product.sale_ok, "create() ne coche rien")
+        product.write({'available_in_pos': True})
+        self.assertTrue(product.sale_ok)
+
+    def test_prix_zero_toujours_refuse(self):
+        """La regle 3 tient : jamais de vente a 0 DA, jamais de decochage."""
+        product = self._product(available_in_pos=True)
+        with self.assertRaises(ValidationError):
+            product.write({'list_price': 0})
+
+    def test_prix_via_variante(self):
+        product = self._article_pos_sans_prix()
+        product.product_variant_id.write({'lst_price': 70})
+        self.assertTrue(product.sale_ok)
+
+    def test_onchange_prix(self):
+        """La case se coche a la saisie, avant l'enregistrement."""
+        form = Form(self._article_pos_sans_prix())
+        form.list_price = 70
+        self.assertTrue(form.sale_ok)
 
     # --- Regle 6 : eligibilite des attributs par categorie ------------------
 

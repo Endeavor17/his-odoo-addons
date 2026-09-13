@@ -1,6 +1,6 @@
 {
     'name': 'HIS POS Copy Center',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.1.0',
     'summary': 'One dialog to compose a copy job, instead of one popup per dimension',
     'description': """
 HIS POS Copy Center
@@ -19,7 +19,8 @@ job.
   server charges are the same number.
 * A job of five documents is five ordinary order lines. There is no job model.
 * A product carrying no copy_service is invisible to the builder and behaves
-  exactly as it does today.
+  exactly as it does today. The Copy Center group on the product form only
+  shows on Photocopie/Impression products (or wherever copy_service is set).
 """,
     'author': 'Abdo Chabouti',
     'category': 'Sales/Point of Sale',

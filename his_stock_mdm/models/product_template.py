@@ -38,6 +38,10 @@ class ProductTemplate(models.Model):
         res = super().write(vals)
         if 'default_code' in vals or 'active' in vals:
             self._assert_mdm_default_code()
+        # MDM regle 3 bis (cf. plus bas). Pas de boucle : l'ecriture de
+        # sale_ok ne porte ni list_price ni available_in_pos.
+        if ('list_price' in vals or 'available_in_pos' in vals) and 'sale_ok' not in vals:
+            self._mdm_a_mettre_en_vente().write({'sale_ok': True})
         return res
 
     # --- MDM Phase 5 : tracabilite heritee de la categorie -------------------
@@ -102,3 +106,34 @@ class ProductTemplate(models.Model):
                 raise ValidationError(
                     "Le prix de vente est obligatoire pour « %s » : il s'agit d'un "
                     "produit stockable marqué comme vendable." % template.name)
+
+    # --- MDM regle 3 bis — mise en vente automatique au prix saisi -----------
+    #
+    # Le piege : l'import du catalogue (tools/import_seed_catalogue.py) cree
+    # chaque stockable en sale_ok=False et list_price=0, seule facon de
+    # respecter la regle 3 sans inventer de prix. Or le POS ne charge que les
+    # articles available_in_pos ET sale_ok (_load_pos_data_domain) : un prix
+    # saisi ensuite dans l'interface ne rendait jamais l'article visible en
+    # caisse (INV-001670 « Caps Cafe Capsules », audit du 2026-09-13).
+    #
+    # Un article de caisse qui recoit un prix non nul est donc mis en vente.
+    # La regle 3 reste entiere : on ne coche jamais sale_ok sur un prix nul et
+    # on ne le decoche jamais -- ramener a 0 le prix d'un article vendable leve
+    # toujours son erreur, une caisse ne vend donc jamais a 0 DA.
+    #  - Hors caisse (ingredients, entretien, emballages : consommes, pas
+    #    vendus), rien ne bouge.
+    #  - Un sale_ok saisi dans la meme ecriture l'emporte.
+    #  - create() n'est pas concerne : l'import y passe sale_ok=False expres.
+
+    def _mdm_a_mettre_en_vente(self):
+        precision = self.env['decimal.precision'].precision_get('Product Price')
+        return self.filtered(lambda t: t.available_in_pos and not t.sale_ok and not float_is_zero(
+            t.list_price, precision_digits=precision))
+
+    @api.onchange('list_price')
+    def _onchange_mdm_mise_en_vente(self):
+        # Meme regle que write(), mais visible avant l'enregistrement : sans
+        # elle, l'utilisateur ne comprend pas pourquoi l'article est devenu
+        # vendable.
+        if self._mdm_a_mettre_en_vente():
+            self.sale_ok = True
