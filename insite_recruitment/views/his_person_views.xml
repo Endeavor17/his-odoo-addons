@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_his_person_form_insite" model="ir.ui.view">
+        <field name="name">his.person.form.insite</field>
+        <field name="model">his.person</field>
+        <field name="inherit_id" ref="his_person_core.view_his_person_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[field[@name='email_personnel']]" position="after">
+                <group string="InSite">
+                    <field name="is_internal_teacher"/>
+                    <field name="insite_candidature_count"/>
+                    <field name="insite_engagement_count"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Anchored on a field name, not on a group label: `string` is translatable
+         and would stop matching in a translated database. -->
+    <record id="view_his_person_form_academic" model="ir.ui.view">
+        <field name="name">his.person.form.academic</field>
+        <field name="model">his.person</field>
+        <field name="inherit_id" ref="his_person_core.view_his_person_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[field[@name='email_personnel']]" position="after">
+                <group string="Rattachement">
+                    <field name="faculty_ids" widget="many2many_tags"/>
+                </group>
+                <group string="Enseignant" invisible="type_personne != 'enseignant'">
+                    <field name="rang_academique"/>
+                    <field name="specialite"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

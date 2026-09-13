@@ -1,6 +1,6 @@
 {
     'name': 'InSite Recruitment',
-    'version': '19.0.2.0.0',
+    'version': '19.0.3.0.0',
     'summary': 'InSite teacher recruitment: need, internal/external candidates, contract, integration, module',
     'description': """
 InSite Recruitment
@@ -12,10 +12,12 @@ Need -> internal/external candidate -> contract -> signature -> integration ->
 module assignment -> module preparation -> validation -> publication pipeline
 fully separate from Campus+'s.
 
-* A teacher exists as exactly one ``academic.person`` record, whether they
-  come through Campus+, InSite, or both.
-* Identity matching (exact matricule, then probabilistic name/email/phone with
-  mandatory human confirmation) happens before any new Person is created.
+* A teacher exists as exactly one ``his.person`` (the group identity register),
+  whether they come through Campus+, InSite, HR or meals.
+* Identity matching is his.person._find_or_flag_match — the group's one
+  algorithm, never a copy: exact matricule, then name/email/phone scoring with
+  mandatory human confirmation. A submitted matricule is a lookup key only; the
+  real one is issued by his_person_core when the contract is signed.
 * Internal teachers are always searched first (an explicit, administrator-set
   flag — never inferred); external candidates are ranked with an explicit,
   deterministic, human-readable explanation, never an opaque score.
@@ -37,6 +39,9 @@ fully separate from Campus+'s.
         'calendar',
         'hr_recruitment',
         'campus_teacher_management',
+        'his_person_core',
+        'his_academic_base',
+        'campus_identity_bridge',
     ],
 
     'data': [
@@ -55,7 +60,7 @@ fully separate from Campus+'s.
         'views/insite_module_sheet_views.xml',
         'views/insite_process_permission_views.xml',
         'views/insite_menus.xml',
-        'views/academic_person_views.xml',
+        'views/his_person_views.xml',
     ],
 
     'installable': True,

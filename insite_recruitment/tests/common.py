@@ -9,7 +9,7 @@ class InsiteCommon(common.TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.Person = cls.env['academic.person']
+        cls.Person = cls.env['his.person']
         cls.Need = cls.env['insite.recruitment.need']
         cls.Candidature = cls.env['insite.candidature']
         cls.Submission = cls.env['insite.submission']
@@ -55,6 +55,12 @@ class InsiteCommon(common.TransactionCase):
             'process_id': process.id, 'user_id': user.id,
             'can_view': view, 'can_execute': execute, 'can_validate': validate,
         })
+
+    @classmethod
+    def _person(cls, name, **vals):
+        return cls.env['his.person'].sudo().create(dict({
+            'name': name, 'type_personne': 'candidat', 'source_system': 'manual',
+        }, **vals)).sudo(False)
 
     def _make_submission(self, reference, payload):
         return self.Submission.create({

@@ -1,6 +1,5 @@
 from . import campus_process
-from . import academic_person
-from . import academic_faculty
+from . import his_person
 from . import academic_period
 from . import insite_recruitment_need
 from . import academic_engagement

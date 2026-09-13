@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_applicant_view_form_campus_identity" model="ir.ui.view">
+        <field name="name">hr.applicant.form.campus.identity</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="campus_teacher_management.hr_applicant_view_form_campus"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='campus_hiring']" position="inside">
+                <group string="Referentiel Identite">
+                    <field name="his_person_id"/>
+
+                    <!-- Tant que ce bloc est la, RIEN n'est rattache : c'est le
+                         recruteur qui tranche, pas le systeme. -->
+                    <div colspan="2" class="alert alert-warning" role="status"
+                         invisible="not his_person_candidate_id">
+                        <p>
+                            Une fiche existante ressemble a ce candidat
+                            (<field name="his_person_match_score" widget="percentage" readonly="1" class="oe_inline"/>
+                            de similarite). Aucune fiche n'a ete rattachee tant que
+                            vous n'avez pas tranche.
+                        </p>
+                        <field name="his_person_candidate_id" readonly="1"/>
+                        <button name="action_confirm_person_match" type="object"
+                                string="C'est la meme personne" class="btn-primary"/>
+                        <button name="action_reject_person_match" type="object"
+                                string="Creer une fiche distincte" class="btn-secondary"/>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

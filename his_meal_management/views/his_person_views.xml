@@ -21,15 +21,7 @@
                  selector would stop matching in a translated database
                  (ir_ui_view._valid_inheritance). `email_personnel` identifies
                  the Contact group and is not translated. -->
-            <xpath expr="//group[field[@name='email_personnel']]" position="after">
-                <group string="Rattachement">
-                    <field name="faculty_ids" widget="many2many_tags"/>
-                </group>
-                <group string="Enseignant" invisible="type_personne != 'enseignant'">
-                    <field name="rang_academique"/>
-                    <field name="specialite"/>
-                </group>
-            </xpath>
+            <!-- Faculties, rank and specialty are shown by his_academic_base. -->
 
             <xpath expr="//sheet" position="inside">
                 <notebook>

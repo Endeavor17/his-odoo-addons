@@ -54,7 +54,7 @@ class InsiteRecruitmentNeed(models.Model):
     ], string="Status", default='need', required=True, tracking=True, copy=False, index=True)
 
     internal_teacher_id = fields.Many2one(
-        'academic.person', "Internal Teacher", ondelete='set null', index='btree_not_null',
+        'his.person', "Internal Teacher", ondelete='set null', index='btree_not_null',
         help="Set once an internal teacher is selected for this Need.")
     candidature_ids = fields.One2many(
         'insite.candidature', 'need_id', "Candidatures",
@@ -95,11 +95,11 @@ class InsiteRecruitmentNeed(models.Model):
 
     def _internal_teacher_candidates(self):
         """Read-only lookup: teachers explicitly marked internal
-        (academic.person.is_internal_teacher — an administrator-set flag, never
+        (his.person.is_internal_teacher — an administrator-set flag, never
         inferred from history), for a human to review and add to the
         Candidates tab (as a source='internal' Candidature) if suitable."""
         self.ensure_one()
-        return self.env['academic.person'].search([('is_internal_teacher', '=', 'internal')])
+        return self.env['his.person'].search([('is_internal_teacher', '=', 'internal')])
 
     def action_no_internal_teacher_found(self):
         self.env['campus.process.permission']._check_process_permission('insite_needs', 'execute')

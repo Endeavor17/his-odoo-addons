@@ -18,7 +18,7 @@ class InsiteCandidature(models.Model):
     _order = 'create_date desc, id desc'
 
     person_id = fields.Many2one(
-        'academic.person', "Person", required=True, ondelete='restrict', index=True, tracking=True)
+        'his.person', "Person", required=True, ondelete='restrict', index=True, tracking=True)
     need_id = fields.Many2one(
         'insite.recruitment.need', "Recruitment Need", ondelete='set null', index='btree_not_null',
         help="Which Need this candidature is being considered for. Nullable: a "
@@ -35,12 +35,12 @@ class InsiteCandidature(models.Model):
     # Display-only, read through the Person relation — not a duplicate of
     # the identity data, just a convenience so the candidature form doesn't
     # need a click-through to show who this is. Never stored, never edited
-    # here: editing identity happens on academic.person itself.
+    # here: editing identity happens on his.person itself.
     person_matricule = fields.Char(related='person_id.matricule_institutionnel', readonly=True)
-    person_email_institutional = fields.Char(related='person_id.email_institutional', readonly=True)
+    person_email = fields.Char(related='person_id.email_personnel', readonly=True)
     person_phone = fields.Char(related='person_id.phone', readonly=True)
-    person_academic_rank = fields.Char(related='person_id.academic_rank', readonly=True)
-    person_specialty = fields.Char(related='person_id.specialty', readonly=True)
+    person_academic_rank = fields.Selection(related='person_id.rang_academique', readonly=True)
+    person_specialty = fields.Char(related='person_id.specialite', readonly=True)
 
     state = fields.Selection([
         ('prospect', 'Prospect'),
@@ -142,20 +142,20 @@ class InsiteCandidature(models.Model):
         score = 0
         reasons = []
 
-        specialty_match = bool(need and need.specialty and person.specialty and
-                                need.specialty.strip().lower() == person.specialty.strip().lower())
+        specialty_match = bool(need and need.specialty and person.specialite and
+                                need.specialty.strip().lower() == person.specialite.strip().lower())
         if specialty_match:
             score += 3
         reasons.append(_("Specialty match: %s (+%s)") % (_("Yes") if specialty_match else _("No"),
                                                            3 if specialty_match else 0))
 
-        prior_history = bool(person.campus_applicant_id or person.engagement_ids)
+        prior_history = bool(person.campus_applicant_ids or person.insite_engagement_ids)
         if prior_history:
             score += 2
         reasons.append(_("Prior institution history: %s (+%s)") % (
             _("Yes") if prior_history else _("No"), 2 if prior_history else 0))
 
-        module_experience = bool(need and person.engagement_ids.filtered(
+        module_experience = bool(need and person.insite_engagement_ids.filtered(
             lambda e: e.module_id == need.module_id))
         if module_experience:
             score += 2
