@@ -16,7 +16,7 @@ class AcademicEngagement(models.Model):
     _order = 'academic_period_id desc, person_id, id'
 
     person_id = fields.Many2one(
-        'academic.person', "Person", required=True, ondelete='cascade', index=True)
+        'his.person', "Person", required=True, ondelete='cascade', index=True)
     # "Module" per the spec's data model: campus.subject is already exactly
     # that catalogue (name/level/track/language) — reused as-is rather than
     # duplicated. The field is labelled "Module" in the view; the underlying

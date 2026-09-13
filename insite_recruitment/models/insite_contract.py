@@ -15,7 +15,7 @@ class InsiteContract(models.Model):
     _order = 'create_date desc, id desc'
 
     person_id = fields.Many2one(
-        'academic.person', "Person", required=True, ondelete='restrict', index=True)
+        'his.person', "Person", required=True, ondelete='restrict', index=True)
     candidature_id = fields.Many2one(
         'insite.candidature', "Candidature", ondelete='set null', index='btree_not_null')
     need_id = fields.Many2one(
@@ -89,6 +89,12 @@ class InsiteContract(models.Model):
                     "Attach the signed contract document before marking it signed."))
             contract.write({'state': 'signed', 'signature_date': fields.Date.context_today(contract)})
             contract.message_post(body=_("Contract signed."))
+            # The institution commits here, so this is when the teacher gets
+            # their lifetime matricule — same rule as admission, which issues
+            # it at payment. Idempotent for someone who already holds one.
+            person = contract.person_id.sudo()
+            person.write({'type_personne': 'enseignant'})
+            person._his_attribuer_matricule()
             if contract.need_id:
                 contract.need_id._on_contract_signed()
         return True

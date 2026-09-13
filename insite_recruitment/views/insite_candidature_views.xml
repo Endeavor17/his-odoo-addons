@@ -110,7 +110,7 @@
                             <group>
                                 <group>
                                     <field name="person_matricule" readonly="1"/>
-                                    <field name="person_email_institutional" readonly="1"/>
+                                    <field name="person_email" readonly="1"/>
                                     <field name="person_phone" readonly="1"/>
                                 </group>
                                 <group>

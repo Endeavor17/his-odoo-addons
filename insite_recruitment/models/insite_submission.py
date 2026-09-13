@@ -1,4 +1,5 @@
 import json
+import re
 
 from odoo import _, api, fields, models
 
@@ -60,7 +61,7 @@ class InsiteSubmission(models.Model):
     error_message = fields.Text("Error", readonly=True)
 
     person_id = fields.Many2one(
-        'academic.person', "Matched Person", ondelete='set null', index='btree_not_null',
+        'his.person', "Matched Person", ondelete='set null', index='btree_not_null',
         help="Set once identity matching resolves this submission to a Person — "
              "either an exact matricule hit, or a human confirming a probable match.")
     match_method = fields.Selection([
@@ -130,32 +131,82 @@ class InsiteSubmission(models.Model):
     # probable-but-not-exact match pauses in 'needs_matching' for a human to
     # confirm through insite.identity.match.wizard — never auto-merged.
     # ------------------------------------------------------------------
+    @api.model
+    def _insite_identity_matches(self, matricule=None, first_name=None, last_name=None,
+                                 name_ar=None, email=None, phone=None):
+        """Resolve submitted details against the group register. Never writes.
+
+        Returns ``(match, applicants)``. ``match`` is the dict of
+        his.person._find_or_flag_match — the group's one matching algorithm;
+        InSite no longer carries its own. ``applicants`` are Campus+
+        applications not yet in the register that look like the same teacher
+        (scenario C), only looked up when no person matched.
+
+        A matricule that matches nobody makes the core matcher stop at
+        "deterministic, not found" without comparing name, email or phone. The
+        lookup is then repeated without it, so a mistyped matricule cannot
+        create a duplicate.
+        """
+        Person = self.env['his.person'].sudo()
+        name = ' '.join(' '.join(filter(None, [first_name, last_name])).split())
+        vals = {
+            'matricule_institutionnel': (matricule or '').strip(),
+            'name': name, 'nom_arabe': name_ar, 'email_personnel': email, 'phone': phone,
+        }
+        types = ('enseignant', 'employe', 'candidat')
+        match = Person._find_or_flag_match(vals, types=types)
+        if vals['matricule_institutionnel'] and not match['person']:
+            vals['matricule_institutionnel'] = False
+            match = Person._find_or_flag_match(vals, types=types)
+        applicants = self.env['hr.applicant'].sudo().browse()
+        if not match['person']:
+            applicants = self._insite_probable_applicants(name, name_ar, email, phone)
+        return match, applicants
+
+    @api.model
+    def _insite_probable_applicants(self, name, name_ar, email, phone):
+        """Campus+ applications without a person sharing an email, phone or name."""
+        Applicant = self.env['hr.applicant'].sudo()
+        criteria = []
+        if email and email.strip():
+            criteria.append(('email_from', '=ilike', email.strip()))
+        digits = re.sub(r'\D', '', phone or '')[-8:]
+        if digits:
+            criteria.append(('partner_phone_sanitized', 'like', digits))
+        if name:
+            criteria.append(('partner_name', '=ilike', name))
+        if name_ar and name_ar.strip():
+            criteria.append(('campus_name_ar', '=', name_ar.strip()))
+        if not criteria:
+            return Applicant.browse()
+        return Applicant.search(
+            [('his_person_id', '=', False)] + ['|'] * (len(criteria) - 1) + criteria)
+
     def action_process(self):
         self.env['campus.process.permission']._check_process_permission('insite_candidatures', 'execute')
-        Person = self.env['academic.person']
         for submission in self:
             payload = submission.payload or {}
-            matches = Person.insite_find_matches(
+            match, applicants = self._insite_identity_matches(
                 matricule=payload.get('matricule'),
                 first_name=payload.get('firstName'), last_name=payload.get('lastName'),
                 name_ar=payload.get('nameAr'), email=payload.get('email'), phone=payload.get('phone'),
             )
-            if matches['exact']:
-                submission._insite_resolve(matches['exact'], 'exact_matricule')
-            elif matches['possible_persons'] or matches['possible_applicants']:
-                submission.write({'state': 'needs_matching', 'email': payload.get('email')})
+            if match['conflict'] or match['method'] == 'probabilistic' or applicants:
+                submission.write({
+                    'state': 'needs_matching', 'email': payload.get('email'),
+                    'error_message': match['conflict'] or False,
+                })
+            elif match['person']:
+                submission._insite_resolve(match['person'], 'exact_matricule')
             else:
-                person = Person.create({
-                    'first_name': payload.get('firstName'),
-                    'last_name': payload.get('lastName'),
-                    'name_ar': payload.get('nameAr'),
-                    'matricule_institutionnel': payload.get('matricule') or False,
-                    'email_institutional': payload.get('email'),
+                # The payload matricule is NOT written: it is only a lookup
+                # key. The real one is issued when the contract is signed.
+                person = self.env['his.person']._insite_create_external({
+                    'name': ' '.join(filter(None, [(payload.get('firstName') or '').strip(),
+                                                   (payload.get('lastName') or '').strip()])),
+                    'nom_arabe': payload.get('nameAr'),
+                    'email_personnel': payload.get('email'),
                     'phone': payload.get('phone'),
-                    # Arriving via the external submission form — classified
-                    # external the moment they're created, so the Candidature
-                    # this leads to isn't blocked by _check_person_classified.
-                    'is_internal_teacher': 'external',
                 })
                 submission._insite_resolve(person, 'new')
         return True

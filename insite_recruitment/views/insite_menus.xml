@@ -62,4 +62,12 @@
               action="insite_action_review"
               sequence="10"/>
 
+    <!-- Same xmlid as the former academic.person menu, now opening the group
+         identity register (read-only for recruiters). -->
+    <menuitem id="insite_menu_person"
+              name="Persons"
+              parent="insite_menu_configuration"
+              action="his_person_core.action_his_person"
+              sequence="20"/>
+
 </odoo>

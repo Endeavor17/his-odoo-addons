@@ -24,7 +24,7 @@
                         <list>
                             <field name="name"/>
                             <field name="matricule_institutionnel"/>
-                            <field name="email_institutional"/>
+                            <field name="email_personnel"/>
                             <field name="phone"/>
                         </list>
                     </field>

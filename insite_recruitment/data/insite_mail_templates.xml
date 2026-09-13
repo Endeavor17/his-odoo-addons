@@ -7,7 +7,7 @@
             <field name="model_id" ref="model_insite_candidature"/>
             <field name="subject">InSite — You are invited to apply</field>
             <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
-            <field name="email_to">{{ object.person_id.email_institutional or object.person_id.email_personal }}</field>
+            <field name="email_to">{{ object.person_id.email_personnel or object.person_id.email }}</field>
             <field name="body_html" type="html">
 <div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>Dear <t t-out="object.person_id.display_name or ''">Teacher</t>,</p>
@@ -25,7 +25,7 @@
             <field name="model_id" ref="model_insite_candidature"/>
             <field name="subject">InSite — Your meeting details</field>
             <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
-            <field name="email_to">{{ object.person_id.email_institutional or object.person_id.email_personal }}</field>
+            <field name="email_to">{{ object.person_id.email_personnel or object.person_id.email }}</field>
             <field name="body_html" type="html">
 <div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>Dear <t t-out="object.person_id.display_name or ''">Teacher</t>,</p>
