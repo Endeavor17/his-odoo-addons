@@ -179,6 +179,7 @@ print("Mis en vente au comptoir :", mis_en_vente)
 # La regle MDM n'est pas contournee, elle est respectee dans l'autre sens : un
 # article sans prix reste non vendable, et c'est voulu -- une caisse ne doit
 # pas pouvoir encaisser 0 DA par inadvertance.
+# Depuis his_stock_mdm 1.4.0, la meme regle vaut aussi pour les saisies manuelles.
 a_vendre = Template.search([
     ('available_in_pos', '=', True),
     ('sale_ok', '=', False),
