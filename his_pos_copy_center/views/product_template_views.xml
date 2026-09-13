@@ -7,7 +7,11 @@
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='general_information']" position="inside">
-                <group string="Copy Center" name="his_copy_center">
+                <!-- Only on Photocopie/Impression products, or wherever a
+                     copy_service is already set. -->
+                <group string="Copy Center" name="his_copy_center"
+                       invisible="not copy_center_visible">
+                    <field name="copy_center_visible" invisible="1"/>
                     <field name="copy_service"/>
                     <!-- The three dimensions only mean anything once the
                          product is declared a copy service, so they stay out of

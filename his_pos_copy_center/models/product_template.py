@@ -1,4 +1,11 @@
-from odoo import fields, models
+from odoo import api, fields, models
+
+# The his_stock_mdm categories matching the two copy_service values. Looked up
+# softly: this module does not depend on his_stock_mdm.
+COPY_CATEGORIES = (
+    'his_stock_mdm.categ_copy_photocopie',
+    'his_stock_mdm.categ_copy_impression',
+)
 
 
 class ProductTemplate(models.Model):
@@ -43,3 +50,26 @@ class ProductTemplate(models.Model):
         [('recto', "Recto"), ('duplex', "Recto-verso")],
         string="Copy Sides",
     )
+    copy_center_visible = fields.Boolean(compute='_compute_copy_center_visible')
+
+    def _copy_center_categories(self):
+        return [categ for categ in (
+            self.env.ref(xmlid, raise_if_not_found=False) for xmlid in COPY_CATEGORIES
+        ) if categ]
+
+    @api.depends('copy_service', 'categ_id')
+    def _compute_copy_center_visible(self):
+        """Show the form group only where it means something.
+
+        Before this, every product form carried an empty Copy Center group.
+        Articles Bureautique, Flexy and Scan are Copy Center categories too, but
+        not copy services, so they stay hidden. Without his_stock_mdm there is
+        no category to go by, and the group shows everywhere as it always did.
+        """
+        paths = [categ.parent_path for categ in self._copy_center_categories()]
+        for template in self:
+            template.copy_center_visible = (
+                not paths
+                or bool(template.copy_service)
+                or any((template.categ_id.parent_path or '').startswith(path) for path in paths)
+            )

@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from odoo.tests import TransactionCase, tagged
 
 
@@ -89,3 +91,36 @@ class TestCopyProducts(TransactionCase):
             "his_stock_mdm still forbids Format on the copy categories; the "
             "copy dimensions therefore stay plain fields on the product.",
         )
+
+    # --- The Copy Center form group -----------------------------------------
+
+    def test_le_groupe_suit_la_categorie(self):
+        photocopie = self.env.ref(
+            'his_stock_mdm.categ_copy_photocopie', raise_if_not_found=False)
+        if not photocopie:
+            self.skipTest("his_stock_mdm is not installed on this database.")
+        Template = self.env['product.template']
+        copy = Template.create({'name': "Photocopie groupe", 'categ_id': photocopie.id})
+        cafe = Template.create({
+            'name': "Cafe groupe",
+            'categ_id': self.env.ref('his_stock_mdm.categ_cafe_divers').id,
+        })
+        self.assertTrue(copy.copy_center_visible)
+        self.assertFalse(cafe.copy_center_visible)
+
+    def test_un_service_copie_reste_visible(self):
+        cafe = self.env.ref('his_stock_mdm.categ_cafe_divers', raise_if_not_found=False)
+        vals = {'name': "Impression hors categorie", 'copy_service': 'impression'}
+        if cafe:
+            vals['categ_id'] = cafe.id
+        self.assertTrue(self.env['product.template'].create(vals).copy_center_visible)
+
+    def test_sans_mdm_tout_reste_visible(self):
+        Template = self.env['product.template']
+        vals = {'name': "Sans MDM"}
+        cafe = self.env.ref('his_stock_mdm.categ_cafe_divers', raise_if_not_found=False)
+        if cafe:
+            vals['categ_id'] = cafe.id  # la regle 2 refuse la categorie par defaut
+        with patch.object(type(Template), '_copy_center_categories', return_value=[]):
+            product = Template.create(vals)
+            self.assertTrue(product.copy_center_visible)
