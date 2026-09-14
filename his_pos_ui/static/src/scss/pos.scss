@@ -1,322 +1,302 @@
 // Styling only. Nothing in this file changes what a click does.
 //
-// Every selector was read out of point_of_sale's own templates before it was
-// written — .pos-topheader, .leftpane, .rightpane, .product-list, .product,
-// .orderline, .numpad-button, .actionpad, .total. A theme built on guessed
-// selectors is dead CSS that looks like it works because nobody notices the
-// rules never matched anything.
+// The till dressed like his.edu.dz: a petrol-teal band carrying the white logo,
+// a light page, white rounded cards with a soft navy shadow, navy Poppins for
+// names and figures, teal for "this is selected", and gold pills - the site's
+// "S'inscrire" button - only for the action that takes the money.
 //
-// Every rule is prefixed .his-pos, which also settles specificity: Odoo leans
-// on Bootstrap utilities (.bg-view, .bg-secondary, .text-muted) and a single
-// utility class loses to a two-class selector without a single !important.
+// Every selector was read out of point_of_sale 19.0's own templates
+// (navbar.xml, product_card.xml, category_selector.xml, numpad.xml,
+// action_pad.xml, payment_screen.xml).
+//
+// Colours are set twice on purpose: through Bootstrap's --btn-* variables, and
+// as !important declarations. Odoo's utilities (.bg-view, .border-0,
+// o_colorlist_item_color_*) and his_theme's POS rules both carry !important, so
+// variables alone lose to them on some elements and not others.
+
+@mixin his-btn($bg, $fg, $border, $hover-bg, $hover-fg: $fg, $active-bg: $hover-bg, $active-fg: $hover-fg) {
+    --btn-bg: #{$bg};
+    --btn-color: #{$fg};
+    --btn-border-color: #{$border};
+    --btn-hover-bg: #{$hover-bg};
+    --btn-hover-color: #{$hover-fg};
+    --btn-hover-border-color: #{$hover-bg};
+    --btn-active-bg: #{$active-bg};
+    --btn-active-color: #{$active-fg};
+    --btn-active-border-color: #{$active-bg};
+    background-color: $bg !important;
+    color: $fg !important;
+    border-color: $border !important;
+
+    &:hover {
+        background-color: $hover-bg !important;
+        color: $hover-fg !important;
+        border-color: $hover-bg !important;
+    }
+
+    &:active,
+    &.active {
+        background-color: $active-bg !important;
+        color: $active-fg !important;
+        border-color: $active-bg !important;
+    }
+}
+
+// Literal brand values for the parts that live outside .his-pos (dialogs are
+// portalled to <body>), kept in step with tokens.scss by hand.
+$his-navy: #003876;
+$his-teal: #006883;
+$his-teal-hover: #00566d;
+$his-teal-tint: #e3f2f5;
+$his-gold: #cc9900;
+$his-gold-hover: #b38600;
+$his-gold-press: #9a7300;
+$his-line: #dde5ec;
+$his-text: #2c3742;
 
 .his-pos {
     background-color: var(--his-ground);
-    background-image: var(--his-texture);
     color: var(--his-text);
+    font-family: var(--his-font);
 
-    // ---------------------------------------------------------------- chrome
-    // Odoo's background utilities (.bg-view, .bg-100, .bg-secondary) are all
-    // generated with !important, so a plain rule loses to them. They resolve
-    // --background-color, though — so setting that variable wins cleanly, and
-    // this whole file needs no !important for backgrounds.
-    .pos-topheader {
-        --background-color: var(--his-ground-sunk);
-        border-bottom: 1px solid var(--his-line) !important;
-        color: var(--his-text);
-
-        // Every control up here ships as .btn-light, which is why the bar was
-        // half dark-on-dark and half glaring white. Bootstrap draws .btn from
-        // --btn-* variables, so redefining those retints the button, its
-        // hover and its active state in one place instead of chasing each rule.
-        .btn-light,
-        .btn-secondary {
-            --btn-bg: var(--his-ground-raised);
-            --btn-color: var(--his-text);
-            --btn-border-color: var(--his-line);
-            --btn-hover-bg: var(--his-line);
-            --btn-hover-color: var(--his-text);
-            --btn-hover-border-color: var(--his-line-strong);
-            --btn-active-bg: var(--his-accent-dim);
-            --btn-active-color: var(--his-accent);
-            --btn-active-border-color: var(--his-accent);
-        }
-
-        // Register / Orders are a tab strip, not two pills. Flat and quiet
-        // until selected, then named by an accent underline — so the cashier
-        // reads which mode the till is in from across the counter.
-        .navbar-menu {
-            gap: 0.25rem;
-
-            .register-label,
-            .orders-button {
-                --btn-bg: transparent;
-                --btn-border-color: transparent;
-                --btn-color: var(--his-text-muted);
-                --btn-hover-bg: var(--his-ground-raised);
-                --btn-hover-color: var(--his-text);
-                font: var(--his-font-label);
-                font-size: 0.82rem;
-                letter-spacing: var(--his-label-tracking);
-                text-transform: uppercase;
-                border-radius: 0.4rem 0.4rem 0 0;
-                border-bottom: 2px solid transparent;
-
-                &.active {
-                    --btn-bg: transparent;
-                    --btn-active-bg: transparent;
-                    --btn-color: var(--his-accent);
-                    --btn-active-color: var(--his-accent);
-                    // Underline only. Without this the tab inherits the accent
-                    // border set on .btn-light above and draws a full box.
-                    --btn-active-border-color: transparent;
-                    border-bottom-color: var(--his-accent);
-                }
-            }
-        }
-
-        .navbar-separator {
-            background-color: var(--his-line);
-            border-color: var(--his-line);
-        }
-
-        // An order tab is an order NUMBER, so it is set in the number face.
-        .floating-order-container .btn {
-            font-family: var(--his-font-mono);
-            font-variant-numeric: tabular-nums;
-
-            &.active {
-                --btn-bg: var(--his-accent-dim);
-                --btn-color: var(--his-accent);
-                --btn-border-color: var(--his-accent);
-            }
-        }
-
-        // The search field was the brightest thing on the screen. It is an
-        // input on a dark panel: dark well, hairline border, muted placeholder.
-        .input-container {
-            --background-color: var(--his-ground-raised);
-            background-color: var(--his-ground-raised) !important;
-            border: 1px solid var(--his-line) !important;
-            color: var(--his-text);
-
-            .o_input,
-            .fa {
-                background-color: transparent;
-                color: var(--his-text) !important;
-            }
-
-            .o_input::placeholder {
-                color: var(--his-text-muted);
-                opacity: 1;
-            }
-        }
-
-        .cashier-name .avatar {
-            border: 1px solid var(--his-line-strong);
-        }
+    .btn,
+    input,
+    .o_input {
+        font-family: var(--his-font);
     }
 
-    // -------------------------------------------------------- the two panes
-    // The left pane is paper. The right pane is the machine. That single
-    // contrast is the whole design: what you are selling sits on a sheet, and
-    // the sheet sits on the counter.
-    // The counter is dark; the ORDER is the sheet of paper on it. Painting the
-    // whole pane cream made an empty order a wall of beige — the metaphor only
-    // works when the paper has an edge and something darker around it.
+    // ------------------------------------------------------------ the pane
     .leftpane {
-        --background-color: var(--his-ground-sunk);
+        --background-color: var(--his-ground-raised);
         border-right: 1px solid var(--his-line) !important;
         color: var(--his-text);
     }
 
+    .rightpane,
+    .pos-content {
+        --background-color: var(--his-ground);
+    }
+
+    // ------------------------------------------------------------- the order
     .order-container {
         background: var(--his-paper);
         color: var(--his-paper-ink);
-        margin: 0.5rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 2px 8px 2px 2px;   // one clipped corner: a sheet
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
     }
 
-    .rightpane {
-        --background-color: transparent;
-    }
-
-    // .pos-content carries .bg-100, which otherwise paints over the ground and
-    // its blueprint texture and turns the entire right-hand side white.
-    .pos-content {
-        --background-color: transparent;
-    }
-
-    // ------------------------------------------------------ the order, on paper
     .orderline {
         border-bottom: 1px solid var(--his-paper-edge);
         color: var(--his-paper-ink);
 
-        // Figures get the number face. Names do not: .product-name sits inside
-        // .line-details, so putting mono on the container set the product name
-        // in it too and the order read like a log file.
-        .line-details {
-            font-family: var(--his-font-mono);
-            font-variant-numeric: tabular-nums;
+        .product-name {
+            color: var(--his-navy);
+            font-weight: 600;
         }
 
-        .product-name {
-            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-            font-weight: 600;
+        &.selected {
+            background-color: var(--his-teal-tint) !important;
+            box-shadow: inset 4px 0 0 var(--his-teal);
         }
     }
 
-    // Totals sit on the counter, not on the sheet, so they read light.
     .subtotal,
     .tax-info {
-        font-family: var(--his-font-mono);
         color: var(--his-text-muted) !important;
     }
 
-    // The one number the customer leans in to read.
     .total {
-        font-family: var(--his-font-mono);
-        font-variant-numeric: tabular-nums;
-        font-size: 2rem;
+        color: var(--his-navy);
+        font-size: 1.9rem;
         font-weight: 700;
-        letter-spacing: -0.02em;
-        color: var(--his-text);
+        letter-spacing: -0.01em;
     }
 
-    // ------------------------------------------------------------ the grid
+    // ------------------------------------------------------------- the grid
     .product {
-        --background-color: var(--his-ground-raised);
-        background-color: var(--his-ground-raised);
-        border: 1px solid var(--his-line);
-        border-radius: 0.5rem;
-        color: var(--his-text);
-        transition: border-color 0.12s ease, transform 0.12s ease;
+        @include his-btn(#ffffff, var(--his-text), transparent, #ffffff, var(--his-text), #ffffff, var(--his-text));
+        border: 1px solid transparent !important;
+        border-radius: var(--his-radius) !important;
+        box-shadow: var(--his-shadow);
+        overflow: hidden;
+        transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
 
         .product-name {
-            color: var(--his-text);
-            font-weight: 500;
+            color: var(--his-navy);
+            font-weight: 600;
+            font-size: 0.92rem;
         }
 
-        // With no photo Odoo renders a light placeholder tile, and a grid of
-        // them is a row of grey rectangles shouting louder than any price.
-        // Sink it into the card instead of letting it glare.
         .product-img {
             background-color: var(--his-ground-sunk);
-            border-radius: 0.4rem 0.4rem 0 0;
-
-            img {
-                opacity: 0.25;
-                filter: grayscale(1);
-            }
         }
 
-        // Price in the number face, in the accent: on a wall of dark slabs the
-        // price is the only thing that needs to jump.
-        .product-price,
-        .price-tag {
-            font-family: var(--his-font-mono);
-            font-variant-numeric: tabular-nums;
-            color: var(--his-accent);
-            font-weight: 600;
+        .product-cart-qty {
+            background-color: var(--his-teal) !important;
+            border-radius: 999px !important;
         }
 
         &:hover {
-            border-color: var(--his-line-strong);
+            border-color: var(--his-cyan) !important;
+            box-shadow: var(--his-shadow-strong);
         }
 
         &:active {
-            transform: scale(0.985);
+            transform: scale(0.98);
         }
     }
 
-    // ----------------------------------------------------- category selector
-    // Odoo colours these from the category's o_colorlist_item_color_N class,
-    // which drops a pastel straight onto the blueprint. Three classes beat one,
-    // so the pastel loses without !important.
+    // ------------------------------------------------------ categories
+    // Pills, like the site's filter chips. Odoo paints each category from its
+    // o_colorlist_item_color_N class with !important, hence the weight here.
     .category-list .category-button,
     .categories .category-button {
-        --background-color: var(--his-ground-raised);
-        background-color: var(--his-ground-raised) !important;
-        font: var(--his-font-label);
-        font-size: 0.78rem;
-        letter-spacing: var(--his-label-tracking);
-        text-transform: uppercase;
-        color: var(--his-text) !important;
+        @include his-btn(#ffffff, var(--his-navy), var(--his-line), var(--his-teal-tint), var(--his-teal), var(--his-navy), #ffffff);
         border: 1px solid var(--his-line) !important;
+        border-radius: 999px !important;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
 
-        &.active,
-        &:active {
-            background-color: var(--his-accent-dim) !important;
-            border-color: var(--his-accent) !important;
-            color: var(--his-accent) !important;
+    // ---------------------------------------------------- control buttons
+    // Customer, note, the meal buttons, Copy job: white chips, navy text. The
+    // module actions (btn-primary) take the site's teal so the row never turns
+    // into a wall of gold competing with Payment.
+    .control-buttons .btn {
+        @include his-btn(#ffffff, var(--his-navy), var(--his-line), var(--his-teal-tint), var(--his-teal));
+        border: 1px solid var(--his-line) !important;
+        border-radius: var(--his-radius-sm) !important;
+        font-weight: 600;
+        box-shadow: var(--his-shadow);
+
+        &.btn-primary {
+            @include his-btn(var(--his-teal), #ffffff, var(--his-teal), var(--his-teal-hover), #ffffff);
         }
     }
 
-    // ------------------------------------------------------------- the keys
-    // Keys read as hardware: a sunken well, hairline separations, numbers in
-    // the mono face.
+    // ------------------------------------------------------------ the keys
     .numpad {
-        background-color: var(--his-ground-sunk);
-        border-radius: 0.5rem;
+        background-color: var(--his-line);
+        border: 1px solid var(--his-line);
+        border-radius: var(--his-radius-sm);
         overflow: hidden;
     }
 
     .numpad-button {
-        background-color: var(--his-ground-raised) !important;
-        color: var(--his-text) !important;
-        border: 1px solid var(--his-line) !important;
-        font-family: var(--his-font-mono);
-        font-variant-numeric: tabular-nums;
-        font-size: 1.4rem;
+        @include his-btn(#ffffff, var(--his-navy), transparent, var(--his-teal-tint), var(--his-teal), var(--his-teal), #ffffff);
+        font-size: 1.35rem;
         font-weight: 500;
-
-        &:active,
-        &.active {
-            background-color: var(--his-accent-dim) !important;
-            color: var(--his-accent) !important;
-        }
     }
 
-    // ---------------------------------------------------------- the actions
-    .control-buttons .btn,
-    .actionpad .btn {
-        font: var(--his-font-label);
-        font-size: 0.8rem;
-        letter-spacing: var(--his-label-tracking);
-        text-transform: uppercase;
-        border-radius: 0.5rem;
-    }
-
-    // The accent is spent here and nowhere else, so "the bright one" is always
-    // the action the cashier means to take.
+    // -------------------------------------------------------- the actions
+    // Gold pill: the site's call to action, spent on the button that takes money.
     .btn-primary,
-    .pay-button.btn-primary {
-        background-color: var(--his-accent) !important;
-        border-color: var(--his-accent) !important;
-        color: var(--his-accent-ink) !important;
+    .pay-order-button,
+    .validation-button.next {
+        @include his-btn(var(--his-gold), #ffffff, var(--his-gold), var(--his-gold-hover), #ffffff, var(--his-gold-press), #ffffff);
+        border-radius: 999px !important;
         font-weight: 700;
     }
 
-    .btn-secondary {
-        background-color: var(--his-ground-raised) !important;
-        border-color: var(--his-line) !important;
-        color: var(--his-text) !important;
+    .pay-order-button {
+        font-size: 1.15rem;
     }
 
-    // The pay button carries the amount; it is the second number on screen
-    // that matters, so it gets the number face too.
-    .pay-button span,
-    .fast-pay-button span {
-        font-family: var(--his-font-mono);
+    .actionpad .btn-secondary,
+    .payment-screen .btn-secondary:not(.numpad-button),
+    .back-button {
+        @include his-btn(#ffffff, var(--his-navy), var(--his-line), var(--his-teal-tint), var(--his-teal));
+        border: 1px solid var(--his-line) !important;
+        border-radius: 999px !important;
+        font-weight: 600;
+    }
+
+    .payment-screen .paymentmethod {
+        @include his-btn(#ffffff, var(--his-navy), var(--his-line), var(--his-teal-tint), var(--his-teal), var(--his-teal), #ffffff);
+        border: 1px solid var(--his-line) !important;
+        border-radius: var(--his-radius-sm) !important;
+        font-weight: 600;
+        box-shadow: var(--his-shadow);
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--his-cyan);
+        outline-offset: 2px;
+    }
+}
+
+// ---------------------------------------------------------------- header
+// Three classes: his_theme paints `.pos > .pos-topheader` #0d6e8c with
+// !important and loads after this module, so equal weight would lose.
+.pos.his-pos > .pos-topheader {
+    --background-color: var(--his-teal);
+    background-color: var(--his-teal) !important;
+    border-top: 0;
+    border-bottom: 0 !important;
+    box-shadow: 0 2px 12px rgba(0, 31, 69, 0.18);
+    color: #ffffff;
+    z-index: 2;
+
+    // Every control up here ships as .btn-light: white text on the band, a
+    // faint white wash on hover, like the site's menu.
+    .btn-light,
+    .btn-secondary {
+        @include his-btn(transparent, #ffffff, transparent, rgba(255, 255, 255, 0.14), #ffffff, rgba(255, 255, 255, 0.24), #ffffff);
+        border-radius: 999px !important;
+    }
+
+    // Register / Orders: the selected one is a white pill with teal text.
+    .navbar-menu {
+        gap: 0.25rem;
+
+        .register-label,
+        .orders-button {
+            font-weight: 600;
+
+            &.active {
+                background-color: #ffffff !important;
+                color: var(--his-teal) !important;
+            }
+        }
+    }
+
+    .navbar-separator {
+        background-color: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    // Order number tabs: the open one takes the gold.
+    .floating-order-container .btn {
+        @include his-btn(rgba(255, 255, 255, 0.14), #ffffff, transparent, rgba(255, 255, 255, 0.24), #ffffff, var(--his-gold), #ffffff);
+        font-weight: 600;
         font-variant-numeric: tabular-nums;
     }
 
-    // --------------------------------------------------------- quality floor
-    :focus-visible {
-        outline: 2px solid var(--his-accent);
-        outline-offset: 2px;
+    .input-container {
+        --background-color: #ffffff;
+        background-color: #ffffff !important;
+        border: 0 !important;
+        border-radius: 999px !important;
+        color: var(--his-text);
+
+        .o_input,
+        .fa {
+            background-color: transparent;
+            color: var(--his-text) !important;
+        }
+
+        .o_input::placeholder {
+            color: var(--his-text-muted);
+            opacity: 1;
+        }
+    }
+
+    .cashier-name .avatar {
+        border: 2px solid rgba(255, 255, 255, 0.7);
+    }
+
+    // The white HIS logo (tokens.scss --navbar-logo), at the site header's size.
+    .pos-logo {
+        height: 46px;
+        min-width: 180px;
     }
 }
 
@@ -327,74 +307,63 @@
 }
 
 // ---------------------------------------------------------------- dialogs
-//
-// Odoo portals dialogs to the document body, outside the .pos root. A theme
-// therefore cannot reach them by descent — the modal has to carry the theme
-// classes itself (Dialog's contentClass prop), which makes .modal-content the
-// themed element rather than a child of one. Hence the compound selector: this
-// is the same element, not a descendant.
+// Portalled to <body>, outside .pos, so these use literal values. This bundle
+// only loads in the POS, so nothing here reaches the backend.
+.modal-content {
+    border: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
+
+    .modal-title {
+        color: $his-navy;
+        font-weight: 600;
+    }
+
+    .modal-footer {
+        .btn-primary,
+        .btn.btn-his-gold {
+            @include his-btn($his-gold, #ffffff, $his-gold, $his-gold-hover, #ffffff, $his-gold-press, #ffffff);
+            border-radius: 999px !important;
+            font-weight: 700;
+        }
+
+        .btn-secondary,
+        .btn-light {
+            @include his-btn(#ffffff, $his-navy, $his-line, $his-teal-tint, $his-teal);
+            border: 1px solid $his-line !important;
+            border-radius: 999px !important;
+            font-weight: 600;
+        }
+    }
+}
+
+// The serve-meal dialog (his_meal_management) was drawn in his_theme's older
+// teal and gold; brought onto the site's values.
+.modal .his_serve_meal_head {
+    background-color: $his-teal;
+}
+
+.modal .his_serve_meal_meter_kept {
+    background-color: $his-teal;
+}
+
+.modal .his_serve_meal_meter_spent {
+    background-color: $his-gold;
+}
+
+.modal .his_serve_meal_icon {
+    background-color: $his-teal-tint;
+    color: $his-teal;
+}
+
+.modal .his_serve_meal_ask_title,
+.modal .his_serve_meal_figure {
+    color: $his-navy;
+}
+
+// Themed dialogs that pass the theme classes as contentClass.
 .modal-content.his-pos {
     background-color: var(--his-ground-raised);
-    background-image: var(--his-texture);
     color: var(--his-text);
-    border: 1px solid var(--his-line-strong);
-    border-radius: 0.75rem;
-
-    .modal-header,
-    .modal-footer {
-        border-color: var(--his-line);
-        background-color: transparent;
-    }
-
-    .modal-header .modal-title {
-        font: var(--his-font-label);
-        font-size: 0.85rem;
-        letter-spacing: var(--his-label-tracking);
-        text-transform: uppercase;
-        color: var(--his-text-muted);
-    }
-
-    // The close control is drawn dark-on-light by default and vanishes here.
-    .btn-close {
-        filter: invert(1) grayscale(1) brightness(1.6);
-    }
-}
-
-// LOCAL ONLY (branch local-pos-colors, never pushed): blue nav bar, orange buttons.
-// Three classes: his_theme paints `.pos > .pos-topheader` teal with !important
-// and loads after this module, so equal weight would lose.
-.pos.his-pos > .pos-topheader {
-    background-color: #1d4ed8 !important;
-    border-bottom-color: #1e3a8a !important;
-}
-
-// Dialogs are portalled outside .pos, but this bundle only loads in the POS,
-// so .modal-footer here cannot reach the backend.
-.his-pos,
-.modal-footer {
-    .btn,
-    .numpad-button,
-    .category-list .category-button,
-    .categories .category-button {
-        --btn-bg: #f97316;
-        --btn-color: #1c1917;
-        --btn-border-color: #f97316;
-        --btn-hover-bg: #ea580c;
-        --btn-hover-border-color: #ea580c;
-        --btn-active-bg: #c2410c;
-        --btn-active-border-color: #c2410c;
-        background-color: #f97316 !important;
-        border-color: #f97316 !important;
-        color: #1c1917 !important;
-
-        &:hover {
-            background-color: #ea580c !important;
-        }
-
-        &:active,
-        &.active {
-            background-color: #c2410c !important;
-            border-color: #c2410c !important;
-        }
-    }
 }

@@ -1,117 +1,86 @@
-// The HIS till: a dark instrument panel with a sheet of paper on it.
+// The HIS till, in the university's own identity (his.edu.dz).
 //
-// The direction comes from the subject, not from a mood board. Reprography IS
-// blueprints — cyanotype, the copy shop's own ancestor — so the Copy Center
-// works on a deep blueprint ground in cyanotype cyan, with the order rendered
-// as warm paper laid on top. Paper on blueprint is what a copy counter looks
-// like. The Restaurant and Cafétéria inherit the same instrument-panel skeleton
-// and change only their accent and their texture.
+// Every value below is lifted from the site's Elementor kit, not invented:
+// primary navy #003876, secondary #001f45, accent cyan #00aec1, the petrol
+// teal #006883 of the sticky header, the gold #cc9900 of its pill buttons
+// ("S'inscrire"), text #2c3742, and Poppins throughout. The site is light: white
+// cards with soft shadows on a white page, a teal band on top, gold for the one
+// thing to press. The till says the same thing.
 //
-// Deliberately NOT near-black with one acid accent: that is the default answer
-// for "dark kiosk", and it would say nothing about copies, meals or coffee.
-//
-// Everything is a custom property because Odoo compiles its SCSS before ours
-// and its variables are out of reach. One class on the root re-themes the whole
-// application, and a till with no theme never gets the class at all.
+// Token NAMES are kept from the previous theme on purpose: his_pos_copy_center's
+// dialog reads --his-ground-raised, --his-paper, --his-accent and the rest, so
+// remapping them here re-skins it without touching that module.
+
+// Poppins ships with the module: a till on campus wifi must not wait on a font
+// server to draw a price. Latin subset only; Arabic falls back to the system.
+@font-face { font-family: "Poppins"; font-style: normal; font-weight: 400; font-display: swap; src: url('/his_pos_ui/static/src/fonts/poppins-400.woff2') format('woff2'); }
+@font-face { font-family: "Poppins"; font-style: normal; font-weight: 500; font-display: swap; src: url('/his_pos_ui/static/src/fonts/poppins-500.woff2') format('woff2'); }
+@font-face { font-family: "Poppins"; font-style: normal; font-weight: 600; font-display: swap; src: url('/his_pos_ui/static/src/fonts/poppins-600.woff2') format('woff2'); }
+@font-face { font-family: "Poppins"; font-style: normal; font-weight: 700; font-display: swap; src: url('/his_pos_ui/static/src/fonts/poppins-700.woff2') format('woff2'); }
 
 .his-pos {
-    // --- Ground: the instrument panel -----------------------------------
-    --his-ground: #0b1725;           // deep blueprint ink
-    --his-ground-raised: #12202f;    // panels, cards, keys
-    --his-ground-sunk: #081120;      // wells the panels sit in
-    --his-line: #1e3448;             // hairlines, key borders
-    --his-line-strong: #2c4a63;
+    // --- Brand (his.edu.dz) ------------------------------------------------
+    --his-navy: #003876;
+    --his-navy-deep: #001f45;
+    --his-teal: #006883;
+    --his-teal-hover: #00566d;
+    --his-teal-tint: #e3f2f5;
+    --his-cyan: #00aec1;
+    --his-gold: #cc9900;
+    --his-gold-hover: #b38600;
+    --his-gold-press: #9a7300;
 
-    // --- Paper: where the money is read ---------------------------------
-    // Warm, not white. A sheet out of a copier is never #fff, and the warmth
-    // is what separates the order from the machine around it.
-    --his-paper: #f4f0e6;
-    --his-paper-edge: #ded7c6;
-    --his-paper-ink: #14212e;
-    --his-paper-ink-muted: #5d6b78;
+    // --- Surfaces: a light page with white cards on it -------------------
+    --his-ground: #f3f6f9;           // the page
+    --his-ground-raised: #ffffff;    // cards, keys, panels
+    --his-ground-sunk: #e9eef3;      // wells, placeholders
+    --his-line: #dde5ec;
+    --his-line-strong: #c5d2dc;
+    --his-shadow: 0 2px 10px rgba(0, 56, 118, 0.08);
+    --his-shadow-strong: 0 6px 18px rgba(0, 56, 118, 0.16);
+    --his-radius: 16px;
+    --his-radius-sm: 12px;
 
-    // --- Text on the ground ---------------------------------------------
-    --his-text: #e8eef4;
-    --his-text-muted: #8fa6b8;
+    // The order is a white sheet like every other card on the site.
+    --his-paper: #ffffff;
+    --his-paper-edge: #e6ecf1;
+    --his-paper-ink: #2c3742;
+    --his-paper-ink-muted: #6b7a88;
 
-    // --- Accent: per theme, overridden below ----------------------------
-    --his-accent: #38bdf8;
-    --his-accent-ink: #04121d;       // text ON the accent
-    --his-accent-dim: #1b4a63;
+    // --- Text ---------------------------------------------------------------
+    --his-text: #2c3742;
+    --his-text-muted: #6b7a88;
+    --his-on-brand: #ffffff;
 
-    // --- Signals ---------------------------------------------------------
-    --his-warn: #f5b544;
-    --his-danger: #ff6b6b;
+    // --- Accent: teal for state, gold only for the action that takes money --
+    --his-accent: var(--his-teal);
+    --his-accent-ink: #ffffff;
+    --his-accent-dim: var(--his-teal-tint);
 
-    // A blueprint grid, drawn in CSS. Off by default: only the Copy Center
-    // has any business looking like a drawing sheet.
+    --his-warn: #cc9900;
+    --his-danger: #e9573f;           // the site's coral
     --his-texture: none;
 
-    // --- Entry screen -----------------------------------------------------
+    // --- Entry screen --------------------------------------------------------
     --his-wallpaper: none;
-    --his-wallpaper-color: var(--his-ground);
+    --his-wallpaper-color: var(--his-navy-deep);
 
-    // --- Type -------------------------------------------------------------
-    // No web font. A till on campus wifi should not wait on a font server to
-    // draw its first price, and the system stacks are good enough to carry the
-    // personality once the roles are properly separated.
-    //
-    // The panel speaks in three voices: small tracked capitals for machine
-    // labels, a plain sans for names, and monospace for every number. A copy
-    // shop counts things, so the numbers get their own face.
-    --his-font-label: 600 0.72rem/1.1 system-ui, -apple-system, "Segoe UI", sans-serif;
-    --his-label-tracking: 0.09em;
-    --his-font-mono: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "SF Mono", Menlo, Consolas, monospace;
+    // --- Type -------------------------------------------------------------------
+    --his-font: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --his-font-label: 600 0.78rem/1.1 var(--his-font);
+    --his-label-tracking: 0.02em;
+    --his-font-mono: var(--his-font);   // Poppins figures are already even
 
     // Odoo sizes every POS button from this one variable (pos_app.scss).
-    // Raising it IS the touch-target change: not one button rule is overridden.
-    --btn-height-size: 64px;
+    --btn-height-size: 60px;
 
-    // Read by point_of_sale's own login_screen.scss.
+    // Read by point_of_sale's own navbar.scss and login_screen.scss.
+    --navbar-logo: url('/his_pos_ui/static/src/img/his_logo_white.png');
     --homeMenu-bg-color: var(--his-wallpaper-color);
     --homeMenu-bg-image: var(--his-wallpaper);
 }
 
-// --- Copy Center: cyanotype ---------------------------------------------
-// Blueprint cyan on blueprint ink, and a real drawing grid behind the panels.
-.his-theme-copy_center {
-    --his-accent: #38bdf8;
-    --his-accent-ink: #04121d;
-    --his-accent-dim: #1b4a63;
-    --his-wallpaper-color: #0b1725;
-    --his-wallpaper: url('/his_pos_ui/static/src/img/copy_center.webp');
-
-    // 8mm blueprint grid. Low enough contrast to read as texture rather than
-    // pattern, and it is the one place the metaphor is stated outright.
-    --his-texture:
-        repeating-linear-gradient(0deg, rgba(56, 189, 248, 0.05) 0 1px, transparent 1px 32px),
-        repeating-linear-gradient(90deg, rgba(56, 189, 248, 0.05) 0 1px, transparent 1px 32px);
-}
-
-// --- Restaurant: service green -------------------------------------------
-.his-theme-restaurant {
-    --his-accent: #4ade80;
-    --his-accent-ink: #05200f;
-    --his-accent-dim: #1c4d31;
-    --his-ground: #0c1a13;
-    --his-ground-raised: #12261b;
-    --his-ground-sunk: #081410;
-    --his-line: #1e3a2a;
-    --his-line-strong: #2c5540;
-    --his-wallpaper-color: #0c1a13;
-    --his-wallpaper: url('/his_pos_ui/static/src/img/restaurant.webp');
-}
-
-// --- Cafétéria: espresso amber -------------------------------------------
-.his-theme-cafeteria {
-    --his-accent: #f0a52e;
-    --his-accent-ink: #1d1204;
-    --his-accent-dim: #5c3f14;
-    --his-ground: #1a1410;
-    --his-ground-raised: #241c16;
-    --his-ground-sunk: #130e0a;
-    --his-line: #3a2c20;
-    --his-line-strong: #55402e;
-    --his-wallpaper-color: #1a1410;
-    --his-wallpaper: url('/his_pos_ui/static/src/img/cafeteria.webp');
-}
+// Same identity on every till; only the entry photograph changes.
+.his-theme-copy_center { --his-wallpaper: url('/his_pos_ui/static/src/img/copy_center.webp'); }
+.his-theme-restaurant { --his-wallpaper: url('/his_pos_ui/static/src/img/restaurant.webp'); }
+.his-theme-cafeteria { --his-wallpaper: url('/his_pos_ui/static/src/img/cafeteria.webp'); }
