@@ -359,3 +359,42 @@
         filter: invert(1) grayscale(1) brightness(1.6);
     }
 }
+
+// LOCAL ONLY (branch local-pos-colors, never pushed): blue nav bar, orange buttons.
+// Three classes: his_theme paints `.pos > .pos-topheader` teal with !important
+// and loads after this module, so equal weight would lose.
+.pos.his-pos > .pos-topheader {
+    background-color: #1d4ed8 !important;
+    border-bottom-color: #1e3a8a !important;
+}
+
+// Dialogs are portalled outside .pos, but this bundle only loads in the POS,
+// so .modal-footer here cannot reach the backend.
+.his-pos,
+.modal-footer {
+    .btn,
+    .numpad-button,
+    .category-list .category-button,
+    .categories .category-button {
+        --btn-bg: #f97316;
+        --btn-color: #1c1917;
+        --btn-border-color: #f97316;
+        --btn-hover-bg: #ea580c;
+        --btn-hover-border-color: #ea580c;
+        --btn-active-bg: #c2410c;
+        --btn-active-border-color: #c2410c;
+        background-color: #f97316 !important;
+        border-color: #f97316 !important;
+        color: #1c1917 !important;
+
+        &:hover {
+            background-color: #ea580c !important;
+        }
+
+        &:active,
+        &.active {
+            background-color: #c2410c !important;
+            border-color: #c2410c !important;
+        }
+    }
+}
