@@ -1,7 +1,8 @@
-// The entry screen: the counter's photograph under a navy scrim, white type,
-// and the gold "Open Register" pill - the site's hero, at a till.
+// The entry screen: the till's photograph under a navy scrim so Odoo's own
+// clock, title and buttons stay readable on it. Colour only - Odoo's layout and
+// type are untouched.
 //
-// point_of_sale's own login_screen.scss already draws .login-overlay from
+// point_of_sale's login_screen.scss already draws .login-overlay from
 // --homeMenu-bg-color and --homeMenu-bg-image, and tokens.scss points both at
 // the theme, so the wallpaper arrives with no template override.
 
@@ -9,12 +10,11 @@
     position: relative;
     color: #ffffff;
 
-    // Scrim in CSS rather than baked into the image, in the site's deep navy.
     &::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(0, 31, 69, 0.45) 0%, rgba(0, 31, 69, 0.85) 100%);
+        background: linear-gradient(180deg, rgba(0, 31, 69, 0.45) 0%, rgba(0, 31, 69, 0.8) 100%);
         pointer-events: none;
     }
 
@@ -23,25 +23,16 @@
         z-index: 1;
     }
 
-    .timer-hours,
-    .timer-minutes,
-    .timer-seconds {
-        font-variant-numeric: tabular-nums;
-        font-weight: 600;
-    }
-
     // Headings are coloured explicitly upstream, so they are set explicitly here.
     .screen-login-header,
     h1, h2, h3 {
         color: #ffffff;
-        font-weight: 700;
         text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     }
 
     .screen-login-subtitle,
     .cashier-name,
     small {
-        color: rgba(255, 255, 255, 0.8);
-        font-weight: 500;
+        color: rgba(255, 255, 255, 0.85);
     }
 }

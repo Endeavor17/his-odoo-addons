@@ -1,86 +1,66 @@
-// The HIS till, in the university's own identity (his.edu.dz).
+// The HIS till: stock Odoo 19, recoloured with the his.edu.dz palette.
 //
-// Every value below is lifted from the site's Elementor kit, not invented:
-// primary navy #003876, secondary #001f45, accent cyan #00aec1, the petrol
-// teal #006883 of the sticky header, the gold #cc9900 of its pill buttons
-// ("S'inscrire"), text #2c3742, and Poppins throughout. The site is light: white
-// cards with soft shadows on a white page, a teal band on top, gold for the one
-// thing to press. The till says the same thing.
+// Only colour changes. Layout, shapes, spacing, sizes and type are Odoo's own -
+// nothing here overrides a dimension, a radius or a font. The approved preview
+// (HIS POS Preview artifact) is the reference for every value.
 //
-// Token NAMES are kept from the previous theme on purpose: his_pos_copy_center's
-// dialog reads --his-ground-raised, --his-paper, --his-accent and the rest, so
-// remapping them here re-skins it without touching that module.
-
-// Poppins ships with the module: a till on campus wifi must not wait on a font
-// server to draw a price. Latin subset only; Arabic falls back to the system.
-@font-face { font-family: "Poppins"; font-style: normal; font-weight: 400; font-display: swap; src: url('/his_pos_ui/static/src/fonts/poppins-400.woff2') format('woff2'); }
-@font-face { font-family: "Poppins"; font-style: normal; font-weight: 500; font-display: swap; src: url('/his_pos_ui/static/src/fonts/poppins-500.woff2') format('woff2'); }
-@font-face { font-family: "Poppins"; font-style: normal; font-weight: 600; font-display: swap; src: url('/his_pos_ui/static/src/fonts/poppins-600.woff2') format('woff2'); }
-@font-face { font-family: "Poppins"; font-style: normal; font-weight: 700; font-display: swap; src: url('/his_pos_ui/static/src/fonts/poppins-700.woff2') format('woff2'); }
+//   teal  #006883  top bar, module buttons, selection accents
+//   gold  #cc9900  the buttons that take money (navy text: white on this gold
+//                  is too faint to read)
+//   navy  #003876  figures and product names
+//   tint  #c6dce2  selection - what Odoo itself derives when its action colour
+//                  is teal: mix(#006883, gray-100, 20%)
+//
+// Token NAMES are kept on purpose: his_pos_copy_center's dialog reads
+// --his-ground-raised, --his-paper, --his-accent and the rest.
 
 .his-pos {
     // --- Brand (his.edu.dz) ------------------------------------------------
-    --his-navy: #003876;
-    --his-navy-deep: #001f45;
     --his-teal: #006883;
     --his-teal-hover: #00566d;
-    --his-teal-tint: #e3f2f5;
-    --his-cyan: #00aec1;
+    --his-navy: #003876;
+    --his-navy-deep: #001f45;
     --his-gold: #cc9900;
     --his-gold-hover: #b38600;
     --his-gold-press: #9a7300;
+    --his-tint: #c6dce2;
 
-    // --- Surfaces: a light page with white cards on it -------------------
-    --his-ground: #f3f6f9;           // the page
-    --his-ground-raised: #ffffff;    // cards, keys, panels
-    --his-ground-sunk: #e9eef3;      // wells, placeholders
-    --his-line: #dde5ec;
-    --his-line-strong: #c5d2dc;
-    --his-shadow: 0 2px 10px rgba(0, 56, 118, 0.08);
-    --his-shadow-strong: 0 6px 18px rgba(0, 56, 118, 0.16);
-    --his-radius: 16px;
-    --his-radius-sm: 12px;
-
-    // The order is a white sheet like every other card on the site.
+    // --- Surfaces: Odoo's own greys ----------------------------------------
+    --his-ground: #f8f9fa;
+    --his-ground-raised: #ffffff;
+    --his-ground-sunk: #e9ecef;
+    --his-line: #dee2e6;
+    --his-line-strong: #ced4da;
     --his-paper: #ffffff;
-    --his-paper-edge: #e6ecf1;
-    --his-paper-ink: #2c3742;
-    --his-paper-ink-muted: #6b7a88;
+    --his-paper-edge: #e9ecef;
+    --his-paper-ink: #212529;
+    --his-paper-ink-muted: #495057;
+    --his-text: #212529;
+    --his-text-muted: #495057;
 
-    // --- Text ---------------------------------------------------------------
-    --his-text: #2c3742;
-    --his-text-muted: #6b7a88;
-    --his-on-brand: #ffffff;
-
-    // --- Accent: teal for state, gold only for the action that takes money --
     --his-accent: var(--his-teal);
     --his-accent-ink: #ffffff;
-    --his-accent-dim: var(--his-teal-tint);
+    --his-accent-dim: var(--his-tint);
 
-    --his-warn: #cc9900;
-    --his-danger: #e9573f;           // the site's coral
-    --his-texture: none;
+    // Read only by the Copy job dialog; the system stack is what it always used.
+    --his-font-label: 600 0.72rem/1.1 system-ui, -apple-system, "Segoe UI", sans-serif;
+    --his-label-tracking: 0.09em;
+    --his-font-mono: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "SF Mono", Menlo, Consolas, monospace;
 
-    // --- Entry screen --------------------------------------------------------
+    // --- Hooks Odoo already exposes ------------------------------------------
+    // orderline.scss paints a selected line from this variable.
+    --orderline-selected: var(--his-tint);
+    // navbar.scss draws the centre logo from this one.
+    --navbar-logo: url('/his_pos_ui/static/src/img/his_logo_white.png');
+
+    // --- Entry screen (read by point_of_sale's login_screen.scss) -------------
     --his-wallpaper: none;
     --his-wallpaper-color: var(--his-navy-deep);
-
-    // --- Type -------------------------------------------------------------------
-    --his-font: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
-    --his-font-label: 600 0.78rem/1.1 var(--his-font);
-    --his-label-tracking: 0.02em;
-    --his-font-mono: var(--his-font);   // Poppins figures are already even
-
-    // Odoo sizes every POS button from this one variable (pos_app.scss).
-    --btn-height-size: 60px;
-
-    // Read by point_of_sale's own navbar.scss and login_screen.scss.
-    --navbar-logo: url('/his_pos_ui/static/src/img/his_logo_white.png');
     --homeMenu-bg-color: var(--his-wallpaper-color);
     --homeMenu-bg-image: var(--his-wallpaper);
 }
 
-// Same identity on every till; only the entry photograph changes.
+// Same colours on every till; only the entry photograph changes.
 .his-theme-copy_center { --his-wallpaper: url('/his_pos_ui/static/src/img/copy_center.webp'); }
 .his-theme-restaurant { --his-wallpaper: url('/his_pos_ui/static/src/img/restaurant.webp'); }
 .his-theme-cafeteria { --his-wallpaper: url('/his_pos_ui/static/src/img/cafeteria.webp'); }

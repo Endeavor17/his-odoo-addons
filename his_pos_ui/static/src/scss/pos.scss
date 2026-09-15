@@ -1,20 +1,18 @@
-// Styling only. Nothing in this file changes what a click does.
+// Colour only. Nothing in this file sets a size, a spacing, a radius, a shadow
+// or a font, and nothing changes what a click does.
 //
-// The till dressed like his.edu.dz: a petrol-teal band carrying the white logo,
-// a light page, white rounded cards with a soft navy shadow, navy Poppins for
-// names and figures, teal for "this is selected", and gold pills - the site's
-// "S'inscrire" button - only for the action that takes the money.
+// Every selector was read out of point_of_sale 19.0's templates (navbar.xml,
+// order_tabs.xml, category_selector.xml, product_card.xml, orderline.xml,
+// order_display.xml, numpad.scss, payment_screen.xml/.scss). Every rule is
+// scoped under .his-pos, the class chrome.xml adds only to a till that has a
+// theme, so an unthemed till stays exactly stock.
 //
-// Every selector was read out of point_of_sale 19.0's own templates
-// (navbar.xml, product_card.xml, category_selector.xml, numpad.xml,
-// action_pad.xml, payment_screen.xml).
-//
-// Colours are set twice on purpose: through Bootstrap's --btn-* variables, and
-// as !important declarations. Odoo's utilities (.bg-view, .border-0,
-// o_colorlist_item_color_*) and his_theme's POS rules both carry !important, so
-// variables alone lose to them on some elements and not others.
+// Colours are set through Bootstrap's --btn-* variables AND as !important
+// declarations: Odoo's utilities (.bg-view, .bg-black, .text-dark,
+// o_colorlist_item_color_*) and his_theme's POS rules carry !important, so
+// variables alone would lose on some elements.
 
-@mixin his-btn($bg, $fg, $border, $hover-bg, $hover-fg: $fg, $active-bg: $hover-bg, $active-fg: $hover-fg) {
+@mixin his-btn-colors($bg, $fg, $border, $hover-bg, $hover-fg, $active-bg, $active-fg) {
     --btn-bg: #{$bg};
     --btn-color: #{$fg};
     --btn-border-color: #{$border};
@@ -42,328 +40,137 @@
     }
 }
 
-// Literal brand values for the parts that live outside .his-pos (dialogs are
-// portalled to <body>), kept in step with tokens.scss by hand.
-$his-navy: #003876;
-$his-teal: #006883;
-$his-teal-hover: #00566d;
-$his-teal-tint: #e3f2f5;
-$his-gold: #cc9900;
-$his-gold-hover: #b38600;
-$his-gold-press: #9a7300;
-$his-line: #dde5ec;
-$his-text: #2c3742;
-
-.his-pos {
-    background-color: var(--his-ground);
-    color: var(--his-text);
-    font-family: var(--his-font);
-
-    .btn,
-    input,
-    .o_input {
-        font-family: var(--his-font);
-    }
-
-    // ------------------------------------------------------------ the pane
-    .leftpane {
-        --background-color: var(--his-ground-raised);
-        border-right: 1px solid var(--his-line) !important;
-        color: var(--his-text);
-    }
-
-    .rightpane,
-    .pos-content {
-        --background-color: var(--his-ground);
-    }
-
-    // ------------------------------------------------------------- the order
-    .order-container {
-        background: var(--his-paper);
-        color: var(--his-paper-ink);
-    }
-
-    .orderline {
-        border-bottom: 1px solid var(--his-paper-edge);
-        color: var(--his-paper-ink);
-
-        .product-name {
-            color: var(--his-navy);
-            font-weight: 600;
-        }
-
-        &.selected {
-            background-color: var(--his-teal-tint) !important;
-            box-shadow: inset 4px 0 0 var(--his-teal);
-        }
-    }
-
-    .subtotal,
-    .tax-info {
-        color: var(--his-text-muted) !important;
-    }
-
-    .total {
-        color: var(--his-navy);
-        font-size: 1.9rem;
-        font-weight: 700;
-        letter-spacing: -0.01em;
-    }
-
-    // ------------------------------------------------------------- the grid
-    .product {
-        @include his-btn(#ffffff, var(--his-text), transparent, #ffffff, var(--his-text), #ffffff, var(--his-text));
-        border: 1px solid transparent !important;
-        border-radius: var(--his-radius) !important;
-        box-shadow: var(--his-shadow);
-        overflow: hidden;
-        transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
-
-        .product-name {
-            color: var(--his-navy);
-            font-weight: 600;
-            font-size: 0.92rem;
-        }
-
-        .product-img {
-            background-color: var(--his-ground-sunk);
-        }
-
-        .product-cart-qty {
-            background-color: var(--his-teal) !important;
-            border-radius: 999px !important;
-        }
-
-        &:hover {
-            border-color: var(--his-cyan) !important;
-            box-shadow: var(--his-shadow-strong);
-        }
-
-        &:active {
-            transform: scale(0.98);
-        }
-    }
-
-    // ------------------------------------------------------ categories
-    // Pills, like the site's filter chips. Odoo paints each category from its
-    // o_colorlist_item_color_N class with !important, hence the weight here.
-    .category-list .category-button,
-    .categories .category-button {
-        @include his-btn(#ffffff, var(--his-navy), var(--his-line), var(--his-teal-tint), var(--his-teal), var(--his-navy), #ffffff);
-        border: 1px solid var(--his-line) !important;
-        border-radius: 999px !important;
-        font-weight: 600;
-        font-size: 0.85rem;
-    }
-
-    // ---------------------------------------------------- control buttons
-    // Customer, note, the meal buttons, Copy job: white chips, navy text. The
-    // module actions (btn-primary) take the site's teal so the row never turns
-    // into a wall of gold competing with Payment.
-    .control-buttons .btn {
-        @include his-btn(#ffffff, var(--his-navy), var(--his-line), var(--his-teal-tint), var(--his-teal));
-        border: 1px solid var(--his-line) !important;
-        border-radius: var(--his-radius-sm) !important;
-        font-weight: 600;
-        box-shadow: var(--his-shadow);
-
-        &.btn-primary {
-            @include his-btn(var(--his-teal), #ffffff, var(--his-teal), var(--his-teal-hover), #ffffff);
-        }
-    }
-
-    // ------------------------------------------------------------ the keys
-    .numpad {
-        background-color: var(--his-line);
-        border: 1px solid var(--his-line);
-        border-radius: var(--his-radius-sm);
-        overflow: hidden;
-    }
-
-    .numpad-button {
-        @include his-btn(#ffffff, var(--his-navy), transparent, var(--his-teal-tint), var(--his-teal), var(--his-teal), #ffffff);
-        font-size: 1.35rem;
-        font-weight: 500;
-    }
-
-    // -------------------------------------------------------- the actions
-    // Gold pill: the site's call to action, spent on the button that takes money.
-    .btn-primary,
-    .pay-order-button,
-    .validation-button.next {
-        @include his-btn(var(--his-gold), #ffffff, var(--his-gold), var(--his-gold-hover), #ffffff, var(--his-gold-press), #ffffff);
-        border-radius: 999px !important;
-        font-weight: 700;
-    }
-
-    .pay-order-button {
-        font-size: 1.15rem;
-    }
-
-    .actionpad .btn-secondary,
-    .payment-screen .btn-secondary:not(.numpad-button),
-    .back-button {
-        @include his-btn(#ffffff, var(--his-navy), var(--his-line), var(--his-teal-tint), var(--his-teal));
-        border: 1px solid var(--his-line) !important;
-        border-radius: 999px !important;
-        font-weight: 600;
-    }
-
-    .payment-screen .paymentmethod {
-        @include his-btn(#ffffff, var(--his-navy), var(--his-line), var(--his-teal-tint), var(--his-teal), var(--his-teal), #ffffff);
-        border: 1px solid var(--his-line) !important;
-        border-radius: var(--his-radius-sm) !important;
-        font-weight: 600;
-        box-shadow: var(--his-shadow);
-    }
-
-    :focus-visible {
-        outline: 2px solid var(--his-cyan);
-        outline-offset: 2px;
-    }
-}
-
-// ---------------------------------------------------------------- header
+// ------------------------------------------------------------------ top bar
 // Three classes: his_theme paints `.pos > .pos-topheader` #0d6e8c with
-// !important and loads after this module, so equal weight would lose.
+// !important (and a maroon strip) and loads after this module.
 .pos.his-pos > .pos-topheader {
     --background-color: var(--his-teal);
     background-color: var(--his-teal) !important;
     border-top: 0;
-    border-bottom: 0 !important;
-    box-shadow: 0 2px 12px rgba(0, 31, 69, 0.18);
+    border-bottom-color: var(--his-teal) !important;
     color: #ffffff;
-    z-index: 2;
 
-    // Every control up here ships as .btn-light: white text on the band, a
-    // faint white wash on hover, like the site's menu.
-    .btn-light,
-    .btn-secondary {
-        @include his-btn(transparent, #ffffff, transparent, rgba(255, 255, 255, 0.14), #ffffff, rgba(255, 255, 255, 0.24), #ffffff);
-        border-radius: 999px !important;
+    // Register, Orders, the + and the icons all ship as .btn-light.
+    .btn-light {
+        @include his-btn-colors(transparent, #ffffff, transparent, rgba(255, 255, 255, 0.14), #ffffff, #ffffff, var(--his-teal));
     }
 
-    // Register / Orders: the selected one is a white pill with teal text.
-    .navbar-menu {
-        gap: 0.25rem;
-
-        .register-label,
-        .orders-button {
-            font-weight: 600;
-
-            &.active {
-                background-color: #ffffff !important;
-                color: var(--his-teal) !important;
-            }
-        }
+    // The new-order + and the overflow caret (ListContainer, .btn-secondary).
+    .list-plus-btn,
+    .btn-secondary.fa-caret-down {
+        @include his-btn-colors(transparent, #ffffff, transparent, rgba(255, 255, 255, 0.14), #ffffff, rgba(255, 255, 255, 0.24), #ffffff);
     }
 
     .navbar-separator {
-        background-color: rgba(255, 255, 255, 0.25);
-        border-color: rgba(255, 255, 255, 0.25);
+        background-color: rgba(255, 255, 255, 0.3);
     }
 
-    // Order number tabs: the open one takes the gold.
+    // Order number tabs (.btn-secondary); the open one takes the gold.
     .floating-order-container .btn {
-        @include his-btn(rgba(255, 255, 255, 0.14), #ffffff, transparent, rgba(255, 255, 255, 0.24), #ffffff, var(--his-gold), #ffffff);
-        font-weight: 600;
-        font-variant-numeric: tabular-nums;
+        @include his-btn-colors(rgba(255, 255, 255, 0.14), #ffffff, transparent, rgba(255, 255, 255, 0.24), #ffffff, var(--his-gold), var(--his-navy-deep));
     }
 
     .input-container {
         --background-color: #ffffff;
         background-color: #ffffff !important;
-        border: 0 !important;
-        border-radius: 999px !important;
-        color: var(--his-text);
-
-        .o_input,
-        .fa {
-            background-color: transparent;
-            color: var(--his-text) !important;
-        }
-
-        .o_input::placeholder {
-            color: var(--his-text-muted);
-            opacity: 1;
-        }
-    }
-
-    .cashier-name .avatar {
-        border: 2px solid rgba(255, 255, 255, 0.7);
-    }
-
-    // The white HIS logo (tokens.scss --navbar-logo), at the site header's size.
-    .pos-logo {
-        height: 46px;
-        min-width: 180px;
+        border-color: #ffffff !important;
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .his-pos .product {
-        transition: none;
+.his-pos {
+    // ------------------------------------------------- taking money: gold
+    // Payment, Validate, New Order - every btn-primary on the till.
+    .btn-primary {
+        @include his-btn-colors(var(--his-gold), var(--his-navy-deep), var(--his-gold), var(--his-gold-hover), var(--his-navy-deep), var(--his-gold-press), #ffffff);
+    }
+
+    // -------------------------------------- module buttons: teal
+    // Meal 300 / Meal 600 and Copy job are btn-primary in the control row.
+    .control-buttons .btn-primary {
+        @include his-btn-colors(var(--his-teal), #ffffff, var(--his-teal), var(--his-teal-hover), #ffffff, var(--his-teal-hover), #ffffff);
+    }
+
+    // ---------------------------------------------------------- selection
+    // The selected order line reads --orderline-selected (tokens.scss).
+    .numpad-button.active {
+        --btn-active-bg: var(--his-tint);
+        --btn-active-color: var(--his-teal);
+        --border-color: var(--his-teal);
+    }
+
+    // payment_screen.scss compiles its selection colours to literals.
+    .paymentline.selected {
+        background: var(--his-tint);
+        border-color: var(--his-teal);
+        color: var(--his-navy);
+    }
+
+    // ------------------------------------- quantity badge, active category
+    // The badge carries .bg-black (!important), hence the weight.
+    .product .product-cart-qty {
+        background-color: var(--his-teal) !important;
+    }
+
+    // A selected category is the one Odoo does NOT dim: no .border-0.
+    .category-list .category-button:not(.border-0) {
+        background-color: var(--his-teal) !important;
+        border-color: var(--his-teal) !important;
+        color: #ffffff !important;
+    }
+
+    // ------------------------------------------------------------- figures
+    // .total is the order total and the payment screen's amount due (which
+    // carries .text-dark !important).
+    .total {
+        color: var(--his-navy) !important;
+    }
+
+    .product .product-name,
+    .orderline .product-name {
+        color: var(--his-navy);
     }
 }
 
-// ---------------------------------------------------------------- dialogs
-// Portalled to <body>, outside .pos, so these use literal values. This bundle
-// only loads in the POS, so nothing here reaches the backend.
-.modal-content {
-    border: 0;
-    border-radius: 16px;
-    overflow: hidden;
-    font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
-
-    .modal-title {
-        color: $his-navy;
-        font-weight: 600;
-    }
-
-    .modal-footer {
-        .btn-primary,
-        .btn.btn-his-gold {
-            @include his-btn($his-gold, #ffffff, $his-gold, $his-gold-hover, #ffffff, $his-gold-press, #ffffff);
-            border-radius: 999px !important;
-            font-weight: 700;
-        }
-
-        .btn-secondary,
-        .btn-light {
-            @include his-btn(#ffffff, $his-navy, $his-line, $his-teal-tint, $his-teal);
-            border: 1px solid $his-line !important;
-            border-radius: 999px !important;
-            font-weight: 600;
-        }
-    }
-}
-
-// The serve-meal dialog (his_meal_management) was drawn in his_theme's older
-// teal and gold; brought onto the site's values.
+// -------------------------------------------------------- serve-meal dialog
+// his_meal_management's dialog is portalled outside .pos, so it is matched by
+// its own classes; .modal adds the weight to beat its stylesheet.
 .modal .his_serve_meal_head {
-    background-color: $his-teal;
+    background-color: #006883;
 }
 
 .modal .his_serve_meal_meter_kept {
-    background-color: $his-teal;
+    background-color: #006883;
 }
 
 .modal .his_serve_meal_meter_spent {
-    background-color: $his-gold;
+    background-color: #cc9900;
 }
 
 .modal .his_serve_meal_icon {
-    background-color: $his-teal-tint;
-    color: $his-teal;
+    color: #006883;
 }
 
-.modal .his_serve_meal_ask_title,
-.modal .his_serve_meal_figure {
-    color: $his-navy;
+.modal .btn.btn-his-gold.his_serve_meal_confirm {
+    --btn-bg: #cc9900;
+    --btn-border-color: #cc9900;
+    --btn-color: #001f45;
+    --btn-hover-bg: #b38600;
+    --btn-hover-border-color: #b38600;
+    --btn-hover-color: #001f45;
+    --btn-active-bg: #9a7300;
+    --btn-active-border-color: #9a7300;
+    --btn-active-color: #ffffff;
+    background-color: #cc9900 !important;
+    border-color: #cc9900 !important;
+    color: #001f45 !important;
+
+    &:hover {
+        background-color: #b38600 !important;
+        border-color: #b38600 !important;
+    }
 }
 
-// Themed dialogs that pass the theme classes as contentClass.
-.modal-content.his-pos {
-    background-color: var(--his-ground-raised);
-    color: var(--his-text);
+// The empty-card warning keeps its red header: that is a signal, not brand.
+.modal .his_serve_meal_head.his_serve_meal_head_empty {
+    background-color: #a4342a;
 }
