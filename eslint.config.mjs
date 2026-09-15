@@ -23,4 +23,11 @@ export default [
             },
         },
     },
+    {
+        // Scripts d'outillage lances par Node (odoo shell mis a part).
+        files: ['tools/**/*.mjs', 'tools/**/*.js', 'tools/**/*.cjs'],
+        languageOptions: {
+            globals: { ...globals.node },
+        },
+    },
 ];

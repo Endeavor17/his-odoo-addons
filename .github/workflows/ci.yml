@@ -79,7 +79,11 @@ jobs:
 
       - name: Parametres communs
         run: |
-          echo "ODOO=odoo --db_host=db --db_user=odoo --db_password=odoo --db_port=5432" >> "$GITHUB_ENV"
+          DB="--db_host=db --db_user=odoo --db_password=odoo --db_port=5432"
+          echo "ODOO=odoo $DB" >> "$GITHUB_ENV"
+          # Le sous-commande `shell` doit venir juste apres `odoo`, avant les
+          # options — sinon Odoo repond « unrecognized parameters: shell ».
+          echo "ODOO_SHELL=odoo shell $DB" >> "$GITHUB_ENV"
           echo "ADDONS=/usr/lib/python3/dist-packages/odoo/addons,$GITHUB_WORKSPACE" >> "$GITHUB_ENV"
 
       # 1. Socle : le POS exige un plan comptable pour creer une pos.config, et
@@ -89,13 +93,12 @@ jobs:
         run: $ODOO -d ci --addons-path="$ADDONS" --without-demo=True --stop-after-init
           -i l10n_dz,point_of_sale,his_person_core,his_academic_base
 
+      # Fichiers pipes, pas de heredoc : un terminateur de heredoc indente dans
+      # un bloc `run:` YAML n'est pas reconnu par le shell.
       - name: Charger le plan comptable et l'arborescence de categories
         run: |
-          $ODOO shell -d ci --addons-path="$ADDONS" --no-http --log-level=warn <<'PY'
-          env['account.chart.template'].try_loading('dz', company=env.ref('base.main_company'), install_demo=False)
-          env.cr.commit()
-          PY
-          $ODOO shell -d ci --addons-path="$ADDONS" --no-http --log-level=warn < tools/seed_categories.py
+          $ODOO_SHELL -d ci --addons-path="$ADDONS" --no-http --log-level=warn < tools/charger_plan_comptable_dz.py
+          $ODOO_SHELL -d ci --addons-path="$ADDONS" --no-http --log-level=warn < tools/seed_categories.py
 
       # 2. Installer tous les modules avec leurs tests.
       - name: Installer et tester
