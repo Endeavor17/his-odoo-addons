@@ -27,7 +27,7 @@ class TestDashboardQueries(CampusCommon):
         )
         self.applicant.action_campus_evaluate()
         self.domain = [("campus_version_id", "=", self.version.id)]
-        self.evaluated = self.domain + [("campus_state", "in", ["evaluated", "locked"])]
+        self.evaluated = [*self.domain, ("campus_state", "in", ["evaluated", "locked"])]
 
     def test_version_selector_read(self):
         versions = self.Version.search_read([], ["id", "display_name", "state"], order="version desc, id desc")
@@ -53,8 +53,8 @@ class TestDashboardQueries(CampusCommon):
         dashboard can never regress back to a group-by.
         """
         # Filtering works...
-        self.assertIsInstance(self.Applicant.search_count(self.domain + [("application_status", "=", "hired")]), int)
-        self.assertIsInstance(self.Applicant.search_count(self.domain + [("application_status", "=", "refused")]), int)
+        self.assertIsInstance(self.Applicant.search_count([*self.domain, ("application_status", "=", "hired")]), int)
+        self.assertIsInstance(self.Applicant.search_count([*self.domain, ("application_status", "=", "refused")]), int)
 
         # ...grouping does not, and must never be reintroduced.
         self.assertFalse(

@@ -194,4 +194,4 @@ class HisDashboard(models.AbstractModel):
         role sans droit sur les dossiers ne voit pas ce bloc, au lieu de voir
         la vue d'ensemble entiere tomber.
         """
-        return super()._methodes_cockpits() + ["get_dossiers"]
+        return [*super()._methodes_cockpits(), "get_dossiers"]

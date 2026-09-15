@@ -93,7 +93,7 @@ def migrate(cr, version):
     Person = env["his.person"].sudo()
     created = 0
     for row in rows:
-        partner_id, legacy = row[0], dict(zip(columns, row[1:]))
+        partner_id, legacy = row[0], dict(zip(columns, row[1:], strict=False))
 
         # type_personne is required on his.person and its selection differs:
         # the socle adds 'employe' and drops nothing we used. A partner with no

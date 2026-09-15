@@ -33,8 +33,15 @@ Ce que ce jeu doit rendre demontrable, et pourquoi chaque valeur est la :
 import datetime
 
 Lead = env["crm.lead"]
-U = lambda l: env["res.users"].search([("login", "=", l)], limit=1)
-X = lambda x: env.ref("his_crm_pipeline." + x)
+
+
+def U(l):
+    return env["res.users"].search([("login", "=", l)], limit=1)
+
+
+def X(x):
+    return env.ref("his_crm_pipeline." + x)
+
 
 ventes, contenu = X("crm_team_ventes"), X("crm_team_contenu")
 aicha, rahma, cherif = U("aicha"), U("rahma"), U("cherif")
@@ -118,15 +125,18 @@ if Tarif is not None and specs:
                 }
             )
 
+
 # ----------------------------------------------------------- Admissions
-NOTES = lambda bac, m, p, i: {
-    "specialite_id": specs[i % len(specs)].id if specs else False,
-    "bac_moyenne": bac,
-    "note_math": m,
-    "note_physique": p,
-    "motivation_majeure": "Projet professionnel clair",
-    "motivation_his": "Reputation de l'etablissement",
-}
+def NOTES(bac, m, p, i):
+    return {
+        "specialite_id": specs[i % len(specs)].id if specs else False,
+        "bac_moyenne": bac,
+        "note_math": m,
+        "note_physique": p,
+        "motivation_majeure": "Projet professionnel clair",
+        "motivation_his": "Reputation de l'etablissement",
+    }
+
 
 adm = [
     # nom, etape, notes, etiquettes, visite, proprietaire, tel, source, tentatives

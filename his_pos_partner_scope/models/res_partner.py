@@ -17,5 +17,5 @@ class ResPartner(models.Model):
         # filtre. Domaine non vide (recherche du caissier) : le coeur cherche
         # dans TOUS les contacts, il faut donc y ajouter la regle ici.
         if domain:
-            domain = list(domain) + [("id", "not in", self._his_pos_hidden_partner_ids())]
+            domain = [*list(domain), ("id", "not in", self._his_pos_hidden_partner_ids())]
         return super().get_new_partner(config_id, domain, offset)

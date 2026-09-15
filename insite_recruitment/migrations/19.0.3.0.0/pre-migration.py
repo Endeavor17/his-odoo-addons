@@ -21,7 +21,8 @@ def migrate(cr, version):
         cr.execute("SELECT to_regclass(%s)", (table,))
         if not cr.fetchone()[0]:
             continue
-        cr.execute(f'SELECT count(*) FROM "{table}"')  # noqa: table names are constants
+        # table est une constante du module, pas une entree utilisateur.
+        cr.execute(f'SELECT count(*) FROM "{table}"')
         count = cr.fetchone()[0]
         if count:
             raise Exception(

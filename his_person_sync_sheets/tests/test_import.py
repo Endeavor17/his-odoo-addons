@@ -12,7 +12,7 @@ HEADER = "matricule,nom latin,nom arabe,email personnel,telephone,carte,external
 @tagged("post_install", "-at_install")
 class TestSheetsImport(TransactionCase):
     def _wizard(self, *rows, filename="export.csv"):
-        content = "\n".join((HEADER,) + rows)
+        content = "\n".join((HEADER, *rows))
         return self.env["his.person.import"].create(
             {
                 "file": base64.b64encode(content.encode("utf-8")),

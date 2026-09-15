@@ -92,9 +92,9 @@ class CampusApplicationApi(http.Controller):
         base = [("create_date", ">=", since)]
         if exclude_id:
             base.append(("id", "!=", exclude_id))
-        if ip and Submission.search_count(base + [("source_ip", "=", ip)]) >= max_ip:
+        if ip and Submission.search_count([*base, ("source_ip", "=", ip)]) >= max_ip:
             return True
-        if email and Submission.search_count(base + [("email", "=", email)]) >= max_email:
+        if email and Submission.search_count([*base, ("email", "=", email)]) >= max_email:
             return True
         return False
 

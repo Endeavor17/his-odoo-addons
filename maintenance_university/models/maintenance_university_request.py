@@ -218,9 +218,12 @@ class MaintenanceRequest(models.Model):
         # self.filtered(lambda m: m.stage_id.done).write({'close_date': ...})
         # — that still routes through this override even when the filtered
         # recordset is empty. Nothing to restrict if there's nothing to write.
-        if self and not self.env.user.has_group("maintenance_university.group_maintenance_manager"):
-            if set(vals) - WORKER_WRITABLE_FIELDS:
-                raise UserError(_("You can only update your own progress on this request, not its details."))
+        if (
+            self
+            and not self.env.user.has_group("maintenance_university.group_maintenance_manager")
+            and set(vals) - WORKER_WRITABLE_FIELDS
+        ):
+            raise UserError(_("You can only update your own progress on this request, not its details."))
         return super().write(vals)
 
     def action_assign(self):

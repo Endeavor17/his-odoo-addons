@@ -1,3 +1,5 @@
+import itertools
+
 from odoo.tests import tagged
 
 from .common import PRIORITIES, CampusCommon
@@ -93,7 +95,7 @@ class TestCarWeights(CampusCommon):
         """Higher priority never earns a lower weight."""
         weights = self._weights("car")
         ordered = sorted(PRIORITIES.items(), key=lambda kv: kv[1], reverse=True)
-        for (code, priority), (next_code, next_priority) in zip(ordered, ordered[1:]):
+        for (code, priority), (next_code, next_priority) in itertools.pairwise(ordered):
             if priority > next_priority:
                 self.assertGreater(
                     weights[code],

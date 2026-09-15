@@ -673,7 +673,7 @@ class HrApplicant(models.Model):
         return {
             "subject_id": subject.id if subject else False,
             "subject_name": False if subject else name,
-            "source": "catalogue" if subject else ("free" if source == "free" else "free"),
+            "source": "catalogue" if subject else "free",
             "years_exp": years,
         }
 

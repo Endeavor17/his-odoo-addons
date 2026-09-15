@@ -28,7 +28,7 @@ class ProductTemplate(models.Model):
             if not vals.get("default_code"):
                 vals["default_code"] = self.env["ir.sequence"].next_by_code("product.internal.reference")
         templates = super().create(vals_list)
-        for template, vals in zip(templates, vals_list):
+        for template, vals in zip(templates, vals_list, strict=False):
             template._apply_mdm_category_defaults(vals)
         templates._assert_mdm_default_code()
         return templates

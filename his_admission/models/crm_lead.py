@@ -252,7 +252,7 @@ class CrmLead(models.Model):
             if not lead.his_person_id:
                 continue
             engagement = lead.his_person_id.engagement_ids.filtered(
-                lambda e: e.etat in lead.ETATS_SUIVEURS,
+                lambda e, lead=lead: e.etat in lead.ETATS_SUIVEURS,
             )[:1]
             if not engagement:
                 continue

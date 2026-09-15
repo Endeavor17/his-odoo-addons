@@ -134,7 +134,7 @@ class TestProcessPermissions(CampusCommon):
     def test_bypass_via_direct_action_call_is_denied(self):
         user = self._make_recruiter("bypass_attempt")
         self._grant(user, self.interview1, view=True)  # no execute/validate
-        applicant = self._interview1_applicant()
+        self._interview1_applicant()
 
         with self.assertRaises(AccessError):
             self.env["campus.process.permission"]._check_process_permission("interview1", "validate", for_user=user)

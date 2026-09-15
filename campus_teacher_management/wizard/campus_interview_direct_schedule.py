@@ -33,7 +33,7 @@ class CampusInterviewDirectSchedule(models.TransientModel):
     def _compute_existing_slot(self):
         for wizard in self:
             wizard.existing_slot_id = wizard.applicant_id.campus_slot_ids.filtered(
-                lambda s: s.round == wizard.round and s.state == "booked"
+                lambda s, wizard=wizard: s.round == wizard.round and s.state == "booked"
             )[:1]
 
     def action_confirm(self):

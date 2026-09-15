@@ -131,11 +131,14 @@ class MaintenanceUniversityFinding(models.Model):
         # Same defense-in-depth shape as maintenance.request's write() guard:
         # once this has been submitted, only a manager can still change what
         # it actually says.
-        if self and not self.env.user.has_group("maintenance_university.group_maintenance_manager"):
-            if set(vals) & LOCKED_AFTER_SUBMIT_FIELDS:
-                for rec in self:
-                    if rec.state != "draft":
-                        raise UserError(_("This has already been submitted and can no longer be edited."))
+        if (
+            self
+            and not self.env.user.has_group("maintenance_university.group_maintenance_manager")
+            and set(vals) & LOCKED_AFTER_SUBMIT_FIELDS
+        ):
+            for rec in self:
+                if rec.state != "draft":
+                    raise UserError(_("This has already been submitted and can no longer be edited."))
         return super().write(vals)
 
     def unlink(self):

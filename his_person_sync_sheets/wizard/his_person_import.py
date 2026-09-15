@@ -91,10 +91,7 @@ class HisPersonImport(models.TransientModel):
         """Retourne une liste de dicts {champ his.person: valeur}, un par ligne."""
         content = base64.b64decode(self.file)
         name = (self.filename or "").lower()
-        if name.endswith((".xlsx", ".xlsm")):
-            raw_rows = self._read_xlsx(content)
-        else:
-            raw_rows = self._read_csv(content)
+        raw_rows = self._read_xlsx(content) if name.endswith((".xlsx", ".xlsm")) else self._read_csv(content)
         rows = self._map_rows(raw_rows)
         if not rows:
             raise UserError("Le fichier ne contient aucune ligne exploitable.")
@@ -124,7 +121,7 @@ class HisPersonImport(models.TransientModel):
             raise UserError(
                 "La lecture XLSX necessite openpyxl, absent de cet environnement. "
                 "Exportez la feuille en CSV et relancez l'import."
-            )
+            ) from None
         workbook = load_workbook(io.BytesIO(content), read_only=True, data_only=True)
         sheet = workbook[workbook.sheetnames[0]]
         return [["" if cell is None else str(cell) for cell in row] for row in sheet.iter_rows(values_only=True)]

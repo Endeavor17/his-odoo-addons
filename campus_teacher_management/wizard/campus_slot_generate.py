@@ -132,7 +132,7 @@ class CampusSlotGenerate(models.TransientModel):
                 cursor = self.time_from
                 while cursor + self.duration <= self.time_to + 1e-9:
                     hour = int(cursor)
-                    minute = int(round((cursor - hour) * 60))
+                    minute = round((cursor - hour) * 60)
                     local = datetime.combine(day, time(hour=hour, minute=minute))
                     starts.append(fields.Datetime.to_string(self._to_utc(local)))
                     cursor += self.duration

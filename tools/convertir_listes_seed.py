@@ -290,7 +290,7 @@ def construire():
 
     # --- Cafeteria et gateaux (porte les codes-barres) ----------------------
     for i, row in enumerate(lire("cafeteria_gateaux.csv"), start=1):
-        designation, restaure = restaurer(row["Designation"].strip())
+        designation, _restaure = restaurer(row["Designation"].strip())
         if "?" in designation:
             non_restaures.append(designation)
         categorie = categorie_cafe(designation)

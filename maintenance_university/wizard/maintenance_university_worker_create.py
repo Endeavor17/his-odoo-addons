@@ -221,7 +221,9 @@ class MaintenanceUniversityWorkerCreateLine(models.TransientModel):
             # Preselect in SQL, compare in Python: the same shape the socle's
             # own matcher uses, so no full scan of the referential per line.
             domain = ["|"] * (len(tokens) - 1) + [("name", "ilike", token) for token in tokens]
-            match = Person.search(domain).filtered(lambda person: set(normalize_text(person.name).split()) == wanted)
+            match = Person.search(domain).filtered(
+                lambda person, wanted=wanted: set(normalize_text(person.name).split()) == wanted
+            )
             if not match:
                 continue
             # Archived records are still worth warning about — an archived

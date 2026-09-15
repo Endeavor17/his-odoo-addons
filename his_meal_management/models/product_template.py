@@ -84,4 +84,4 @@ class ProductProduct(models.Model):
         argument between POS versions (config_id / config), and this override
         does not care which it is - it only appends to whatever core returns.
         """
-        return super()._load_pos_data_fields(*args, **kwargs) + ["meal_credit_cost"]
+        return [*super()._load_pos_data_fields(*args, **kwargs), "meal_credit_cost"]

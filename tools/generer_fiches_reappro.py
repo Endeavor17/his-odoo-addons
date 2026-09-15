@@ -59,7 +59,7 @@ Product = env["product.product"]
 os.makedirs(SORTIE, exist_ok=True)
 
 resume = []
-for branche, point_de_vente, xmlid, fichier in BRANCHES:
+for branche, point_de_vente, _xmlid, fichier in BRANCHES:
     produits = Product.search([("categ_id.complete_name", "=like", PREFIXE + branche + "%")], order="categ_id, name")
 
     chemin = os.path.join(SORTIE, "reappro_%s.csv" % fichier)

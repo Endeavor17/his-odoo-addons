@@ -36,7 +36,7 @@ def _compute_matricule_checksum(sequential_number):
     digits = digits.zfill(6)
     if len(digits) != 6:
         raise ValueError("Portion sequentielle attendue sur 6 chiffres : %r" % (sequential_number,))
-    total = sum(int(digit) * weight for digit, weight in zip(reversed(digits), CHECKSUM_WEIGHTS))
+    total = sum(int(digit) * weight for digit, weight in zip(reversed(digits), CHECKSUM_WEIGHTS, strict=False))
     remainder = total % 11
     return "X" if remainder == 10 else str(remainder)
 
@@ -280,7 +280,7 @@ class HisPerson(models.Model):
                 if value
                 else [expression.FALSE_LEAF]
             )
-            return domain if operator == "in" else ["!"] + domain
+            return domain if operator == "in" else ["!", *domain]
         return [("matricule_institutionnel", operator, value)]
 
     def _his_attribuer_matricule(self, sequence_date=None):
@@ -433,7 +433,7 @@ class HisPerson(models.Model):
         return sum(scores[key] * weight for key, weight in self.MATCH_WEIGHTS.items())
 
     @api.model
-    def _find_or_flag_match(self, candidate_vals, types=("etudiant", "candidat")):
+    def _find_or_flag_match(self, candidate_vals, types=("etudiant", "candidat")):  # noqa: C901 - matcheur d'identite, complexite metier suivie (annexe structure de l'audit)
         """Rapproche une ligne source d'une fiche existante, sans jamais fusionner.
 
         Retourne un dict :
@@ -522,7 +522,7 @@ class HisPerson(models.Model):
 
         domain = ["|"] * (len(criteria) - 1) + criteria
         if types:
-            domain = [("type_personne", "in", list(types))] + domain
+            domain = [("type_personne", "in", list(types)), *domain]
 
         best, best_score = None, 0.0
         for person in self.with_context(active_test=False).search(domain):

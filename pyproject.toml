@@ -31,11 +31,20 @@ ignore = [
 # Odoo importe les sous-modules pour leurs effets de bord.
 "**/__init__.py" = ["F401"]
 # Scripts lances dans `odoo shell` : `env` est injecte, print est la sortie.
-"tools/**" = ["F821", "T201", "S101", "E402"]
-"**/docs/**" = ["F821", "T201", "S101"]
-"**/migrations/**" = ["F821"]
-# Les tests utilisent assert (c'est leur role) et des noms de fixture varies.
-"**/tests/**" = ["S101", "B017"]
+# E741 (`l`) et E402 (import en cours de script) tolerees hors code livre.
+# C901 : convertisseur d'import ponctuel, complexite assumee.
+"tools/**" = ["F821", "T201", "S101", "E402", "E741", "B007", "C901"]
+"**/docs/**" = ["F821", "T201", "S101", "E402", "E741"]
+# Les migrations interpolent un nom de TABLE constant (jamais une donnee
+# utilisateur) : S608 ne sait pas faire la difference, faux positif ici.
+"**/migrations/**" = ["F821", "E741", "S608"]
+# Les tests utilisent assert (c'est leur role), des noms de fixture varies,
+# `l` pour une ligne dans une lambda, et interpolent une table constante en SQL.
+"**/tests/**" = ["S101", "B017", "E741", "S608"]
+# Hook de reprise : interpole BACKUP_TABLE (constante du module) dans du SQL
+# DDL/DML — un identifiant ne peut pas etre parametre, donc S608 est inevitable
+# et faux ici.
+"his_hr_base/__init__.py" = ["S608"]
 # Idiome Odoo : Model = self.env['x'], variables locales en Capitale.
 "**/models/**" = ["N806", "N803"]
 "**/wizard/**" = ["N806", "N803"]

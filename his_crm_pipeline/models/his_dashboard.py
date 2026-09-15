@@ -183,7 +183,7 @@ class HisDashboard(models.AbstractModel):
                     "action": self._action(
                         "%s : %s" % (label, nom),
                         model,
-                        domain + [(groupby, "=", critere)],
+                        [*domain, (groupby, "=", critere)],
                     ),
                 }
             )
@@ -209,7 +209,7 @@ class HisDashboard(models.AbstractModel):
         recues_prec = base + self._entre(prec_from, prec_to)
 
         nb_recues = Lead.search_count(recues)
-        nb_gagnees = Lead.search_count(recues + [("stage_id.is_won", "=", True)])
+        nb_gagnees = Lead.search_count([*recues, ("stage_id.is_won", "=", True)])
         nb_recues_prec = Lead.search_count(recues_prec)
 
         etape_pre_admis = self.env.ref(
@@ -238,10 +238,10 @@ class HisDashboard(models.AbstractModel):
                 action=self._action(
                     "Inscriptions",
                     "crm.lead",
-                    recues + [("stage_id.is_won", "=", True)],
+                    [*recues, ("stage_id.is_won", "=", True)],
                 ),
                 precedent=Lead.search_count(
-                    recues_prec + [("stage_id.is_won", "=", True)],
+                    [*recues_prec, ("stage_id.is_won", "=", True)],
                 ),
                 axe="inscriptions",
                 date_from=date_from,
@@ -262,10 +262,7 @@ class HisDashboard(models.AbstractModel):
         ]
 
         if etape_pre_admis:
-            attente = base + [
-                ("stage_id", "=", etape_pre_admis.id),
-                ("date_last_stage_update", "<", limite_pre_admis),
-            ]
+            attente = [*base, ("stage_id", "=", etape_pre_admis.id), ("date_last_stage_update", "<", limite_pre_admis)]
             tuiles.append(
                 self._tuile(
                     "pre_admis_sans_encaissement",
@@ -308,7 +305,7 @@ class HisDashboard(models.AbstractModel):
         peut pas deviner laquelle il regarde, et c'est exactement ce que la
         regle « un indicateur, une definition » existe pour empecher.
         """
-        base = [("team_id", "in", equipes.ids)] + self._entre(date_from, date_to)
+        base = [("team_id", "in", equipes.ids), *self._entre(date_from, date_to)]
 
         return [
             self._donut(
@@ -326,7 +323,7 @@ class HisDashboard(models.AbstractModel):
             self.with_context(active_test=False)._donut(
                 "Motifs de perte",
                 "crm.lead",
-                base + [("lost_reason_id", "!=", False)],
+                [*base, ("lost_reason_id", "!=", False)],
                 "lost_reason_id",
             ),
             self._donut(
@@ -359,12 +356,12 @@ class HisDashboard(models.AbstractModel):
             self._a_traiter(
                 "Sans telephone ni email",
                 "crm.lead",
-                base + [("phone", "=", False), ("email_from", "=", False)],
+                [*base, ("phone", "=", False), ("email_from", "=", False)],
             ),
             self._a_traiter(
                 "Sans source d'acquisition",
                 "crm.lead",
-                base + [("source_id", "=", False)],
+                [*base, ("source_id", "=", False)],
             ),
         ]
         # specialite_id vient de his_admission, situe en aval : le pipeline
@@ -375,7 +372,7 @@ class HisDashboard(models.AbstractModel):
                 self._a_traiter(
                     "Sans specialite visee",
                     "crm.lead",
-                    base + [("specialite_id", "=", False)],
+                    [*base, ("specialite_id", "=", False)],
                 ),
             )
         return files
@@ -391,7 +388,7 @@ class HisDashboard(models.AbstractModel):
             [("team_ids", "in", equipes.ids)],
             order="sequence",
         )
-        domaine_base = [("team_id", "in", equipes.ids)] + self._entre(date_from, date_to)
+        domaine_base = [("team_id", "in", equipes.ids), *self._entre(date_from, date_to)]
 
         marches = []
         precedent = None
@@ -399,7 +396,7 @@ class HisDashboard(models.AbstractModel):
             # Cumulatif : un candidat parvenu a l'etape 5 est passe par la 3.
             # Compter les seuls presents dans l'etape ferait un entonnoir qui
             # remonte, illisible.
-            domaine = domaine_base + [("stage_id.sequence", ">=", etape.sequence)]
+            domaine = [*domaine_base, ("stage_id.sequence", ">=", etape.sequence)]
             compte = Lead.search_count(domaine)
             marches.append(
                 {
@@ -430,7 +427,7 @@ class HisDashboard(models.AbstractModel):
                 self._a_traiter(
                     "Candidatures non affectees",
                     "crm.lead",
-                    base + [("stage_id", "=", etape_nouveau.id), ("user_id", "=", False)],
+                    [*base, ("stage_id", "=", etape_nouveau.id), ("user_id", "=", False)],
                 )
             )
         if etape_pris:
@@ -444,11 +441,7 @@ class HisDashboard(models.AbstractModel):
                 self._a_traiter(
                     "Premier contact en retard",
                     "crm.lead",
-                    base
-                    + [
-                        ("stage_id", "=", etape_pris.id),
-                        ("date_last_stage_update", "<", limite),
-                    ],
+                    [*base, ("stage_id", "=", etape_pris.id), ("date_last_stage_update", "<", limite)],
                 )
             )
 
@@ -459,7 +452,7 @@ class HisDashboard(models.AbstractModel):
                 self._a_traiter(
                     "Candidatures en sommeil",
                     "crm.lead",
-                    base + [("is_rotting", "=", True)],
+                    [*base, ("is_rotting", "=", True)],
                 )
             )
         return files
@@ -506,7 +499,7 @@ class HisDashboard(models.AbstractModel):
         base = [("team_id", "=", equipe.id)] if equipe else []
 
         recues = base + self._entre(date_from, date_to)
-        publiees = recues + [("stage_id.is_won", "=", True)]
+        publiees = [*recues, ("stage_id.is_won", "=", True)]
 
         tuiles = [
             self._tuile(
@@ -546,7 +539,7 @@ class HisDashboard(models.AbstractModel):
         )
         if etape_approbation:
             # La file du directeur lui-meme : ce qui attend SA signature.
-            attente = base + [("stage_id", "=", etape_approbation.id)]
+            attente = [*base, ("stage_id", "=", etape_approbation.id)]
             tuiles.append(
                 self._tuile(
                     "attente_approbation",
@@ -612,11 +605,7 @@ class HisDashboard(models.AbstractModel):
                 self._a_traiter(
                     "Demandes bloquees en production",
                     "crm.lead",
-                    base
-                    + [
-                        ("stage_id", "=", etape_production.id),
-                        ("date_last_stage_update", "<", limite),
-                    ],
+                    [*base, ("stage_id", "=", etape_production.id), ("date_last_stage_update", "<", limite)],
                 )
             )
         return files

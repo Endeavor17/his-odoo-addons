@@ -339,7 +339,7 @@ class CrmLead(models.Model):
             # cree. Sans cela le garde-fou « seul le responsable affecte »
             # refuserait notre propre ecriture, et le Marketing ne pourrait plus
             # rien capturer.
-            leads.filtered(lambda l: l.stage_id == etape and l.user_id).sudo().user_id = False
+            leads.filtered(lambda lead: lead.stage_id == etape and lead.user_id).sudo().user_id = False
         return leads
 
     # --- Verrou d'approbation ----------------------------------------------
