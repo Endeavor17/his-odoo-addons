@@ -1,0 +1,50 @@
+# pylint-odoo pour les modules du Groupe. Odoo 19.
+# But : attraper les fautes propres a Odoo (SQL, manifeste, unlink, traductions,
+# API depreciee) sans noyer le signal sous les conventions de style, deja
+# tenues par ruff.
+[MAIN]
+load-plugins=pylint_odoo
+# web_responsive est tiers (OCA), non juge par notre politique.
+ignore=web_responsive
+
+[ODOOLINT]
+valid_odoo_versions=19.0
+manifest_required_authors=Groupe HIS-HTC-IRA,Abdo Chabouti
+
+[MESSAGES CONTROL]
+# On PART de rien, puis on active EXPLICITEMENT ce qui attrape une vraie faute.
+# Le style (ligne, f-string, tri, docstring) est le domaine de ruff. On n'active
+# donc PAS les verifs Odoo purement cosmetiques ou risquees a migrer en masse :
+#   - attribute-string-redundant (W8113) : string= egale le nom du champ, sans effet
+#   - prefer-env-translation (W8161) : _() -> self.env._(), les deux marchent en 19
+#     (291 sites, migration a risque sans valeur fonctionnelle)
+disable=all
+enable=
+    E,
+    # --- verifs Odoo (pylint_odoo) qui signalent un vrai defaut ---
+    sql-injection,
+    no-raise-unlink,
+    inheritable-method-lambda,
+    method-required-super,
+    super-method-mismatch,
+    missing-return,
+    no-search-all,
+    translation-required,
+    translation-positional-used,
+    translation-not-lazy,
+    manifest-required-author,
+    manifest-deprecated-key,
+    manifest-superfluous-key,
+    missing-readme,
+    # --- vraies erreurs / pieges Python ---
+    used-before-assignment,
+    unused-import,
+    unused-variable,
+    redefined-builtin,
+    dangerous-default-value,
+    raise-missing-from,
+    broad-exception-caught,
+    cell-var-from-loop
+
+[REPORTS]
+score=no
