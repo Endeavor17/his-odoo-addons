@@ -28,6 +28,7 @@ REFERENCE_PARTAGEE = {
     'his.specialite': "Catalogue des specialites : lu partout, ne nomme personne.",
     'his.document.type': "Types de pieces : configuration, aucune donnee personnelle.",
     'his.content.deliverable.type': "Types de livrables : configuration de la production.",
+    'his.faculty': "Facultes : donnee de reference, lue pour afficher un rattachement, ne nomme personne.",
 }
 
 # Paires de roles qui ne se cumulent pas sur un meme compte.
@@ -53,7 +54,22 @@ SEPARATION_DES_TACHES = [
 # Ce sont nos bases qui l'avaient perdu, maintenance_university l'ayant remplace
 # par un (6, 0, [...]) dont la desinstallation a emporte le dernier groupe.
 # socle_menus.xml le repose ; un graphiste ne voit plus la tuile « Apps ».
-SOCLE_ATTENDU = {'Discuss', 'Calendar'}
+#
+# « Discuss » N'EN FAIT PLUS PARTIE (decision de Mohamed, 2026-09-15 : un
+# ouvrier ne garde pas Discuss). maintenance_university retire deja
+# `base.group_user` du menu Discuss ; comme un ouvrier de maintenance implique
+# `base.group_user`, retirer Discuss du socle est le SEUL moyen de le lui
+# retirer, et cela vaut donc pour tout compte sans role. Discuss redevient
+# visible pour qui porte un role qui le lui reaccorde. Ce test suppose donc
+# maintenance_university installe — c'est le cas en production et en CI.
+#
+# « Dashboards » est tolere : le menu de `spreadsheet_dashboard` est tire
+# transitivement par les modules-pont du POS (spreadsheet_dashboard_pos_*), ne
+# porte aucun groupe en natif et n'affiche AUCUNE donnee a un compte sans role.
+# Le fermer proprement exigerait une dependance dure vers un module sans rapport
+# (spreadsheet_dashboard) sur toutes les bases, POS ou non : cout injustifie
+# pour une coquille vide. Exception assumee, au meme titre que REFERENCE_PARTAGEE.
+SOCLE_ATTENDU = {'Calendar', 'Dashboards'}
 
 
 @tagged('post_install', '-at_install')
