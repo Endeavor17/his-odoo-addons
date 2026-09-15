@@ -221,12 +221,12 @@ class CampusInterviewSlot(models.Model):
             )
         return True
 
-    def unlink(self):
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_booked(self):
         if any(slot.state == "booked" for slot in self):
             raise UserError(
                 _("A booked slot cannot be deleted — release it first, so the meeting in the calendar goes with it.")
             )
-        return super().unlink()
 
     # ------------------------------------------------------------------
     @api.model

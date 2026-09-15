@@ -152,12 +152,12 @@ class CampusEvaluationVersion(models.Model):
             self._check_editable(_("Scoring settings"))
         return super().write(vals)
 
-    def unlink(self):
+    @api.ondelete(at_uninstall=False)
+    def _unlink_only_draft_without_applications(self):
         if any(version.state != "draft" for version in self):
             raise UserError(_("Only draft evaluation versions can be deleted. Archive or close the others instead."))
         if any(version.application_count for version in self):
             raise UserError(_("This evaluation version already has applications and cannot be deleted."))
-        return super().unlink()
 
     # ------------------------------------------------------------------
     # Actions

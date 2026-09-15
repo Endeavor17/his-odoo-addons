@@ -1068,7 +1068,7 @@ class TestTheShippedOffer(TransactionCase):
     }
 
     def test_every_package_grants_what_the_price_sheet_says(self):
-        for xml_id, (price, credits) in self.PLANS.items():
+        for xml_id, (price, credits) in self.PLANS.items():  # pylint: disable=redefined-builtin
             plan = self.env.ref(f"his_meal_management.{xml_id}")
             self.assertEqual(plan.list_price, price, xml_id)
             self.assertEqual(plan.meal_credits, credits, xml_id)

@@ -134,8 +134,8 @@ class MaintenanceRequest(models.Model):
     def _default_maintenance_team_id(self):
         return self.env.ref("maintenance_university.maintenance_team_university")
 
-    stage_id = fields.Many2one(default=_default_stage_id)
-    maintenance_team_id = fields.Many2one(default=_default_maintenance_team_id)
+    stage_id = fields.Many2one(default=lambda self: self._default_stage_id())
+    maintenance_team_id = fields.Many2one(default=lambda self: self._default_maintenance_team_id())
 
     @api.depends("stage_id", "kanban_state")
     def _compute_state(self):
@@ -207,10 +207,10 @@ class MaintenanceRequest(models.Model):
             raise UserError(_("Only a manager can create a maintenance request."))
         return super().create(vals_list)
 
-    def unlink(self):
+    @api.ondelete(at_uninstall=False)
+    def _unlink_only_manager(self):
         if not self.env.user.has_group("maintenance_university.group_maintenance_manager"):
             raise UserError(_("Only a manager can delete a maintenance request."))
-        return super().unlink()
 
     def write(self, vals):
         # Core's own write() makes internal recursive calls on filtered (often

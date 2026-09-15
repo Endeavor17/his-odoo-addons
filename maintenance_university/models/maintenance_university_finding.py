@@ -141,12 +141,12 @@ class MaintenanceUniversityFinding(models.Model):
                     raise UserError(_("This has already been submitted and can no longer be edited."))
         return super().write(vals)
 
-    def unlink(self):
+    @api.ondelete(at_uninstall=False)
+    def _unlink_only_draft_unless_manager(self):
         if not self.env.user.has_group("maintenance_university.group_maintenance_manager"):
             for rec in self:
                 if rec.state != "draft":
                     raise UserError(_("Only a draft finding or report can be deleted once it's been submitted."))
-        return super().unlink()
 
     def action_submit(self):
         for rec in self:

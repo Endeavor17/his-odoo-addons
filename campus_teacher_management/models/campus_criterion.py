@@ -214,7 +214,9 @@ class CampusCriterion(models.Model):
                     # Bypass the draft guard: weights are derived data, not
                     # configuration, so recomputing them on a published version
                     # is legitimate and does not change any stored score.
-                    super(CampusCriterion, criterion).write({"weight": new_weight})
+                    # super().write hors methode write() : recalcul de donnee
+                    # derivee (poids), pas une reconfiguration — voulu.
+                    super(CampusCriterion, criterion).write({"weight": new_weight})  # pylint: disable=super-method-mismatch
         return True
 
     # ------------------------------------------------------------------

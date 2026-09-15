@@ -1,4 +1,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+# Le SQL de ce fichier interpole uniquement BACKUP_TABLE, une constante du
+# module (un identifiant de table ne peut pas etre parametre) : les alertes
+# d'injection SQL sont des faux positifs ici.
+# pylint: disable=sql-injection
 import logging
 import re
 from datetime import date

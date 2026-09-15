@@ -63,8 +63,11 @@ class HisMealTransaction(models.Model):
     date = fields.Datetime(required=True, default=fields.Datetime.now, index=True)
     note = fields.Char()
 
-    def write(self, vals):
+    # Journal en append-only : write() refuse volontairement toute ecriture et
+    # n'appelle donc jamais super() (d'ou le disable method-required-super).
+    def write(self, vals):  # pylint: disable=method-required-super
         raise UserError(_("Meal transactions are a permanent record and cannot be edited. Post a correction instead."))
 
-    def unlink(self):
+    @api.ondelete(at_uninstall=False)
+    def _unlink_never(self):
         raise UserError(_("Meal transactions are a permanent record and cannot be deleted."))

@@ -206,7 +206,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return self.meal_card_ids.filtered(lambda c: c.state == "active")[:1]
 
-    def _add_meal_credits(self, credits, date_end, tx_type="purchase", product=None, pos_order=None, note=None):
+    def _add_meal_credits(self, credits, date_end, tx_type="purchase", product=None, pos_order=None, note=None):  # pylint: disable=redefined-builtin
         """Put credits on the person as one new subscription, and log it."""
         self.ensure_one()
         # Read the debt BEFORE anything is written. The cycle boundary is the
@@ -389,7 +389,7 @@ class ResPartner(models.Model):
             )
         return transactions
 
-    def _log_meal_transaction(
+    def _log_meal_transaction(  # pylint: disable=redefined-builtin
         self, tx_type, credits, subscription=None, product=None, pos_order=None, card=None, note=None
     ):
         self.ensure_one()

@@ -71,11 +71,11 @@ class HisInventaireAnnuel(models.Model):
                     )
         return super().write(vals)
 
-    def unlink(self):
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_closed(self):
         if not self.env.su:
             for inventaire in self:
                 if inventaire.state == "cloture":
                     raise AccessError(
-                        "L'inventaire « %s » est clôturé : il ne peut pas être supprimé." % inventaire.name
+                        _("L'inventaire « %s » est clôturé : il ne peut pas être supprimé.", inventaire.name)
                     )
-        return super().unlink()

@@ -25,6 +25,6 @@ class ResUsers(models.Model):
     _inherit = "res.users"
 
     @api.depends("action_id")
-    def _compute_redirect_home(self):
+    def _compute_redirect_home(self):  # pylint: disable=missing-return
         super()._compute_redirect_home()
         self.filtered(lambda user: not user.action_id).is_redirect_home = True

@@ -220,7 +220,7 @@ class CrmLead(models.Model):
     # reparer.
     ETATS_SUIVEURS = ("prospect", "candidat_soumis", "admis")
 
-    def _his_assurer_engagement(self):
+    def _his_assurer_engagement(self):  # pylint: disable=missing-return
         """Le dossier reprend ce que la capture a recueilli.
 
         Le lead porte les donnees academiques parce que c'est la qu'elles

@@ -235,7 +235,8 @@ class CampusApplicationApi(http.Controller):
         try:
             applicant = Applicant._campus_apply_payload(payload, version=version)
             applicant.action_campus_evaluate()
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
+            # Volontaire : aucune trace ne doit fuir vers le navigateur public.
             _logger.exception("Campus+ submission %s failed to process.", submission.reference)
             submission.write({"state": "rejected", "error_code": "processing_error", "error_message": str(exc)})
             return self._error("processing_error", "We could not record your application. Please try again.", 500)

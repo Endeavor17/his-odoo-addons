@@ -115,7 +115,7 @@ class CrmLead(models.Model):
                     force_format="E164",
                     raise_exception=False,
                 )
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
                 # Un numero illisible n'est pas une erreur bloquante : la
                 # conseillere le corrigera. Perdre la fiche pour un numero mal
                 # tape serait hors de proportion.
