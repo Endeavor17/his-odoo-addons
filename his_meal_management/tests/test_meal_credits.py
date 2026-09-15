@@ -1211,8 +1211,8 @@ class TestAtteignabilitéAuComptoir(TransactionCase):
 
     Depuis que his_stock_mdm donne un perimetre de categories a chaque caisse,
     un produit sans pos.category -- ou dont la categorie n'est pas au perimetre
-    de cette caisse -- disparait de la grille ET du bouton de service, qui ne
-    propose que les repas charges (`mealProducts` dans control_buttons.js).
+    de cette caisse -- disparait de la grille, qui est le seul endroit ou un
+    repas se sert (`addProductToOrder` dans product_screen.js).
 
     Ces tests interrogent donc le vrai domaine de chargement d'Odoo.
     """

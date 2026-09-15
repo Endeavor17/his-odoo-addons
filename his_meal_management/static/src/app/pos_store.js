@@ -10,8 +10,8 @@ import { ServeMealDialog } from "./serve_meal_dialog";
 // pos.order._apply_meal_credits when the order is validated, so nothing here can
 // be tricked into serving a meal the student cannot pay for.
 //
-// It lives on the store rather than on the control buttons so the meal buttons
-// and a meal tapped in the product grid take exactly the same path.
+// The product grid is the only way in (product_screen.js): there are no
+// per-meal control buttons, a meal is served by tapping it on the menu.
 patch(PosStore.prototype, {
     async serveStudentMeal(product) {
         const order = this.getOrder();
