@@ -3,7 +3,7 @@ import base64
 import csv
 import io
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 SOURCE_SYSTEM = "google_sheets"
@@ -94,7 +94,7 @@ class HisPersonImport(models.TransientModel):
         raw_rows = self._read_xlsx(content) if name.endswith((".xlsx", ".xlsm")) else self._read_csv(content)
         rows = self._map_rows(raw_rows)
         if not rows:
-            raise UserError("Le fichier ne contient aucune ligne exploitable.")
+            raise UserError(_("Le fichier ne contient aucune ligne exploitable."))
         return rows
 
     def _read_csv(self, content):
@@ -105,7 +105,7 @@ class HisPersonImport(models.TransientModel):
             except UnicodeDecodeError:
                 continue
         else:
-            raise UserError("Encodage du fichier CSV non reconnu.")
+            raise UserError(_("Encodage du fichier CSV non reconnu."))
         # Sniff : la feuille est exportee tantot en virgule, tantot en
         # point-virgule selon la locale du poste qui l'exporte.
         try:
@@ -119,8 +119,10 @@ class HisPersonImport(models.TransientModel):
             from openpyxl import load_workbook
         except ImportError:
             raise UserError(
-                "La lecture XLSX necessite openpyxl, absent de cet environnement. "
-                "Exportez la feuille en CSV et relancez l'import."
+                _(
+                    "La lecture XLSX necessite openpyxl, absent de cet environnement. "
+                    "Exportez la feuille en CSV et relancez l'import."
+                )
             ) from None
         workbook = load_workbook(io.BytesIO(content), read_only=True, data_only=True)
         sheet = workbook[workbook.sheetnames[0]]
@@ -146,8 +148,10 @@ class HisPersonImport(models.TransientModel):
                     claimed.add(index)
         if "name" not in mapping:
             raise UserError(
-                "Aucune colonne de nom reconnue dans l'en-tete du fichier. "
-                "Intitules acceptes : %s." % ", ".join(COLUMN_ALIASES["name"])
+                _(
+                    "Aucune colonne de nom reconnue dans l'en-tete du fichier. Intitules acceptes : %s.",
+                    ", ".join(COLUMN_ALIASES["name"]),
+                )
             )
         rows = []
         for position, raw in enumerate(raw_rows[1:], start=2):
@@ -312,10 +316,10 @@ class HisPersonImport(models.TransientModel):
             )
             if line.person_id:
                 line.person_id.sudo().message_post(
-                    body="Import Google Sheets (%s) : %s"
-                    % (
-                        line.external_ref or "-",
-                        line.message or line.outcome,
+                    body=_(
+                        "Import Google Sheets (%(ref)s) : %(message)s",
+                        ref=line.external_ref or "-",
+                        message=line.message or line.outcome,
                     ),
                 )
 

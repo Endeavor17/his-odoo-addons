@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -87,13 +87,13 @@ class HrEmployee(models.Model):
             others = partner.sudo().employee_ids - self
             if others:
                 raise ValidationError(
-                    "Le contact « %s » sert deja %s autre(s) employe(s) (%s). Un "
-                    "matricule identifie une seule personne : rattachez d'abord "
-                    "chaque employe a son propre contact."
-                    % (
-                        partner.display_name,
-                        len(others),
-                        ", ".join(others.mapped("name")),
+                    _(
+                        "Le contact « %(contact)s » sert deja %(count)s autre(s) employe(s) "
+                        "(%(names)s). Un matricule identifie une seule personne : rattachez "
+                        "d'abord chaque employe a son propre contact.",
+                        contact=partner.display_name,
+                        count=len(others),
+                        names=", ".join(others.mapped("name")),
                     )
                 )
             existing = (
@@ -106,9 +106,12 @@ class HrEmployee(models.Model):
             )
             if existing:
                 raise ValidationError(
-                    "Le contact « %s » porte deja la fiche personne %s. Deux "
-                    "fiches sur un meme contact rendraient le matricule "
-                    "ambigu." % (partner.display_name, existing.matricule_institutionnel)
+                    _(
+                        "Le contact « %(contact)s » porte deja la fiche personne %(matricule)s. "
+                        "Deux fiches sur un meme contact rendraient le matricule ambigu.",
+                        contact=partner.display_name,
+                        matricule=existing.matricule_institutionnel,
+                    )
                 )
 
         # L'annee du matricule vient de la date d'entree, pas de la date de

@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
 
@@ -20,8 +20,10 @@ class StockScrap(models.Model):
     def do_scrap(self):
         if not (self.env.su or self.env.user.has_group("stock.group_stock_manager")):
             raise AccessError(
-                "Seul un Manager Stock peut valider une perte. "
-                "La déclaration reste en brouillon en attendant sa validation."
+                _(
+                    "Seul un Manager Stock peut valider une perte. "
+                    "La déclaration reste en brouillon en attendant sa validation."
+                )
             )
         return super().do_scrap()
 
@@ -34,6 +36,6 @@ class StockScrap(models.Model):
         autre = self.env.ref("his_stock_mdm.scrap_reason_autre", raise_if_not_found=False)
         for scrap in self:
             if not scrap.scrap_reason_tag_ids:
-                raise ValidationError("Un motif de perte est obligatoire pour permettre le reporting par cause.")
+                raise ValidationError(_("Un motif de perte est obligatoire pour permettre le reporting par cause."))
             if autre and autre in scrap.scrap_reason_tag_ids and not scrap.scrap_note:
-                raise ValidationError("Le motif « Autre » exige un commentaire décrivant la cause.")
+                raise ValidationError(_("Le motif « Autre » exige un commentaire décrivant la cause."))

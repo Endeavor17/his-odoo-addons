@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
 
@@ -27,7 +27,7 @@ class HisInventaireAnnuel(models.Model):
 
     def action_cloturer(self):
         if not (self.env.su or self.env.user.has_group("stock.group_stock_manager")):
-            raise AccessError("Seul un Manager Stock peut clôturer un inventaire annuel.")
+            raise AccessError(_("Seul un Manager Stock peut clôturer un inventaire annuel."))
         self.write(
             {
                 "state": "cloture",
@@ -55,9 +55,13 @@ class HisInventaireAnnuel(models.Model):
             )
             if pending:
                 raise ValidationError(
-                    "Impossible de clôturer « %s » : %d comptage(s) restent "
-                    "saisis mais non appliqués aux livres. Appliquez-les "
-                    "d'abord (Inventaire ▸ Ajustements)." % (inventaire.name, pending)
+                    _(
+                        "Impossible de clôturer « %(name)s » : %(count)d comptage(s) restent "
+                        "saisis mais non appliqués aux livres. Appliquez-les "
+                        "d'abord (Inventaire ▸ Ajustements).",
+                        name=inventaire.name,
+                        count=pending,
+                    )
                 )
 
     # --- Immutabilite apres cloture ------------------------------------------
@@ -67,7 +71,7 @@ class HisInventaireAnnuel(models.Model):
             for inventaire in self:
                 if inventaire.state == "cloture":
                     raise AccessError(
-                        "L'inventaire « %s » est clôturé : il ne peut plus être modifié." % inventaire.name
+                        _("L'inventaire « %s » est clôturé : il ne peut plus être modifié.", inventaire.name)
                     )
         return super().write(vals)
 

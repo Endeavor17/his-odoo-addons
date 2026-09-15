@@ -2,7 +2,7 @@
 import re
 import unicodedata
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.osv import expression
 
@@ -305,7 +305,7 @@ class HisPerson(models.Model):
             )
             if not base:
                 raise ValidationError(
-                    "Sequence %s introuvable : impossible d'emettre un matricule." % MATRICULE_SEQUENCE_CODE
+                    _("Sequence %s introuvable : impossible d'emettre un matricule.", MATRICULE_SEQUENCE_CODE)
                 )
             person.sudo().matricule_institutionnel = "%s-%s" % (
                 base,
@@ -351,7 +351,7 @@ class HisPerson(models.Model):
                 # creation que poser une fiche sans matricule ou avec un
                 # matricule fabrique ailleurs.
                 raise ValidationError(
-                    "Sequence %s introuvable : impossible d'emettre un matricule." % MATRICULE_SEQUENCE_CODE
+                    _("Sequence %s introuvable : impossible d'emettre un matricule.", MATRICULE_SEQUENCE_CODE)
                 )
             vals["matricule_institutionnel"] = "%s-%s" % (
                 base,
@@ -380,7 +380,7 @@ class HisPerson(models.Model):
                     and vals["matricule_institutionnel"] != person.matricule_institutionnel
                 ):
                     raise ValidationError(
-                        "Le matricule institutionnel de %s ne peut pas etre modifie." % person.display_name
+                        _("Le matricule institutionnel de %s ne peut pas etre modifie.", person.display_name)
                     )
         return super().write(vals)
 
@@ -549,5 +549,5 @@ class HisPerson(models.Model):
                 }
             )
             person.message_post(
-                body="Rapprochement probabiliste confirme par %s." % self.env.user.display_name,
+                body=_("Rapprochement probabiliste confirme par %s.", self.env.user.display_name),
             )

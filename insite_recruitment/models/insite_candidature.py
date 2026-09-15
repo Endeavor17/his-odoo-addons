@@ -173,15 +173,22 @@ class InsiteCandidature(models.Model):
         if specialty_match:
             score += 3
         reasons.append(
-            _("Specialty match: %s (+%s)") % (_("Yes") if specialty_match else _("No"), 3 if specialty_match else 0)
+            _(
+                "Specialty match: %(answer)s (+%(points)s)",
+                answer=_("Yes") if specialty_match else _("No"),
+                points=3 if specialty_match else 0,
+            )
         )
 
         prior_history = bool(person.campus_applicant_ids or person.insite_engagement_ids)
         if prior_history:
             score += 2
         reasons.append(
-            _("Prior institution history: %s (+%s)")
-            % (_("Yes") if prior_history else _("No"), 2 if prior_history else 0)
+            _(
+                "Prior institution history: %(answer)s (+%(points)s)",
+                answer=_("Yes") if prior_history else _("No"),
+                points=2 if prior_history else 0,
+            )
         )
 
         module_experience = bool(
@@ -190,16 +197,22 @@ class InsiteCandidature(models.Model):
         if module_experience:
             score += 2
         reasons.append(
-            _("Experience with this exact module: %s (+%s)")
-            % (_("Yes") if module_experience else _("No"), 2 if module_experience else 0)
+            _(
+                "Experience with this exact module: %(answer)s (+%(points)s)",
+                answer=_("Yes") if module_experience else _("No"),
+                points=2 if module_experience else 0,
+            )
         )
 
         experience_provided = bool((self.teaching_experience or "").strip())
         if experience_provided:
             score += 1
         reasons.append(
-            _("Teaching experience provided: %s (+%s)")
-            % (_("Yes") if experience_provided else _("No"), 1 if experience_provided else 0)
+            _(
+                "Teaching experience provided: %(answer)s (+%(points)s)",
+                answer=_("Yes") if experience_provided else _("No"),
+                points=1 if experience_provided else 0,
+            )
         )
 
         return score, reasons

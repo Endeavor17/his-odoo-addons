@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import api, models
+from odoo import _, api, models
 from odoo.exceptions import ValidationError
 
 
@@ -14,13 +14,13 @@ class ProductTemplateAttributeLine(models.Model):
             allowed = line.attribute_id.allowed_categ_ids
             if allowed and line.product_tmpl_id.categ_id not in allowed:
                 raise ValidationError(
-                    "L'attribut « %s » n'est pas autorisé sur la catégorie « %s ».\n"
-                    "Catégories éligibles : %s.\n"
-                    "En dehors de ces catégories, une variation physique doit être "
-                    "portée par une fiche produit distincte."
-                    % (
-                        line.attribute_id.name,
-                        line.product_tmpl_id.categ_id.complete_name,
-                        ", ".join(allowed.mapped("complete_name")),
+                    _(
+                        "L'attribut « %(attr)s » n'est pas autorisé sur la catégorie « %(categ)s ».\n"
+                        "Catégories éligibles : %(allowed)s.\n"
+                        "En dehors de ces catégories, une variation physique doit être "
+                        "portée par une fiche produit distincte.",
+                        attr=line.attribute_id.name,
+                        categ=line.product_tmpl_id.categ_id.complete_name,
+                        allowed=", ".join(allowed.mapped("complete_name")),
                     )
                 )

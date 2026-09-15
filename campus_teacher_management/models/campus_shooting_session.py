@@ -148,7 +148,11 @@ class CampusShootingSession(models.Model):
         for session in sessions:
             session._campus_send_own_template("campus_teacher_management.mail_template_campus_shooting_created")
             session.applicant_id.message_post(
-                body=_("Shooting session '%s' scheduled for %s.", session.title, session.display_name)
+                body=_(
+                    "Shooting session '%(title)s' scheduled for %(who)s.",
+                    title=session.title,
+                    who=session.display_name,
+                )
             )
         return sessions
 

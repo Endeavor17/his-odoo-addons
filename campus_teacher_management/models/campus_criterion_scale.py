@@ -71,5 +71,9 @@ class CampusCriterionScale(models.Model):
         for line in self:
             if line.score < 0:
                 raise ValidationError(
-                    _("Scale scores cannot be negative (criterion %s, answer '%s').", line.criterion_id.code, line.name)
+                    _(
+                        "Scale scores cannot be negative (criterion %(code)s, answer '%(answer)s').",
+                        code=line.criterion_id.code,
+                        answer=line.name,
+                    )
                 )

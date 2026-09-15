@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import models
+from odoo import _, models
 from odoo.exceptions import AccessError
 
 
@@ -18,6 +18,6 @@ class StockQuant(models.Model):
     def action_apply_inventory(self, date=None):
         if not (self.env.su or self.env.user.has_group("stock.group_stock_manager")):
             raise AccessError(
-                "Seul un Manager Stock peut appliquer un comptage. L'écart reste visible en attente d'application."
+                _("Seul un Manager Stock peut appliquer un comptage. L'écart reste visible en attente d'application.")
             )
         return super().action_apply_inventory(date=date)

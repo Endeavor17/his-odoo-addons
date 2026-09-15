@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import re
 
-from odoo import api, models
+from odoo import _, api, models
 from odoo.exceptions import ValidationError
 
 # Prefixes de l'ancienne convention de nommage (MDM section 2 et regle 7).
@@ -45,8 +45,11 @@ class ProductProduct(models.Model):
                 limit=1,
             ):
                 raise ValidationError(
-                    "La référence interne « %s » existe déjà sur un autre produit. "
-                    "Elle doit être unique sur l'ensemble du catalogue." % product.default_code
+                    _(
+                        "La référence interne « %s » existe déjà sur un autre produit. "
+                        "Elle doit être unique sur l'ensemble du catalogue.",
+                        product.default_code,
+                    )
                 )
 
     @api.constrains("default_code")
@@ -63,11 +66,14 @@ class ProductProduct(models.Model):
         for product in self:
             if product.default_code and LEGACY_SEMANTIC_PREFIX.match(product.default_code):
                 raise ValidationError(
-                    "La référence interne « %s » reprend une convention de nommage "
-                    "historique (CAF-, COP-, RES-, NET-, SAN-).\n"
-                    "Les nouvelles références sont opaques et séquentielles "
-                    "(INV-NNNNNN) : elles n'encodent jamais la catégorie, le type "
-                    "ou un attribut. Laissez le champ vide pour qu'une référence "
-                    "soit attribuée automatiquement.\n"
-                    "Les fiches existantes conservent leur référence d'origine." % product.default_code
+                    _(
+                        "La référence interne « %s » reprend une convention de nommage "
+                        "historique (CAF-, COP-, RES-, NET-, SAN-).\n"
+                        "Les nouvelles références sont opaques et séquentielles "
+                        "(INV-NNNNNN) : elles n'encodent jamais la catégorie, le type "
+                        "ou un attribut. Laissez le champ vide pour qu'une référence "
+                        "soit attribuée automatiquement.\n"
+                        "Les fiches existantes conservent leur référence d'origine.",
+                        product.default_code,
+                    )
                 )

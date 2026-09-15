@@ -197,7 +197,9 @@ class CampusEvaluationVersion(models.Model):
                 "date_closed": False,
             }
         )
-        copy.message_post(body=_("Created as a new version of %s v%s.", self.name, self.version))
+        copy.message_post(
+            body=_("Created as a new version of %(name)s v%(version)s.", name=self.name, version=self.version)
+        )
         return {
             "type": "ir.actions.act_window",
             "res_model": "campus.evaluation.version",

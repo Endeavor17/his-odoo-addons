@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import api, models
+from odoo import _, api, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_is_zero
 
@@ -77,7 +77,7 @@ class ProductTemplate(models.Model):
             if len(template.product_variant_ids) > 1:
                 continue
             if not template.default_code:
-                raise ValidationError("La référence interne est obligatoire pour « %s »." % template.name)
+                raise ValidationError(_("La référence interne est obligatoire pour « %s ».", template.name))
 
     # --- MDM regle 2 : categorie feuille obligatoire -------------------------
 
@@ -86,12 +86,12 @@ class ProductTemplate(models.Model):
         for template in self:
             if template.categ_id.child_id:
                 raise ValidationError(
-                    "La catégorie « %s » est un nœud intermédiaire. Un produit doit "
-                    "être rattaché à une catégorie terminale (sans sous-catégorie).\n"
-                    "Sous-catégories disponibles : %s."
-                    % (
-                        template.categ_id.complete_name,
-                        ", ".join(template.categ_id.child_id.mapped("name")),
+                    _(
+                        "La catégorie « %(categ)s » est un nœud intermédiaire. Un produit doit "
+                        "être rattaché à une catégorie terminale (sans sous-catégorie).\n"
+                        "Sous-catégories disponibles : %(children)s.",
+                        categ=template.categ_id.complete_name,
+                        children=", ".join(template.categ_id.child_id.mapped("name")),
                     )
                 )
 
@@ -108,8 +108,11 @@ class ProductTemplate(models.Model):
                 and float_is_zero(template.list_price, precision_digits=precision)
             ):
                 raise ValidationError(
-                    "Le prix de vente est obligatoire pour « %s » : il s'agit d'un "
-                    "produit stockable marqué comme vendable." % template.name
+                    _(
+                        "Le prix de vente est obligatoire pour « %s » : il s'agit d'un "
+                        "produit stockable marqué comme vendable.",
+                        template.name,
+                    )
                 )
 
     # --- MDM regle 3 bis — mise en vente automatique au prix saisi -----------

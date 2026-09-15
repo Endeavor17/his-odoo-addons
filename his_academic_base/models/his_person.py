@@ -35,9 +35,9 @@ class HisPerson(models.Model):
             if person.rang_academique and person.type_personne != "enseignant":
                 raise ValidationError(
                     _(
-                        "An academic rank only applies to a teacher. %s is recorded as %s.",
-                        person.display_name,
-                        dict(self._fields["type_personne"].selection).get(person.type_personne)
+                        "An academic rank only applies to a teacher. %(person)s is recorded as %(kind)s.",
+                        person=person.display_name,
+                        kind=dict(self._fields["type_personne"].selection).get(person.type_personne)
                         or _("nothing in particular"),
                     )
                 )

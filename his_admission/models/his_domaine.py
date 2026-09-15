@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -62,8 +62,11 @@ class HisDomaine(models.Model):
         for domaine in self:
             if not (domaine.coef_bac + domaine.coef_math + domaine.coef_physique):
                 raise ValidationError(
-                    "Le domaine « %s » doit porter au moins un coefficient non nul, "
-                    "sinon la moyenne ponderee n'est pas calculable." % domaine.name,
+                    _(
+                        "Le domaine « %s » doit porter au moins un coefficient non nul, "
+                        "sinon la moyenne ponderee n'est pas calculable.",
+                        domaine.name,
+                    )
                 )
 
     @api.depends("name", "code")
