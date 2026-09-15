@@ -297,21 +297,20 @@ version. Valid keys are whatever `hr.applicant._campus_answer_payload()` returns
 def compute_scores(self, applicants):
     data = self._collect(applicants)
     data = self._raw_scores(data)
-    data = self._normalize(data)      # ← divide by max, clamp
+    data = self._normalize(data)  # ← divide by max, clamp
     data = self._apply_weights(data)  # ← multiply by CAR weight
-    return self._aggregate(data)      # ← sum, ×100
+    return self._aggregate(data)  # ← sum, ×100
 ```
 
 Either edit those in place, or — better — ship a separate module:
 
 ```python
 class WeightedEngine(models.AbstractModel):
-    _name = 'campus.scoring.engine.mine'
-    _inherit = 'campus.scoring.engine'
-    ENGINE_VERSION = 'mine-v1'
+    _name = "campus.scoring.engine.mine"
+    _inherit = "campus.scoring.engine"
+    ENGINE_VERSION = "mine-v1"
 
-    def _normalize(self, data):
-        ...
+    def _normalize(self, data): ...
 ```
 
 then point the config parameter at it:

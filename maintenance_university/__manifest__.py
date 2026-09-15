@@ -1,8 +1,8 @@
 {
-    'name': 'University Maintenance',
-    'version': '19.0.3.0.0',
-    'summary': 'University maintenance management system',
-    'description': """
+    "name": "University Maintenance",
+    "version": "19.0.3.0.0",
+    "summary": "University maintenance management system",
+    "description": """
 University Maintenance
 ======================
 Manage maintenance requests for university buildings:
@@ -15,45 +15,40 @@ Manage maintenance requests for university buildings:
   his_person_core, mirrored here through his_hr_base (this module no longer
   mints it).
 """,
-    'author': 'Abdo Chabouti',
-    'category': 'Operations/Maintenance',
-    'license': 'LGPL-3',
-
-    'depends': [
-        'base',
-        'mail',
-        'hr',
-        'his_hr_base',
-        'maintenance',
+    "author": "Abdo Chabouti",
+    "category": "Operations/Maintenance",
+    "license": "LGPL-3",
+    "depends": [
+        "base",
+        "mail",
+        "hr",
+        "his_hr_base",
+        "maintenance",
     ],
-
-    'data': [
-        'security/maintenance_university_security.xml',
-        'security/ir.model.access.csv',
-        'data/maintenance_stage_data.xml',
-        'views/hr_employee_views.xml',
-        'views/maintenance_building_views.xml',
-        'views/maintenance_category_views.xml',
-        'views/maintenance_university_request_views.xml',
-        'views/maintenance_university_workday_views.xml',
-        'views/maintenance_university_finding_views.xml',
-        'views/maintenance_university_report_views.xml',
-        'views/hr_employee_maintenance_summary_views.xml',
-        'views/maintenance_university_worker_create_views.xml',
-        'views/maintenance_university_dashboard_actions.xml',
-        'views/menus.xml',
-        'views/other_apps_menu_restrictions.xml',
+    "data": [
+        "security/maintenance_university_security.xml",
+        "security/ir.model.access.csv",
+        "data/maintenance_stage_data.xml",
+        "views/hr_employee_views.xml",
+        "views/maintenance_building_views.xml",
+        "views/maintenance_category_views.xml",
+        "views/maintenance_university_request_views.xml",
+        "views/maintenance_university_workday_views.xml",
+        "views/maintenance_university_finding_views.xml",
+        "views/maintenance_university_report_views.xml",
+        "views/hr_employee_maintenance_summary_views.xml",
+        "views/maintenance_university_worker_create_views.xml",
+        "views/maintenance_university_dashboard_actions.xml",
+        "views/menus.xml",
+        "views/other_apps_menu_restrictions.xml",
     ],
-
-    'assets': {
-        'web.assets_backend': [
-            'maintenance_university/static/src/dashboard/**/*',
-            'maintenance_university/static/src/my_work/**/*',
+    "assets": {
+        "web.assets_backend": [
+            "maintenance_university/static/src/dashboard/**/*",
+            "maintenance_university/static/src/my_work/**/*",
         ],
     },
-
-    'post_init_hook': 'post_init_hook',
-
-    'installable': True,
-    'application': True,
+    "post_init_hook": "post_init_hook",
+    "installable": True,
+    "application": True,
 }

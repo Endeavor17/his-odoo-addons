@@ -11,11 +11,12 @@ encaisse. Il doit donc atteindre les bases existantes, d'ou ce script.
 Passer par l'ORM et non par un UPDATE SQL : crm.stage.write() recalcule la
 probabilite des leads presents dans l'etape. Un UPDATE les laisserait a 100 %.
 """
+
 from odoo import SUPERUSER_ID, api
 
 
 def migrate(cr, version):
     env = api.Environment(cr, SUPERUSER_ID, {})
-    stage = env.ref('his_crm_pipeline.stage_vente_pre_admis', raise_if_not_found=False)
+    stage = env.ref("his_crm_pipeline.stage_vente_pre_admis", raise_if_not_found=False)
     if stage and stage.is_won:
         stage.is_won = False

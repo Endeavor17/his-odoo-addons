@@ -15,7 +15,8 @@ institutionnel a chaque embauche — un matricule est un identifiant a vie, et d
 comptes de test en consommeraient autant pour toujours. Derouler les processus
 n'en a pas besoin : seuls les roles et les equipes comptent.
 """
-MOT_DE_PASSE = 'his2026'
+
+MOT_DE_PASSE = "his2026"
 
 # (login, nom, roles, equipes, responsable de l'equipe)
 #
@@ -30,86 +31,100 @@ COMPTES = [
     # produit le contenu. C'etait son double role dans GoHighLevel. Deux roles
     # sur un compte, issus de deux echelles distinctes — c'est exactement ce que
     # deux privileges separes permettent d'exprimer.
-    ('marketing', "Marketing (acquisition et contenu)",
-     ['his_crm_pipeline.group_admissions_acquisition',
-      'his_crm_pipeline.group_contenu_production'],
-     ['his_crm_pipeline.crm_team_ventes', 'his_crm_pipeline.crm_team_contenu'], None),
-
-    ('asma', "Asma (responsable admissions)",
-     ['his_crm_pipeline.group_admissions_responsable'],
-     ['his_crm_pipeline.crm_team_ventes'], 'his_crm_pipeline.crm_team_ventes'),
-
-    ('aicha', "Aicha (conseillere)",
-     ['his_crm_pipeline.group_admissions_conseiller'],
-     ['his_crm_pipeline.crm_team_ventes'], None),
-
-    ('rahma', "Rahma (conseillere)",
-     ['his_crm_pipeline.group_admissions_conseiller'],
-     ['his_crm_pipeline.crm_team_ventes'], None),
-
-    ('orientation', "Cellule d'Orientation",
-     ['his_crm_pipeline.group_admissions_orientation'],
-     ['his_crm_pipeline.crm_team_orientation'], 'his_crm_pipeline.crm_team_orientation'),
-
+    (
+        "marketing",
+        "Marketing (acquisition et contenu)",
+        ["his_crm_pipeline.group_admissions_acquisition", "his_crm_pipeline.group_contenu_production"],
+        ["his_crm_pipeline.crm_team_ventes", "his_crm_pipeline.crm_team_contenu"],
+        None,
+    ),
+    (
+        "asma",
+        "Asma (responsable admissions)",
+        ["his_crm_pipeline.group_admissions_responsable"],
+        ["his_crm_pipeline.crm_team_ventes"],
+        "his_crm_pipeline.crm_team_ventes",
+    ),
+    (
+        "aicha",
+        "Aicha (conseillere)",
+        ["his_crm_pipeline.group_admissions_conseiller"],
+        ["his_crm_pipeline.crm_team_ventes"],
+        None,
+    ),
+    (
+        "rahma",
+        "Rahma (conseillere)",
+        ["his_crm_pipeline.group_admissions_conseiller"],
+        ["his_crm_pipeline.crm_team_ventes"],
+        None,
+    ),
+    (
+        "orientation",
+        "Cellule d'Orientation",
+        ["his_crm_pipeline.group_admissions_orientation"],
+        ["his_crm_pipeline.crm_team_orientation"],
+        "his_crm_pipeline.crm_team_orientation",
+    ),
     # --- Back-office et guichet ---
-    ('admission', "Admission (instruction du dossier)",
-     ['his_admission.group_his_admission'], [], None),
-
-    ('finance', "Finance (guichet)",
-     ['his_admission.group_his_finance'], [], None),
-
+    ("admission", "Admission (instruction du dossier)", ["his_admission.group_his_admission"], [], None),
+    ("finance", "Finance (guichet)", ["his_admission.group_his_finance"], [], None),
     # --- Processus Production Contenu ---
     # Le pool de production tel que le BPMN le decrit : un redacteur, un
     # designer, un video, un prioriseur, un approbateur. Des comptes distincts
     # et non un seul : une demande porte trois livrables qui avancent en
     # parallele, et c'est ce qu'une demonstration doit montrer.
-    ('cherif', "Cherif (priorisation)",
-     ['his_crm_pipeline.group_contenu_priorisation'],
-     ['his_crm_pipeline.crm_team_contenu'], 'his_crm_pipeline.crm_team_contenu'),
-
-    ('contenu', "Redaction (copywriting)",
-     ['his_crm_pipeline.group_contenu_production'],
-     ['his_crm_pipeline.crm_team_contenu'], None),
-
-    ('design', "Design",
-     ['his_crm_pipeline.group_contenu_production'],
-     ['his_crm_pipeline.crm_team_contenu'], None),
-
-    ('video', "Video",
-     ['his_crm_pipeline.group_contenu_production'],
-     ['his_crm_pipeline.crm_team_contenu'], None),
-
+    (
+        "cherif",
+        "Cherif (priorisation)",
+        ["his_crm_pipeline.group_contenu_priorisation"],
+        ["his_crm_pipeline.crm_team_contenu"],
+        "his_crm_pipeline.crm_team_contenu",
+    ),
+    (
+        "contenu",
+        "Redaction (copywriting)",
+        ["his_crm_pipeline.group_contenu_production"],
+        ["his_crm_pipeline.crm_team_contenu"],
+        None,
+    ),
+    ("design", "Design", ["his_crm_pipeline.group_contenu_production"], ["his_crm_pipeline.crm_team_contenu"], None),
+    ("video", "Video", ["his_crm_pipeline.group_contenu_production"], ["his_crm_pipeline.crm_team_contenu"], None),
     # Le role Approbation SEUL, garde volontairement sur un compte a lui. Sans
     # ce compte on cesserait de tester le cloisonnement : la Direction implique
     # l'Approbation, donc la recette ne montrerait plus que le role etroit ne
     # peut pas ce que le role large peut.
-    ('approbation', "Approbation contenu (role seul)",
-     ['his_crm_pipeline.group_contenu_approbation'],
-     ['his_crm_pipeline.crm_team_contenu'], None),
-
+    (
+        "approbation",
+        "Approbation contenu (role seul)",
+        ["his_crm_pipeline.group_contenu_approbation"],
+        ["his_crm_pipeline.crm_team_contenu"],
+        None,
+    ),
     # --- Direction ---
     # Membre d'AUCUNE equipe, deliberement : l'y inscrire le placerait dans la
     # rotation d'affectation et il recevrait des candidatures a traiter. Sa
     # portee vient de la regle rule_lead_direction, pas de l'appartenance.
-    ('direction', "Direction (Abanou)",
-     ['his_crm_pipeline.group_direction'], [], None),
-
+    ("direction", "Direction (Abanou)", ["his_crm_pipeline.group_direction"], [], None),
     # Un demandeur venu d'ailleurs : ni membre de l'equipe Contenu, ni
     # commercial. Il depose une demande et ne voit QUE les siennes.
-    ('rh', "Ressources humaines (demandeur)",
-     ['his_crm_pipeline.group_contenu_demandeur'], [], None),
+    ("rh", "Ressources humaines (demandeur)", ["his_crm_pipeline.group_contenu_demandeur"], [], None),
 ]
 
-Users = env['res.users']
-Membre = env['crm.team.member']
+Users = env["res.users"]
+Membre = env["crm.team.member"]
 
 for login, nom, roles, equipes, responsable_de in COMPTES:
-    user = Users.with_context(active_test=False).search([('login', '=', login)], limit=1)
+    user = Users.with_context(active_test=False).search([("login", "=", login)], limit=1)
     if not user:
-        user = Users.create({
-            'name': nom, 'login': login, 'email': '%s@example.com' % login,
-            'group_ids': [(6, 0, [env.ref('base.group_user').id])],
-        })
+        user = Users.create(
+            {
+                "name": nom,
+                "login": login,
+                "email": "%s@example.com" % login,
+                "group_ids": [(6, 0, [env.ref("base.group_user").id])],
+            }
+        )
     # Le jeu de groupes DIRECTS est REPOSE, pas complete : (6, 0, [...]) plutot
     # qu'une liste de (3, ...) a retirer. Une liste de retrait ne peut enlever
     # que ce qu'elle a prevu — un groupe donne a la main sur un compte, ou
@@ -121,8 +136,7 @@ for login, nom, roles, equipes, responsable_de in COMPTES:
     # touchent tout utilisateur interne. Ils apparaissent dans all_group_ids
     # sans etre dans group_ids : aucune ecriture par compte ne les enleve, ils
     # se coupent dans Configuration.
-    user.write({'group_ids': [(6, 0, [env.ref('base.group_user').id]
-                                     + [env.ref(r).id for r in roles])]})
+    user.write({"group_ids": [(6, 0, [env.ref("base.group_user").id] + [env.ref(r).id for r in roles])]})
     user.password = MOT_DE_PASSE
 
     # Les equipes sont reposees comme les roles : ce qui n'est plus dans la
@@ -131,14 +145,20 @@ for login, nom, roles, equipes, responsable_de in COMPTES:
     # equipe pour rester hors de la rotation d'affectation, restait dans
     # l'equipe Contenu et continuait de recevoir des demandes.
     voulues = {env.ref(x).id for x in equipes}
-    Membre.search([
-        ('user_id', '=', user.id), ('crm_team_id', 'not in', list(voulues)),
-    ]).unlink()
+    Membre.search(
+        [
+            ("user_id", "=", user.id),
+            ("crm_team_id", "not in", list(voulues)),
+        ]
+    ).unlink()
     for equipe_id in voulues:
-        if not Membre.search_count([
-            ('crm_team_id', '=', equipe_id), ('user_id', '=', user.id),
-        ]):
-            Membre.create({'crm_team_id': equipe_id, 'user_id': user.id})
+        if not Membre.search_count(
+            [
+                ("crm_team_id", "=", equipe_id),
+                ("user_id", "=", user.id),
+            ]
+        ):
+            Membre.create({"crm_team_id": equipe_id, "user_id": user.id})
 
     # Sans responsable d'equipe, aucune relance SLA n'est posee.
     if responsable_de:
@@ -150,10 +170,15 @@ env.cr.commit()
 print("\n=== COMPTES DE RECETTE (mot de passe : %s) ===\n" % MOT_DE_PASSE)
 print("  %-12s %-34s %-24s %s" % ("LOGIN", "NOM", "ROLE", "EQUIPES"))
 for login, nom, roles, _e, _r in COMPTES:
-    user = Users.search([('login', '=', login)], limit=1)
+    user = Users.search([("login", "=", login)], limit=1)
     if not user:
         continue
-    print("  %-12s %-34s %-24s %s" % (
-        user.login, user.name, " + ".join(env.ref(r).name for r in roles),
-        ", ".join(user.crm_team_ids.mapped('name')) or "-",
-    ))
+    print(
+        "  %-12s %-34s %-24s %s"
+        % (
+            user.login,
+            user.name,
+            " + ".join(env.ref(r).name for r in roles),
+            ", ".join(user.crm_team_ids.mapped("name")) or "-",
+        )
+    )

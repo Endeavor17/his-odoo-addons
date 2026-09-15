@@ -20,14 +20,21 @@ WARNING - this issues a permanent identifier per person migrated. A matricule is
 assigned once and never reused; there is no clean rollback once they exist.
 Rehearse against a copy of the database first.
 """
+
 import logging
 
 _logger = logging.getLogger(__name__)
 
 # The old fields, still readable as orphan columns at this point.
 LEGACY_COLUMNS = (
-    'matricule_institutionnel', 'nom_arabe', 'type_personne', 'statut',
-    'email_institutionnel', 'email_personnel', 'rang_academique', 'specialite',
+    "matricule_institutionnel",
+    "nom_arabe",
+    "type_personne",
+    "statut",
+    "email_institutionnel",
+    "email_personnel",
+    "rang_academique",
+    "specialite",
 )
 
 
@@ -39,8 +46,7 @@ def _existing_columns(cr, table, columns):
     cheaper than guessing, and it makes this script safe to re-run.
     """
     cr.execute(
-        "SELECT column_name FROM information_schema.columns "
-        "WHERE table_name = %s AND column_name IN %s",
+        "SELECT column_name FROM information_schema.columns WHERE table_name = %s AND column_name IN %s",
         (table, tuple(columns)),
     )
     return [row[0] for row in cr.fetchall()]
@@ -50,17 +56,18 @@ def migrate(cr, version):
     from odoo import SUPERUSER_ID, api
 
     env = api.Environment(cr, SUPERUSER_ID, {})
-    columns = _existing_columns(cr, 'res_partner', LEGACY_COLUMNS)
+    columns = _existing_columns(cr, "res_partner", LEGACY_COLUMNS)
     if not columns:
         _logger.info("Nothing to migrate: no legacy identity column on res_partner.")
         return
 
-    selected = ', '.join('p.%s' % column for column in columns)
+    selected = ", ".join("p.%s" % column for column in columns)
     # A partner qualifies as a person if this module ever treated it as one.
     # LEFT JOIN on his_person, not a NOT EXISTS: a partner already carrying an
     # identity (an employee migrated by his_hr_base) must be skipped, because
     # his_person_core enforces unique(partner_id) - one contact, one person.
-    cr.execute("""
+    cr.execute(
+        """
         SELECT p.id, %s
           FROM res_partner p
      LEFT JOIN his_person hp ON hp.partner_id = p.id
@@ -72,16 +79,18 @@ def migrate(cr, version):
              %s
            )
       ORDER BY p.id
-    """ % (
-        selected,
-        "OR p.type_personne IS NOT NULL" if 'type_personne' in columns else "",
-    ))
+    """
+        % (
+            selected,
+            "OR p.type_personne IS NOT NULL" if "type_personne" in columns else "",
+        )
+    )
     rows = cr.fetchall()
     if not rows:
         _logger.info("No partner left to attach to his.person.")
         return
 
-    Person = env['his.person'].sudo()
+    Person = env["his.person"].sudo()
     created = 0
     for row in rows:
         partner_id, legacy = row[0], dict(zip(columns, row[1:]))
@@ -91,17 +100,17 @@ def migrate(cr, version):
         # value recorded is a card holder imported as name + card number, which
         # in this system means a student.
         vals = {
-            'partner_id': partner_id,
-            'type_personne': legacy.get('type_personne') or 'etudiant',
+            "partner_id": partner_id,
+            "type_personne": legacy.get("type_personne") or "etudiant",
             # These records predate every adapter: they were typed in or
             # imported by hand into this module, which is what 'manual' means.
-            'source_system': 'manual',
+            "source_system": "manual",
         }
         for field, column in (
-            ('nom_arabe', 'nom_arabe'),
-            ('email_personnel', 'email_personnel'),
-            ('rang_academique', 'rang_academique'),
-            ('specialite', 'specialite'),
+            ("nom_arabe", "nom_arabe"),
+            ("email_personnel", "email_personnel"),
+            ("rang_academique", "rang_academique"),
+            ("specialite", "specialite"),
         ):
             if legacy.get(column):
                 vals[field] = legacy[column]
@@ -110,8 +119,8 @@ def migrate(cr, version):
         # stores a pre-existing value untouched - no reformatting, no checksum
         # recomputation - and mints a fresh one otherwise. Passing an empty
         # string would store an empty matricule instead of issuing one.
-        if legacy.get('matricule_institutionnel'):
-            vals['matricule_institutionnel'] = legacy['matricule_institutionnel']
+        if legacy.get("matricule_institutionnel"):
+            vals["matricule_institutionnel"] = legacy["matricule_institutionnel"]
 
         person = Person.create(vals)
         created += 1
@@ -119,13 +128,13 @@ def migrate(cr, version):
         # The institutional address fed Odoo's own `email` on the old model;
         # the socle keeps that arrangement, so only fill a gap, never overwrite
         # an address the contact already carries.
-        institutional = legacy.get('email_institutionnel')
+        institutional = legacy.get("email_institutionnel")
         if institutional and not person.partner_id.email:
             person.partner_id.email = institutional
 
         # statut drove res.partner.active before; the socle uses `active`
         # directly. Archived stays archived.
-        if legacy.get('statut') == 'archive':
+        if legacy.get("statut") == "archive":
             person.partner_id.active = False
 
     _logger.info("his.person created for %d partner(s) of his_meal_management.", created)

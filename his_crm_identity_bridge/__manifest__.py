@@ -1,10 +1,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
-    'name': "CRM - Referentiel Personnes (pont)",
-    'version': '19.0.1.2.0',
-    'category': 'Sales/CRM',
-    'summary': "Cree la fiche personne du candidat au premier contact commercial",
-    'description': """
+    "name": "CRM - Referentiel Personnes (pont)",
+    "version": "19.0.1.2.0",
+    "category": "Sales/CRM",
+    "summary": "Cree la fiche personne du candidat au premier contact commercial",
+    "description": """
 Pont entre le pipeline Admissions et le referentiel Identite.
 
 Quand un lead de l'equipe Ventes atteint « Contact etabli », ce module rapproche
@@ -19,14 +19,14 @@ appartient a Finance/Admission.
 
 Aucune dependance a hr ni a his_hr_base : un candidat n'est pas un employe.
     """,
-    'author': "Groupe HIS-HTC-IRA",
-    'license': 'LGPL-3',
-    'depends': [
-        'his_crm_pipeline',
-        'his_person_core',
+    "author": "Groupe HIS-HTC-IRA",
+    "license": "LGPL-3",
+    "depends": [
+        "his_crm_pipeline",
+        "his_person_core",
     ],
-    'data': [
-        'views/crm_lead_views.xml',
+    "data": [
+        "views/crm_lead_views.xml",
     ],
-    'installable': True,
+    "installable": True,
 }

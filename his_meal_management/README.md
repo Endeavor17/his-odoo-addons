@@ -241,8 +241,12 @@ read off a card.
 `his.meal.transaction` is **append-only, in Python, not by convention**:
 
 ```python
-def write(self, vals):  raise UserError("… cannot be edited. Post a correction instead.")
-def unlink(self):       raise UserError("… cannot be deleted.")
+def write(self, vals):
+    raise UserError("… cannot be edited. Post a correction instead.")
+
+
+def unlink(self):
+    raise UserError("… cannot be deleted.")
 ```
 
 Every grant and every meal writes one line naming the student, card, plan,

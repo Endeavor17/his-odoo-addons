@@ -16,15 +16,20 @@ class HisEngagement(models.Model):
     d'inscription) : aucun code de ce depot ne declenche ces transitions
     aujourd'hui. Le CRM, lui, cree l'engagement a `prospect` et s'arrete la.
     """
-    _name = 'his.engagement'
+
+    _name = "his.engagement"
     _description = "Engagement d'une personne aupres de l'institution"
-    _inherit = ['mail.thread']
-    _order = 'date_debut desc, id desc'
-    _rec_name = 'person_id'
+    _inherit = ["mail.thread"]
+    _order = "date_debut desc, id desc"
+    _rec_name = "person_id"
 
     person_id = fields.Many2one(
-        'his.person', string="Personne", required=True, index=True,
-        ondelete='cascade', tracking=True,
+        "his.person",
+        string="Personne",
+        required=True,
+        index=True,
+        ondelete="cascade",
+        tracking=True,
     )
     # ponytail: aucune contrainte « un seul engagement actif par personne ».
     # Tant qu'un seul parcours existe (candidature), le doublon se voit a l'oeil
@@ -32,14 +37,19 @@ class HisEngagement(models.Model):
     # decider si deux engagements peuvent etre ouverts en meme temps.
     etat = fields.Selection(
         selection=[
-            ('prospect', "Prospect"),
-            ('candidat_soumis', "Candidature soumise"),
-            ('inscrit', "Inscrit"),
-            ('abandonne', "Abandonne"),
+            ("prospect", "Prospect"),
+            ("candidat_soumis", "Candidature soumise"),
+            ("inscrit", "Inscrit"),
+            ("abandonne", "Abandonne"),
         ],
-        string="Etat", required=True, default='prospect', tracking=True,
+        string="Etat",
+        required=True,
+        default="prospect",
+        tracking=True,
     )
     date_debut = fields.Date(
-        string="Date de debut", required=True, default=fields.Date.context_today,
+        string="Date de debut",
+        required=True,
+        default=fields.Date.context_today,
     )
     notes = fields.Text(string="Notes")

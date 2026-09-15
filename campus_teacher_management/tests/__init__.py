@@ -1,12 +1,14 @@
-from . import common
-from . import test_car_weights
-from . import test_versioning
-from . import test_scoring
-from . import test_ranking
-from . import test_dashboard
-from . import test_hiring_flow
-from . import test_api
-from . import test_security
-from . import test_process_permissions
-from . import test_shooting_program
-from . import test_contract_stage_gate
+from . import (
+    common,
+    test_api,
+    test_car_weights,
+    test_contract_stage_gate,
+    test_dashboard,
+    test_hiring_flow,
+    test_process_permissions,
+    test_ranking,
+    test_scoring,
+    test_security,
+    test_shooting_program,
+    test_versioning,
+)

@@ -11,6 +11,7 @@ On memorise donc ce qui a ete accorde automatiquement. A la reconciliation on
 retire (ancien automatique moins nouveau automatique), on ajoute le nouveau, et
 on ne touche a rien d'autre.
 """
+
 import logging
 
 from odoo import api, fields, models
@@ -19,14 +20,16 @@ _logger = logging.getLogger(__name__)
 
 
 class ResUsers(models.Model):
-    _inherit = 'res.users'
+    _inherit = "res.users"
 
     role_ids_du_poste = fields.Many2many(
-        'res.groups',
-        'his_user_group_poste_rel', 'user_id', 'group_id',
+        "res.groups",
+        "his_user_group_poste_rel",
+        "user_id",
+        "group_id",
         string="Roles issus du poste",
         help="Technique : ce que l'attribution automatique a pose. Sert a "
-             "distinguer un role du poste d'une derogation individuelle.",
+        "distinguer un role du poste d'une derogation individuelle.",
     )
 
     def _his_reconcilier_roles(self, groupes_du_poste):
@@ -38,15 +41,17 @@ class ResUsers(models.Model):
         if not a_retirer and not a_ajouter and self.role_ids_du_poste == groupes_du_poste:
             return False
 
-        self.sudo().write({
-            'group_ids': [(3, g.id) for g in a_retirer] + [(4, g.id) for g in a_ajouter],
-            'role_ids_du_poste': [(6, 0, groupes_du_poste.ids)],
-        })
+        self.sudo().write(
+            {
+                "group_ids": [(3, g.id) for g in a_retirer] + [(4, g.id) for g in a_ajouter],
+                "role_ids_du_poste": [(6, 0, groupes_du_poste.ids)],
+            }
+        )
         return True
 
 
 class HrEmployee(models.Model):
-    _inherit = 'hr.employee'
+    _inherit = "hr.employee"
 
     def _his_appliquer_roles_du_poste(self):
         """Applique les roles du poste aux comptes des employes vises.
@@ -61,7 +66,7 @@ class HrEmployee(models.Model):
             user = employe.user_id
             if not user:
                 continue
-            groupes = employe.job_id.group_ids if employe.job_id else self.env['res.groups']
+            groupes = employe.job_id.group_ids if employe.job_id else self.env["res.groups"]
             if user._his_reconcilier_roles(groupes):
                 touches += 1
         return touches
@@ -81,7 +86,7 @@ class HrEmployee(models.Model):
         # Un changement de poste doit se traduire dans les droits. Le faire ici
         # et non par un cron : entre les deux, la personne aurait les acces de
         # son ancien poste.
-        if 'job_id' in vals or 'user_id' in vals:
+        if "job_id" in vals or "user_id" in vals:
             self._his_appliquer_roles_du_poste()
         return res
 
@@ -94,7 +99,7 @@ class HrEmployee(models.Model):
         voir.
         """
         ecarts = []
-        for employe in self.search([('user_id', '!=', False), ('job_id', '!=', False)]):
+        for employe in self.search([("user_id", "!=", False), ("job_id", "!=", False)]):
             attendu = employe.job_id.group_ids
             pose = employe.user_id.role_ids_du_poste
             if attendu != pose:
@@ -102,6 +107,7 @@ class HrEmployee(models.Model):
         if ecarts:
             _logger.warning(
                 "Roles du poste desynchronises pour %s compte(s) : %s",
-                len(ecarts), ", ".join(ecarts),
+                len(ecarts),
+                ", ".join(ecarts),
             )
         return ecarts

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Supprime la sequence de matricule que ce module ne possede plus.
 
 Retirer data/hr_employee_sequence.xml du manifeste ne suffit pas : un
@@ -8,13 +7,12 @@ second compteur de matricule en base est exactement le risque que cette branche
 elimine. Verifie sur une base de recette migree depuis la version precedente.
 """
 
-OBSOLETE_CODE = 'hr.employee.matricule.institutionnel'
+OBSOLETE_CODE = "hr.employee.matricule.institutionnel"
 
 
 def migrate(cr, version):
     cr.execute(
-        "DELETE FROM ir_sequence_date_range WHERE sequence_id IN "
-        "(SELECT id FROM ir_sequence WHERE code = %s)",
+        "DELETE FROM ir_sequence_date_range WHERE sequence_id IN (SELECT id FROM ir_sequence WHERE code = %s)",
         (OBSOLETE_CODE,),
     )
     cr.execute("DELETE FROM ir_sequence WHERE code = %s", (OBSOLETE_CODE,))

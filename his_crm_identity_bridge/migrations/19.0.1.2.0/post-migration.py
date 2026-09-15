@@ -18,6 +18,7 @@ referentiel d'identite ne decrive plus que des gens que l'institution suit
 reellement. Rien n'est supprime : une candidature perdue peut revenir, et la
 fiche archivee sera retrouvee par la cle deterministe du pont.
 """
+
 from odoo import SUPERUSER_ID, api
 
 
@@ -26,36 +27,42 @@ def migrate(cr, version):
         return
     env = api.Environment(cr, SUPERUSER_ID, {})
 
-    perdus = env['crm.lead'].with_context(active_test=False).search([
-        ('active', '=', False),
-        ('probability', '=', 0),
-        ('his_person_id', '!=', False),
-    ])
-    fiches = perdus.mapped('his_person_id').filtered(
+    perdus = (
+        env["crm.lead"]
+        .with_context(active_test=False)
+        .search(
+            [
+                ("active", "=", False),
+                ("probability", "=", 0),
+                ("his_person_id", "!=", False),
+            ]
+        )
+    )
+    fiches = perdus.mapped("his_person_id").filtered(
         # Seulement des candidats, et seulement ceux dont aucun dossier n'a
         # depasse l'admission : une personne devenue etudiante entre-temps
         # n'est pas concernee par la perte de sa premiere candidature.
-        lambda p: p.type_personne == 'candidat'
-        and not p.engagement_ids.filtered(lambda e: e.etat == 'inscrit')
+        lambda p: p.type_personne == "candidat" and not p.engagement_ids.filtered(lambda e: e.etat == "inscrit")
     )
     if not fiches:
         return
 
-    avec_matricule = fiches.filtered('matricule_institutionnel')
+    avec_matricule = fiches.filtered("matricule_institutionnel")
     fiches.action_archive()
 
-    env['ir.logging'].sudo().create({
-        'name': 'his_crm_identity_bridge',
-        'type': 'server',
-        'level': 'INFO',
-        'dbname': cr.dbname,
-        'message': (
-            "Hypothese A1 : %s fiche(s) de candidats perdus archivee(s), dont "
-            "%s portant un matricule deja emis — ces numeros restent consommes, "
-            "la sequence ne les rend pas."
-            % (len(fiches), len(avec_matricule))
-        ),
-        'path': __name__,
-        'func': 'migrate',
-        'line': '0',
-    })
+    env["ir.logging"].sudo().create(
+        {
+            "name": "his_crm_identity_bridge",
+            "type": "server",
+            "level": "INFO",
+            "dbname": cr.dbname,
+            "message": (
+                "Hypothese A1 : %s fiche(s) de candidats perdus archivee(s), dont "
+                "%s portant un matricule deja emis — ces numeros restent consommes, "
+                "la sequence ne les rend pas." % (len(fiches), len(avec_matricule))
+            ),
+            "path": __name__,
+            "func": "migrate",
+            "line": "0",
+        }
+    )

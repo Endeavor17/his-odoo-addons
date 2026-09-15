@@ -6,11 +6,11 @@ from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.osv import expression
 
-MATRICULE_SEQUENCE_CODE = 'his.person.matricule.institutionnel'
+MATRICULE_SEQUENCE_CODE = "his.person.matricule.institutionnel"
 
 # Format documente : HIS-AAAA-NNNNNN-C. La sequence ne produit que
 # HIS-AAAA-NNNNNN ; la cle de controle est calculee puis concatenee.
-MATRICULE_RE = re.compile(r'^HIS-\d{4}-\d{6}-[0-9X]$')
+MATRICULE_RE = re.compile(r"^HIS-\d{4}-\d{6}-[0-9X]$")
 
 # Poids mod 11, de droite a gauche, appliques aux 6 chiffres sequentiels.
 # Choix confirme avec Endeavor (cf. README, section "Cle de controle").
@@ -36,12 +36,9 @@ def _compute_matricule_checksum(sequential_number):
     digits = digits.zfill(6)
     if len(digits) != 6:
         raise ValueError("Portion sequentielle attendue sur 6 chiffres : %r" % (sequential_number,))
-    total = sum(
-        int(digit) * weight
-        for digit, weight in zip(reversed(digits), CHECKSUM_WEIGHTS)
-    )
+    total = sum(int(digit) * weight for digit, weight in zip(reversed(digits), CHECKSUM_WEIGHTS))
     remainder = total % 11
-    return 'X' if remainder == 10 else str(remainder)
+    return "X" if remainder == 10 else str(remainder)
 
 
 def strip_matricule_checksum(matricule):
@@ -53,7 +50,7 @@ def strip_matricule_checksum(matricule):
     """
     if not matricule:
         return matricule
-    return MATRICULE_RE.match(matricule) and matricule[:-2] or matricule
+    return (MATRICULE_RE.match(matricule) and matricule[:-2]) or matricule
 
 
 def normalize_text(value):
@@ -64,14 +61,14 @@ def normalize_text(value):
     normaliser exactement pareil, sinon les scores ne sont pas comparables.
     """
     if not value:
-        return ''
-    decomposed = unicodedata.normalize('NFKD', str(value))
-    stripped = ''.join(char for char in decomposed if not unicodedata.combining(char))
-    return ' '.join(re.sub(r'[^0-9a-z\s]', ' ', stripped.lower()).split())
+        return ""
+    decomposed = unicodedata.normalize("NFKD", str(value))
+    stripped = "".join(char for char in decomposed if not unicodedata.combining(char))
+    return " ".join(re.sub(r"[^0-9a-z\s]", " ", stripped.lower()).split())
 
 
 class HisPerson(models.Model):
-    _name = 'his.person'
+    _name = "his.person"
     _description = "Personne (Groupe HIS-HTC-IRA)"
     # Heritage par delegation : chaque personne porte un vrai res.partner.
     #
@@ -88,9 +85,9 @@ class HisPerson(models.Model):
     # La delegation evite les deux : his.person reste la surface de travail,
     # avec ses vues, sa securite et ses regles, et un partenaire suit
     # automatiquement pour tout ce qui, en aval, en aura besoin.
-    _inherits = {'res.partner': 'partner_id'}
-    _inherit = ['mail.thread']
-    _order = 'matricule_institutionnel'
+    _inherits = {"res.partner": "partner_id"}
+    _inherit = ["mail.thread"]
+    _order = "matricule_institutionnel"
 
     # delegate=True est exige par l'ORM en 19.0 (orm/model_classes.py) : sans
     # lui le modele ne se charge pas.
@@ -103,11 +100,11 @@ class HisPerson(models.Model):
     # recherches, ce qui n'a pas sa place sur un ancrage d'identite a acces
     # restreint.
     partner_id = fields.Many2one(
-        'res.partner',
+        "res.partner",
         string="Contact",
         required=True,
         delegate=True,
-        ondelete='restrict',
+        ondelete="restrict",
         index=True,
     )
 
@@ -135,8 +132,8 @@ class HisPerson(models.Model):
     # d'un identifiant a vie, a tenir en phase. Le calcul est une troncature.
     matricule_affiche = fields.Char(
         string="Matricule",
-        compute='_compute_matricule_affiche',
-        search='_search_matricule_affiche',
+        compute="_compute_matricule_affiche",
+        search="_search_matricule_affiche",
     )
 
     # Le nom latin, l'email institutionnel et le telephone viennent du
@@ -167,12 +164,12 @@ class HisPerson(models.Model):
         index=True,
         tracking=True,
         help="Numero du badge RFID, tel que le lecteur le restitue. C'est ce "
-             "champ que la caisse interroge pour retrouver la personne. Un "
-             "badge n'appartient qu'a une personne.\n\n"
-             "A ne pas confondre avec le « Badge ID » natif de la fiche "
-             "employe (hr.employee.barcode) : celui-la identifie le personnel "
-             "aupres du terminal de pointage et connecte un caissier a la "
-             "caisse. Ce n'est pas le badge repas.",
+        "champ que la caisse interroge pour retrouver la personne. Un "
+        "badge n'appartient qu'a une personne.\n\n"
+        "A ne pas confondre avec le « Badge ID » natif de la fiche "
+        "employe (hr.employee.barcode) : celui-la identifie le personnel "
+        "aupres du terminal de pointage et connecte un caissier a la "
+        "caisse. Ce n'est pas le badge repas.",
     )
 
     # Selection et non un jeu de booleens : la liste des types s'allongera
@@ -182,10 +179,10 @@ class HisPerson(models.Model):
     # fiche et le meme matricule.
     type_personne = fields.Selection(
         selection=[
-            ('employe', "Employe"),
-            ('enseignant', "Enseignant"),
-            ('etudiant', "Etudiant"),
-            ('candidat', "Candidat"),
+            ("employe", "Employe"),
+            ("enseignant", "Enseignant"),
+            ("etudiant", "Etudiant"),
+            ("candidat", "Candidat"),
         ],
         string="Type de personne",
         required=True,
@@ -196,10 +193,10 @@ class HisPerson(models.Model):
 
     source_system = fields.Selection(
         selection=[
-            ('odoo_hr', "Odoo RH"),
-            ('google_sheets', "Google Sheets"),
-            ('uniflow', "Uniflow"),
-            ('manual', "Saisie manuelle"),
+            ("odoo_hr", "Odoo RH"),
+            ("google_sheets", "Google Sheets"),
+            ("uniflow", "Uniflow"),
+            ("manual", "Saisie manuelle"),
         ],
         string="Systeme source",
         required=True,
@@ -208,33 +205,38 @@ class HisPerson(models.Model):
     external_ref = fields.Char(
         string="Reference source",
         help="Identifiant de la fiche dans son systeme source (ligne de la feuille, "
-             "cle Uniflow...). Sert a remonter a l'origine de la donnee.",
+        "cle Uniflow...). Sert a remonter a l'origine de la donnee.",
     )
 
     engagement_ids = fields.One2many(
-        'his.engagement', 'person_id', string="Engagements",
+        "his.engagement",
+        "person_id",
+        string="Engagements",
         help="Parcours dates de cette personne. L'identite ne change pas d'un "
-             "parcours a l'autre : une candidature refusee puis representee "
-             "donne deux engagements, jamais deux fiches.",
+        "parcours a l'autre : une candidature refusee puis representee "
+        "donne deux engagements, jamais deux fiches.",
     )
 
     match_method = fields.Selection(
         selection=[
-            ('deterministic', "Deterministe"),
-            ('probabilistic', "Probabiliste (confirme)"),
-            ('new', "Creation"),
+            ("deterministic", "Deterministe"),
+            ("probabilistic", "Probabiliste (confirme)"),
+            ("new", "Creation"),
         ],
         string="Methode de rapprochement",
         readonly=True,
         tracking=True,
     )
     matched_by = fields.Many2one(
-        'res.users', string="Rapprochement confirme par", readonly=True, tracking=True,
+        "res.users",
+        string="Rapprochement confirme par",
+        readonly=True,
+        tracking=True,
     )
     matched_on = fields.Datetime(string="Date de confirmation", readonly=True, tracking=True)
 
     _matricule_institutionnel_unique = models.Constraint(
-        'unique(matricule_institutionnel)',
+        "unique(matricule_institutionnel)",
         "Ce matricule institutionnel est deja attribue a une autre personne.",
     )
     # Un partenaire, une personne. hr.employee.work_contact_id peut etre
@@ -243,17 +245,17 @@ class HisPerson(models.Model):
     # Sans cette contrainte, deux fiches personne pourraient pointer le meme
     # partenaire et l'ancrage d'identite cesserait d'etre un-par-humain.
     _partner_id_unique = models.Constraint(
-        'unique(partner_id)',
+        "unique(partner_id)",
         "Ce contact porte deja une fiche personne.",
     )
     # Une carte, une personne. Sans cela deux fiches pourraient porter le meme
     # numero et la caisse ne saurait pas qui debiter.
     _numero_carte_unique = models.Constraint(
-        'unique(numero_carte)',
+        "unique(numero_carte)",
         "Ce badge RFID est deja attribue a une autre personne.",
     )
 
-    @api.depends('matricule_institutionnel')
+    @api.depends("matricule_institutionnel")
     def _compute_matricule_affiche(self):
         for person in self:
             person.matricule_affiche = strip_matricule_checksum(
@@ -270,15 +272,16 @@ class HisPerson(models.Model):
         en valeur, AVANT d'appeler cette methode : tester `operator == '='` ne
         s'y declencherait jamais. Verifie en instrumentant l'appel.
         """
-        if operator in ('in', 'not in'):
+        if operator in ("in", "not in"):
             # Une egalite par valeur : chaque forme courte doit retrouver la
             # valeur complete qui la prolonge d'un tiret et d'une cle.
-            domain = expression.OR([
-                [('matricule_institutionnel', '=like', str(item) + '%')]
-                for item in value
-            ]) if value else [expression.FALSE_LEAF]
-            return domain if operator == 'in' else ['!'] + domain
-        return [('matricule_institutionnel', operator, value)]
+            domain = (
+                expression.OR([[("matricule_institutionnel", "=like", str(item) + "%")] for item in value])
+                if value
+                else [expression.FALSE_LEAF]
+            )
+            return domain if operator == "in" else ["!"] + domain
+        return [("matricule_institutionnel", operator, value)]
 
     def _his_attribuer_matricule(self, sequence_date=None):
         """Emet le matricule d'une fiche qui n'en a pas encore.
@@ -292,27 +295,26 @@ class HisPerson(models.Model):
         Un matricule est a vie ; le reemettre serait pire que de ne pas en
         avoir.
         """
-        sequence = self.env['ir.sequence'].sudo()
+        sequence = self.env["ir.sequence"].sudo()
         for person in self:
             if person.matricule_institutionnel:
                 continue
             base = sequence.next_by_code(
                 MATRICULE_SEQUENCE_CODE,
-                sequence_date=fields.Date.to_date(sequence_date)
-                or fields.Date.context_today(self),
+                sequence_date=fields.Date.to_date(sequence_date) or fields.Date.context_today(self),
             )
             if not base:
                 raise ValidationError(
-                    "Sequence %s introuvable : impossible d'emettre un matricule."
-                    % MATRICULE_SEQUENCE_CODE
+                    "Sequence %s introuvable : impossible d'emettre un matricule." % MATRICULE_SEQUENCE_CODE
                 )
-            person.sudo().matricule_institutionnel = '%s-%s' % (
-                base, _compute_matricule_checksum(base[-6:]),
+            person.sudo().matricule_institutionnel = "%s-%s" % (
+                base,
+                _compute_matricule_checksum(base[-6:]),
             )
 
     @api.model_create_multi
     def create(self, vals_list):
-        sequence = self.env['ir.sequence'].sudo()
+        sequence = self.env["ir.sequence"].sudo()
         for vals in vals_list:
             # UN CANDIDAT N'EST PAS ENCORE QUELQU'UN DE L'INSTITUTION.
             #
@@ -329,14 +331,13 @@ class HisPerson(models.Model):
             # dossier pour instruire son admission — mais SANS numero. Il le
             # recoit a l'encaissement des frais d'inscription, via
             # _his_attribuer_matricule. Voir hypothese A1.
-            if vals.get('type_personne') == 'candidat' \
-                    and not vals.get('matricule_institutionnel'):
-                vals.pop('matricule_sequence_date', None)
+            if vals.get("type_personne") == "candidat" and not vals.get("matricule_institutionnel"):
+                vals.pop("matricule_sequence_date", None)
                 continue
             # Cle de service, jamais un champ : elle ne sert qu'a choisir la
             # plage annuelle de la sequence (embauche antidatee ou future).
-            sequence_date = vals.pop('matricule_sequence_date', None)
-            if vals.get('matricule_institutionnel'):
+            sequence_date = vals.pop("matricule_sequence_date", None)
+            if vals.get("matricule_institutionnel"):
                 # Valeur pre-existante (reprise RH, import Sheets). On ne la
                 # reformate pas et on ne recalcule pas sa cle : une valeur
                 # anterieure a ce module peut ne pas en avoir. Elle est
@@ -350,34 +351,36 @@ class HisPerson(models.Model):
                 # creation que poser une fiche sans matricule ou avec un
                 # matricule fabrique ailleurs.
                 raise ValidationError(
-                    "Sequence %s introuvable : impossible d'emettre un matricule."
-                    % MATRICULE_SEQUENCE_CODE
+                    "Sequence %s introuvable : impossible d'emettre un matricule." % MATRICULE_SEQUENCE_CODE
                 )
-            vals['matricule_institutionnel'] = '%s-%s' % (
-                base, _compute_matricule_checksum(base[-6:]),
+            vals["matricule_institutionnel"] = "%s-%s" % (
+                base,
+                _compute_matricule_checksum(base[-6:]),
             )
         people = super().create(vals_list)
         # Marque le partenaire cree par delegation. Ne bloque rien : c'est ce
         # qui permettra plus tard aux Ventes et aux Achats d'ecarter les
         # etudiants de leurs selecteurs de contacts par defaut.
         category = self.env.ref(
-            'his_person_core.categ_partner_identite', raise_if_not_found=False,
+            "his_person_core.categ_partner_identite",
+            raise_if_not_found=False,
         )
         if category:
-            people.partner_id.sudo().write({'category_id': [(4, category.id)]})
+            people.partner_id.sudo().write({"category_id": [(4, category.id)]})
         return people
 
     def write(self, vals):
         # readonly=True bloque l'UI mais pas un write() serveur ni un import.
         # La regle « un matricule n'est jamais reemis » doit tenir cote
         # serveur, sinon ce n'est pas une regle.
-        if 'matricule_institutionnel' in vals:
+        if "matricule_institutionnel" in vals:
             for person in self:
-                if person.matricule_institutionnel \
-                        and vals['matricule_institutionnel'] != person.matricule_institutionnel:
+                if (
+                    person.matricule_institutionnel
+                    and vals["matricule_institutionnel"] != person.matricule_institutionnel
+                ):
                     raise ValidationError(
-                        "Le matricule institutionnel de %s ne peut pas etre modifie."
-                        % person.display_name
+                        "Le matricule institutionnel de %s ne peut pas etre modifie." % person.display_name
                     )
         return super().write(vals)
 
@@ -389,7 +392,7 @@ class HisPerson(models.Model):
     # deux fiches pour la meme personne, c'est deux portefeuilles.
 
     # Poids du score probabiliste. Somme = 1.0.
-    MATCH_WEIGHTS = {'nom': 0.40, 'email': 0.35, 'telephone': 0.25}
+    MATCH_WEIGHTS = {"nom": 0.40, "email": 0.35, "telephone": 0.25}
     # Au-dessus : candidat propose a un humain. Jamais de lien automatique.
     MATCH_THRESHOLD = 0.75
 
@@ -398,43 +401,39 @@ class HisPerson(models.Model):
         """Score de similarite [0.0, 1.0] entre une ligne source et une fiche."""
         scores = {}
 
-        left = normalize_text(candidate_vals.get('name'))
+        left = normalize_text(candidate_vals.get("name"))
         right = normalize_text(person.name)
         if left and right and left == right:
-            scores['nom'] = 1.0
+            scores["nom"] = 1.0
         elif left and right:
             # Recouvrement de tokens : « Ali Ben Salah » vs « Ben Salah Ali »
             # est la meme personne dans une source qui inverse nom et prenom.
             left_tokens, right_tokens = set(left.split()), set(right.split())
             union = left_tokens | right_tokens
-            scores['nom'] = len(left_tokens & right_tokens) / len(union) if union else 0.0
+            scores["nom"] = len(left_tokens & right_tokens) / len(union) if union else 0.0
         else:
-            scores['nom'] = 0.0
+            scores["nom"] = 0.0
         # Le nom arabe, quand les deux cotes l'ont, ne peut que confirmer.
-        arabe_left = (candidate_vals.get('nom_arabe') or '').strip()
+        arabe_left = (candidate_vals.get("nom_arabe") or "").strip()
         if arabe_left and person.nom_arabe and arabe_left == person.nom_arabe.strip():
-            scores['nom'] = 1.0
+            scores["nom"] = 1.0
 
         candidate_emails = {
-            (candidate_vals.get(field) or '').strip().lower()
-            for field in ('email', 'email_personnel')
-        } - {''}
-        person_emails = {
-            (value or '').strip().lower()
-            for value in (person.email, person.email_personnel)
-        } - {''}
-        scores['email'] = 1.0 if candidate_emails & person_emails else 0.0
+            (candidate_vals.get(field) or "").strip().lower() for field in ("email", "email_personnel")
+        } - {""}
+        person_emails = {(value or "").strip().lower() for value in (person.email, person.email_personnel)} - {""}
+        scores["email"] = 1.0 if candidate_emails & person_emails else 0.0
 
         # Comparaison sur les 8 derniers chiffres : indicatif pays et
         # espaces varient d'une source a l'autre pour le meme numero.
-        candidate_phone = re.sub(r'\D', '', candidate_vals.get('phone') or '')[-8:]
-        person_phone = re.sub(r'\D', '', person.phone or '')[-8:]
-        scores['telephone'] = 1.0 if candidate_phone and candidate_phone == person_phone else 0.0
+        candidate_phone = re.sub(r"\D", "", candidate_vals.get("phone") or "")[-8:]
+        person_phone = re.sub(r"\D", "", person.phone or "")[-8:]
+        scores["telephone"] = 1.0 if candidate_phone and candidate_phone == person_phone else 0.0
 
         return sum(scores[key] * weight for key, weight in self.MATCH_WEIGHTS.items())
 
     @api.model
-    def _find_or_flag_match(self, candidate_vals, types=('etudiant', 'candidat')):
+    def _find_or_flag_match(self, candidate_vals, types=("etudiant", "candidat")):
         """Rapproche une ligne source d'une fiche existante, sans jamais fusionner.
 
         Retourne un dict :
@@ -447,43 +446,53 @@ class HisPerson(models.Model):
         confirmer par un humain ». L'appelant ne doit rien lier tant que la
         confirmation n'est pas explicite.
         """
-        matricule = (candidate_vals.get('matricule_institutionnel') or '').strip()
+        matricule = (candidate_vals.get("matricule_institutionnel") or "").strip()
         if matricule:
             existing = self.with_context(active_test=False).search(
-                [('matricule_institutionnel', '=', matricule)], limit=1,
+                [("matricule_institutionnel", "=", matricule)],
+                limit=1,
             )
             # Chercher dans his.person suffit a couvrir aussi les employes :
             # his_hr_base miroite tout matricule d'employe dans une fiche
             # his.person. Il n'y a pas de matricule vivant hors de cette table.
             if not existing:
-                return {'person': None, 'method': 'deterministic', 'score': 1.0, 'conflict': False}
+                return {"person": None, "method": "deterministic", "score": 1.0, "conflict": False}
             if types and existing.type_personne not in types:
                 return {
-                    'person': existing, 'method': 'deterministic', 'score': 1.0,
-                    'conflict': (
+                    "person": existing,
+                    "method": "deterministic",
+                    "score": 1.0,
+                    "conflict": (
                         "Le matricule %s existe deja et appartient a une personne de type "
                         "« %s », incompatible avec cette source. Ligne rejetee : a arbitrer "
-                        "manuellement, aucune fusion automatique." % (
-                            matricule, existing.type_personne,
+                        "manuellement, aucune fusion automatique."
+                        % (
+                            matricule,
+                            existing.type_personne,
                         )
                     ),
                 }
-            return {'person': existing, 'method': 'deterministic', 'score': 1.0, 'conflict': False}
+            return {"person": existing, "method": "deterministic", "score": 1.0, "conflict": False}
 
         # Second cle deterministe : la reference source. Rejouer un import a
         # l'identique doit retomber sur la meme fiche, pas en proposer un
         # rapprochement. Generique a tout adaptateur, d'ou sa place ici.
-        external_ref = (candidate_vals.get('external_ref') or '').strip()
-        source_system = candidate_vals.get('source_system')
+        external_ref = (candidate_vals.get("external_ref") or "").strip()
+        source_system = candidate_vals.get("source_system")
         if external_ref and source_system:
-            existing = self.with_context(active_test=False).search([
-                ('external_ref', '=', external_ref),
-                ('source_system', '=', source_system),
-            ], limit=1)
+            existing = self.with_context(active_test=False).search(
+                [
+                    ("external_ref", "=", external_ref),
+                    ("source_system", "=", source_system),
+                ],
+                limit=1,
+            )
             if existing:
                 return {
-                    'person': existing, 'method': 'deterministic', 'score': 1.0,
-                    'conflict': False,
+                    "person": existing,
+                    "method": "deterministic",
+                    "score": 1.0,
+                    "conflict": False,
                 }
 
         # Ne scorer que des candidats plausibles. Scorer toutes les fiches en
@@ -499,22 +508,21 @@ class HisPerson(models.Model):
         # dans les noms deviennent un probleme, activer pg_trgm et passer a une
         # preselection par similarite.
         criteria = []
-        for value in (candidate_vals.get('email'), candidate_vals.get('email_personnel')):
+        for value in (candidate_vals.get("email"), candidate_vals.get("email_personnel")):
             if value and value.strip():
-                criteria += [('email', '=ilike', value.strip()),
-                             ('email_personnel', '=ilike', value.strip())]
-        phone = re.sub(r'\D', '', candidate_vals.get('phone') or '')[-8:]
+                criteria += [("email", "=ilike", value.strip()), ("email_personnel", "=ilike", value.strip())]
+        phone = re.sub(r"\D", "", candidate_vals.get("phone") or "")[-8:]
         if phone:
-            criteria.append(('phone', 'like', phone))
-        for token in set(normalize_text(candidate_vals.get('name')).split()):
+            criteria.append(("phone", "like", phone))
+        for token in set(normalize_text(candidate_vals.get("name")).split()):
             if len(token) > 2:
-                criteria.append(('name', 'ilike', token))
+                criteria.append(("name", "ilike", token))
         if not criteria:
-            return {'person': None, 'method': 'new', 'score': 0.0, 'conflict': False}
+            return {"person": None, "method": "new", "score": 0.0, "conflict": False}
 
-        domain = ['|'] * (len(criteria) - 1) + criteria
+        domain = ["|"] * (len(criteria) - 1) + criteria
         if types:
-            domain = [('type_personne', 'in', list(types))] + domain
+            domain = [("type_personne", "in", list(types))] + domain
 
         best, best_score = None, 0.0
         for person in self.with_context(active_test=False).search(domain):
@@ -523,18 +531,23 @@ class HisPerson(models.Model):
                 best, best_score = person, score
         if best is not None and best_score >= self.MATCH_THRESHOLD:
             return {
-                'person': best, 'method': 'probabilistic', 'score': best_score, 'conflict': False,
+                "person": best,
+                "method": "probabilistic",
+                "score": best_score,
+                "conflict": False,
             }
-        return {'person': None, 'method': 'new', 'score': best_score, 'conflict': False}
+        return {"person": None, "method": "new", "score": best_score, "conflict": False}
 
     def action_confirm_probabilistic_match(self):
         """Trace qui a confirme un rapprochement probabiliste, et quand."""
         for person in self:
-            person.sudo().write({
-                'match_method': 'probabilistic',
-                'matched_by': self.env.user.id,
-                'matched_on': fields.Datetime.now(),
-            })
+            person.sudo().write(
+                {
+                    "match_method": "probabilistic",
+                    "matched_by": self.env.user.id,
+                    "matched_on": fields.Datetime.now(),
+                }
+            )
             person.message_post(
                 body="Rapprochement probabiliste confirme par %s." % self.env.user.display_name,
             )

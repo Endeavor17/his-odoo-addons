@@ -6,9 +6,9 @@ from .his_document_type import BAC_FILIERE, TYPE_INSCRIPTION
 from .his_specialite import CYCLE
 
 LIBELLES_PAIEMENT = {
-    'frais_inscription_payes': "Frais d'inscription",
-    'frais_scolarite_payes': "Frais de scolarite",
-    'droits_prog_qualifiant_payes': "Droits du programme qualifiant",
+    "frais_inscription_payes": "Frais d'inscription",
+    "frais_scolarite_payes": "Frais de scolarite",
+    "droits_prog_qualifiant_payes": "Droits du programme qualifiant",
 }
 
 # Les deux droits exiges avant l'inscription definitive. Les droits du
@@ -16,8 +16,8 @@ LIBELLES_PAIEMENT = {
 # pas, et le classeur ne montre aucun dossier bloque pour cette raison. Les
 # ajouter au verrou serait inventer une regle.
 PAIEMENTS_REQUIS_POUR_INSCRIPTION = (
-    'frais_inscription_payes',
-    'frais_scolarite_payes',
+    "frais_inscription_payes",
+    "frais_scolarite_payes",
 )
 
 
@@ -33,7 +33,8 @@ class HisEngagement(models.Model):
     n'est pas un etat, c'est un second parcours sur la meme personne et le meme
     matricule. Les deux axes sont ici separes : `etat` et `type_inscription`.
     """
-    _inherit = 'his.engagement'
+
+    _inherit = "his.engagement"
 
     # « Admis » manquait entre candidature soumise et inscription : le classeur
     # y garde 68 dossiers, c'est son etat le plus peuple. « Blocage
@@ -41,43 +42,59 @@ class HisEngagement(models.Model):
     # s'inscrire, c'est le dossier qui coince.
     etat = fields.Selection(
         selection_add=[
-            ('candidat_soumis',),
-            ('admis', "Admis"),
-            ('blocage_administratif', "Blocage administratif"),
-            ('inscrit',),
+            ("candidat_soumis",),
+            ("admis", "Admis"),
+            ("blocage_administratif", "Blocage administratif"),
+            ("inscrit",),
         ],
-        ondelete={'admis': 'set default', 'blocage_administratif': 'set default'},
+        ondelete={"admis": "set default", "blocage_administratif": "set default"},
     )
 
     type_inscription = fields.Selection(
-        TYPE_INSCRIPTION, string="Type d'inscription", default='nouveau', tracking=True,
+        TYPE_INSCRIPTION,
+        string="Type d'inscription",
+        default="nouveau",
+        tracking=True,
     )
     cycle = fields.Selection(CYCLE, string="Cycle", tracking=True)
     niveau = fields.Selection(
         selection=[
-            ('l1', "L1"), ('l2', "L2"), ('l3', "L3"),
-            ('m1', "M1"), ('m2', "M2"),
+            ("l1", "L1"),
+            ("l2", "L2"),
+            ("l3", "L3"),
+            ("m1", "M1"),
+            ("m2", "M2"),
         ],
-        string="Niveau", tracking=True,
+        string="Niveau",
+        tracking=True,
     )
     specialite_id = fields.Many2one(
-        'his.specialite', string="Specialite", ondelete='restrict', tracking=True,
+        "his.specialite",
+        string="Specialite",
+        ondelete="restrict",
+        tracking=True,
     )
     domaine_id = fields.Many2one(
-        related='specialite_id.domaine_id', string="Domaine", store=True, readonly=True,
+        related="specialite_id.domaine_id",
+        string="Domaine",
+        store=True,
+        readonly=True,
     )
     programme_qualifiant = fields.Selection(
         selection=[
-            ('aucun', "Sans programme qualifiant"),
-            ('inf', "PREP INF"),
-            ('eco', "PREP ECO"),
-            ('elc', "PREP ELC"),
+            ("aucun", "Sans programme qualifiant"),
+            ("inf", "PREP INF"),
+            ("eco", "PREP ECO"),
+            ("elc", "PREP ELC"),
         ],
-        string="Programme qualifiant", default='aucun',
+        string="Programme qualifiant",
+        default="aucun",
     )
     langue_etude = fields.Selection(
         selection=[
-            ('arabe', "Arabe"), ('francais', "Francais"), ('anglais', "Anglais"),
+            ("arabe", "Arabe"),
+            ("francais", "Francais"),
+            ("anglais", "Anglais"),
         ],
         string="Langue d'etude",
     )
@@ -86,9 +103,11 @@ class HisEngagement(models.Model):
     # Le matricule institutionnel du groupe vit sur his.person et prendra le
     # relais plus tard — decision prise, pas oubli.
     numero_etudiant = fields.Char(
-        string="Numero d'etudiant", copy=False, index=True,
+        string="Numero d'etudiant",
+        copy=False,
+        index=True,
         help="Numero utilise aujourd'hui par l'Admission. Distinct du matricule "
-             "institutionnel porte par la fiche personne.",
+        "institutionnel porte par la fiche personne.",
     )
     date_inscription = fields.Date(string="Date d'inscription")
 
@@ -102,24 +121,35 @@ class HisEngagement(models.Model):
     note_physique = fields.Float(string="Note de physique", digits=(4, 2))
     type_lycee = fields.Selection(
         selection=[
-            ('public', "Publique"), ('prive', "Privee"), ('libre', "Libre"),
+            ("public", "Publique"),
+            ("prive", "Privee"),
+            ("libre", "Libre"),
         ],
         string="Type d'etablissement",
     )
 
     moyenne_ponderee = fields.Float(
-        string="Moyenne ponderee", digits=(4, 2),
-        compute='_compute_eligibilite', store=True, readonly=True,
+        string="Moyenne ponderee",
+        digits=(4, 2),
+        compute="_compute_eligibilite",
+        store=True,
+        readonly=True,
     )
     eligibilite = fields.Selection(
         selection=[
-            ('eligible', "Eligible"),
-            ('a_verifier', "A verifier"),
+            ("eligible", "Eligible"),
+            ("a_verifier", "A verifier"),
         ],
-        string="Eligibilite", compute='_compute_eligibilite', store=True, readonly=True,
+        string="Eligibilite",
+        compute="_compute_eligibilite",
+        store=True,
+        readonly=True,
     )
     eligibilite_motif = fields.Char(
-        string="Motif", compute='_compute_eligibilite', store=True, readonly=True,
+        string="Motif",
+        compute="_compute_eligibilite",
+        store=True,
+        readonly=True,
     )
 
     # --- Jalons du process ---------------------------------------------------
@@ -141,25 +171,40 @@ class HisEngagement(models.Model):
     # comme pour l'Admission, et demain pour le module Finance qui appellera la
     # meme methode. Un chemin unique est ce qui rend la trace fiable.
     frais_inscription_payes = fields.Boolean(
-        string="Frais d'inscription payes", readonly=True, copy=False, tracking=True,
+        string="Frais d'inscription payes",
+        readonly=True,
+        copy=False,
+        tracking=True,
     )
     frais_scolarite_payes = fields.Boolean(
-        string="Frais de scolarite payes", readonly=True, copy=False, tracking=True,
+        string="Frais de scolarite payes",
+        readonly=True,
+        copy=False,
+        tracking=True,
     )
     droits_prog_qualifiant_payes = fields.Boolean(
-        string="Droits programme qualifiant payes", readonly=True, copy=False, tracking=True,
+        string="Droits programme qualifiant payes",
+        readonly=True,
+        copy=False,
+        tracking=True,
     )
 
     # --- Pieces --------------------------------------------------------------
 
     document_ids = fields.One2many(
-        'his.admission.document', 'engagement_id', string="Pieces du dossier",
+        "his.admission.document",
+        "engagement_id",
+        string="Pieces du dossier",
     )
     documents_complets = fields.Boolean(
-        string="Dossier complet", compute='_compute_documents_complets', store=True,
+        string="Dossier complet",
+        compute="_compute_documents_complets",
+        store=True,
     )
     documents_manquants = fields.Char(
-        string="Pieces manquantes", compute='_compute_documents_complets', store=True,
+        string="Pieces manquantes",
+        compute="_compute_documents_complets",
+        store=True,
     )
 
     # --- Carte etudiant ------------------------------------------------------
@@ -171,20 +216,31 @@ class HisEngagement(models.Model):
     # --- Origine commerciale -------------------------------------------------
 
     conseiller_id = fields.Many2one(
-        'res.users', string="Conseillere", tracking=True,
-        help="Conseillere Ventes qui a amene ce candidat. Reprise du lead a la "
-             "pre-admission.",
+        "res.users",
+        string="Conseillere",
+        tracking=True,
+        help="Conseillere Ventes qui a amene ce candidat. Reprise du lead a la pre-admission.",
     )
     lead_id = fields.Many2one(
-        'crm.lead', string="Lead d'origine", ondelete='set null', copy=False,
+        "crm.lead",
+        string="Lead d'origine",
+        ondelete="set null",
+        copy=False,
     )
 
     # --- Eligibilite ---------------------------------------------------------
 
     @api.depends(
-        'bac_moyenne', 'note_math', 'note_physique', 'domaine_id',
-        'domaine_id.coef_bac', 'domaine_id.coef_math', 'domaine_id.coef_physique',
-        'domaine_id.seuil_eligibilite', 'domaine_id.min_bac', 'domaine_id.min_math',
+        "bac_moyenne",
+        "note_math",
+        "note_physique",
+        "domaine_id",
+        "domaine_id.coef_bac",
+        "domaine_id.coef_math",
+        "domaine_id.coef_physique",
+        "domaine_id.seuil_eligibilite",
+        "domaine_id.min_bac",
+        "domaine_id.min_math",
     )
     def _compute_eligibilite(self):
         """Calculee, jamais saisie.
@@ -216,42 +272,51 @@ class HisEngagement(models.Model):
             # une excellente moyenne generale ne rachete pas une note de maths
             # sous le minimum exige par le domaine.
             if eng.bac_moyenne < domaine.min_bac:
-                eng.eligibilite = 'a_verifier'
+                eng.eligibilite = "a_verifier"
                 eng.eligibilite_motif = _(
                     "Moyenne BAC %(valeur).2f inferieure au minimum %(mini).2f.",
-                    valeur=eng.bac_moyenne, mini=domaine.min_bac,
+                    valeur=eng.bac_moyenne,
+                    mini=domaine.min_bac,
                 )
             elif domaine.min_math and eng.note_math < domaine.min_math:
-                eng.eligibilite = 'a_verifier'
+                eng.eligibilite = "a_verifier"
                 eng.eligibilite_motif = _(
                     "Note de maths %(valeur).2f inferieure au minimum %(mini).2f.",
-                    valeur=eng.note_math, mini=domaine.min_math,
+                    valeur=eng.note_math,
+                    mini=domaine.min_math,
                 )
             elif moyenne < domaine.seuil_eligibilite:
-                eng.eligibilite = 'a_verifier'
+                eng.eligibilite = "a_verifier"
                 eng.eligibilite_motif = _(
                     "Moyenne ponderee %(valeur).2f sous le seuil %(seuil).2f.",
-                    valeur=moyenne, seuil=domaine.seuil_eligibilite,
+                    valeur=moyenne,
+                    seuil=domaine.seuil_eligibilite,
                 )
             else:
-                eng.eligibilite = 'eligible'
+                eng.eligibilite = "eligible"
                 eng.eligibilite_motif = False
 
     # --- Pieces du dossier ---------------------------------------------------
 
-    @api.depends('document_ids.fourni', 'document_ids.type_id.obligatoire')
+    @api.depends("document_ids.fourni", "document_ids.type_id.obligatoire")
     def _compute_documents_complets(self):
         for eng in self:
             manquantes = eng.document_ids.filtered(
                 lambda d: d.type_id.obligatoire and not d.fourni,
             )
             eng.documents_complets = not manquantes
-            eng.documents_manquants = ", ".join(manquantes.mapped('type_id.name'))
+            eng.documents_manquants = ", ".join(manquantes.mapped("type_id.name"))
 
     def _types_documents_applicables(self):
         self.ensure_one()
-        return self.env['his.document.type'].search([])._applicable(
-            self.cycle, self.type_inscription, self.bac_filiere,
+        return (
+            self.env["his.document.type"]
+            .search([])
+            ._applicable(
+                self.cycle,
+                self.type_inscription,
+                self.bac_filiere,
+            )
         )
 
     def _sync_documents(self):
@@ -265,7 +330,7 @@ class HisEngagement(models.Model):
         for eng in self:
             manquants = eng._types_documents_applicables() - eng.document_ids.type_id
             if manquants:
-                eng.document_ids = [(0, 0, {'type_id': t.id}) for t in manquants]
+                eng.document_ids = [(0, 0, {"type_id": t.id}) for t in manquants]
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -277,7 +342,7 @@ class HisEngagement(models.Model):
         res = super().write(vals)
         # Seuls ces trois champs decident des pieces applicables : inutile de
         # rejouer la synchronisation a chaque edition.
-        if {'cycle', 'type_inscription', 'bac_filiere'} & vals.keys():
+        if {"cycle", "type_inscription", "bac_filiere"} & vals.keys():
             self._sync_documents()
         return res
 
@@ -305,11 +370,13 @@ class HisEngagement(models.Model):
             if eng[champ]:
                 continue
             eng.sudo().write({champ: True})
-            eng.sudo().message_post(body=_(
-                "%(droit)s : encaissement enregistre par %(user)s.",
-                droit=LIBELLES_PAIEMENT.get(champ, champ),
-                user=self.env.user.display_name,
-            ))
+            eng.sudo().message_post(
+                body=_(
+                    "%(droit)s : encaissement enregistre par %(user)s.",
+                    droit=LIBELLES_PAIEMENT.get(champ, champ),
+                    user=self.env.user.display_name,
+                )
+            )
             # C'est ICI que le candidat devient quelqu'un de l'institution.
             #
             # Le matricule est a vie et sa sequence ne se recycle jamais : le
@@ -320,7 +387,7 @@ class HisEngagement(models.Model):
             #
             # Le dossier, lui, existe depuis la pre-admission : il faut bien un
             # endroit ou enregistrer cet encaissement. Voir hypothese A1.
-            if champ == 'frais_inscription_payes' and eng.person_id:
+            if champ == "frais_inscription_payes" and eng.person_id:
                 # sudo() : le guichet Finance n'a AUCUN droit sur le
                 # referentiel d'identite, et c'est voulu. Emettre le matricule
                 # est une consequence de l'encaissement qu'il enregistre, pas
@@ -328,21 +395,23 @@ class HisEngagement(models.Model):
                 # etroite ci-dessus.
                 personne = eng.person_id.sudo()
                 personne._his_attribuer_matricule()
-                eng.sudo().message_post(body=_(
-                    "Matricule institutionnel attribue : %(matricule)s.",
-                    matricule=personne.matricule_institutionnel,
-                ))
+                eng.sudo().message_post(
+                    body=_(
+                        "Matricule institutionnel attribue : %(matricule)s.",
+                        matricule=personne.matricule_institutionnel,
+                    )
+                )
 
     def action_encaisser_frais_inscription(self):
         """Les frais non remboursables. C'est CE geste qui gagne le lead."""
-        self._encaisser('frais_inscription_payes')
+        self._encaisser("frais_inscription_payes")
         self._his_gagner_le_lead()
 
     def action_encaisser_frais_scolarite(self):
-        self._encaisser('frais_scolarite_payes')
+        self._encaisser("frais_scolarite_payes")
 
     def action_encaisser_droits_prog_qualifiant(self):
-        self._encaisser('droits_prog_qualifiant_payes')
+        self._encaisser("droits_prog_qualifiant_payes")
 
     def _his_gagner_le_lead(self):
         """Pousse le lead d'origine a l'etape gagnante.
@@ -353,7 +422,8 @@ class HisEngagement(models.Model):
         et il n'y a rien a surveiller pour que cela reste vrai.
         """
         etape = self.env.ref(
-            'his_crm_pipeline.stage_vente_frais_payes', raise_if_not_found=False,
+            "his_crm_pipeline.stage_vente_frais_payes",
+            raise_if_not_found=False,
         )
         if not etape:
             return
@@ -366,8 +436,11 @@ class HisEngagement(models.Model):
     # --- Le verrou -----------------------------------------------------------
 
     @api.constrains(
-        'etat', 'document_ids', 'document_ids.fourni',
-        'frais_inscription_payes', 'frais_scolarite_payes',
+        "etat",
+        "document_ids",
+        "document_ids.fourni",
+        "frais_inscription_payes",
+        "frais_scolarite_payes",
     )
     def _check_dossier_complet_avant_inscription(self):
         """Pas d'« Inscrit » sans dossier complet ni droits encaisses.
@@ -380,22 +453,21 @@ class HisEngagement(models.Model):
         API n'est pas une regle.
         """
         for eng in self:
-            if eng.etat != 'inscrit':
+            if eng.etat != "inscrit":
                 continue
             griefs = []
             if eng.documents_manquants:
                 griefs.append(_("pieces manquantes : %s", eng.documents_manquants))
-            impayes = [
-                LIBELLES_PAIEMENT[champ]
-                for champ in PAIEMENTS_REQUIS_POUR_INSCRIPTION if not eng[champ]
-            ]
+            impayes = [LIBELLES_PAIEMENT[champ] for champ in PAIEMENTS_REQUIS_POUR_INSCRIPTION if not eng[champ]]
             if impayes:
                 griefs.append(_("droits non encaisses : %s", ", ".join(impayes)))
             if griefs:
-                raise ValidationError(_(
-                    "« %(personne)s » ne peut pas passer a « Inscrit » — %(griefs)s.\n\n"
-                    "Un dossier incomplet reste en « Admis » ou en « Blocage "
-                    "administratif ».",
-                    personne=eng.person_id.display_name,
-                    griefs=" ; ".join(griefs),
-                ))
+                raise ValidationError(
+                    _(
+                        "« %(personne)s » ne peut pas passer a « Inscrit » — %(griefs)s.\n\n"
+                        "Un dossier incomplet reste en « Admis » ou en « Blocage "
+                        "administratif ».",
+                        personne=eng.person_id.display_name,
+                        griefs=" ; ".join(griefs),
+                    )
+                )

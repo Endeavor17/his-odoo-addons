@@ -4,7 +4,7 @@ from odoo.exceptions import AccessError
 
 
 class StockQuant(models.Model):
-    _inherit = 'stock.quant'
+    _inherit = "stock.quant"
 
     # --- Separation des taches : Collaborateur compte, Manager applique -----
     #
@@ -16,8 +16,8 @@ class StockQuant(models.Model):
     # appliquer l'ecart aux livres. self.env.su bypasse le controle : une
     # consequence systeme n'est pas un geste humain a arbitrer.
     def action_apply_inventory(self, date=None):
-        if not (self.env.su or self.env.user.has_group('stock.group_stock_manager')):
+        if not (self.env.su or self.env.user.has_group("stock.group_stock_manager")):
             raise AccessError(
-                "Seul un Manager Stock peut appliquer un comptage. "
-                "L'écart reste visible en attente d'application.")
+                "Seul un Manager Stock peut appliquer un comptage. L'écart reste visible en attente d'application."
+            )
         return super().action_apply_inventory(date=date)

@@ -1,7 +1,6 @@
 from odoo.addons.campus_teacher_management import _campus_grant_manager_process_permissions
 
-from . import models
-from . import wizard
+from . import models, wizard
 
 
 def _insite_grant_manager_process_permissions(env):

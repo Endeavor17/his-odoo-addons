@@ -10,14 +10,17 @@ On ne retire que les categories que ce module avait lui-meme posees a tort. Un
 onglet ajoute par un autre module -- Repas, Recharges -- ou par l'exploitant
 n'est pas touche.
 """
-from odoo import api, SUPERUSER_ID
+
+from odoo import SUPERUSER_ID, api
 
 A_RETIRER = {
-    'his_stock_mdm.pos_config_restaurant': [
-        'pos_categ_boissons', 'pos_categ_biscuits', 'pos_categ_divers',
+    "his_stock_mdm.pos_config_restaurant": [
+        "pos_categ_boissons",
+        "pos_categ_biscuits",
+        "pos_categ_divers",
     ],
-    'his_stock_mdm.pos_config_copy_center': [
-        'pos_categ_boissons',
+    "his_stock_mdm.pos_config_copy_center": [
+        "pos_categ_boissons",
     ],
 }
 
@@ -29,6 +32,6 @@ def migrate(cr, version):
         if not config:
             continue
         for name in categories:
-            categ = env.ref('his_stock_mdm.' + name, raise_if_not_found=False)
+            categ = env.ref("his_stock_mdm." + name, raise_if_not_found=False)
             if categ and categ in config.iface_available_categ_ids:
-                config.write({'iface_available_categ_ids': [(3, categ.id)]})
+                config.write({"iface_available_categ_ids": [(3, categ.id)]})

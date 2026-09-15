@@ -1,8 +1,8 @@
 {
-    'name': 'HIS Meal Management',
-    'version': '19.0.3.5.1',
-    'summary': 'HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS',
-    'description': """
+    "name": "HIS Meal Management",
+    "version": "19.0.3.5.1",
+    "summary": "HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS",
+    "description": """
 HIS Meal Management
 ===================
 Prepaid meal credits: the IT centre sells the plans, and any food point of sale
@@ -43,56 +43,51 @@ Credits do not expire; they keep until they are eaten.
 * Every grant and every meal writes an append-only ledger line naming the
   student, card, plan, cashier, session and the balance it left behind.
 """,
-    'author': 'Abdo Chabouti',
-    'category': 'Sales/Point of Sale',
-    'license': 'LGPL-3',
-
-    'post_init_hook': 'post_init_hook',
-
-    'depends': [
-        'base',
-        'product',
-        'point_of_sale',
+    "author": "Abdo Chabouti",
+    "category": "Sales/Point of Sale",
+    "license": "LGPL-3",
+    "post_init_hook": "post_init_hook",
+    "depends": [
+        "base",
+        "product",
+        "point_of_sale",
         # Identity is not ours: his_person_core owns the person record and the
         # only sequence allowed to issue a matricule institutionnel.
-        'his_person_core',
+        "his_person_core",
         # his.faculty and the academic fields moved there (19.0.3.5.0).
-        'his_academic_base',
+        "his_academic_base",
         # The plans are sold at the tills his_stock_mdm defines, and their POS
         # tab has to sit alongside its retail ones. The coupling already
         # existed through available_in_pos; declaring it makes the load order
         # explicit instead of accidental.
-        'his_stock_mdm',
+        "his_stock_mdm",
     ],
-
-    'data': [
-        'security/meal_security.xml',
-        'security/ir.model.access.csv',
-        'data/ir_sequence.xml',
-        'data/his_faculty.xml',
-        'data/barcode_rule.xml',
-        'data/meal_plans.xml',
-        'data/ir_cron.xml',
-        'wizard/meal_adjust_wizard_views.xml',
-        'views/meal_card_views.xml',
-        'views/meal_subscription_views.xml',
-        'views/meal_transaction_views.xml',
-        'views/his_person_views.xml',
-        'views/res_partner_views.xml',
-        'views/product_template_views.xml',
-        'report/meal_card_report.xml',
-        'views/menus.xml',
+    "data": [
+        "security/meal_security.xml",
+        "security/ir.model.access.csv",
+        "data/ir_sequence.xml",
+        "data/his_faculty.xml",
+        "data/barcode_rule.xml",
+        "data/meal_plans.xml",
+        "data/ir_cron.xml",
+        "wizard/meal_adjust_wizard_views.xml",
+        "views/meal_card_views.xml",
+        "views/meal_subscription_views.xml",
+        "views/meal_transaction_views.xml",
+        "views/his_person_views.xml",
+        "views/res_partner_views.xml",
+        "views/product_template_views.xml",
+        "report/meal_card_report.xml",
+        "views/menus.xml",
     ],
-
-    'assets': {
-        'point_of_sale._assets_pos': [
-            'his_meal_management/static/src/app/**/*',
+    "assets": {
+        "point_of_sale._assets_pos": [
+            "his_meal_management/static/src/app/**/*",
         ],
-        'web.assets_backend': [
-            'his_meal_management/static/src/backend/**/*',
+        "web.assets_backend": [
+            "his_meal_management/static/src/backend/**/*",
         ],
     },
-
-    'installable': True,
-    'application': True,
+    "installable": True,
+    "application": True,
 }

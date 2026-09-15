@@ -6,7 +6,7 @@ from odoo import _, api, fields, models
 # « Contact etabli » est la proposition — le conseiller a effectivement parle au
 # candidat, pas seulement recu son lead. Changer d'avis doit rester un
 # parametre, pas une modification de code.
-PARAM_ETAPE_DECLENCHEUSE = 'his_crm.identity_trigger_stage_xmlid'
+PARAM_ETAPE_DECLENCHEUSE = "his_crm.identity_trigger_stage_xmlid"
 # Hypothese A1, TRANCHEE : la pre-admission.
 #
 # « Contact etabli » etait la proposition initiale. Elle a ete rejetee sur
@@ -22,32 +22,46 @@ PARAM_ETAPE_DECLENCHEUSE = 'his_crm.identity_trigger_stage_xmlid'
 #
 # Le matricule, lui, n'est plus emis ici : voir his_person_core, il est
 # attribue a l'encaissement des frais d'inscription.
-ETAPE_DECLENCHEUSE_DEFAUT = 'his_crm_pipeline.stage_vente_pre_admis'
+ETAPE_DECLENCHEUSE_DEFAUT = "his_crm_pipeline.stage_vente_pre_admis"
 
 
 class CrmLead(models.Model):
-    _inherit = 'crm.lead'
+    _inherit = "crm.lead"
 
     his_person_id = fields.Many2one(
-        'his.person', string="Fiche personne", readonly=True, copy=False, index=True,
-        help="Fiche du referentiel Identite rattachee a ce lead. Creee ou "
-             "rapprochee au premier contact.",
+        "his.person",
+        string="Fiche personne",
+        readonly=True,
+        copy=False,
+        index=True,
+        help="Fiche du referentiel Identite rattachee a ce lead. Creee ou rapprochee au premier contact.",
     )
     his_person_candidate_id = fields.Many2one(
-        'his.person', string="Fiche proposee", readonly=True, copy=False,
+        "his.person",
+        string="Fiche proposee",
+        readonly=True,
+        copy=False,
         help="Meilleure correspondance trouvee dans le referentiel. Tant "
-             "qu'elle n'est pas confirmee par un humain, RIEN n'est rattache.",
+        "qu'elle n'est pas confirmee par un humain, RIEN n'est rattache.",
     )
     his_person_match_score = fields.Float(
-        string="Score de rapprochement", digits=(3, 2), readonly=True, copy=False,
+        string="Score de rapprochement",
+        digits=(3, 2),
+        readonly=True,
+        copy=False,
     )
 
     # --- Declencheur ---------------------------------------------------------
 
     @api.model
     def _his_etape_declencheuse(self):
-        xmlid = self.env['ir.config_parameter'].sudo().get_param(
-            PARAM_ETAPE_DECLENCHEUSE, ETAPE_DECLENCHEUSE_DEFAUT,
+        xmlid = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param(
+                PARAM_ETAPE_DECLENCHEUSE,
+                ETAPE_DECLENCHEUSE_DEFAUT,
+            )
         )
         return self.env.ref(xmlid, raise_if_not_found=False)
 
@@ -55,7 +69,7 @@ class CrmLead(models.Model):
         res = super().write(vals)
         # Seul un changement d'etape peut declencher : inutile de rejouer le
         # rapprochement a chaque edition d'un champ quelconque.
-        if 'stage_id' in vals or 'team_id' in vals:
+        if "stage_id" in vals or "team_id" in vals:
             self._his_creer_ou_rapprocher_personne()
         return res
 
@@ -79,11 +93,12 @@ class CrmLead(models.Model):
         """
         etape = self._his_etape_declencheuse()
         equipe = self.env.ref(
-            'his_crm_pipeline.crm_team_ventes', raise_if_not_found=False,
+            "his_crm_pipeline.crm_team_ventes",
+            raise_if_not_found=False,
         )
         if not etape or not equipe:
             return
-        Person = self.env['his.person'].sudo()
+        Person = self.env["his.person"].sudo()
         for lead in self:
             # « PARVENU a l'etape », et non « pose exactement dessus ».
             #
@@ -107,31 +122,35 @@ class CrmLead(models.Model):
 
             match = Person._find_or_flag_match(lead._his_candidate_vals())
 
-            if match['conflict']:
-                lead._his_signaler(match['conflict'])
+            if match["conflict"]:
+                lead._his_signaler(match["conflict"])
                 continue
 
-            if match['method'] == 'probabilistic':
+            if match["method"] == "probabilistic":
                 # Jamais de lien automatique, quel que soit le score. Meme
                 # regle que l'import Google Sheets : au-dessus du seuil, c'est
                 # un humain qui tranche.
-                lead.write({
-                    'his_person_candidate_id': match['person'].id,
-                    'his_person_match_score': match['score'],
-                })
-                lead._his_signaler(_(
-                    "Correspondance probable (%(score)d%%) avec « %(fiche)s » : "
-                    "a confirmer ou refuser depuis le lead. Aucune fiche n'a ete "
-                    "rattachee.",
-                    score=round(match['score'] * 100),
-                    fiche=match['person'].display_name,
-                ))
+                lead.write(
+                    {
+                        "his_person_candidate_id": match["person"].id,
+                        "his_person_match_score": match["score"],
+                    }
+                )
+                lead._his_signaler(
+                    _(
+                        "Correspondance probable (%(score)d%%) avec « %(fiche)s » : "
+                        "a confirmer ou refuser depuis le lead. Aucune fiche n'a ete "
+                        "rattachee.",
+                        score=round(match["score"] * 100),
+                        fiche=match["person"].display_name,
+                    )
+                )
                 continue
 
-            if match['person']:
-                lead.his_person_id = match['person']
+            if match["person"]:
+                lead.his_person_id = match["person"]
             else:
-                lead.his_person_id = lead._his_creer_personne(match['method'])
+                lead.his_person_id = lead._his_creer_personne(match["method"])
             lead._his_assurer_engagement()
 
     # --- Construction des donnees -------------------------------------------
@@ -145,18 +164,18 @@ class CrmLead(models.Model):
         """
         self.ensure_one()
         return {
-            'name': self.contact_name or self.partner_name or self.name,
-            'email_personnel': self.email_from,
-            'phone': self.phone,
-            'source_system': 'odoo_crm',
-            'external_ref': str(self.id),
+            "name": self.contact_name or self.partner_name or self.name,
+            "email_personnel": self.email_from,
+            "phone": self.phone,
+            "source_system": "odoo_crm",
+            "external_ref": str(self.id),
         }
 
     def _his_creer_personne(self, method):
         self.ensure_one()
         vals = dict(
             self._his_candidate_vals(),
-            type_personne='candidat',
+            type_personne="candidat",
             match_method=method,
         )
         # Le lead porte deja un contact : on le reprend au lieu d'en creer un
@@ -167,15 +186,17 @@ class CrmLead(models.Model):
         # porteur d'une fiche : on le verifie avant.
         partner = self.partner_id
         if partner and not partner.his_person_ids:
-            vals['partner_id'] = partner.id
+            vals["partner_id"] = partner.id
         # sudo() : creer une fiche, c'est emettre un matricule a vie. Le droit
         # est volontairement etroit dans his_person_core, les modules qui en
         # creent le font depuis leur logique serveur.
-        person = self.env['his.person'].sudo().create(vals)
-        person.message_post(body=_(
-            "Fiche creee depuis le lead CRM « %(lead)s » au premier contact.",
-            lead=self.display_name,
-        ))
+        person = self.env["his.person"].sudo().create(vals)
+        person.message_post(
+            body=_(
+                "Fiche creee depuis le lead CRM « %(lead)s » au premier contact.",
+                lead=self.display_name,
+            )
+        )
         return person
 
     def _his_assurer_engagement(self):
@@ -187,12 +208,14 @@ class CrmLead(models.Model):
         """
         self.ensure_one()
         person = self.his_person_id
-        if not person or person.engagement_ids.filtered(lambda e: e.etat == 'prospect'):
+        if not person or person.engagement_ids.filtered(lambda e: e.etat == "prospect"):
             return
-        self.env['his.engagement'].sudo().create({
-            'person_id': person.id,
-            'etat': 'prospect',
-        })
+        self.env["his.engagement"].sudo().create(
+            {
+                "person_id": person.id,
+                "etat": "prospect",
+            }
+        )
 
     def _his_signaler(self, message):
         """Rend un cas a arbitrer visible la ou le conseiller travaille."""
@@ -201,7 +224,7 @@ class CrmLead(models.Model):
         destinataire = self.user_id or self.team_id.user_id
         if destinataire:
             self.activity_schedule(
-                'mail.mail_activity_data_todo',
+                "mail.mail_activity_data_todo",
                 summary="Rapprochement Identite a arbitrer",
                 note=message,
                 user_id=destinataire.id,
@@ -215,21 +238,27 @@ class CrmLead(models.Model):
             person = lead.his_person_candidate_id
             if not person:
                 continue
-            person.sudo().write({
-                'match_method': 'probabilistic',
-                'matched_by': self.env.user.id,
-                'matched_on': fields.Datetime.now(),
-            })
-            lead.write({
-                'his_person_id': person.id,
-                'his_person_candidate_id': False,
-            })
+            person.sudo().write(
+                {
+                    "match_method": "probabilistic",
+                    "matched_by": self.env.user.id,
+                    "matched_on": fields.Datetime.now(),
+                }
+            )
+            lead.write(
+                {
+                    "his_person_id": person.id,
+                    "his_person_candidate_id": False,
+                }
+            )
             lead._his_assurer_engagement()
-            lead.message_post(body=_(
-                "Rapprochement (%(score)d%%) confirme par %(user)s.",
-                score=round(lead.his_person_match_score * 100),
-                user=self.env.user.display_name,
-            ))
+            lead.message_post(
+                body=_(
+                    "Rapprochement (%(score)d%%) confirme par %(user)s.",
+                    score=round(lead.his_person_match_score * 100),
+                    user=self.env.user.display_name,
+                )
+            )
 
     def action_reject_person_match(self):
         """Ce n'est pas la meme personne : fiche distincte, matricule distinct."""
@@ -237,9 +266,11 @@ class CrmLead(models.Model):
             if not lead.his_person_candidate_id:
                 continue
             lead.his_person_candidate_id = False
-            lead.his_person_id = lead._his_creer_personne('new')
+            lead.his_person_id = lead._his_creer_personne("new")
             lead._his_assurer_engagement()
-            lead.message_post(body=_(
-                "Rapprochement refuse par %(user)s : fiche distincte creee.",
-                user=self.env.user.display_name,
-            ))
+            lead.message_post(
+                body=_(
+                    "Rapprochement refuse par %(user)s : fiche distincte creee.",
+                    user=self.env.user.display_name,
+                )
+            )

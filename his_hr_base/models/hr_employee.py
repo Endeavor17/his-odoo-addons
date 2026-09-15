@@ -7,11 +7,11 @@ class HrEmployee(models.Model):
     _inherit = "hr.employee"
 
     person_id = fields.Many2one(
-        'his.person',
+        "his.person",
         string="Fiche personne",
         # restrict : supprimer une fiche personne encore rattachee a un employe
         # detacherait un matricule deja distribue de son porteur.
-        ondelete='restrict',
+        ondelete="restrict",
         copy=False,
         index=True,
     )
@@ -20,7 +20,7 @@ class HrEmployee(models.Model):
     # et continue de fonctionner sans modification.
     matricule_institutionnel = fields.Char(
         string="Matricule institutionnel",
-        related='person_id.matricule_institutionnel',
+        related="person_id.matricule_institutionnel",
         store=True,
         readonly=True,
         index=True,
@@ -30,7 +30,7 @@ class HrEmployee(models.Model):
     # RFID et la caisse. Cf. his_person_core pour le raisonnement.
     matricule_affiche = fields.Char(
         string="Matricule",
-        related='person_id.matricule_affiche',
+        related="person_id.matricule_affiche",
         readonly=True,
     )
     # Une seule carte physique par personne, employe ou etudiant : pointage,
@@ -51,12 +51,12 @@ class HrEmployee(models.Model):
     # (alphanumerique, 18 caracteres max) : un numero non conforme echoue
     # bruyamment au lieu d'etre ignore.
     barcode = fields.Char(
-        related='person_id.numero_carte',
+        related="person_id.numero_carte",
         store=True,
         readonly=False,
         help="Badge RFID de la personne. Meme carte physique pour le pointage, "
-             "l'acces aux locaux et les repas. Se saisit sur la fiche personne "
-             "ou ici, indifféremment.",
+        "l'acces aux locaux et les repas. Se saisit sur la fiche personne "
+        "ou ici, indifféremment.",
     )
 
     @api.model_create_multi
@@ -89,14 +89,21 @@ class HrEmployee(models.Model):
                 raise ValidationError(
                     "Le contact « %s » sert deja %s autre(s) employe(s) (%s). Un "
                     "matricule identifie une seule personne : rattachez d'abord "
-                    "chaque employe a son propre contact." % (
-                        partner.display_name, len(others),
-                        ", ".join(others.mapped('name')),
+                    "chaque employe a son propre contact."
+                    % (
+                        partner.display_name,
+                        len(others),
+                        ", ".join(others.mapped("name")),
                     )
                 )
-            existing = self.env['his.person'].sudo().with_context(
-                active_test=False,
-            ).search([('partner_id', '=', partner.id)], limit=1)
+            existing = (
+                self.env["his.person"]
+                .sudo()
+                .with_context(
+                    active_test=False,
+                )
+                .search([("partner_id", "=", partner.id)], limit=1)
+            )
             if existing:
                 raise ValidationError(
                     "Le contact « %s » porte deja la fiche personne %s. Deux "
@@ -111,19 +118,18 @@ class HrEmployee(models.Model):
         # date_start_working appartient a maintenance_university : absent si ce
         # module n'est pas installe.
         vals = {
-            'type_personne': 'employe',
-            'source_system': 'odoo_hr',
-            'match_method': 'new',
-            'matricule_sequence_date': self.date_start_working
-            if 'date_start_working' in self._fields else False,
+            "type_personne": "employe",
+            "source_system": "odoo_hr",
+            "match_method": "new",
+            "matricule_sequence_date": self.date_start_working if "date_start_working" in self._fields else False,
         }
         if partner:
             # Reutilisation : la delegation se rattache au partenaire existant
             # au lieu d'en creer un second.
-            vals['partner_id'] = partner.id
+            vals["partner_id"] = partner.id
         else:
             # Aucun partenaire (contexte salary_simulation, ou cas limite) :
             # la delegation en cree un, ce qui est correct ici. Le cas a eviter
             # est d'en creer un second quand il en existe deja un.
-            vals['name'] = self.name or "Employe"
-        return self.env['his.person'].sudo().create(vals)
+            vals["name"] = self.name or "Employe"
+        return self.env["his.person"].sudo().create(vals)

@@ -12,10 +12,10 @@ _logger = logging.getLogger(__name__)
 # redemarrage de worker entre les deux, et cette table est la seule trace de
 # l'etat des matricules AVANT migration. Migration a un coup sur un
 # identifiant a vie : on ne la supprime pas apres coup.
-BACKUP_TABLE = 'his_hr_base_matricule_backup'
+BACKUP_TABLE = "his_hr_base_matricule_backup"
 
 # Portion analysable d'un matricule : annee + numero sequentiel.
-MATRICULE_NUMBER_RE = re.compile(r'^HIS-(\d{4})-(\d{6})')
+MATRICULE_NUMBER_RE = re.compile(r"^HIS-(\d{4})-(\d{6})")
 
 
 def _partner_vals(employee):
@@ -32,22 +32,30 @@ def _partner_vals(employee):
     """
     partner = employee.sudo().work_contact_id
     if partner and len(partner.sudo().employee_ids) <= 1:
-        taken = employee.env['his.person'].sudo().with_context(
-            active_test=False,
-        ).search_count([('partner_id', '=', partner.id)])
+        taken = (
+            employee.env["his.person"]
+            .sudo()
+            .with_context(
+                active_test=False,
+            )
+            .search_count([("partner_id", "=", partner.id)])
+        )
         if not taken:
-            return {'partner_id': partner.id}
+            return {"partner_id": partner.id}
         _logger.warning(
-            "his_hr_base: le contact %s porte deja une fiche personne ; "
-            "l'employe %s recoit un contact distinct.", partner.id, employee.id,
+            "his_hr_base: le contact %s porte deja une fiche personne ; l'employe %s recoit un contact distinct.",
+            partner.id,
+            employee.id,
         )
     elif partner:
         _logger.warning(
             "his_hr_base: le contact %s sert %s employes ; l'employe %s recoit "
             "un contact distinct pour garder son matricule non ambigu.",
-            partner.id, len(partner.sudo().employee_ids), employee.id,
+            partner.id,
+            len(partner.sudo().employee_ids),
+            employee.id,
         )
-    return {'name': employee.name or "Employe %s" % employee.id}
+    return {"name": employee.name or "Employe %s" % employee.id}
 
 
 def _advance_sequence_past_existing(env):
@@ -62,35 +70,42 @@ def _advance_sequence_past_existing(env):
 
     Verifie en repetition de migration : sans cet appel, le doublon se produit.
     """
-    sequence = env.ref('his_person_core.seq_his_person_matricule_institutionnel')
+    sequence = env.ref("his_person_core.seq_his_person_matricule_institutionnel")
     highest = {}
-    for person in env['his.person'].sudo().with_context(active_test=False).search([]):
-        match = MATRICULE_NUMBER_RE.match(person.matricule_institutionnel or '')
+    for person in env["his.person"].sudo().with_context(active_test=False).search([]):
+        match = MATRICULE_NUMBER_RE.match(person.matricule_institutionnel or "")
         if match:
             year, number = int(match.group(1)), int(match.group(2))
             highest[year] = max(highest.get(year, 0), number)
 
-    DateRange = env['ir.sequence.date_range'].sudo()
+    DateRange = env["ir.sequence.date_range"].sudo()
     for year, number in sorted(highest.items()):
         date_from, date_to = date(year, 1, 1), date(year, 12, 31)
-        date_range = DateRange.search([
-            ('sequence_id', '=', sequence.id),
-            ('date_from', '=', date_from),
-            ('date_to', '=', date_to),
-        ], limit=1)
+        date_range = DateRange.search(
+            [
+                ("sequence_id", "=", sequence.id),
+                ("date_from", "=", date_from),
+                ("date_to", "=", date_to),
+            ],
+            limit=1,
+        )
         if date_range:
             if date_range.number_next_actual <= number:
                 date_range.number_next_actual = number + 1
         else:
-            DateRange.create({
-                'sequence_id': sequence.id,
-                'date_from': date_from,
-                'date_to': date_to,
-                'number_next_actual': number + 1,
-            })
+            DateRange.create(
+                {
+                    "sequence_id": sequence.id,
+                    "date_from": date_from,
+                    "date_to": date_to,
+                    "number_next_actual": number + 1,
+                }
+            )
         _logger.info(
             "his_hr_base: sequence %s calee a %s (plus haut numero repris : %s).",
-            year, number + 1, number,
+            year,
+            number + 1,
+            number,
         )
 
 
@@ -121,13 +136,10 @@ def pre_init_hook(env):
         "  captured_at timestamp without time zone DEFAULT (now() AT TIME ZONE 'UTC')"
         ")" % BACKUP_TABLE
     )
-    if not _column_exists(cr, 'hr_employee', 'matricule_institutionnel'):
+    if not _column_exists(cr, "hr_employee", "matricule_institutionnel"):
         # Base neuve : maintenance_university n'est pas encore installe, il n'y
         # a rien a reprendre. Ce n'est pas une erreur.
-        _logger.info(
-            "his_hr_base: aucune colonne hr_employee.matricule_institutionnel, "
-            "rien a reprendre."
-        )
+        _logger.info("his_hr_base: aucune colonne hr_employee.matricule_institutionnel, rien a reprendre.")
         return
     # ON CONFLICT DO NOTHING : si le hook rejoue (deploiement relance apres
     # echec), la capture initiale reste la reference. Ne jamais ecraser une
@@ -141,7 +153,8 @@ def pre_init_hook(env):
     )
     cr.execute("SELECT count(*) FROM %s" % BACKUP_TABLE)
     _logger.info(
-        "his_hr_base: %s matricule(s) captures avant migration.", cr.fetchone()[0],
+        "his_hr_base: %s matricule(s) captures avant migration.",
+        cr.fetchone()[0],
     )
 
 
@@ -152,12 +165,10 @@ def post_init_hook(env):
     Relancer le hook apres un deploiement echoue ne cree aucun doublon.
     """
     cr = env.cr
-    Employee = env['hr.employee'].sudo().with_context(active_test=False)
-    Person = env['his.person'].sudo().with_context(active_test=False)
+    Employee = env["hr.employee"].sudo().with_context(active_test=False)
+    Person = env["his.person"].sudo().with_context(active_test=False)
 
-    cr.execute(
-        "SELECT employee_id, matricule FROM %s ORDER BY employee_id" % BACKUP_TABLE
-    )
+    cr.execute("SELECT employee_id, matricule FROM %s ORDER BY employee_id" % BACKUP_TABLE)
     captured = cr.fetchall()
 
     # Une valeur presente deux fois dans la capture signifie que la donnee
@@ -175,7 +186,9 @@ def post_init_hook(env):
             _logger.error(
                 "his_hr_base: COLLISION de matricule preexistante : %s porte par les "
                 "employes %s et %s. A arbitrer manuellement.",
-                matricule, first_id, second_id,
+                matricule,
+                first_id,
+                second_id,
             )
 
     migrated = relinked = 0
@@ -183,7 +196,7 @@ def post_init_hook(env):
         employee = Employee.browse(employee_id).exists()
         if not employee or employee.person_id:
             continue  # deja rattache : le hook rejoue, ou l'employe a disparu
-        existing = Person.search([('matricule_institutionnel', '=', matricule)], limit=1)
+        existing = Person.search([("matricule_institutionnel", "=", matricule)], limit=1)
         if existing:
             # Fiche deja creee par un passage precedent interrompu avant
             # l'ecriture de person_id : on la reutilise, on n'en cree pas une
@@ -191,17 +204,19 @@ def post_init_hook(env):
             employee.person_id = existing
             relinked += 1
             continue
-        person = Person.create(dict(
-            _partner_vals(employee),
-            # Valeur explicite : his_person_core.create() n'emet alors AUCUN
-            # nouveau matricule et stocke celui-ci tel quel. C'est tout
-            # l'objet de la reprise.
-            matricule_institutionnel=matricule,
-            type_personne='employe',
-            source_system='odoo_hr',
-            match_method='new',
-            external_ref='hr.employee,%s' % employee_id,
-        ))
+        person = Person.create(
+            dict(
+                _partner_vals(employee),
+                # Valeur explicite : his_person_core.create() n'emet alors AUCUN
+                # nouveau matricule et stocke celui-ci tel quel. C'est tout
+                # l'objet de la reprise.
+                matricule_institutionnel=matricule,
+                type_personne="employe",
+                source_system="odoo_hr",
+                match_method="new",
+                external_ref="hr.employee,%s" % employee_id,
+            )
+        )
         employee.person_id = person
         migrated += 1
 
@@ -214,21 +229,25 @@ def post_init_hook(env):
     # role du backfill que maintenance_university faisait pour son propre
     # champ, desormais assure ici puisque le champ ne lui appartient plus.
     minted = 0
-    for employee in Employee.search([('person_id', '=', False)]):
-        sequence_date = employee.date_start_working \
-            if 'date_start_working' in employee._fields else False
-        employee.person_id = Person.create(dict(
-            _partner_vals(employee),
-            type_personne='employe',
-            source_system='odoo_hr',
-            match_method='new',
-            external_ref='hr.employee,%s' % employee.id,
-            matricule_sequence_date=sequence_date,
-        ))
+    for employee in Employee.search([("person_id", "=", False)]):
+        sequence_date = employee.date_start_working if "date_start_working" in employee._fields else False
+        employee.person_id = Person.create(
+            dict(
+                _partner_vals(employee),
+                type_personne="employe",
+                source_system="odoo_hr",
+                match_method="new",
+                external_ref="hr.employee,%s" % employee.id,
+                matricule_sequence_date=sequence_date,
+            )
+        )
         minted += 1
 
     _logger.info(
         "his_hr_base: reprise terminee — %s matricule(s) repris, %s rattachement(s) "
         "a une fiche existante, %s matricule(s) neufs, %s collision(s) preexistante(s).",
-        migrated, relinked, minted, len(duplicates),
+        migrated,
+        relinked,
+        minted,
+        len(duplicates),
     )

@@ -13,23 +13,23 @@ class CampusProcessPermission(models.Model):
     here changes behaviour immediately, with no code or restart involved.
     """
 
-    _name = 'campus.process.permission'
-    _description = 'Campus+ Process Permission'
-    _order = 'process_id, user_id'
+    _name = "campus.process.permission"
+    _description = "Campus+ Process Permission"
+    _order = "process_id, user_id"
 
-    process_id = fields.Many2one('campus.process', required=True, ondelete='cascade', index=True)
-    user_id = fields.Many2one('res.users', required=True, ondelete='cascade', index=True)
+    process_id = fields.Many2one("campus.process", required=True, ondelete="cascade", index=True)
+    user_id = fields.Many2one("res.users", required=True, ondelete="cascade", index=True)
     can_view = fields.Boolean("Can View", default=True)
     can_execute = fields.Boolean("Can Execute", default=False)
     can_validate = fields.Boolean("Can Validate", default=False)
     active = fields.Boolean(default=True)
 
     _process_user_uniq = models.Constraint(
-        'unique(process_id, user_id)',
-        'Only one permission record is allowed per user and process.',
+        "unique(process_id, user_id)",
+        "Only one permission record is allowed per user and process.",
     )
 
-    @api.depends('process_id.name', 'user_id.name')
+    @api.depends("process_id.name", "user_id.name")
     def _compute_display_name(self):
         for perm in self:
             perm.display_name = f"{perm.process_id.name} — {perm.user_id.name}"
@@ -40,14 +40,14 @@ class CampusProcessPermission(models.Model):
     # config screen; the constraint is the backend guarantee that also
     # catches direct RPC writes the UI never saw.
     # ------------------------------------------------------------------
-    @api.onchange('can_validate')
+    @api.onchange("can_validate")
     def _onchange_can_validate(self):
         for perm in self:
             if perm.can_validate:
                 perm.can_execute = True
                 perm.can_view = True
 
-    @api.onchange('can_execute')
+    @api.onchange("can_execute")
     def _onchange_can_execute(self):
         for perm in self:
             if perm.can_execute:
@@ -55,22 +55,20 @@ class CampusProcessPermission(models.Model):
             else:
                 perm.can_validate = False
 
-    @api.onchange('can_view')
+    @api.onchange("can_view")
     def _onchange_can_view(self):
         for perm in self:
             if not perm.can_view:
                 perm.can_execute = False
                 perm.can_validate = False
 
-    @api.constrains('can_view', 'can_execute', 'can_validate')
+    @api.constrains("can_view", "can_execute", "can_validate")
     def _check_hierarchy(self):
         for perm in self:
             if perm.can_validate and not (perm.can_execute and perm.can_view):
-                raise ValidationError(_(
-                    "%s: Can Validate requires Can Execute and Can View.", perm.display_name))
+                raise ValidationError(_("%s: Can Validate requires Can Execute and Can View.", perm.display_name))
             if perm.can_execute and not perm.can_view:
-                raise ValidationError(_(
-                    "%s: Can Execute requires Can View.", perm.display_name))
+                raise ValidationError(_("%s: Can Execute requires Can View.", perm.display_name))
 
     # ------------------------------------------------------------------
     # Central permission checker
@@ -109,19 +107,25 @@ class CampusProcessPermission(models.Model):
             for_user = self.env.user
             if for_user._is_superuser() or self.env.su:
                 return True
-        permission = self.sudo().search([
-            ('process_id.code', '=', process_code),
-            ('user_id', '=', for_user.id),
-            ('active', '=', True),
-        ], limit=1)
-        return bool(permission) and bool(permission[f'can_{level}'])
+        permission = self.sudo().search(
+            [
+                ("process_id.code", "=", process_code),
+                ("user_id", "=", for_user.id),
+                ("active", "=", True),
+            ],
+            limit=1,
+        )
+        return bool(permission) and bool(permission[f"can_{level}"])
 
     @api.model
     def _check_process_permission(self, process_code, level, for_user=None):
         if not self._has_process_permission(process_code, level, for_user=for_user):
-            process = self.env['campus.process'].sudo().search(
-                [('code', '=', process_code)], limit=1)
-            raise AccessError(_(
-                "You do not have permission to %(level)s this process (%(process)s).",
-                level=level, process=process.name or process_code))
+            process = self.env["campus.process"].sudo().search([("code", "=", process_code)], limit=1)
+            raise AccessError(
+                _(
+                    "You do not have permission to %(level)s this process (%(process)s).",
+                    level=level,
+                    process=process.name or process_code,
+                )
+            )
         return True

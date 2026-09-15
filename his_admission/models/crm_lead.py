@@ -21,17 +21,22 @@ MOTIVATION_POINTS = 1
 
 
 class CrmLead(models.Model):
-    _inherit = 'crm.lead'
+    _inherit = "crm.lead"
 
     # --- Ce que le formulaire de candidature envoie -------------------------
 
     specialite_id = fields.Many2one(
-        'his.specialite', string="Specialite visee", ondelete='restrict',
+        "his.specialite",
+        string="Specialite visee",
+        ondelete="restrict",
         help="Determine quelles notes comptent dans le score : le domaine de la "
-             "specialite dit deja lesquelles il utilise.",
+        "specialite dit deja lesquelles il utilise.",
     )
     domaine_id = fields.Many2one(
-        related='specialite_id.domaine_id', string="Domaine", store=True, readonly=True,
+        related="specialite_id.domaine_id",
+        string="Domaine",
+        store=True,
+        readonly=True,
     )
     bac_moyenne = fields.Float(string="Moyenne du BAC", digits=(4, 2))
     note_math = fields.Float(string="Note de maths", digits=(4, 2))
@@ -57,9 +62,9 @@ class CrmLead(models.Model):
     # publicites de Meta, il change au rythme des annonces, et une table de
     # configuration obligerait a creer une ligne avant chaque campagne.
     utm_contenu = fields.Char(
-        string="Annonce (UTM content)", index=True,
-        help="Le creatif publicitaire, tel que la campagne le nomme. "
-             "Distingue deux annonces d'une meme campagne.",
+        string="Annonce (UTM content)",
+        index=True,
+        help="Le creatif publicitaire, tel que la campagne le nomme. Distingue deux annonces d'une meme campagne.",
     )
 
     # La filiere du bac, et non la specialite visee : les deux se confondent
@@ -84,17 +89,19 @@ class CrmLead(models.Model):
     # specialite mal rapprochee a la capture, soit une saisie trafiquee — dans
     # les deux cas quelque chose qu'un humain doit regarder.
     score_client = fields.Integer(
-        string="Score client (non verifie)", copy=False, readonly=True,
+        string="Score client (non verifie)",
+        copy=False,
+        readonly=True,
         help="Score calcule dans le navigateur du candidat, donc modifiable par "
-             "lui. Conserve pour comparaison avec le score academique, jamais "
-             "pour ordonner la file d'affectation.",
+        "lui. Conserve pour comparaison avec le score academique, jamais "
+        "pour ordonner la file d'affectation.",
     )
 
     # Quelles notes sont demandees depend de la majeure. Plutot qu'une seconde
     # table de correspondance a tenir en phase avec la premiere, on lit celle
     # qui existe : un domaine qui ne pondere pas les maths ne les demande pas.
-    note_math_utilisee = fields.Boolean(compute='_compute_notes_utilisees')
-    note_physique_utilisee = fields.Boolean(compute='_compute_notes_utilisees')
+    note_math_utilisee = fields.Boolean(compute="_compute_notes_utilisees")
+    note_physique_utilisee = fields.Boolean(compute="_compute_notes_utilisees")
 
     # --- Le score, calcule ---------------------------------------------------
 
@@ -102,17 +109,21 @@ class CrmLead(models.Model):
     # installable seul. Des que le referentiel academique est la, le score
     # cesse d'etre une opinion et devient un calcul.
     score_academique = fields.Integer(
-        compute='_compute_score_academique', store=True, readonly=True,
+        compute="_compute_score_academique",
+        store=True,
+        readonly=True,
     )
     score_detail = fields.Char(
-        string="Detail du score", compute='_compute_score_academique', store=True,
+        string="Detail du score",
+        compute="_compute_score_academique",
+        store=True,
         readonly=True,
         help="Comment les points ont ete obtenus. Le score ordonne la file "
-             "d'affectation : il doit pouvoir s'expliquer a la conseillere qui "
-             "recoit le lead.",
+        "d'affectation : il doit pouvoir s'expliquer a la conseillere qui "
+        "recoit le lead.",
     )
 
-    @api.depends('domaine_id.coef_math', 'domaine_id.coef_physique')
+    @api.depends("domaine_id.coef_math", "domaine_id.coef_physique")
     def _compute_notes_utilisees(self):
         for lead in self:
             lead.note_math_utilisee = bool(lead.domaine_id.coef_math)
@@ -148,9 +159,13 @@ class CrmLead(models.Model):
         return sum(notes) / len(notes)
 
     @api.depends(
-        'bac_moyenne', 'note_math', 'note_physique',
-        'note_math_utilisee', 'note_physique_utilisee',
-        'motivation_majeure', 'motivation_his',
+        "bac_moyenne",
+        "note_math",
+        "note_physique",
+        "note_math_utilisee",
+        "note_physique_utilisee",
+        "motivation_majeure",
+        "motivation_his",
     )
     def _compute_score_academique(self):
         for lead in self:
@@ -172,18 +187,16 @@ class CrmLead(models.Model):
                 points_ponderee = 0
                 detail.append(_("moyenne ponderee non applicable : 0 pt"))
             else:
-                points_ponderee = (
-                    PONDERE_POINTS_HAUT if ponderee >= PONDERE_SEUIL
-                    else PONDERE_POINTS_BAS
+                points_ponderee = PONDERE_POINTS_HAUT if ponderee >= PONDERE_SEUIL else PONDERE_POINTS_BAS
+                detail.append(
+                    _(
+                        "ponderee %(note).2f : %(pts)s pts",
+                        note=ponderee,
+                        pts=points_ponderee,
+                    )
                 )
-                detail.append(_(
-                    "ponderee %(note).2f : %(pts)s pts", note=ponderee, pts=points_ponderee,
-                ))
 
-            motive = bool(
-                (lead.motivation_majeure or '').strip()
-                or (lead.motivation_his or '').strip()
-            )
+            motive = bool((lead.motivation_majeure or "").strip() or (lead.motivation_his or "").strip())
             points_motivation = MOTIVATION_POINTS if motive else 0
             detail.append(_("motivation : %(pts)s pt", pts=points_motivation))
 
@@ -192,7 +205,7 @@ class CrmLead(models.Model):
 
     # Ce que le lead porte et que le dossier recopie. Une seule liste : elle
     # sert a ecrire ET a decider s'il faut ecrire.
-    CHAMPS_ACADEMIQUES = ('specialite_id', 'bac_moyenne', 'note_math', 'note_physique')
+    CHAMPS_ACADEMIQUES = ("specialite_id", "bac_moyenne", "note_math", "note_physique")
 
     # Tant que le dossier est dans l'un de ces etats, l'inscription n'est pas
     # prononcee : le lead reste la source des donnees academiques. Au-dela —
@@ -205,7 +218,7 @@ class CrmLead(models.Model):
     # fermait donc la fenetre avant qu'elle ne s'ouvre, et aucune correction
     # n'atteignait plus jamais le dossier — la panne meme qu'on venait de
     # reparer.
-    ETATS_SUIVEURS = ('prospect', 'candidat_soumis', 'admis')
+    ETATS_SUIVEURS = ("prospect", "candidat_soumis", "admis")
 
     def _his_assurer_engagement(self):
         """Le dossier reprend ce que la capture a recueilli.
@@ -244,13 +257,13 @@ class CrmLead(models.Model):
             if not engagement:
                 continue
             vals = {
-                'specialite_id': lead.specialite_id.id,
-                'bac_moyenne': lead.bac_moyenne,
-                'note_math': lead.note_math,
-                'note_physique': lead.note_physique,
+                "specialite_id": lead.specialite_id.id,
+                "bac_moyenne": lead.bac_moyenne,
+                "note_math": lead.note_math,
+                "note_physique": lead.note_physique,
             }
             if lead.specialite_id:
-                vals['cycle'] = lead.specialite_id.cycle
+                vals["cycle"] = lead.specialite_id.cycle
             # sudo() : la conseillere n'a que la LECTURE sur le dossier — c'est
             # l'Admission qui l'instruit. Reporter sa propre saisie est une
             # consequence de son geste, pas une modification qu'elle
@@ -261,7 +274,7 @@ class CrmLead(models.Model):
         """Le dossier rattache a ce lead, s'il y en a un."""
         self.ensure_one()
         if not self.his_person_id:
-            return self.env['his.engagement']
+            return self.env["his.engagement"]
         propre = self.his_person_id.engagement_ids.filtered(
             lambda e: e.lead_id == self,
         )
@@ -269,7 +282,7 @@ class CrmLead(models.Model):
         # sur le parcours ouvert de la personne, celui que le pont a cree.
         return propre[:1] or self.his_person_id.engagement_ids[:1]
 
-    @api.constrains('stage_id')
+    @api.constrains("stage_id")
     def _check_gagne_seulement_si_encaisse(self):
         """On n'entre pas en gagne sans encaissement.
 
@@ -284,7 +297,8 @@ class CrmLead(models.Model):
         main : cette contrainte n'attrape donc qu'une tentative de raccourci.
         """
         etape = self.env.ref(
-            'his_crm_pipeline.stage_vente_frais_payes', raise_if_not_found=False,
+            "his_crm_pipeline.stage_vente_frais_payes",
+            raise_if_not_found=False,
         )
         if not etape:
             return
@@ -293,18 +307,20 @@ class CrmLead(models.Model):
                 continue
             engagement = lead._his_engagement()
             if not engagement or not engagement.frais_inscription_payes:
-                raise ValidationError(_(
-                    "« %(lead)s » ne peut pas etre gagne : les frais d'inscription "
-                    "ne sont pas encaisses.\n\n"
-                    "Le lead y passera de lui-meme quand le guichet enregistrera "
-                    "l'encaissement. Un candidat pre-admis qui ne paie pas se perd "
-                    "avec le motif « Paiement non confirme ».",
-                    lead=lead.display_name,
-                ))
+                raise ValidationError(
+                    _(
+                        "« %(lead)s » ne peut pas etre gagne : les frais d'inscription "
+                        "ne sont pas encaisses.\n\n"
+                        "Le lead y passera de lui-meme quand le guichet enregistrera "
+                        "l'encaissement. Un candidat pre-admis qui ne paie pas se perd "
+                        "avec le motif « Paiement non confirme ».",
+                        lead=lead.display_name,
+                    )
+                )
 
     def write(self, vals):
         res = super().write(vals)
-        if 'stage_id' in vals:
+        if "stage_id" in vals:
             self._his_passer_engagement_a_admis()
         # Toute correction academique redescend sur le dossier. Le filtre evite
         # de rejouer la pousse a chaque ecriture d'un champ sans rapport — une
@@ -325,7 +341,8 @@ class CrmLead(models.Model):
         encaisses, et c'est le verrou du dossier qui en decide, pas le CRM.
         """
         etape = self.env.ref(
-            'his_crm_pipeline.stage_vente_pre_admis', raise_if_not_found=False,
+            "his_crm_pipeline.stage_vente_pre_admis",
+            raise_if_not_found=False,
         )
         if not etape:
             return
@@ -336,7 +353,7 @@ class CrmLead(models.Model):
             # « Pre-admis » apres une inscription ne doit pas defaire le travail
             # de l'Admission.
             engagement = lead.his_person_id.engagement_ids.filtered(
-                lambda e: e.etat in ('prospect', 'candidat_soumis'),
+                lambda e: e.etat in ("prospect", "candidat_soumis"),
             )[:1]
             if not engagement:
                 continue
@@ -346,24 +363,27 @@ class CrmLead(models.Model):
             # une modification qu'elle s'autorise. Sans cela, le seul geste
             # legitime des Ventes leve une erreur de droits.
             engagement = engagement.sudo()
-            engagement.write({
-                'etat': 'admis',
-                'conseiller_id': lead.user_id.id,
-                'lead_id': lead.id,
-            })
-            engagement.message_post(body=_(
-                "Pre-admission prononcee sur le lead « %(lead)s ». Dossier "
-                "transmis a l'Admission.",
-                lead=lead.display_name,
-            ))
+            engagement.write(
+                {
+                    "etat": "admis",
+                    "conseiller_id": lead.user_id.id,
+                    "lead_id": lead.id,
+                }
+            )
+            engagement.message_post(
+                body=_(
+                    "Pre-admission prononcee sur le lead « %(lead)s ». Dossier transmis a l'Admission.",
+                    lead=lead.display_name,
+                )
+            )
 
     def action_ouvrir_dossier_admission(self):
         """Bouton statistique : la conseillere suit son candidat, en lecture seule."""
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': _("Dossier d'admission"),
-            'res_model': 'his.engagement',
-            'view_mode': 'form',
-            'res_id': self.his_person_id.engagement_ids[:1].id,
+            "type": "ir.actions.act_window",
+            "name": _("Dossier d'admission"),
+            "res_model": "his.engagement",
+            "view_mode": "form",
+            "res_id": self.his_person_id.engagement_ids[:1].id,
         }

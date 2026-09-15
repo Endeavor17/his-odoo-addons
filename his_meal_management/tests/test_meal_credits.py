@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 import psycopg2
-
 from odoo import Command, fields
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 from odoo.exceptions import UserError, ValidationError
@@ -29,9 +28,9 @@ def make_person(env, name, **vals):
     not something to weaken here: this is fixture setup, and the officer's real
     workflow is to receive people from HR or the student import.
     """
-    vals.setdefault('type_personne', 'etudiant')
-    vals.setdefault('source_system', 'manual')
-    return env['his.person'].sudo().create({'name': name, **vals})
+    vals.setdefault("type_personne", "etudiant")
+    vals.setdefault("source_system", "manual")
+    return env["his.person"].sudo().create({"name": name, **vals})
 
 
 def card_uid(n):
@@ -45,7 +44,7 @@ def card_uid(n):
     return f"00009{n:05d}"
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestMealCredits(TransactionCase):
     """The smallest set of checks that fails if the credit logic breaks."""
 
@@ -55,20 +54,24 @@ class TestMealCredits(TransactionCase):
         cls.person = make_person(cls.env, "Ahmed", nom_arabe="أحمد")
         # The wallet hangs off the partner; the person is the identity above it.
         cls.student = cls.person.partner_id
-        cls.monthly = cls.env['product.product'].create({
-            'name': "Monthly Meal Plan",
-            'type': 'service',
-            'list_price': 12000.0,
-            'meal_credits': 25,
-            'meal_validity_days': 30,
-        })
-        cls.weekly = cls.env['product.product'].create({
-            'name': "Weekly Meal Plan",
-            'type': 'service',
-            'list_price': 3000.0,
-            'meal_credits': 6,
-            'meal_validity_days': 7,
-        })
+        cls.monthly = cls.env["product.product"].create(
+            {
+                "name": "Monthly Meal Plan",
+                "type": "service",
+                "list_price": 12000.0,
+                "meal_credits": 25,
+                "meal_validity_days": 30,
+            }
+        )
+        cls.weekly = cls.env["product.product"].create(
+            {
+                "name": "Weekly Meal Plan",
+                "type": "service",
+                "list_price": 3000.0,
+                "meal_credits": 6,
+                "meal_validity_days": 7,
+            }
+        )
 
     def test_purchase_grants_credits_and_validity(self):
         sub = self.student._grant_meal_credits(self.monthly)
@@ -77,15 +80,15 @@ class TestMealCredits(TransactionCase):
         self.assertEqual(sub.credits_total, 25)
         self.assertEqual(sub.credits_used, 0)
         self.assertEqual(sub.credits_remaining, 25)
-        self.assertEqual(sub.state, 'active')
+        self.assertEqual(sub.state, "active")
         self.assertEqual(sub.date_start, today)
         # A 30-day plan bought today is usable today through day 30.
         self.assertEqual(sub.date_end, today + timedelta(days=29))
         self.assertEqual(self.student.meal_credits_remaining, 25)
 
-        ledger = self.env['his.meal.transaction'].search([('partner_id', '=', self.student.id)])
+        ledger = self.env["his.meal.transaction"].search([("partner_id", "=", self.student.id)])
         self.assertEqual(len(ledger), 1)
-        self.assertEqual(ledger.type, 'purchase')
+        self.assertEqual(ledger.type, "purchase")
         self.assertEqual(ledger.credits, 25)
         self.assertEqual(ledger.balance_after, 25)
 
@@ -96,24 +99,24 @@ class TestMealCredits(TransactionCase):
             self.student._consume_meal_credit()
             self.assertEqual(self.student.meal_credits_remaining, expected_left)
 
-        ledger_before = self.env['his.meal.transaction'].search_count(
-            [('partner_id', '=', self.student.id)]
-        )
+        ledger_before = self.env["his.meal.transaction"].search_count([("partner_id", "=", self.student.id)])
         # The 26th meal is refused, and refusing it writes nothing.
         with self.assertRaises(UserError):
             self.student._consume_meal_credit()
         self.assertEqual(
-            self.env['his.meal.transaction'].search_count([('partner_id', '=', self.student.id)]),
+            self.env["his.meal.transaction"].search_count([("partner_id", "=", self.student.id)]),
             ledger_before,
         )
         self.assertEqual(self.student.meal_credits_remaining, 0)
 
     def test_expired_subscription_is_not_edible(self):
         sub = self.student._grant_meal_credits(self.weekly)
-        sub.write({
-            'date_start': fields.Date.context_today(self.student) - timedelta(days=30),
-            'date_end': fields.Date.context_today(self.student) - timedelta(days=1),
-        })
+        sub.write(
+            {
+                "date_start": fields.Date.context_today(self.student) - timedelta(days=30),
+                "date_end": fields.Date.context_today(self.student) - timedelta(days=1),
+            }
+        )
 
         self.assertEqual(sub.credits_remaining, 6, "the credits are still there")
         self.assertEqual(self.student.meal_credits_remaining, 0, "but none of them count")
@@ -135,10 +138,9 @@ class TestMealCredits(TransactionCase):
     def test_balance_cannot_go_negative_even_by_hand(self):
         """The database refuses it, not just the Python."""
         sub = self.student._grant_meal_credits(self.weekly)
-        with self.assertRaises(psycopg2.errors.CheckViolation), mute_logger('odoo.sql_db'):
-            with self.cr.savepoint():
-                sub.credits_used = sub.credits_total + 1
-                sub.flush_recordset()
+        with self.assertRaises(psycopg2.errors.CheckViolation), mute_logger("odoo.sql_db"), self.cr.savepoint():
+            sub.credits_used = sub.credits_total + 1
+            sub.flush_recordset()
 
     def test_half_a_credit_can_be_spent_and_the_constraint_still_holds(self):
         """A 300 DA meal costs 0.5, so the balance has to carry halves."""
@@ -177,27 +179,34 @@ class TestMealCredits(TransactionCase):
         self.assertEqual(self.student.meal_credits_remaining, 24.5)
 
         # One ledger line per subscription touched, so the split is visible.
-        split = self.env['his.meal.transaction'].search([
-            ('partner_id', '=', self.student.id), ('type', '=', 'consume'),
-        ], order='id desc', limit=2)
-        self.assertEqual(sorted(split.mapped('credits')), [-0.5, -0.5])
+        split = self.env["his.meal.transaction"].search(
+            [
+                ("partner_id", "=", self.student.id),
+                ("type", "=", "consume"),
+            ],
+            order="id desc",
+            limit=2,
+        )
+        self.assertEqual(sorted(split.mapped("credits")), [-0.5, -0.5])
 
     def test_credits_with_no_end_date_never_expire(self):
-        plan = self.env['product.product'].create({
-            'name': "Pack 300 - Monthly",
-            'type': 'service',
-            'list_price': 6000.0,
-            'meal_credits': 12.5,
-            'meal_validity_days': 0,
-        })
+        plan = self.env["product.product"].create(
+            {
+                "name": "Pack 300 - Monthly",
+                "type": "service",
+                "list_price": 6000.0,
+                "meal_credits": 12.5,
+                "meal_validity_days": 0,
+            }
+        )
         sub = self.student._grant_meal_credits(plan)
 
         self.assertFalse(sub.date_end, "zero validity means no end date at all")
-        self.assertEqual(sub.state, 'active')
+        self.assertEqual(sub.state, "active")
         # Far enough back that any date-based expiry would have fired.
         sub.date_start = fields.Date.context_today(self.student) - timedelta(days=900)
         sub._compute_state()
-        self.assertEqual(sub.state, 'active')
+        self.assertEqual(sub.state, "active")
         self.assertEqual(self.student.meal_credits_remaining, 12.5)
 
         self.student._consume_meal_credit(amount=0.5)
@@ -205,12 +214,14 @@ class TestMealCredits(TransactionCase):
 
     def test_expiring_credits_are_spent_before_permanent_ones(self):
         """A dated plan must drain first, or the student loses it for nothing."""
-        permanent = self.env['product.product'].create({
-            'name': "Permanent Pack",
-            'type': 'service',
-            'meal_credits': 10.0,
-            'meal_validity_days': 0,
-        })
+        permanent = self.env["product.product"].create(
+            {
+                "name": "Permanent Pack",
+                "type": "service",
+                "meal_credits": 10.0,
+                "meal_validity_days": 0,
+            }
+        )
         forever_sub = self.student._grant_meal_credits(permanent)
         dated_sub = self.student._grant_meal_credits(self.weekly)
 
@@ -220,20 +231,22 @@ class TestMealCredits(TransactionCase):
         self.assertEqual(forever_sub.credits_used, 0.0)
 
     def test_active_card_is_reachable_by_scanning_and_a_dead_one_is_not(self):
-        card = self.env['his.meal.card'].create({
-            'partner_id': self.student.id,
-            'code': "HIS-TEST-CARD-1",
-        })
+        card = self.env["his.meal.card"].create(
+            {
+                "partner_id": self.student.id,
+                "code": "HIS-TEST-CARD-1",
+            }
+        )
         # This is what the POS 'client' barcode rule looks up.
         self.assertEqual(self.student.barcode, "HIS-TEST-CARD-1")
         self.assertEqual(
-            self.env['res.partner'].search([('barcode', '=', "HIS-TEST-CARD-1")]),
+            self.env["res.partner"].search([("barcode", "=", "HIS-TEST-CARD-1")]),
             self.student,
         )
 
         card.action_block()
         self.assertFalse(self.student.barcode)
-        self.assertFalse(self.env['res.partner'].search([('barcode', '=', "HIS-TEST-CARD-1")]))
+        self.assertFalse(self.env["res.partner"].search([("barcode", "=", "HIS-TEST-CARD-1")]))
 
     def test_deleting_a_card_stops_it_being_scannable(self):
         """Blocking a card was covered; deleting one was not, and leaked.
@@ -242,73 +255,87 @@ class TestMealCredits(TransactionCase):
         been deleted, because only create()/write() maintained the mirrored
         barcode. Deleting the record left the code on the person forever.
         """
-        card = self.env['his.meal.card'].create({
-            'partner_id': self.student.id,
-            'code': "HIS-TEST-CARD-DEL",
-        })
+        card = self.env["his.meal.card"].create(
+            {
+                "partner_id": self.student.id,
+                "code": "HIS-TEST-CARD-DEL",
+            }
+        )
         self.assertEqual(self.student.barcode, "HIS-TEST-CARD-DEL")
 
         card.unlink()
         self.assertFalse(self.student.barcode)
         self.assertFalse(
-            self.env['res.partner'].search([('barcode', '=', "HIS-TEST-CARD-DEL")]),
+            self.env["res.partner"].search([("barcode", "=", "HIS-TEST-CARD-DEL")]),
             "a deleted card must not leave the person scannable",
         )
 
     def test_deleting_a_retired_card_leaves_the_new_one_alone(self):
         """The replacement owns the barcode; deleting the old card is a no-op."""
-        old = self.env['his.meal.card'].create({
-            'partner_id': self.student.id,
-            'code': "HIS-TEST-CARD-OLD",
-        })
+        old = self.env["his.meal.card"].create(
+            {
+                "partner_id": self.student.id,
+                "code": "HIS-TEST-CARD-OLD",
+            }
+        )
         old.action_block()
-        new = self.env['his.meal.card'].create({
-            'partner_id': self.student.id,
-            'code': "HIS-TEST-CARD-NEW",
-        })
+        new = self.env["his.meal.card"].create(
+            {
+                "partner_id": self.student.id,
+                "code": "HIS-TEST-CARD-NEW",
+            }
+        )
         self.assertEqual(self.student.barcode, new.code)
 
         old.unlink()
         self.assertEqual(self.student.barcode, new.code)
 
     def test_replacing_a_lost_card_keeps_the_credits(self):
-        card = self.env['his.meal.card'].create({
-            'partner_id': self.student.id,
-            'code': "HIS-TEST-CARD-1",
-        })
+        card = self.env["his.meal.card"].create(
+            {
+                "partner_id": self.student.id,
+                "code": "HIS-TEST-CARD-1",
+            }
+        )
         self.student._grant_meal_credits(self.monthly)
         self.student._consume_meal_credit(amount=8)
         self.assertEqual(self.student.meal_credits_remaining, 17)
 
         action = card.action_replace()
-        self.assertEqual(card.state, 'replaced')
+        self.assertEqual(card.state, "replaced")
         self.assertFalse(self.student.barcode, "the lost card stops working immediately")
 
         # The officer now taps the replacement card into the form the action opens.
-        new_card = self.env['his.meal.card'].create({
-            'partner_id': action['context']['default_partner_id'],
-            'replaced_card_id': action['context']['default_replaced_card_id'],
-            'code': "HIS-TEST-CARD-9",
-        })
+        new_card = self.env["his.meal.card"].create(
+            {
+                "partner_id": action["context"]["default_partner_id"],
+                "replaced_card_id": action["context"]["default_replaced_card_id"],
+                "code": "HIS-TEST-CARD-9",
+            }
+        )
 
         self.assertEqual(new_card.replaced_card_id, card)
         self.assertEqual(self.student.barcode, new_card.code)
         self.assertEqual(self.student.meal_credits_remaining, 17, "credits follow the person")
 
     def test_a_student_holds_only_one_active_card(self):
-        self.env['his.meal.card'].create({
-            'partner_id': self.student.id,
-            'code': "HIS-TEST-CARD-1",
-        })
+        self.env["his.meal.card"].create(
+            {
+                "partner_id": self.student.id,
+                "code": "HIS-TEST-CARD-1",
+            }
+        )
         with self.assertRaises(ValidationError):
-            self.env['his.meal.card'].create({
-                'partner_id': self.student.id,
-                'code': "HIS-TEST-CARD-2",
-            })
+            self.env["his.meal.card"].create(
+                {
+                    "partner_id": self.student.id,
+                    "code": "HIS-TEST-CARD-2",
+                }
+            )
 
     def test_ledger_is_append_only(self):
         self.student._grant_meal_credits(self.weekly)
-        line = self.env['his.meal.transaction'].search([('partner_id', '=', self.student.id)])
+        line = self.env["his.meal.transaction"].search([("partner_id", "=", self.student.id)])
         with self.assertRaises(UserError):
             line.credits = 999
         with self.assertRaises(UserError):
@@ -316,38 +343,44 @@ class TestMealCredits(TransactionCase):
 
     def test_correction_is_logged_and_still_cannot_go_negative(self):
         self.student._grant_meal_credits(self.weekly)
-        wizard = self.env['his.meal.adjust.wizard'].create({
-            'partner_id': self.student.id,
-            'credits': -2,
-            'reason': "meals never served",
-        })
+        wizard = self.env["his.meal.adjust.wizard"].create(
+            {
+                "partner_id": self.student.id,
+                "credits": -2,
+                "reason": "meals never served",
+            }
+        )
         wizard.action_apply()
 
         self.assertEqual(self.student.meal_credits_remaining, 4)
-        corrections = self.env['his.meal.transaction'].search([
-            ('partner_id', '=', self.student.id), ('type', '=', 'adjust'),
-        ])
+        corrections = self.env["his.meal.transaction"].search(
+            [
+                ("partner_id", "=", self.student.id),
+                ("type", "=", "adjust"),
+            ]
+        )
         # One line, not two: the ledger now writes a line per subscription the
         # amount is drawn from rather than one per credit, so a 2-credit
         # correction against a single plan is a single -2 line.
         self.assertEqual(len(corrections), 1)
-        self.assertEqual(sum(corrections.mapped('credits')), -2)
+        self.assertEqual(sum(corrections.mapped("credits")), -2)
         self.assertEqual(corrections[0].note, "meals never served")
 
-        over = self.env['his.meal.adjust.wizard'].create({
-            'partner_id': self.student.id,
-            'credits': -99,
-            'reason': "too much",
-        })
+        over = self.env["his.meal.adjust.wizard"].create(
+            {
+                "partner_id": self.student.id,
+                "credits": -99,
+                "reason": "too much",
+            }
+        )
         # All or nothing: a correction that runs out halfway must leave no trace,
         # which is what the rollback around the failing call proves.
-        with self.assertRaises(UserError):
-            with self.cr.savepoint():
-                over.action_apply()
+        with self.assertRaises(UserError), self.cr.savepoint():
+            over.action_apply()
         self.assertEqual(self.student.meal_credits_remaining, 4)
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
     """The POS hook is where credits really move, so it gets its own checks.
 
@@ -361,37 +394,42 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
         # Unlike the class above, this one runs as a real (non-superuser) user,
         # so the access rules apply. It needs POS administration to build a
         # config and a session, and the officer group to read the ledger back.
-        cls.env.user.group_ids |= (
-            cls.env.ref('point_of_sale.group_pos_manager')
-            | cls.env.ref('his_meal_management.group_meal_officer')
+        cls.env.user.group_ids |= cls.env.ref("point_of_sale.group_pos_manager") | cls.env.ref(
+            "his_meal_management.group_meal_officer"
         )
         cls.person = make_person(cls.env, "Ahmed", nom_arabe="أحمد")
         cls.student = cls.person.partner_id
-        cls.monthly = cls.env['product.product'].create({
-            'name': "Monthly Meal Plan",
-            'type': 'service',
-            'list_price': 12000.0,
-            'meal_credits': 25,
-            'meal_validity_days': 30,
-            'available_in_pos': True,
-        })
-        cls.daily_meal = cls.env['product.product'].create({
-            'name': "Meal 600",
-            'type': 'consu',
-            'list_price': 600.0,
-            'meal_credit_cost': 1.0,
-            'available_in_pos': True,
-        })
-        cls.meal_300 = cls.env['product.product'].create({
-            'name': "Meal 300",
-            'type': 'consu',
-            'list_price': 300.0,
-            'meal_credit_cost': 0.5,
-            'available_in_pos': True,
-        })
+        cls.monthly = cls.env["product.product"].create(
+            {
+                "name": "Monthly Meal Plan",
+                "type": "service",
+                "list_price": 12000.0,
+                "meal_credits": 25,
+                "meal_validity_days": 30,
+                "available_in_pos": True,
+            }
+        )
+        cls.daily_meal = cls.env["product.product"].create(
+            {
+                "name": "Meal 600",
+                "type": "consu",
+                "list_price": 600.0,
+                "meal_credit_cost": 1.0,
+                "available_in_pos": True,
+            }
+        )
+        cls.meal_300 = cls.env["product.product"].create(
+            {
+                "name": "Meal 300",
+                "type": "consu",
+                "list_price": 300.0,
+                "meal_credit_cost": 0.5,
+                "available_in_pos": True,
+            }
+        )
         # Nothing meal-related is configured on the till any more: a meal is a
         # product carrying a cost, so a plain config serves both of the above.
-        cls.config = cls.env['pos.config'].create({'name': "Test Restaurant"})
+        cls.config = cls.env["pos.config"].create({"name": "Test Restaurant"})
         cls.config.open_ui()
         cls.session = cls.config.current_session_id
 
@@ -405,29 +443,35 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
 
     def _order(self, product, qty=1, price_unit=0.0, partner=None):
         """A validated-looking order, straight to the hook under test."""
-        return self.env['pos.order'].create({
-            'company_id': self.env.company.id,
-            'session_id': self.session.id,
-            'partner_id': (partner or self.student).id if partner is not False else False,
-            'amount_tax': 0.0,
-            'amount_total': price_unit * qty,
-            'amount_paid': price_unit * qty,
-            'amount_return': 0.0,
-            'lines': [Command.create({
-                'product_id': product.id,
-                'qty': qty,
-                'price_unit': price_unit,
-                'price_subtotal': price_unit * qty,
-                'price_subtotal_incl': price_unit * qty,
-            })],
-        })
+        return self.env["pos.order"].create(
+            {
+                "company_id": self.env.company.id,
+                "session_id": self.session.id,
+                "partner_id": (partner or self.student).id if partner is not False else False,
+                "amount_tax": 0.0,
+                "amount_total": price_unit * qty,
+                "amount_paid": price_unit * qty,
+                "amount_return": 0.0,
+                "lines": [
+                    Command.create(
+                        {
+                            "product_id": product.id,
+                            "qty": qty,
+                            "price_unit": price_unit,
+                            "price_subtotal": price_unit * qty,
+                            "price_subtotal_incl": price_unit * qty,
+                        }
+                    )
+                ],
+            }
+        )
 
     def test_selling_a_plan_grants_the_credits(self):
         order = self._order(self.monthly, price_unit=12000.0)
         order._apply_meal_credits()
 
         self.assertEqual(self.student.meal_credits_remaining, 25)
-        sub = self.env['his.meal.subscription'].search([('partner_id', '=', self.student.id)])
+        sub = self.env["his.meal.subscription"].search([("partner_id", "=", self.student.id)])
         self.assertEqual(len(sub), 1)
         self.assertEqual(sub.pos_order_id, order)
 
@@ -437,9 +481,7 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
         order._apply_meal_credits()
 
         self.assertEqual(self.student.meal_credits_remaining, 24)
-        line = self.env['his.meal.transaction'].search(
-            [('pos_order_id', '=', order.id), ('type', '=', 'consume')]
-        )
+        line = self.env["his.meal.transaction"].search([("pos_order_id", "=", order.id), ("type", "=", "consume")])
         self.assertEqual(len(line), 1)
         self.assertEqual(line.credits, -1)
         self.assertEqual(line.balance_after, 24)
@@ -453,7 +495,7 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
         order._apply_meal_credits()
 
         self.assertEqual(self.student.meal_credits_remaining, 25)
-        self.assertFalse(self.env['his.meal.transaction'].search([('pos_order_id', '=', order.id)]))
+        self.assertFalse(self.env["his.meal.transaction"].search([("pos_order_id", "=", order.id)]))
 
     def test_a_resynced_order_does_not_charge_twice(self):
         self._seed_credits()
@@ -466,10 +508,9 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
 
     def test_a_student_with_no_credits_cannot_be_served(self):
         order = self._order(self.daily_meal, qty=1, price_unit=0.0)
-        with self.assertRaises(UserError):
-            with self.cr.savepoint():
-                order._apply_meal_credits()
-        self.assertFalse(self.env['his.meal.transaction'].search([('pos_order_id', '=', order.id)]))
+        with self.assertRaises(UserError), self.cr.savepoint():
+            order._apply_meal_credits()
+        self.assertFalse(self.env["his.meal.transaction"].search([("pos_order_id", "=", order.id)]))
 
     def test_the_300_meal_takes_half_a_credit(self):
         self._seed_credits()
@@ -477,12 +518,11 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
         order._apply_meal_credits()
 
         self.assertEqual(self.student.meal_credits_remaining, 24.5)
-        line = self.env['his.meal.transaction'].search(
-            [('pos_order_id', '=', order.id), ('type', '=', 'consume')]
-        )
+        line = self.env["his.meal.transaction"].search([("pos_order_id", "=", order.id), ("type", "=", "consume")])
         self.assertEqual(line.credits, -0.5)
         self.assertEqual(
-            line.product_id, self.meal_300,
+            line.product_id,
+            self.meal_300,
             "the ledger has to name which meal was served, now there are two",
         )
 
@@ -496,41 +536,57 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
 
     def test_a_ticket_mixing_both_meals_is_charged_for_both(self):
         self._seed_credits()
-        order = self.env['pos.order'].create({
-            'company_id': self.env.company.id,
-            'session_id': self.session.id,
-            'partner_id': self.student.id,
-            'amount_tax': 0.0,
-            'amount_total': 0.0,
-            'amount_paid': 0.0,
-            'amount_return': 0.0,
-            'lines': [
-                Command.create({
-                    'product_id': self.meal_300.id, 'qty': 1, 'price_unit': 0.0,
-                    'price_subtotal': 0.0, 'price_subtotal_incl': 0.0,
-                }),
-                Command.create({
-                    'product_id': self.daily_meal.id, 'qty': 1, 'price_unit': 0.0,
-                    'price_subtotal': 0.0, 'price_subtotal_incl': 0.0,
-                }),
-            ],
-        })
+        order = self.env["pos.order"].create(
+            {
+                "company_id": self.env.company.id,
+                "session_id": self.session.id,
+                "partner_id": self.student.id,
+                "amount_tax": 0.0,
+                "amount_total": 0.0,
+                "amount_paid": 0.0,
+                "amount_return": 0.0,
+                "lines": [
+                    Command.create(
+                        {
+                            "product_id": self.meal_300.id,
+                            "qty": 1,
+                            "price_unit": 0.0,
+                            "price_subtotal": 0.0,
+                            "price_subtotal_incl": 0.0,
+                        }
+                    ),
+                    Command.create(
+                        {
+                            "product_id": self.daily_meal.id,
+                            "qty": 1,
+                            "price_unit": 0.0,
+                            "price_subtotal": 0.0,
+                            "price_subtotal_incl": 0.0,
+                        }
+                    ),
+                ],
+            }
+        )
         order._apply_meal_credits()
 
         # 0.5 + 1 = 1.5 off a 25-credit plan.
         self.assertEqual(self.student.meal_credits_remaining, 23.5)
-        served = self.env['his.meal.transaction'].search([
-            ('pos_order_id', '=', order.id), ('type', '=', 'consume'),
-        ])
+        served = self.env["his.meal.transaction"].search(
+            [
+                ("pos_order_id", "=", order.id),
+                ("type", "=", "consume"),
+            ]
+        )
         self.assertEqual(
-            sorted(served.mapped('product_id.name')), ["Meal 300", "Meal 600"],
+            sorted(served.mapped("product_id.name")),
+            ["Meal 300", "Meal 600"],
         )
 
     def test_any_till_serves_a_meal_with_nothing_configured(self):
         """The Cafeteria could not serve anything while a meal was a field on
         pos.config that only the Restaurant had filled."""
         self._seed_credits()
-        plain_till = self.env['pos.config'].create({'name': "Test Cafeteria"})
+        plain_till = self.env["pos.config"].create({"name": "Test Cafeteria"})
         plain_till.open_ui()
         order = self._order(self.daily_meal, qty=1, price_unit=0.0)
         order.session_id = plain_till.current_session_id
@@ -540,9 +596,8 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
 
     def test_a_meal_without_a_student_is_refused(self):
         order = self._order(self.daily_meal, qty=1, price_unit=0.0, partner=False)
-        with self.assertRaises(UserError):
-            with self.cr.savepoint():
-                order._apply_meal_credits()
+        with self.assertRaises(UserError), self.cr.savepoint():
+            order._apply_meal_credits()
 
     def test_the_meal_product_stays_sellable_at_the_till(self):
         """It must not be a POS "special" product.
@@ -553,7 +608,8 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
         the cashier has to be able to find it.
         """
         self.assertNotIn(
-            self.daily_meal, self.config._get_special_products(),
+            self.daily_meal,
+            self.config._get_special_products(),
             "marking the meal product special would hide it from the cashier",
         )
 
@@ -564,15 +620,13 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
 
         self.assertEqual(self.student.meal_credits_remaining, 23)
         self.assertEqual(
-            self.env['his.meal.transaction'].search_count(
-                [('pos_order_id', '=', order.id), ('type', '=', 'consume')]
-            ),
+            self.env["his.meal.transaction"].search_count([("pos_order_id", "=", order.id), ("type", "=", "consume")]),
             2,
             "one ledger line per meal, not one per order",
         )
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestMealPersonAttributes(TransactionCase):
     """What this module still says about a person, now that the socle owns identity.
 
@@ -591,17 +645,19 @@ class TestMealPersonAttributes(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.plan = cls.env['product.product'].create({
-            'name': "Monthly Meal Plan",
-            'type': 'service',
-            'list_price': 12000.0,
-            'meal_credits': 25,
-            'meal_validity_days': 30,
-        })
+        cls.plan = cls.env["product.product"].create(
+            {
+                "name": "Monthly Meal Plan",
+                "type": "service",
+                "list_price": 12000.0,
+                "meal_credits": 25,
+                "meal_validity_days": 30,
+            }
+        )
 
     def _person(self, **vals):
-        name = vals.pop('name', "Test Person")
-        vals.setdefault('nom_arabe', "شخص")
+        name = vals.pop("name", "Test Person")
+        vals.setdefault("nom_arabe", "شخص")
         return make_person(self.env, name, **vals)
 
     # --- identity belongs to the socle now -------------------------------
@@ -612,63 +668,72 @@ class TestMealPersonAttributes(TransactionCase):
         matricules and, eventually, two wallets. This asserts the split stayed
         clean rather than trusting that it did.
         """
-        partner_fields = self.env['res.partner']._fields
-        for name in ('matricule_institutionnel', 'nom_arabe', 'type_personne',
-                     'statut', 'email_institutionnel', 'email_personnel'):
+        partner_fields = self.env["res.partner"]._fields
+        for name in (
+            "matricule_institutionnel",
+            "nom_arabe",
+            "type_personne",
+            "statut",
+            "email_institutionnel",
+            "email_personnel",
+        ):
             self.assertNotIn(
-                name, partner_fields,
+                name,
+                partner_fields,
                 "%s is still on res.partner: identity belongs to his_person_core" % name,
             )
 
     def test_this_module_owns_no_matricule_sequence(self):
         """One counter in the group. Two would collide on a lifetime identifier."""
         self.assertFalse(
-            self.env['ir.sequence'].sudo().search_count(
-                [('code', 'in', ('his.matricule', 'hr.employee.matricule.institutionnel'))]
-            ),
+            self.env["ir.sequence"]
+            .sudo()
+            .search_count([("code", "in", ("his.matricule", "hr.employee.matricule.institutionnel"))]),
         )
 
     def test_a_person_gets_a_matricule_from_the_socle(self):
         person = self._person()
-        self.assertRegex(person.matricule_institutionnel, r'^HIS-\d{4}-\d{6}-[0-9X]$')
+        self.assertRegex(person.matricule_institutionnel, r"^HIS-\d{4}-\d{6}-[0-9X]$")
 
     # --- the academic attributes this module adds ------------------------
     def test_an_academic_rank_only_applies_to_a_teacher(self):
         with self.assertRaises(ValidationError):
-            self._person(type_personne='etudiant', rang_academique='PROF')
-        teacher = self._person(type_personne='enseignant', rang_academique='PROF')
-        self.assertEqual(teacher.rang_academique, 'PROF')
+            self._person(type_personne="etudiant", rang_academique="PROF")
+        teacher = self._person(type_personne="enseignant", rang_academique="PROF")
+        self.assertEqual(teacher.rang_academique, "PROF")
 
     def test_the_six_faculty_codes_are_seeded(self):
-        codes = set(self.env['his.faculty'].search([]).mapped('code'))
-        self.assertEqual(codes, {'MI', 'SEGC', 'DSP', 'SHS', 'ST', 'EDU'})
+        codes = set(self.env["his.faculty"].search([]).mapped("code"))
+        self.assertEqual(codes, {"MI", "SEGC", "DSP", "SHS", "ST", "EDU"})
 
     def test_edu_is_flagged_as_unconfirmed(self):
         """The source document records that no catalogue was received for EDU."""
-        edu = self.env['his.faculty'].search([('code', '=', 'EDU')])
+        edu = self.env["his.faculty"].search([("code", "=", "EDU")])
         self.assertFalse(edu.name_confirmed)
 
     def test_a_person_can_belong_to_more_than_one_faculty(self):
         """Section 3 requires many-to-many; a single field would lose this."""
-        faculties = self.env['his.faculty'].search([('code', 'in', ('MI', 'ST'))])
+        faculties = self.env["his.faculty"].search([("code", "in", ("MI", "ST"))])
         person = self._person(faculty_ids=[Command.set(faculties.ids)])
-        self.assertEqual(set(person.faculty_ids.mapped('code')), {'MI', 'ST'})
+        self.assertEqual(set(person.faculty_ids.mapped("code")), {"MI", "ST"})
 
     # --- no wallet without an identity -----------------------------------
     def test_a_card_cannot_be_issued_to_an_unregistered_contact(self):
         """The officer holds no rights on his.person, but core Odoo lets any
         internal user create a plain contact. Without this guard that is a back
         door to a card holder outside the referential."""
-        stranger = self.env['res.partner'].create({'name': "Walk-in"})
+        stranger = self.env["res.partner"].create({"name": "Walk-in"})
         with self.assertRaises(ValidationError):
-            self.env['his.meal.card'].create({
-                'partner_id': stranger.id,
-                'code': card_uid(40),
-            })
+            self.env["his.meal.card"].create(
+                {
+                    "partner_id": stranger.id,
+                    "code": card_uid(40),
+                }
+            )
 
     def test_credits_cannot_be_granted_to_an_unregistered_contact(self):
         """Same gate from the POS side: selling a plan opens a balance too."""
-        stranger = self.env['res.partner'].create({'name': "Walk-in"})
+        stranger = self.env["res.partner"].create({"name": "Walk-in"})
         with self.assertRaises(ValidationError):
             stranger._grant_meal_credits(self.plan)
 
@@ -676,12 +741,17 @@ class TestMealPersonAttributes(TransactionCase):
     def test_a_teacher_can_hold_a_card_and_eat(self):
         """Anyone holding a card eats, whatever their role."""
         teacher = self._person(
-            name="Prof Karim", type_personne='enseignant', rang_academique='MCA',
+            name="Prof Karim",
+            type_personne="enseignant",
+            rang_academique="MCA",
         )
         partner = teacher.partner_id
-        card = self.env['his.meal.card'].create({
-            'partner_id': partner.id, 'code': card_uid(41),
-        })
+        card = self.env["his.meal.card"].create(
+            {
+                "partner_id": partner.id,
+                "code": card_uid(41),
+            }
+        )
         self.assertEqual(partner.barcode, card.code)
 
         partner._grant_meal_credits(self.plan)
@@ -696,9 +766,12 @@ class TestMealPersonAttributes(TransactionCase):
         balance without a single duplicated field.
         """
         person = self._person()
-        self.env['his.meal.card'].create({
-            'partner_id': person.partner_id.id, 'code': card_uid(42),
-        })
+        self.env["his.meal.card"].create(
+            {
+                "partner_id": person.partner_id.id,
+                "code": card_uid(42),
+            }
+        )
         person.partner_id._grant_meal_credits(self.plan)
         self.assertEqual(person.meal_credits_remaining, 25)
         self.assertEqual(person.meal_card_code, card_uid(42))
@@ -717,11 +790,11 @@ class TestMealPersonAttributes(TransactionCase):
         res.partner: this contact carries no matricule and no person type, and
         nothing in the system asks it to.
         """
-        company = self.env['res.partner'].create({'name': "Some Supplier", 'is_company': True})
+        company = self.env["res.partner"].create({"name": "Some Supplier", "is_company": True})
         self.assertFalse(company.his_person_ids)
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestRfidScanning(TransactionCase):
     """The scanning contract, pinned against Odoo's own barcode parser.
 
@@ -745,7 +818,7 @@ class TestRfidScanning(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.nomenclature = cls.env.ref('barcodes.default_barcode_nomenclature')
+        cls.nomenclature = cls.env.ref("barcodes.default_barcode_nomenclature")
 
     def _parse(self, code):
         return self.nomenclature.parse_barcode(code)
@@ -754,7 +827,8 @@ class TestRfidScanning(TransactionCase):
         for uid in self.REAL_UIDS:
             with self.subTest(uid=uid):
                 self.assertEqual(
-                    self._parse(uid)['type'], 'client',
+                    self._parse(uid)["type"],
+                    "client",
                     f"{uid} must route to the customer lookup, not the product catalogue",
                 )
 
@@ -765,70 +839,73 @@ class TestRfidScanning(TransactionCase):
         why this is tested: sitting below sequence 80 the rule would look correct
         today and fail on some future card.
         """
-        self.assertEqual(self._parse("1012345678")['type'], 'client')
+        self.assertEqual(self._parse("1012345678")["type"], "client")
 
     def test_a_thirteen_digit_product_barcode_still_reads_as_a_product(self):
         """The catalogue must not be hijacked. This is what the trailing $ buys."""
-        self.assertEqual(self._parse("5449000000996")['type'], 'product')
+        self.assertEqual(self._parse("5449000000996")["type"], "product")
 
     def test_neither_shorter_nor_longer_numbers_are_claimed(self):
         for code in ("12345678", "123456789", "12345678901"):
             with self.subTest(code=code):
                 self.assertNotEqual(
-                    self._parse(code)['type'], 'client',
+                    self._parse(code)["type"],
+                    "client",
                     f"{code} is not a 10-digit UID and must not be treated as a card",
                 )
 
     def test_the_parsed_code_is_handed_over_intact(self):
         """POS looks the partner up by `code`, so it must survive parsing whole."""
         parsed = self._parse("0001063810")
-        self.assertEqual(parsed['code'], "0001063810")
+        self.assertEqual(parsed["code"], "0001063810")
 
     def test_a_uid_resolves_to_its_person_the_way_pos_resolves_it(self):
         """Reproduces `_barcodePartnerAction`: search res.partner on barcode."""
         person = make_person(self.env, "Porteur Un").partner_id
         uid = card_uid(1)
-        self.env['his.meal.card'].create({'partner_id': person.id, 'code': uid})
+        self.env["his.meal.card"].create({"partner_id": person.id, "code": uid})
 
         self.assertEqual(person.barcode, uid)
-        self.assertEqual(self.env['res.partner'].search([('barcode', '=', uid)]), person)
+        self.assertEqual(self.env["res.partner"].search([("barcode", "=", uid)]), person)
 
     def test_leading_zeros_are_not_lost(self):
         """0001063810 is not 1063810. Losing a zero loses the person."""
         person = make_person(self.env, "Porteur Deux").partner_id
-        uid = card_uid(2)                     # 0000900002
-        card = self.env['his.meal.card'].create({'partner_id': person.id, 'code': uid})
+        uid = card_uid(2)  # 0000900002
+        card = self.env["his.meal.card"].create({"partner_id": person.id, "code": uid})
 
         self.assertEqual(card.code, uid)
         self.assertEqual(person.barcode, uid)
         self.assertFalse(
-            self.env['res.partner'].search([('barcode', '=', uid.lstrip('0'))]),
+            self.env["res.partner"].search([("barcode", "=", uid.lstrip("0"))]),
             "the un-padded number must not find anybody",
         )
 
     def test_replacing_a_card_asks_for_a_tap_instead_of_inventing_a_code(self):
         """An RFID code cannot be minted: it has to be read off the new card."""
         person = make_person(self.env, "Porteur Un").partner_id
-        card = self.env['his.meal.card'].create({
-            'partner_id': person.id,
-            'code': card_uid(3),
-        })
+        card = self.env["his.meal.card"].create(
+            {
+                "partner_id": person.id,
+                "code": card_uid(3),
+            }
+        )
 
         action = card.action_replace()
 
-        self.assertEqual(card.state, 'replaced')
+        self.assertEqual(card.state, "replaced")
         self.assertFalse(person.barcode, "the retired card stops being scannable at once")
         self.assertFalse(
-            person.meal_card_ids.filtered(lambda c: c.state == 'active'),
+            person.meal_card_ids.filtered(lambda c: c.state == "active"),
             "no card is created until a real one is tapped",
         )
-        self.assertEqual(action['res_model'], 'his.meal.card')
-        self.assertNotIn('res_id', action)
-        self.assertEqual(action['context']['default_partner_id'], person.id)
-        self.assertEqual(action['context']['default_replaced_card_id'], card.id)
+        self.assertEqual(action["res_model"], "his.meal.card")
+        self.assertNotIn("res_id", action)
+        self.assertEqual(action["context"]["default_partner_id"], person.id)
+        self.assertEqual(action["context"]["default_replaced_card_id"], card.id)
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestBadgeFromIdentity(TransactionCase):
     """The badge is issued through the card, whichever screen writes it.
 
@@ -852,9 +929,10 @@ class TestBadgeFromIdentity(TransactionCase):
         card = person.partner_id.meal_card_ids
         self.assertEqual(len(card), 1, "one badge, one card")
         self.assertEqual(card.code, card_uid(50))
-        self.assertEqual(card.state, 'active')
+        self.assertEqual(card.state, "active")
         self.assertEqual(
-            person.partner_id.barcode, card_uid(50),
+            person.partner_id.barcode,
+            card_uid(50),
             "the till resolves a scan through the contact's barcode",
         )
 
@@ -874,8 +952,8 @@ class TestBadgeFromIdentity(TransactionCase):
 
         cards = person.partner_id.meal_card_ids
         self.assertEqual(len(cards), 2, "the previous card must survive")
-        self.assertEqual(first.state, 'replaced')
-        active = cards.filtered(lambda c: c.state == 'active')
+        self.assertEqual(first.state, "replaced")
+        active = cards.filtered(lambda c: c.state == "active")
         self.assertEqual(active.code, card_uid(52))
         self.assertEqual(active.replaced_card_id, first, "the chain is recorded")
         self.assertEqual(person.numero_carte, card_uid(52))
@@ -886,26 +964,28 @@ class TestBadgeFromIdentity(TransactionCase):
         person.numero_carte = card_uid(53)
         person.numero_carte = False
 
-        self.assertEqual(person.partner_id.meal_card_ids.state, 'blocked')
+        self.assertEqual(person.partner_id.meal_card_ids.state, "blocked")
         self.assertFalse(person.partner_id.barcode)
         self.assertFalse(
-            self.env['res.partner'].search([('barcode', '=', card_uid(53))]),
+            self.env["res.partner"].search([("barcode", "=", card_uid(53))]),
             "a cleared badge must not find anybody",
         )
 
     def test_a_badge_cannot_be_held_by_two_people(self):
         self._person("First").numero_carte = card_uid(54)
         second = self._person("Second")
-        with self.assertRaises(Exception), mute_logger('odoo.sql_db'):
-            with self.cr.savepoint():
-                second.numero_carte = card_uid(54)
+        with self.assertRaises(Exception), mute_logger("odoo.sql_db"), self.cr.savepoint():
+            second.numero_carte = card_uid(54)
 
     def test_tapping_a_card_updates_the_person(self):
         """The other direction: the Cards screen is the officer's entry point."""
         person = self._person()
-        self.env['his.meal.card'].create({
-            'partner_id': person.partner_id.id, 'code': card_uid(55),
-        })
+        self.env["his.meal.card"].create(
+            {
+                "partner_id": person.partner_id.id,
+                "code": card_uid(55),
+            }
+        )
         self.assertEqual(person.numero_carte, card_uid(55))
 
     def test_the_employee_badge_id_follows_the_same_card(self):
@@ -926,19 +1006,19 @@ class TestBadgeFromIdentity(TransactionCase):
         and on a database carrying an older his_hr_base this test was failing
         for something this module does not own.
         """
-        barcode = self.env['hr.employee']._fields.get('barcode') if 'hr.employee' in self.env else None
-        related = getattr(barcode, 'related', None) if barcode else None
-        if related not in ('person_id.numero_carte', ('person_id', 'numero_carte')):
+        barcode = self.env["hr.employee"]._fields.get("barcode") if "hr.employee" in self.env else None
+        related = getattr(barcode, "related", None) if barcode else None
+        if related not in ("person_id.numero_carte", ("person_id", "numero_carte")):
             self.skipTest(
-                "hr.employee.barcode is not related to the person's badge: "
-                "his_hr_base is absent or predates that link"
+                "hr.employee.barcode is not related to the person's badge: his_hr_base is absent or predates that link"
             )
-        employee = self.env['hr.employee'].sudo().create({'name': "Badge Employee"})
+        employee = self.env["hr.employee"].sudo().create({"name": "Badge Employee"})
         employee.person_id.numero_carte = card_uid(56)
 
         self.assertEqual(employee.barcode, card_uid(56))
         self.assertEqual(
-            employee.person_id.partner_id.meal_card_ids.code, card_uid(56),
+            employee.person_id.partner_id.meal_card_ids.code,
+            card_uid(56),
             "the employee's badge is a real card, not a loose string",
         )
 
@@ -956,17 +1036,17 @@ class TestBadgeFromIdentity(TransactionCase):
 
         self.assertIn(
             partner,
-            self.env['res.partner'].search([('complete_name', 'ilike', "Zerrouki")]),
+            self.env["res.partner"].search([("complete_name", "ilike", "Zerrouki")]),
             "typing a name at the till must find the person",
         )
         self.assertIn(
             partner,
-            self.env['res.partner'].search([('barcode', '=', card_uid(57))]),
+            self.env["res.partner"].search([("barcode", "=", card_uid(57))]),
             "typing or scanning a badge at the till must find the person",
         )
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestTheShippedOffer(TransactionCase):
     """The six packages and the two meals, as the price sheet defines them.
 
@@ -979,24 +1059,24 @@ class TestTheShippedOffer(TransactionCase):
 
     # xml id -> (price, credits granted). One credit is one 600 DA meal.
     PLANS = {
-        'product_plan_300_weekly': (1500.0, 3.0),
-        'product_plan_300_monthly': (6000.0, 12.5),
-        'product_plan_300_semester': (18000.0, 40.0),
-        'product_plan_weekly': (3000.0, 6.0),
-        'product_plan_monthly': (12000.0, 25.0),
-        'product_plan_semester': (36000.0, 80.0),
+        "product_plan_300_weekly": (1500.0, 3.0),
+        "product_plan_300_monthly": (6000.0, 12.5),
+        "product_plan_300_semester": (18000.0, 40.0),
+        "product_plan_weekly": (3000.0, 6.0),
+        "product_plan_monthly": (12000.0, 25.0),
+        "product_plan_semester": (36000.0, 80.0),
     }
 
     def test_every_package_grants_what_the_price_sheet_says(self):
         for xml_id, (price, credits) in self.PLANS.items():
-            plan = self.env.ref(f'his_meal_management.{xml_id}')
+            plan = self.env.ref(f"his_meal_management.{xml_id}")
             self.assertEqual(plan.list_price, price, xml_id)
             self.assertEqual(plan.meal_credits, credits, xml_id)
 
     def test_no_package_expires(self):
         """Credits keep until they are eaten - that is the whole rule."""
         for xml_id in self.PLANS:
-            plan = self.env.ref(f'his_meal_management.{xml_id}')
+            plan = self.env.ref(f"his_meal_management.{xml_id}")
             self.assertEqual(plan.meal_validity_days, 0, xml_id)
 
     def test_a_credit_costs_the_same_in_both_tiers(self):
@@ -1007,12 +1087,12 @@ class TestTheShippedOffer(TransactionCase):
         and 450 DA per credit, weekly through semesterly, in both tiers.
         """
         for small, large in (
-            ('product_plan_300_weekly', 'product_plan_weekly'),
-            ('product_plan_300_monthly', 'product_plan_monthly'),
-            ('product_plan_300_semester', 'product_plan_semester'),
+            ("product_plan_300_weekly", "product_plan_weekly"),
+            ("product_plan_300_monthly", "product_plan_monthly"),
+            ("product_plan_300_semester", "product_plan_semester"),
         ):
-            small_plan = self.env.ref(f'his_meal_management.{small}')
-            large_plan = self.env.ref(f'his_meal_management.{large}')
+            small_plan = self.env.ref(f"his_meal_management.{small}")
+            large_plan = self.env.ref(f"his_meal_management.{large}")
             self.assertEqual(
                 small_plan.list_price / small_plan.meal_credits,
                 large_plan.list_price / large_plan.meal_credits,
@@ -1020,22 +1100,20 @@ class TestTheShippedOffer(TransactionCase):
             )
 
     def test_the_two_meals_cost_a_half_and_a_whole_credit(self):
-        self.assertEqual(
-            self.env.ref('his_meal_management.product_meal_300').meal_credit_cost, 0.5
-        )
-        self.assertEqual(
-            self.env.ref('his_meal_management.product_daily_meal').meal_credit_cost, 1.0
-        )
+        self.assertEqual(self.env.ref("his_meal_management.product_meal_300").meal_credit_cost, 0.5)
+        self.assertEqual(self.env.ref("his_meal_management.product_daily_meal").meal_credit_cost, 1.0)
 
     def test_a_product_cannot_be_a_plan_and_a_meal_at_once(self):
         """Selling it would grant and spend in the same breath."""
         with self.assertRaises(ValidationError):
-            self.env['product.product'].create({
-                'name': "Impossible",
-                'type': 'consu',
-                'meal_credits': 5.0,
-                'meal_credit_cost': 1.0,
-            })
+            self.env["product.product"].create(
+                {
+                    "name": "Impossible",
+                    "type": "consu",
+                    "meal_credits": 5.0,
+                    "meal_credit_cost": 1.0,
+                }
+            )
 
 
 class TestMealAllowance(TransactionCase):
@@ -1052,13 +1130,15 @@ class TestMealAllowance(TransactionCase):
         super().setUpClass()
         cls.person = make_person(cls.env, "Yacine")
         cls.student = cls.person.partner_id
-        cls.weekly = cls.env['product.product'].create({
-            'name': "Weekly Meal Plan",
-            'type': 'service',
-            'list_price': 3000.0,
-            'meal_credits': 6,
-            'meal_validity_days': 0,
-        })
+        cls.weekly = cls.env["product.product"].create(
+            {
+                "name": "Weekly Meal Plan",
+                "type": "service",
+                "list_price": 3000.0,
+                "meal_credits": 6,
+                "meal_validity_days": 0,
+            }
+        )
 
     def _empty_the_card(self):
         """Buy a plan and eat all of it, which is where the allowance begins."""
@@ -1076,14 +1156,12 @@ class TestMealAllowance(TransactionCase):
         self.assertEqual(self.student.meal_allowance_left, 0)
         self.assertEqual(self.student.meal_allowance_debt, 2.0)
 
-        ledger_before = self.env['his.meal.transaction'].search_count(
-            [('partner_id', '=', self.student.id)]
-        )
+        ledger_before = self.env["his.meal.transaction"].search_count([("partner_id", "=", self.student.id)])
         # The third is refused, and refusing it writes nothing.
         with self.assertRaises(UserError):
             self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
         self.assertEqual(
-            self.env['his.meal.transaction'].search_count([('partner_id', '=', self.student.id)]),
+            self.env["his.meal.transaction"].search_count([("partner_id", "=", self.student.id)]),
             ledger_before,
         )
         # A card in debt still reads zero, never a negative balance.
@@ -1103,10 +1181,12 @@ class TestMealAllowance(TransactionCase):
         self._empty_the_card()
         self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
 
-        line = self.env['his.meal.transaction'].search(
-            [('partner_id', '=', self.student.id)], order='id desc', limit=1,
+        line = self.env["his.meal.transaction"].search(
+            [("partner_id", "=", self.student.id)],
+            order="id desc",
+            limit=1,
         )
-        self.assertEqual(line.type, 'allowance')
+        self.assertEqual(line.type, "allowance")
         self.assertEqual(line.credits, -1.0)
         # No subscription behind it — that is what makes it an allowance meal.
         self.assertFalse(line.subscription_id)
@@ -1157,7 +1237,7 @@ class TestMealAllowance(TransactionCase):
     def test_someone_who_never_bought_a_plan_has_no_allowance(self):
         """A hand-granted credit does not buy the right to run a card empty."""
         stranger = make_person(self.env, "Walk-in").partner_id
-        stranger._add_meal_credits(credits=1.0, date_end=False, tx_type='adjust')
+        stranger._add_meal_credits(credits=1.0, date_end=False, tx_type="adjust")
         stranger._consume_meal_credit(amount=1.0)
         self.assertEqual(stranger.meal_credits_remaining, 0)
 
@@ -1170,7 +1250,7 @@ class TestMealAllowance(TransactionCase):
         self._empty_the_card()
         # No allow_overdraft: exactly how the wizard's negative branch calls it.
         with self.assertRaises(UserError):
-            self.student._consume_meal_credit(amount=1.0, tx_type='adjust')
+            self.student._consume_meal_credit(amount=1.0, tx_type="adjust")
         self.assertEqual(self.student.meal_allowance_debt, 0.0)
         self.assertEqual(self.student.meal_allowance_left, 2)
 
@@ -1181,9 +1261,7 @@ class TestMealAllowance(TransactionCase):
         self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
         self.student._grant_meal_credits(self.weekly)
 
-        subs = self.env['his.meal.subscription'].search(
-            [('partner_id', '=', self.student.id)]
-        )
+        subs = self.env["his.meal.subscription"].search([("partner_id", "=", self.student.id)])
         for sub in subs:
             self.assertGreaterEqual(sub.credits_used, 0)
             self.assertLessEqual(sub.credits_used, sub.credits_total)
@@ -1194,12 +1272,12 @@ class TestMealAllowance(TransactionCase):
         self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
 
         balance = self.student.get_meal_balance()
-        self.assertEqual(balance['credits'], 0)
-        self.assertEqual(balance['allowance_left'], 1)
-        self.assertEqual(balance['allowance_debt'], 1.0)
+        self.assertEqual(balance["credits"], 0)
+        self.assertEqual(balance["allowance_left"], 1)
+        self.assertEqual(balance["allowance_debt"], 1.0)
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestAtteignabilitéAuComptoir(TransactionCase):
     """Un produit correctement configure ne sert a rien s'il n'arrive pas dans la caisse.
 
@@ -1219,39 +1297,39 @@ class TestAtteignabilitéAuComptoir(TransactionCase):
 
     def _chargeables(self, config_xmlid):
         config = self.env.ref(config_xmlid)
-        Template = self.env['product.template']
+        Template = self.env["product.template"]
         return Template.search(Template._load_pos_data_domain({}, config))
 
     def test_les_deux_points_de_restauration_servent_les_repas(self):
         """« any food point of sale serves meals against the balance »."""
-        repas = self.env['product.template'].search([('meal_credit_cost', '>', 0)])
+        repas = self.env["product.template"].search([("meal_credit_cost", ">", 0)])
         self.assertTrue(repas, "aucun repas en base : le module n'est pas charge")
-        for xmlid in ('his_stock_mdm.pos_config_cafeteria',
-                      'his_stock_mdm.pos_config_restaurant'):
+        for xmlid in ("his_stock_mdm.pos_config_cafeteria", "his_stock_mdm.pos_config_restaurant"):
             chargeables = self._chargeables(xmlid)
             for plat in repas:
                 self.assertIn(
-                    plat, chargeables,
-                    "%s ne charge pas « %s » : son bouton de service sera vide"
-                    % (self.env.ref(xmlid).name, plat.name),
+                    plat,
+                    chargeables,
+                    "%s ne charge pas « %s » : son bouton de service sera vide" % (self.env.ref(xmlid).name, plat.name),
                 )
 
     def test_les_packs_se_vendent_au_copy_center(self):
         """« the IT centre sells the plans »."""
-        packs = self.env['product.template'].search([('meal_credits', '>', 0)])
+        packs = self.env["product.template"].search([("meal_credits", ">", 0)])
         self.assertTrue(packs, "aucun forfait en base : le module n'est pas charge")
-        chargeables = self._chargeables('his_stock_mdm.pos_config_copy_center')
+        chargeables = self._chargeables("his_stock_mdm.pos_config_copy_center")
         for pack in packs:
             self.assertIn(
-                pack, chargeables,
+                pack,
+                chargeables,
                 "le Copy Center ne peut pas vendre « %s »" % pack.name,
             )
 
     def test_rien_de_comestible_au_copy_center(self):
         """Regle metier : le Copy Center ne vend que des articles d'etude."""
-        chargeables = self._chargeables('his_stock_mdm.pos_config_copy_center')
+        chargeables = self._chargeables("his_stock_mdm.pos_config_copy_center")
         comestibles = chargeables.filtered(lambda p: p.meal_credit_cost > 0)
         self.assertFalse(
             comestibles,
-            "le Copy Center propose des repas : %s" % comestibles.mapped('name'),
+            "le Copy Center propose des repas : %s" % comestibles.mapped("name"),
         )

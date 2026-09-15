@@ -12,16 +12,14 @@ cette migration possible, et c'est aussi pourquoi on les supprime a la fin :
 des colonnes mortes portant d'anciens statuts induiraient en erreur quiconque
 lit la base directement, a commencer par l'outil de BI a venir.
 """
+
 from odoo import SUPERUSER_ID, api
 
 # (colonne besoin, colonne statut, colonne assigne, xmlid du type)
 ANCIENS_LIVRABLES = [
-    ('besoin_copy', 'statut_copy', 'assignee_copy',
-     'his_crm_pipeline.deliverable_type_copy'),
-    ('besoin_design', 'statut_design', 'assignee_design',
-     'his_crm_pipeline.deliverable_type_design'),
-    ('besoin_video', 'statut_video', 'assignee_video',
-     'his_crm_pipeline.deliverable_type_video'),
+    ("besoin_copy", "statut_copy", "assignee_copy", "his_crm_pipeline.deliverable_type_copy"),
+    ("besoin_design", "statut_design", "assignee_design", "his_crm_pipeline.deliverable_type_design"),
+    ("besoin_video", "statut_video", "assignee_video", "his_crm_pipeline.deliverable_type_video"),
 ]
 
 COLONNES = [c for triplet in ANCIENS_LIVRABLES for c in triplet[:3]]
@@ -31,15 +29,18 @@ def migrate(cr, version):
     env = api.Environment(cr, SUPERUSER_ID, {})
 
     # Une base ou le module vient d'etre installe n'a jamais eu ces colonnes.
-    cr.execute("""
+    cr.execute(
+        """
         SELECT column_name FROM information_schema.columns
          WHERE table_name = 'crm_lead' AND column_name = ANY(%s)
-    """, (COLONNES,))
+    """,
+        (COLONNES,),
+    )
     presentes = {ligne[0] for ligne in cr.fetchall()}
     if not presentes:
         return
 
-    Livrable = env['his.content.deliverable']
+    Livrable = env["his.content.deliverable"]
     a_creer = []
 
     for col_besoin, col_statut, col_assigne, xmlid_type in ANCIENS_LIVRABLES:
@@ -53,18 +54,23 @@ def migrate(cr, version):
         # lui qui portait la distinction entre « pas encore fait » et « pas
         # concerne ». Un statut renseigne sans besoin coche etait un residu de
         # la valeur par defaut, pas un travail demande.
-        cr.execute("""
+        cr.execute(
+            """
             SELECT id, %s, %s FROM crm_lead
              WHERE %s IS TRUE
-        """ % (col_statut, col_assigne, col_besoin))
+        """
+            % (col_statut, col_assigne, col_besoin)
+        )
 
         for lead_id, statut, assigne_id in cr.fetchall():
-            a_creer.append({
-                'lead_id': lead_id,
-                'type_id': type_livrable.id,
-                'statut': statut or 'a_faire',
-                'assignee_id': assigne_id or False,
-            })
+            a_creer.append(
+                {
+                    "lead_id": lead_id,
+                    "type_id": type_livrable.id,
+                    "statut": statut or "a_faire",
+                    "assignee_id": assigne_id or False,
+                }
+            )
 
     if a_creer:
         # Sans le contexte : les dates d'horodatage se posent aux transitions

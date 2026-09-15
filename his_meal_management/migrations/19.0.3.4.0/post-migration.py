@@ -9,8 +9,8 @@ balance » -- et la Cafétéria en est un.
 Consequence concrete de l'oubli : le bouton de service de la Cafétéria ne
 proposait plus rien, puisqu'il n'offre que les repas CHARGES dans la caisse.
 """
-from odoo import api, SUPERUSER_ID
 
+from odoo import SUPERUSER_ID, api
 from odoo.addons.his_meal_management.hooks import lier_categories_pos, taguer_produits
 
 

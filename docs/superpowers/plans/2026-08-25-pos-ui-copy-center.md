@@ -45,7 +45,7 @@
 from odoo.tests import TransactionCase, tagged
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestPosTheme(TransactionCase):
     """The theme is a label on the till, and nothing more.
 
@@ -55,15 +55,15 @@ class TestPosTheme(TransactionCase):
     """
 
     def test_theme_is_optional(self):
-        config = self.env['pos.config'].create({'name': "Untouched Till"})
+        config = self.env["pos.config"].create({"name": "Untouched Till"})
         self.assertFalse(
             config.his_pos_theme,
             "A new point of sale must carry no theme, so it renders as stock Odoo.",
         )
 
     def test_theme_accepts_the_three_points_of_sale(self):
-        config = self.env['pos.config'].create({'name': "Themed Till"})
-        for theme in ('copy_center', 'restaurant', 'cafeteria'):
+        config = self.env["pos.config"].create({"name": "Themed Till"})
+        for theme in ("copy_center", "restaurant", "cafeteria"):
             config.his_pos_theme = theme
             self.assertEqual(config.his_pos_theme, theme)
 
@@ -74,13 +74,15 @@ class TestPosTheme(TransactionCase):
         the browser and every till goes back to looking stock. Better to fail
         here than to debug CSS that was never given a class to hang on.
         """
-        config = self.env['pos.config'].create({
-            'name': "Loaded Till",
-            'his_pos_theme': 'copy_center',
-        })
-        fields = self.env['pos.config']._load_pos_data_fields(config)
+        config = self.env["pos.config"].create(
+            {
+                "name": "Loaded Till",
+                "his_pos_theme": "copy_center",
+            }
+        )
+        fields = self.env["pos.config"]._load_pos_data_fields(config)
         loaded = config.read(fields, load=False)[0]
-        self.assertEqual(loaded.get('his_pos_theme'), 'copy_center')
+        self.assertEqual(loaded.get("his_pos_theme"), "copy_center")
 ```
 
 - [ ] **Step 2: Run the test and watch it fail**
@@ -106,10 +108,10 @@ from . import pos_config
 `his_pos_ui/__manifest__.py`:
 ```python
 {
-    'name': 'HIS POS Interface',
-    'version': '19.0.1.0.0',
-    'summary': 'Branded, touch-first interface shared by the HIS points of sale',
-    'description': """
+    "name": "HIS POS Interface",
+    "version": "19.0.1.0.0",
+    "summary": "Branded, touch-first interface shared by the HIS points of sale",
+    "description": """
 HIS POS Interface
 =================
 The interface may be redesigned; the transaction may not.
@@ -121,23 +123,19 @@ The interface may be redesigned; the transaction may not.
 * Touch sizing and the entry wallpaper reuse variables Odoo already exposes
   (--btn-height-size, --homeMenu-bg-image) rather than overriding rules.
 """,
-    'author': 'Abdo Chabouti',
-    'category': 'Sales/Point of Sale',
-    'license': 'LGPL-3',
-
-    'depends': ['point_of_sale'],
-
-    'data': [
-        'views/pos_config_views.xml',
+    "author": "Abdo Chabouti",
+    "category": "Sales/Point of Sale",
+    "license": "LGPL-3",
+    "depends": ["point_of_sale"],
+    "data": [
+        "views/pos_config_views.xml",
     ],
-
-    'assets': {
-        'point_of_sale._assets_pos': [
-            'his_pos_ui/static/src/**/*',
+    "assets": {
+        "point_of_sale._assets_pos": [
+            "his_pos_ui/static/src/**/*",
         ],
     },
-
-    'installable': True,
+    "installable": True,
 }
 ```
 
@@ -157,17 +155,16 @@ class PosConfig(models.Model):
     configurable it is.
     """
 
-    _inherit = 'pos.config'
+    _inherit = "pos.config"
 
     his_pos_theme = fields.Selection(
         [
-            ('copy_center', "Copy Center"),
-            ('restaurant', "Restaurant"),
-            ('cafeteria', "Cafétéria"),
+            ("copy_center", "Copy Center"),
+            ("restaurant", "Restaurant"),
+            ("cafeteria", "Cafétéria"),
         ],
         string="HIS Theme",
-        help="Appearance of this point of sale. Leave empty to keep the stock "
-             "Odoo interface.",
+        help="Appearance of this point of sale. Leave empty to keep the stock Odoo interface.",
     )
 ```
 
@@ -501,7 +498,7 @@ from odoo import Command
 from odoo.tests import TransactionCase, tagged
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestCopyProducts(TransactionCase):
     """Tagging a copy product must not fight the MDM.
 
@@ -512,35 +509,39 @@ class TestCopyProducts(TransactionCase):
     """
 
     def test_a_copy_product_carries_its_dimensions(self):
-        product = self.env['product.template'].create({
-            'name': "Photocopie A4 N&B Recto",
-            'type': 'consu',
-            'list_price': 10.0,
-            'available_in_pos': True,
-            'copy_service': 'photocopie',
-            'copy_format': 'a4',
-            'copy_color': 'bw',
-            'copy_sides': 'recto',
-        })
-        self.assertEqual(product.copy_service, 'photocopie')
-        self.assertEqual(product.copy_format, 'a4')
+        product = self.env["product.template"].create(
+            {
+                "name": "Photocopie A4 N&B Recto",
+                "type": "consu",
+                "list_price": 10.0,
+                "available_in_pos": True,
+                "copy_service": "photocopie",
+                "copy_format": "a4",
+                "copy_color": "bw",
+                "copy_sides": "recto",
+            }
+        )
+        self.assertEqual(product.copy_service, "photocopie")
+        self.assertEqual(product.copy_format, "a4")
 
     def test_an_ordinary_product_is_untouched(self):
-        product = self.env['product.template'].create({'name': "Stylo"})
+        product = self.env["product.template"].create({"name": "Stylo"})
         self.assertFalse(product.copy_service)
         self.assertFalse(product.copy_format)
 
     def test_tagging_does_not_trip_the_mdm_rule(self):
         """The whole reason these are fields and not attributes."""
-        product = self.env['product.template'].create({
-            'name': "Photocopie A3 Couleur Recto-verso",
-            'type': 'consu',
-            'list_price': 30.0,
-            'copy_service': 'photocopie',
-            'copy_format': 'a3',
-            'copy_color': 'color',
-            'copy_sides': 'duplex',
-        })
+        product = self.env["product.template"].create(
+            {
+                "name": "Photocopie A3 Couleur Recto-verso",
+                "type": "consu",
+                "list_price": 30.0,
+                "copy_service": "photocopie",
+                "copy_format": "a3",
+                "copy_color": "color",
+                "copy_sides": "duplex",
+            }
+        )
         # No ValidationError: nothing here creates an attribute line.
         self.assertTrue(product.id)
 ```
@@ -567,10 +568,10 @@ from . import product_template
 `his_pos_copy_center/__manifest__.py`:
 ```python
 {
-    'name': 'HIS POS Copy Center',
-    'version': '19.0.1.0.0',
-    'summary': 'One dialog to price a copy job, instead of one popup per dimension',
-    'description': """
+    "name": "HIS POS Copy Center",
+    "version": "19.0.1.0.0",
+    "summary": "One dialog to price a copy job, instead of one popup per dimension",
+    "description": """
 HIS POS Copy Center
 ===================
 A copy is priced by its dimensions - copies, format, colour, sides - and stock
@@ -585,27 +586,22 @@ POS makes the cashier answer one popup per dimension, per document.
 * A product carrying no copy_service is invisible to the builder and behaves
   exactly as it does today.
 """,
-    'author': 'Abdo Chabouti',
-    'category': 'Sales/Point of Sale',
-    'license': 'LGPL-3',
-
-    'depends': ['his_pos_ui'],
-
-    'data': [
-        'views/product_template_views.xml',
+    "author": "Abdo Chabouti",
+    "category": "Sales/Point of Sale",
+    "license": "LGPL-3",
+    "depends": ["his_pos_ui"],
+    "data": [
+        "views/product_template_views.xml",
     ],
-
-    'demo': [
-        'demo/copy_products.xml',
+    "demo": [
+        "demo/copy_products.xml",
     ],
-
-    'assets': {
-        'point_of_sale._assets_pos': [
-            'his_pos_copy_center/static/src/**/*',
+    "assets": {
+        "point_of_sale._assets_pos": [
+            "his_pos_copy_center/static/src/**/*",
         ],
     },
-
-    'installable': True,
+    "installable": True,
 }
 ```
 
@@ -629,20 +625,17 @@ class ProductTemplate(models.Model):
     Nothing here prices anything. The price is the product's own.
     """
 
-    _inherit = 'product.template'
+    _inherit = "product.template"
 
     copy_service = fields.Selection(
-        [('photocopie', "Photocopie"), ('impression', "Impression")],
+        [("photocopie", "Photocopie"), ("impression", "Impression")],
         string="Copy Service",
         help="Marks this product as a copy service the Copy Center job builder "
-             "can offer. Leave empty for every other product.",
+        "can offer. Leave empty for every other product.",
     )
-    copy_format = fields.Selection(
-        [('a4', "A4"), ('a3', "A3")], string="Copy Format")
-    copy_color = fields.Selection(
-        [('bw', "N&B"), ('color', "Couleur")], string="Copy Colour")
-    copy_sides = fields.Selection(
-        [('recto', "Recto"), ('duplex', "Recto-verso")], string="Copy Sides")
+    copy_format = fields.Selection([("a4", "A4"), ("a3", "A3")], string="Copy Format")
+    copy_color = fields.Selection([("bw", "N&B"), ("color", "Couleur")], string="Copy Colour")
+    copy_sides = fields.Selection([("recto", "Recto"), ("duplex", "Recto-verso")], string="Copy Sides")
 ```
 
 - [ ] **Step 5: Expose the fields in the product form**
@@ -1335,7 +1328,7 @@ from odoo.tests import tagged
 from odoo.addons.point_of_sale.tests.common import CommonPosTest
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestCopyJobTour(CommonPosTest):
     """The builder, driven the way a cashier drives it.
 
@@ -1346,8 +1339,8 @@ class TestCopyJobTour(CommonPosTest):
     """
 
     def test_copy_job_adds_one_line(self):
-        config = self.env.ref('his_stock_mdm.pos_config_copy_center')
-        config.write({'his_pos_theme': 'copy_center'})
+        config = self.env.ref("his_stock_mdm.pos_config_copy_center")
+        config.write({"his_pos_theme": "copy_center"})
         config.with_user(self.env.user).open_ui()
         self.start_pos_tour("his_copy_job_tour", login="accountman", pos_config=config)
 ```

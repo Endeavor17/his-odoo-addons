@@ -13,35 +13,42 @@ chiffre deduit ne peut pas etre vide.
 his.engagement garde ses booleens paye / non paye. Le jour ou les montants
 comptent vraiment, c'est un chantier `account` ; ce fichier ne l'ouvre pas.
 """
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
 class HisTarif(models.Model):
-    _name = 'his.tarif'
+    _name = "his.tarif"
     _description = "Tarif par specialite"
-    _order = 'cycle, specialite_id'
+    _order = "cycle, specialite_id"
 
     specialite_id = fields.Many2one(
-        'his.specialite', string="Specialite", required=True,
-        ondelete='cascade',
+        "his.specialite",
+        string="Specialite",
+        required=True,
+        ondelete="cascade",
     )
     # Related et non recopie : le cycle vit sur la specialite, qui le porte
     # deja en champ requis. Le dupliquer donnerait deux verites.
     cycle = fields.Selection(
-        related='specialite_id.cycle', string="Cycle", store=True, readonly=True,
+        related="specialite_id.cycle",
+        string="Cycle",
+        store=True,
+        readonly=True,
     )
     frais_inscription = fields.Float(
-        string="Frais d'inscription", digits=(12, 2),
-        help="Les frais non remboursables. C'est leur encaissement qui gagne "
-             "le lead.",
+        string="Frais d'inscription",
+        digits=(12, 2),
+        help="Les frais non remboursables. C'est leur encaissement qui gagne le lead.",
     )
     frais_scolarite = fields.Float(
-        string="Frais de scolarite", digits=(12, 2),
+        string="Frais de scolarite",
+        digits=(12, 2),
     )
     active = fields.Boolean(default=True)
 
-    @api.constrains('specialite_id', 'active')
+    @api.constrains("specialite_id", "active")
     def _check_un_seul_tarif_actif(self):
         """Deux tarifs actifs pour la meme specialite donneraient deux revenus
         possibles, et le cockpit en choisirait un au hasard.
@@ -52,16 +59,19 @@ class HisTarif(models.Model):
         for tarif in self:
             if not tarif.active:
                 continue
-            if self.search_count([
-                ('specialite_id', '=', tarif.specialite_id.id),
-                ('active', '=', True),
-                ('id', '!=', tarif.id),
-            ]):
-                raise ValidationError(_(
-                    "Un tarif actif existe deja pour « %(spec)s ». "
-                    "Desactivez-le avant d'en creer un nouveau.",
-                    spec=tarif.specialite_id.display_name,
-                ))
+            if self.search_count(
+                [
+                    ("specialite_id", "=", tarif.specialite_id.id),
+                    ("active", "=", True),
+                    ("id", "!=", tarif.id),
+                ]
+            ):
+                raise ValidationError(
+                    _(
+                        "Un tarif actif existe deja pour « %(spec)s ». Desactivez-le avant d'en creer un nouveau.",
+                        spec=tarif.specialite_id.display_name,
+                    )
+                )
 
     @api.model
     def _montant_pour(self, specialite):
@@ -73,5 +83,5 @@ class HisTarif(models.Model):
         """
         if not specialite:
             return 0.0
-        tarif = self.search([('specialite_id', '=', specialite.id)], limit=1)
+        tarif = self.search([("specialite_id", "=", specialite.id)], limit=1)
         return tarif.frais_inscription or 0.0

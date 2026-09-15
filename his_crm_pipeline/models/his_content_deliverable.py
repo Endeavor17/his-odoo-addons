@@ -17,61 +17,74 @@ que his.document.type dans his_admission, et pour la meme raison : ajouter
 « podcast » ou « affiche » est une decision de l'equipe Contenu, pas une
 livraison de code.
 """
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
 STATUT_LIVRABLE = [
-    ('a_faire', "A faire"),
-    ('en_cours', "En cours"),
-    ('revision_interne', "Revision interne"),
-    ('approuve', "Approuve"),
-    ('rejete', "Rejete"),
+    ("a_faire", "A faire"),
+    ("en_cours", "En cours"),
+    ("revision_interne", "Revision interne"),
+    ("approuve", "Approuve"),
+    ("rejete", "Rejete"),
 ]
 
 
 class HisContentDeliverableType(models.Model):
-    _name = 'his.content.deliverable.type'
+    _name = "his.content.deliverable.type"
     _description = "Type de livrable de contenu"
-    _order = 'sequence, name'
+    _order = "sequence, name"
 
     name = fields.Char(string="Type", required=True, translate=True)
     code = fields.Char(
-        string="Code", required=True,
+        string="Code",
+        required=True,
         help="Identifiant technique stable. Le libelle peut changer, pas lui.",
     )
     sequence = fields.Integer(string="Sequence", default=10)
     active = fields.Boolean(string="Actif", default=True)
 
     _code_unique = models.Constraint(
-        'unique(code)', "Un autre type de livrable porte deja ce code.",
+        "unique(code)",
+        "Un autre type de livrable porte deja ce code.",
     )
 
 
 class HisContentDeliverable(models.Model):
-    _name = 'his.content.deliverable'
+    _name = "his.content.deliverable"
     _description = "Livrable de contenu"
-    _order = 'lead_id, sequence, id'
+    _order = "lead_id, sequence, id"
 
     lead_id = fields.Many2one(
-        'crm.lead', string="Demande", required=True, index=True,
-        ondelete='cascade',
+        "crm.lead",
+        string="Demande",
+        required=True,
+        index=True,
+        ondelete="cascade",
     )
     type_id = fields.Many2one(
-        'his.content.deliverable.type', string="Type", required=True,
-        ondelete='restrict',
+        "his.content.deliverable.type",
+        string="Type",
+        required=True,
+        ondelete="restrict",
     )
-    sequence = fields.Integer(related='type_id.sequence', store=True)
+    sequence = fields.Integer(related="type_id.sequence", store=True)
 
     statut = fields.Selection(
-        STATUT_LIVRABLE, string="Statut", default='a_faire', required=True,
+        STATUT_LIVRABLE,
+        string="Statut",
+        default="a_faire",
+        required=True,
     )
     # Le domaine ne propose que ceux qui font le travail : « Production »
     # implique « Demandeur », et « Priorisation »/« Approbation »/Direction
     # impliquent « Production ». Un simple demandeur en est donc exclu — il
     # commande du contenu, il n'en produit pas.
     assignee_id = fields.Many2one(
-        'res.users', string="Assigne a", index=True,
-        domain=lambda self: [('all_group_ids', 'in', self._groupes_producteurs())],
+        "res.users",
+        string="Assigne a",
+        index=True,
+        domain=lambda self: [("all_group_ids", "in", self._groupes_producteurs())],
     )
 
     # --- Dates ---------------------------------------------------------------
@@ -84,25 +97,31 @@ class HisContentDeliverable(models.Model):
     date_fin = fields.Datetime(string="Termine le", readonly=True, copy=False)
 
     date_echeance = fields.Date(
-        related='lead_id.date_deadline', store=True, string="Echeance",
+        related="lead_id.date_deadline",
+        store=True,
+        string="Echeance",
     )
     en_retard = fields.Boolean(
-        string="En retard", compute='_compute_en_retard', store=True,
+        string="En retard",
+        compute="_compute_en_retard",
+        store=True,
     )
 
     # --- Axes d'analyse ------------------------------------------------------
     # Recopies de la demande et STOCKES : un tableau de bord groupe par marque
     # sans jointure, et l'outil de BI lira la table de faits telle quelle.
 
-    marque = fields.Selection(related='lead_id.marque', store=True, string="Marque")
-    team_id = fields.Many2one(related='lead_id.team_id', store=True, string="Equipe")
-    stage_id = fields.Many2one(related='lead_id.stage_id', store=True, string="Etape")
+    marque = fields.Selection(related="lead_id.marque", store=True, string="Marque")
+    team_id = fields.Many2one(related="lead_id.team_id", store=True, string="Equipe")
+    stage_id = fields.Many2one(related="lead_id.stage_id", store=True, string="Etape")
     demandeur_id = fields.Many2one(
-        related='lead_id.demandeur_id', store=True, string="Demandeur",
+        related="lead_id.demandeur_id",
+        store=True,
+        string="Demandeur",
     )
 
     _type_unique_par_demande = models.Constraint(
-        'unique(lead_id, type_id)',
+        "unique(lead_id, type_id)",
         "Cette demande porte deja un livrable de ce type.",
     )
 
@@ -110,11 +129,12 @@ class HisContentDeliverable(models.Model):
     def _groupes_producteurs(self):
         """Les groupes dont les membres peuvent porter un livrable."""
         groupe = self.env.ref(
-            'his_crm_pipeline.group_contenu_production', raise_if_not_found=False,
+            "his_crm_pipeline.group_contenu_production",
+            raise_if_not_found=False,
         )
         return groupe.ids if groupe else []
 
-    @api.constrains('assignee_id')
+    @api.constrains("assignee_id")
     def _verifier_assignee_produit_du_contenu(self):
         """Le domaine du champ ne protege que l'ecran.
 
@@ -126,30 +146,34 @@ class HisContentDeliverable(models.Model):
         for livrable in self:
             assigne = livrable.assignee_id
             if assigne and not assigne.has_group(
-                'his_crm_pipeline.group_contenu_production',
+                "his_crm_pipeline.group_contenu_production",
             ):
-                raise ValidationError(_(
-                    "%(nom)s ne peut pas recevoir le livrable "
-                    "« %(livrable)s » : ce compte ne porte aucun role de "
-                    "Production Contenu et n'aurait meme pas acces a la "
-                    "demande.",
-                    nom=assigne.display_name, livrable=livrable.display_name,
-                ))
+                raise ValidationError(
+                    _(
+                        "%(nom)s ne peut pas recevoir le livrable "
+                        "« %(livrable)s » : ce compte ne porte aucun role de "
+                        "Production Contenu et n'aurait meme pas acces a la "
+                        "demande.",
+                        nom=assigne.display_name,
+                        livrable=livrable.display_name,
+                    )
+                )
 
-    @api.depends('date_echeance', 'date_fin', 'statut')
+    @api.depends("date_echeance", "date_fin", "statut")
     def _compute_en_retard(self):
         aujourdhui = fields.Date.context_today(self)
         for livrable in self:
-            if not livrable.date_echeance or livrable.statut == 'approuve':
+            if not livrable.date_echeance or livrable.statut == "approuve":
                 livrable.en_retard = False
             else:
                 livrable.en_retard = livrable.date_echeance < aujourdhui
 
-    @api.depends('lead_id.name', 'type_id.name')
+    @api.depends("lead_id.name", "type_id.name")
     def _compute_display_name(self):
         for livrable in self:
             livrable.display_name = "%s / %s" % (
-                livrable.lead_id.name or '', livrable.type_id.name or '',
+                livrable.lead_id.name or "",
+                livrable.type_id.name or "",
             )
 
     # --- Horodatage ----------------------------------------------------------
@@ -163,16 +187,16 @@ class HisContentDeliverable(models.Model):
         """
         maintenant = fields.Datetime.now()
         pose = {}
-        if vals.get('assignee_id') and not self.date_assignation:
-            pose['date_assignation'] = maintenant
-        statut = vals.get('statut')
-        if statut and statut != 'a_faire' and not self.date_debut:
-            pose['date_debut'] = maintenant
-        if statut == 'approuve':
-            pose['date_fin'] = maintenant
-        elif statut and statut != 'approuve' and self.date_fin:
+        if vals.get("assignee_id") and not self.date_assignation:
+            pose["date_assignation"] = maintenant
+        statut = vals.get("statut")
+        if statut and statut != "a_faire" and not self.date_debut:
+            pose["date_debut"] = maintenant
+        if statut == "approuve":
+            pose["date_fin"] = maintenant
+        elif statut and statut != "approuve" and self.date_fin:
             # Un livrable renvoye en revision n'est plus termine.
-            pose['date_fin'] = False
+            pose["date_fin"] = False
         return pose
 
     # --- Garde-fou de capacite ----------------------------------------------
@@ -200,18 +224,18 @@ class HisContentDeliverable(models.Model):
 
     def _verifier_capacites(self, vals):
         user = self.env.user
-        if user.has_group('his_crm_pipeline.group_contenu_priorisation'):
+        if user.has_group("his_crm_pipeline.group_contenu_priorisation"):
             return
-        if 'assignee_id' in vals:
-            raise AccessError(_(
-                "Affecter un livrable demande le role « Priorisation »."
-            ))
-        if 'statut' in vals:
+        if "assignee_id" in vals:
+            raise AccessError(_("Affecter un livrable demande le role « Priorisation »."))
+        if "statut" in vals:
             for livrable in self:
                 if livrable.assignee_id != user:
-                    raise AccessError(_(
-                        "Le livrable « %(livrable)s » n'est pas le votre. Seule "
-                        "la personne a qui il est assigne fait avancer son "
-                        "statut, ou le role « Priorisation » qui arbitre.",
-                        livrable=livrable.display_name,
-                    ))
+                    raise AccessError(
+                        _(
+                            "Le livrable « %(livrable)s » n'est pas le votre. Seule "
+                            "la personne a qui il est assigne fait avancer son "
+                            "statut, ou le role « Priorisation » qui arbitre.",
+                            livrable=livrable.display_name,
+                        )
+                    )

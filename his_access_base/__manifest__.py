@@ -1,10 +1,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
-    'name': "Socle de controle d'acces",
-    'version': '19.0.1.0.0',
-    'category': 'Technical',
-    'summary': "Politique de droits du groupe, attribution par le poste, et les tests qui la tiennent",
-    'description': """
+    "name": "Socle de controle d'acces",
+    "version": "19.0.1.0.0",
+    "category": "Technical",
+    "summary": "Politique de droits du groupe, attribution par le poste, et les tests qui la tiennent",
+    "description": """
 Le socle de droits commun a tous les modules du groupe.
 
 Il ne porte aucun metier. Il porte trois choses :
@@ -25,19 +25,19 @@ Il ne porte aucun metier. Il porte trois choses :
 Aucun autre module ne depend de celui-ci : il s'installe a cote. C'est ce qui
 lui permet de surveiller des modules qui ne le connaissent pas.
     """,
-    'author': "Groupe HIS-HTC-IRA",
-    'license': 'LGPL-3',
-    'depends': [
-        'base',
-        'hr',
-        'contacts',
+    "author": "Groupe HIS-HTC-IRA",
+    "license": "LGPL-3",
+    "depends": [
+        "base",
+        "hr",
+        "contacts",
     ],
-    'data': [
-        'security/his_access_groups.xml',
-        'security/ir.model.access.csv',
-        'views/socle_menus.xml',
-        'views/hr_job_views.xml',
-        'views/revue_acces_views.xml',
+    "data": [
+        "security/his_access_groups.xml",
+        "security/ir.model.access.csv",
+        "views/socle_menus.xml",
+        "views/hr_job_views.xml",
+        "views/revue_acces_views.xml",
     ],
-    'installable': True,
+    "installable": True,
 }

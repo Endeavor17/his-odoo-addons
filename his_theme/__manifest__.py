@@ -1,8 +1,8 @@
 {
-    'name': 'HIS Theme',
-    'version': '19.0.1.0.0',
-    'summary': 'The university identity — petrol teal, gold, Figtree — across the client, the till and the reports',
-    'description': """
+    "name": "HIS Theme",
+    "version": "19.0.1.0.0",
+    "summary": "The university identity — petrol teal, gold, Figtree — across the client, the till and the reports",
+    "description": """
 HIS Theme
 =========
 One place for the group's visual identity, so no other module carries a colour.
@@ -24,33 +24,29 @@ One place for the group's visual identity, so no other module carries a colour.
 Depends on nothing but web, and the POS rules are ignored when point_of_sale is
 not installed — so this can be dropped into any database of the group's.
 """,
-    'author': 'Abdo Chabouti',
-    'category': 'Theme',
-    'license': 'LGPL-3',
-
-    'depends': ['web'],
-
-    'data': [
-        'views/fonts.xml',
+    "author": "Abdo Chabouti",
+    "category": "Theme",
+    "license": "LGPL-3",
+    "depends": ["web"],
+    "data": [
+        "views/fonts.xml",
     ],
-
-    'assets': {
+    "assets": {
         # Prepended, not appended: these must be read before Odoo's own
         # primary_variables.scss to win its `!default` assignments.
-        'web._assets_primary_variables': [
-            ('prepend', 'his_theme/static/src/scss/primary_variables.scss'),
+        "web._assets_primary_variables": [
+            ("prepend", "his_theme/static/src/scss/primary_variables.scss"),
         ],
-        'web.assets_backend': [
-            'his_theme/static/src/scss/backend.scss',
+        "web.assets_backend": [
+            "his_theme/static/src/scss/backend.scss",
         ],
         # Its own bundle, its own copy of the tokens. Silently ignored on a
         # database without point_of_sale.
-        'point_of_sale._assets_pos': [
-            'his_theme/static/src/scss/pos.scss',
+        "point_of_sale._assets_pos": [
+            "his_theme/static/src/scss/pos.scss",
         ],
     },
-
-    'installable': True,
-    'application': False,
-    'auto_install': False,
+    "installable": True,
+    "application": False,
+    "auto_install": False,
 }

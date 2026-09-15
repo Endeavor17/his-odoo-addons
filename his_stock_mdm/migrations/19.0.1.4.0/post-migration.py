@@ -8,9 +8,10 @@ appliquee par write() ; cette passe rattrape les prix saisis avant elle
 Par l'ORM et non en SQL : write_date doit bouger, c'est ce qui signale le
 changement aux caisses.
 """
+
 import logging
 
-from odoo import api, SUPERUSER_ID
+from odoo import SUPERUSER_ID, api
 
 _logger = logging.getLogger(__name__)
 
@@ -18,12 +19,15 @@ _logger = logging.getLogger(__name__)
 def migrate(cr, version):
     env = api.Environment(cr, SUPERUSER_ID, {})
 
-    a_vendre = env['product.template'].search([
-        ('available_in_pos', '=', True),
-        ('sale_ok', '=', False),
-        ('list_price', '>', 0),
-    ])
+    a_vendre = env["product.template"].search(
+        [
+            ("available_in_pos", "=", True),
+            ("sale_ok", "=", False),
+            ("list_price", ">", 0),
+        ]
+    )
     if a_vendre:
-        a_vendre.write({'sale_ok': True})
-    _logger.info("MDM regle 3 bis : %d article(s) de caisse mis en vente %s",
-                 len(a_vendre), a_vendre.mapped('default_code'))
+        a_vendre.write({"sale_ok": True})
+    _logger.info(
+        "MDM regle 3 bis : %d article(s) de caisse mis en vente %s", len(a_vendre), a_vendre.mapped("default_code")
+    )

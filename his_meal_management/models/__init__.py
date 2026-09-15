@@ -1,7 +1,1 @@
-from . import his_person
-from . import product_template
-from . import meal_card
-from . import meal_subscription
-from . import meal_transaction
-from . import res_partner
-from . import pos_order
+from . import his_person, meal_card, meal_subscription, meal_transaction, pos_order, product_template, res_partner

@@ -18,19 +18,21 @@ def pre_init_hook(env):
     """
     from .models.product_category import MDM_CATEGORIES
 
-    Category = env['product.category']
+    Category = env["product.category"]
     cache = {}
     for path in MDM_CATEGORIES.values():
         parent = None
-        chemin = ''
-        for segment in path.split(' / '):
-            chemin = f'{chemin} / {segment}' if chemin else segment
+        chemin = ""
+        for segment in path.split(" / "):
+            chemin = f"{chemin} / {segment}" if chemin else segment
             categorie = cache.get(chemin)
             if not categorie:
-                domaine = [('name', '=', segment),
-                           ('parent_id', '=', parent.id if parent else False)]
-                categorie = Category.search(domaine, limit=1) or Category.create({
-                    'name': segment, 'parent_id': parent.id if parent else False,
-                })
+                domaine = [("name", "=", segment), ("parent_id", "=", parent.id if parent else False)]
+                categorie = Category.search(domaine, limit=1) or Category.create(
+                    {
+                        "name": segment,
+                        "parent_id": parent.id if parent else False,
+                    }
+                )
                 cache[chemin] = categorie
             parent = categorie

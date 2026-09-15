@@ -18,23 +18,24 @@ peut vraiment faire. Un compte qui n'a rien d'autre se retrouve sans acces au
 CRM — ce qui est exactement l'etat d'un compte a qui aucun role n'a encore ete
 attribue.
 """
+
 from odoo import SUPERUSER_ID, api
 
 GROUPES_A_RETIRER = (
-    'sales_team.group_sale_salesman',
-    'sales_team.group_sale_salesman_all_leads',
+    "sales_team.group_sale_salesman",
+    "sales_team.group_sale_salesman_all_leads",
 )
 
 
 def migrate(cr, version):
     env = api.Environment(cr, SUPERUSER_ID, {})
 
-    roles = env['res.groups']
+    roles = env["res.groups"]
     for xmlid in (
-        'his_crm_pipeline.group_admissions_acquisition',
-        'his_crm_pipeline.group_admissions_conseiller',
-        'his_crm_pipeline.group_admissions_responsable',
-        'his_crm_pipeline.group_admissions_orientation',
+        "his_crm_pipeline.group_admissions_acquisition",
+        "his_crm_pipeline.group_admissions_conseiller",
+        "his_crm_pipeline.group_admissions_responsable",
+        "his_crm_pipeline.group_admissions_orientation",
     ):
         groupe = env.ref(xmlid, raise_if_not_found=False)
         if groupe:
@@ -47,7 +48,7 @@ def migrate(cr, version):
         # L'administrateur garde ses acces : le lui retirer fermerait la porte
         # a celui-la meme qui doit distribuer les nouveaux roles.
         concernes = groupe.user_ids.filtered(
-            lambda u: not u.has_group('base.group_system') and not (u.group_ids & roles),
+            lambda u: not u.has_group("base.group_system") and not (u.group_ids & roles),
         )
         if concernes:
-            concernes.write({'group_ids': [(3, groupe.id)]})
+            concernes.write({"group_ids": [(3, groupe.id)]})

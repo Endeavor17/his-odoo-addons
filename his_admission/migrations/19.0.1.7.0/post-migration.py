@@ -11,17 +11,21 @@ On remet donc le drapeau a False et on ecrit le domaine une fois. Les
 livraisons suivantes passeront par le XML, comme une regle de securite doit
 pouvoir le faire.
 """
+
 from odoo import SUPERUSER_ID, api
 
 # Les etapes a partir desquelles l'Admission suit le candidat. Nommees, et non
 # bornees par une sequence : le pipeline Production Contenu porte des sequences
 # bien plus hautes, et un simple seuil lui ouvrait ses demandes.
 ETAPES = (
-    'stage_vente_contact_etabli', 'stage_vente_accompagnement',
-    'stage_vente_evaluation_psy', 'stage_vente_dossier',
-    'stage_vente_pre_admis', 'stage_vente_frais_payes',
+    "stage_vente_contact_etabli",
+    "stage_vente_accompagnement",
+    "stage_vente_evaluation_psy",
+    "stage_vente_dossier",
+    "stage_vente_pre_admis",
+    "stage_vente_frais_payes",
 )
-EQUIPES = ('crm_team_ventes', 'crm_team_orientation')
+EQUIPES = ("crm_team_ventes", "crm_team_orientation")
 
 
 def migrate(cr, version):
@@ -29,20 +33,29 @@ def migrate(cr, version):
         return
     env = api.Environment(cr, SUPERUSER_ID, {})
 
-    donnee = env['ir.model.data'].sudo().search([
-        ('module', '=', 'his_admission'),
-        ('name', '=', 'rule_crm_lead_admission'),
-    ], limit=1)
+    donnee = (
+        env["ir.model.data"]
+        .sudo()
+        .search(
+            [
+                ("module", "=", "his_admission"),
+                ("name", "=", "rule_crm_lead_admission"),
+            ],
+            limit=1,
+        )
+    )
     if not donnee:
         return
     donnee.noupdate = False
 
-    regle = env['ir.rule'].sudo().browse(donnee.res_id)
+    regle = env["ir.rule"].sudo().browse(donnee.res_id)
     if not regle.exists():
         return
-    equipes = [env.ref('his_crm_pipeline.%s' % x).id for x in EQUIPES]
-    etapes = [env.ref('his_crm_pipeline.%s' % x).id for x in ETAPES]
-    regle.domain_force = str([
-        ('team_id', 'in', equipes),
-        ('stage_id', 'in', etapes),
-    ])
+    equipes = [env.ref("his_crm_pipeline.%s" % x).id for x in EQUIPES]
+    etapes = [env.ref("his_crm_pipeline.%s" % x).id for x in ETAPES]
+    regle.domain_force = str(
+        [
+            ("team_id", "in", equipes),
+            ("stage_id", "in", etapes),
+        ]
+    )

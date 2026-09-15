@@ -19,7 +19,7 @@ which exists in this module).
 
 from collections import namedtuple
 
-ProvisioningResult = namedtuple('ProvisioningResult', ['success', 'message'])
+ProvisioningResult = namedtuple("ProvisioningResult", ["success", "message"])
 
 
 class InsiteAccountProvisioningService:
@@ -31,6 +31,6 @@ class InsiteAccountProvisioningService:
         return ProvisioningResult(
             success=False,
             message="Account/email provisioning is not configured. No Google "
-                    "Workspace credentials are set up for this deployment — "
-                    "complete this step manually, then mark it done.",
+            "Workspace credentials are set up for this deployment — "
+            "complete this step manually, then mark it done.",
         )

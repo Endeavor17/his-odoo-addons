@@ -63,38 +63,45 @@ Expected: a signature containing `number`, `country_code`, `country_phone_code`,
 Append to `his_crm_pipeline/tests/test_pipeline.py`:
 
 ```python
-    # --- Telephone et lien WhatsApp -----------------------------------------
+# --- Telephone et lien WhatsApp -----------------------------------------
 
-    def test_le_numero_algerien_est_normalise_en_e164(self):
-        """Les trois formes saisies par les candidats donnent le meme numero.
 
-        C'est le lien WhatsApp qui en depend : wa.me refuse un zero initial et
-        refuse le signe plus.
-        """
-        for saisi in ('0555123456', '+213555123456', '00213555123456'):
-            lead = self.env['crm.lead'].create({
-                'name': "Candidat %s" % saisi,
-                'team_id': self.team_ventes.id,
-                'phone': saisi,
-            })
-            self.assertEqual(
-                lead.telephone_e164, '+213555123456',
-                "« %s » n'a pas ete normalise" % saisi,
-            )
-            self.assertEqual(
-                lead.whatsapp_url,
-                'https://wa.me/213555123456',
-                "Le lien WhatsApp doit porter les chiffres seuls",
-            )
+def test_le_numero_algerien_est_normalise_en_e164(self):
+    """Les trois formes saisies par les candidats donnent le meme numero.
 
-    def test_sans_telephone_il_n_y_a_pas_de_lien(self):
-        """Un lien vide plutot qu'un lien casse : la carte le masque."""
-        lead = self.env['crm.lead'].create({
-            'name': "Sans telephone",
-            'team_id': self.team_ventes.id,
-        })
-        self.assertFalse(lead.telephone_e164)
-        self.assertFalse(lead.whatsapp_url)
+    C'est le lien WhatsApp qui en depend : wa.me refuse un zero initial et
+    refuse le signe plus.
+    """
+    for saisi in ("0555123456", "+213555123456", "00213555123456"):
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Candidat %s" % saisi,
+                "team_id": self.team_ventes.id,
+                "phone": saisi,
+            }
+        )
+        self.assertEqual(
+            lead.telephone_e164,
+            "+213555123456",
+            "« %s » n'a pas ete normalise" % saisi,
+        )
+        self.assertEqual(
+            lead.whatsapp_url,
+            "https://wa.me/213555123456",
+            "Le lien WhatsApp doit porter les chiffres seuls",
+        )
+
+
+def test_sans_telephone_il_n_y_a_pas_de_lien(self):
+    """Un lien vide plutot qu'un lien casse : la carte le masque."""
+    lead = self.env["crm.lead"].create(
+        {
+            "name": "Sans telephone",
+            "team_id": self.team_ventes.id,
+        }
+    )
+    self.assertFalse(lead.telephone_e164)
+    self.assertFalse(lead.whatsapp_url)
 ```
 
 - [ ] **Step 3: Run the test to verify it fails**
@@ -137,60 +144,63 @@ from odoo.addons.phone_validation.tools import phone_validation
 Then add, after `date_visite_campus` (around line 45):
 
 ```python
-    # --- Joindre le candidat ------------------------------------------------
+# --- Joindre le candidat ------------------------------------------------
 
-    # NON STOCKES. Ces deux champs ne sont qu'une mise en forme de `phone` :
-    # les stocker creerait un second endroit ou vit le numero, et deux
-    # versions du meme numero finissent toujours par diverger. Le cout est nul,
-    # le calcul est une expression reguliere sur une chaine deja en memoire.
-    telephone_e164 = fields.Char(
-        string="Telephone (E.164)", compute='_compute_telephone_e164',
-        help="Le numero au format international, seule forme que WhatsApp accepte.",
-    )
-    whatsapp_url = fields.Char(
-        string="Lien WhatsApp", compute='_compute_telephone_e164',
-    )
+# NON STOCKES. Ces deux champs ne sont qu'une mise en forme de `phone` :
+# les stocker creerait un second endroit ou vit le numero, et deux
+# versions du meme numero finissent toujours par diverger. Le cout est nul,
+# le calcul est une expression reguliere sur une chaine deja en memoire.
+telephone_e164 = fields.Char(
+    string="Telephone (E.164)",
+    compute="_compute_telephone_e164",
+    help="Le numero au format international, seule forme que WhatsApp accepte.",
+)
+whatsapp_url = fields.Char(
+    string="Lien WhatsApp",
+    compute="_compute_telephone_e164",
+)
 
-    @api.depends('phone', 'mobile', 'country_id')
-    def _compute_telephone_e164(self):
-        """Normalise le numero saisi, quelle que soit la forme.
 
-        Les candidats saisissent « 0555... », « +213555... » ou
-        « 00213555... ». wa.me refuse le zero initial ET le signe plus : sans
-        normalisation, deux candidats sur trois donnent un lien mort.
+@api.depends("phone", "mobile", "country_id")
+def _compute_telephone_e164(self):
+    """Normalise le numero saisi, quelle que soit la forme.
 
-        L'Algerie par defaut, et non le pays de la societe : ce pipeline
-        recrute en Algerie. country_id reste prioritaire quand il est
-        renseigne, pour le candidat etranger.
-        """
-        for lead in self:
-            brut = lead.phone or getattr(lead, 'mobile', False)
-            if not brut:
-                lead.telephone_e164 = False
-                lead.whatsapp_url = False
-                continue
-            pays = lead.country_id
-            try:
-                e164 = phone_validation.phone_format(
-                    brut,
-                    pays.code or 'DZ',
-                    pays.phone_code or 213,
-                    force_format='E164',
-                    raise_exception=False,
-                )
-            except Exception:
-                # Un numero illisible n'est pas une erreur bloquante : la
-                # conseillere le corrigera. Perdre la fiche pour un numero mal
-                # tape serait hors de proportion.
-                e164 = False
-            # phone_format rend la saisie telle quelle quand il echoue : sans
-            # ce controle, « n'importe quoi » deviendrait une URL WhatsApp.
-            if not e164 or not e164.startswith('+'):
-                lead.telephone_e164 = False
-                lead.whatsapp_url = False
-                continue
-            lead.telephone_e164 = e164
-            lead.whatsapp_url = 'https://wa.me/%s' % e164[1:]
+    Les candidats saisissent « 0555... », « +213555... » ou
+    « 00213555... ». wa.me refuse le zero initial ET le signe plus : sans
+    normalisation, deux candidats sur trois donnent un lien mort.
+
+    L'Algerie par defaut, et non le pays de la societe : ce pipeline
+    recrute en Algerie. country_id reste prioritaire quand il est
+    renseigne, pour le candidat etranger.
+    """
+    for lead in self:
+        brut = lead.phone or getattr(lead, "mobile", False)
+        if not brut:
+            lead.telephone_e164 = False
+            lead.whatsapp_url = False
+            continue
+        pays = lead.country_id
+        try:
+            e164 = phone_validation.phone_format(
+                brut,
+                pays.code or "DZ",
+                pays.phone_code or 213,
+                force_format="E164",
+                raise_exception=False,
+            )
+        except Exception:
+            # Un numero illisible n'est pas une erreur bloquante : la
+            # conseillere le corrigera. Perdre la fiche pour un numero mal
+            # tape serait hors de proportion.
+            e164 = False
+        # phone_format rend la saisie telle quelle quand il echoue : sans
+        # ce controle, « n'importe quoi » deviendrait une URL WhatsApp.
+        if not e164 or not e164.startswith("+"):
+            lead.telephone_e164 = False
+            lead.whatsapp_url = False
+            continue
+        lead.telephone_e164 = e164
+        lead.whatsapp_url = "https://wa.me/%s" % e164[1:]
 ```
 
 - [ ] **Step 6: Run the test to verify it passes**
@@ -231,68 +241,87 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 Append to `his_crm_pipeline/tests/test_pipeline.py`:
 
 ```python
-    # --- Boucle d'appel ------------------------------------------------------
+# --- Boucle d'appel ------------------------------------------------------
 
-    def _lead_pris_en_charge(self):
-        return self.env['crm.lead'].create({
-            'name': "Candidat a rappeler",
-            'team_id': self.team_ventes.id,
-            'stage_id': self.stage_pris_en_charge.id,
-            'phone': '0555123456',
-        })
 
-    def test_une_tentative_sans_reponse_incremente_et_replanifie(self):
-        lead = self._lead_pris_en_charge()
-        self.assertEqual(lead.tentatives_appel, 0)
+def _lead_pris_en_charge(self):
+    return self.env["crm.lead"].create(
+        {
+            "name": "Candidat a rappeler",
+            "team_id": self.team_ventes.id,
+            "stage_id": self.stage_pris_en_charge.id,
+            "phone": "0555123456",
+        }
+    )
 
+
+def test_une_tentative_sans_reponse_incremente_et_replanifie(self):
+    lead = self._lead_pris_en_charge()
+    self.assertEqual(lead.tentatives_appel, 0)
+
+    lead.action_appel_sans_reponse()
+
+    self.assertEqual(lead.tentatives_appel, 1)
+    self.assertTrue(lead.derniere_tentative)
+    # L'etape ne bouge pas : une tentative n'est pas un contact.
+    self.assertEqual(lead.stage_id, self.stage_pris_en_charge)
+    # Un rappel est pose, et un seul.
+    rappels = self.env["mail.activity"].search(
+        [
+            ("res_model", "=", "crm.lead"),
+            ("res_id", "=", lead.id),
+        ]
+    )
+    self.assertEqual(len(rappels), 1)
+
+
+def test_trois_tentatives_ne_posent_qu_un_seul_rappel(self):
+    """Sinon la conseillere recoit une activite par tentative et cesse de
+    les lire — exactement le defaut que la relance SLA evite deja."""
+    lead = self._lead_pris_en_charge()
+    for _ in range(3):
         lead.action_appel_sans_reponse()
 
-        self.assertEqual(lead.tentatives_appel, 1)
-        self.assertTrue(lead.derniere_tentative)
-        # L'etape ne bouge pas : une tentative n'est pas un contact.
-        self.assertEqual(lead.stage_id, self.stage_pris_en_charge)
-        # Un rappel est pose, et un seul.
-        rappels = self.env['mail.activity'].search([
-            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
-        ])
-        self.assertEqual(len(rappels), 1)
+    self.assertEqual(lead.tentatives_appel, 3)
+    rappels = self.env["mail.activity"].search(
+        [
+            ("res_model", "=", "crm.lead"),
+            ("res_id", "=", lead.id),
+        ]
+    )
+    self.assertEqual(len(rappels), 1, "Un seul rappel, replanifie")
 
-    def test_trois_tentatives_ne_posent_qu_un_seul_rappel(self):
-        """Sinon la conseillere recoit une activite par tentative et cesse de
-        les lire — exactement le defaut que la relance SLA evite deja."""
-        lead = self._lead_pris_en_charge()
-        for _ in range(3):
-            lead.action_appel_sans_reponse()
 
-        self.assertEqual(lead.tentatives_appel, 3)
-        rappels = self.env['mail.activity'].search([
-            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
-        ])
-        self.assertEqual(len(rappels), 1, "Un seul rappel, replanifie")
+def test_joint_avance_a_contact_etabli_et_efface_le_rappel(self):
+    lead = self._lead_pris_en_charge()
+    lead.action_appel_sans_reponse()
 
-    def test_joint_avance_a_contact_etabli_et_efface_le_rappel(self):
-        lead = self._lead_pris_en_charge()
-        lead.action_appel_sans_reponse()
+    action = lead.action_appel_joint()
 
-        action = lead.action_appel_joint()
+    self.assertEqual(
+        lead.stage_id,
+        self.env.ref("his_crm_pipeline.stage_vente_contact_etabli"),
+    )
+    self.assertFalse(
+        self.env["mail.activity"].search(
+            [
+                ("res_model", "=", "crm.lead"),
+                ("res_id", "=", lead.id),
+            ]
+        ),
+        "Le rappel n'a plus d'objet une fois le candidat joint",
+    )
+    self.assertEqual(action["res_id"], lead.id)
+    self.assertEqual(action["res_model"], "crm.lead")
 
-        self.assertEqual(
-            lead.stage_id,
-            self.env.ref('his_crm_pipeline.stage_vente_contact_etabli'),
-        )
-        self.assertFalse(self.env['mail.activity'].search([
-            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
-        ]), "Le rappel n'a plus d'objet une fois le candidat joint")
-        self.assertEqual(action['res_id'], lead.id)
-        self.assertEqual(action['res_model'], 'crm.lead')
 
-    def test_chaque_tentative_laisse_une_trace_datee(self):
-        """Le compteur dit combien ; le fil dit quand. Le second explique le
-        premier a qui relit la fiche trois semaines plus tard."""
-        lead = self._lead_pris_en_charge()
-        avant = len(lead.message_ids)
-        lead.action_appel_sans_reponse()
-        self.assertGreater(len(lead.message_ids), avant)
+def test_chaque_tentative_laisse_une_trace_datee(self):
+    """Le compteur dit combien ; le fil dit quand. Le second explique le
+    premier a qui relit la fiche trois semaines plus tard."""
+    lead = self._lead_pris_en_charge()
+    avant = len(lead.message_ids)
+    lead.action_appel_sans_reponse()
+    self.assertGreater(len(lead.message_ids), avant)
 ```
 
 - [ ] **Step 2: Run the tests to verify they fail**
@@ -313,103 +342,118 @@ TENTATIVES_AVANT_FANTOME = 3
 Add the fields after Task 1's block:
 
 ```python
-    # --- La boucle d'appel ---------------------------------------------------
+# --- La boucle d'appel ---------------------------------------------------
 
-    # Le compteur est ce qui transforme « candidature fantome » d'un souvenir
-    # en un fait porte par la fiche. Sans lui, la conseillere qui reprend un
-    # lead ne sait pas si personne n'a essaye ou si six personnes ont echoue.
-    tentatives_appel = fields.Integer(
-        string="Tentatives d'appel", default=0, copy=False, readonly=True,
-        help="Nombre d'appels restes sans reponse. Remis a zero par aucun "
-             "geste : c'est un historique, pas un etat.",
-    )
-    derniere_tentative = fields.Datetime(
-        string="Derniere tentative", copy=False, readonly=True,
-    )
+# Le compteur est ce qui transforme « candidature fantome » d'un souvenir
+# en un fait porte par la fiche. Sans lui, la conseillere qui reprend un
+# lead ne sait pas si personne n'a essaye ou si six personnes ont echoue.
+tentatives_appel = fields.Integer(
+    string="Tentatives d'appel",
+    default=0,
+    copy=False,
+    readonly=True,
+    help="Nombre d'appels restes sans reponse. Remis a zero par aucun geste : c'est un historique, pas un etat.",
+)
+derniere_tentative = fields.Datetime(
+    string="Derniere tentative",
+    copy=False,
+    readonly=True,
+)
 ```
 
 Add the methods after `_compute_livrables_resume`:
 
 ```python
-    # --- La boucle d'appel ---------------------------------------------------
+# --- La boucle d'appel ---------------------------------------------------
 
-    def action_appel_sans_reponse(self):
-        """Le candidat n'a pas repondu : on compte, on trace, on replanifie.
 
-        Trois effets et pas un de plus. L'etape ne bouge PAS — une tentative
-        n'est pas un contact, et faire avancer le lead sur un appel sans
-        reponse gonflerait le pipeline avec des candidats que personne n'a
-        jamais eus au telephone.
+def action_appel_sans_reponse(self):
+    """Le candidat n'a pas repondu : on compte, on trace, on replanifie.
 
-        Aucune perte automatique au-dela de N tentatives : une machine qui
-        declare un candidat perdu est la meme automatisation que la Direction a
-        refusee pour l'affectation. La fiche propose, la conseillere decide.
-        """
-        for lead in self:
-            lead.sudo().write({
-                'tentatives_appel': lead.tentatives_appel + 1,
-                'derniere_tentative': fields.Datetime.now(),
-            })
-            lead.message_post(body=_(
+    Trois effets et pas un de plus. L'etape ne bouge PAS — une tentative
+    n'est pas un contact, et faire avancer le lead sur un appel sans
+    reponse gonflerait le pipeline avec des candidats que personne n'a
+    jamais eus au telephone.
+
+    Aucune perte automatique au-dela de N tentatives : une machine qui
+    declare un candidat perdu est la meme automatisation que la Direction a
+    refusee pour l'affectation. La fiche propose, la conseillere decide.
+    """
+    for lead in self:
+        lead.sudo().write(
+            {
+                "tentatives_appel": lead.tentatives_appel + 1,
+                "derniere_tentative": fields.Datetime.now(),
+            }
+        )
+        lead.message_post(
+            body=_(
                 "Appel sans reponse (tentative n° %(n)s).",
                 n=lead.tentatives_appel,
-            ))
-            lead._his_replanifier_rappel()
-
-    def _his_replanifier_rappel(self):
-        """Un seul rappel a la fois, repousse plutot que duplique.
-
-        Poser une activite par tentative ferait exactement ce que la relance
-        SLA evite deja : une pile d'activites que le destinataire cesse de
-        lire. On deplace donc celle qui existe.
-        """
-        self.ensure_one()
-        echeance = fields.Date.context_today(self) + timedelta(
-            days=JOURS_AVANT_RAPPEL,
+            )
         )
-        activite = self._his_rappel_existant()
-        if activite:
-            activite.date_deadline = echeance
-            return
-        self.activity_schedule(
-            'mail.mail_activity_data_call',
-            date_deadline=echeance,
-            summary=_("Rappeler le candidat"),
-            user_id=self.user_id.id or self.env.uid,
-        )
+        lead._his_replanifier_rappel()
 
-    def _his_rappel_existant(self):
-        """Le rappel pose par cette boucle, s'il y en a un."""
-        self.ensure_one()
-        return self.env['mail.activity'].search([
-            ('res_model', '=', 'crm.lead'),
-            ('res_id', '=', self.id),
-            ('summary', '=', "Rappeler le candidat"),
-        ], limit=1)
 
-    def action_appel_joint(self):
-        """Le candidat a repondu : on avance, on efface le rappel, on ouvre.
+def _his_replanifier_rappel(self):
+    """Un seul rappel a la fois, repousse plutot que duplique.
 
-        Ouvrir la fiche est la moitie utile du geste. Le contact vient d'avoir
-        lieu, c'est le seul moment ou la conseillere se souvient de ce qui a
-        ete dit ; l'ecran doit etre devant elle sans qu'elle ait a le chercher.
-        """
-        self.ensure_one()
-        etape = self.env.ref(
-            'his_crm_pipeline.stage_vente_contact_etabli',
-            raise_if_not_found=False,
-        )
-        if etape:
-            self.stage_id = etape
-        self._his_rappel_existant().unlink()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _("Candidat joint"),
-            'res_model': 'crm.lead',
-            'res_id': self.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
+    Poser une activite par tentative ferait exactement ce que la relance
+    SLA evite deja : une pile d'activites que le destinataire cesse de
+    lire. On deplace donc celle qui existe.
+    """
+    self.ensure_one()
+    echeance = fields.Date.context_today(self) + timedelta(
+        days=JOURS_AVANT_RAPPEL,
+    )
+    activite = self._his_rappel_existant()
+    if activite:
+        activite.date_deadline = echeance
+        return
+    self.activity_schedule(
+        "mail.mail_activity_data_call",
+        date_deadline=echeance,
+        summary=_("Rappeler le candidat"),
+        user_id=self.user_id.id or self.env.uid,
+    )
+
+
+def _his_rappel_existant(self):
+    """Le rappel pose par cette boucle, s'il y en a un."""
+    self.ensure_one()
+    return self.env["mail.activity"].search(
+        [
+            ("res_model", "=", "crm.lead"),
+            ("res_id", "=", self.id),
+            ("summary", "=", "Rappeler le candidat"),
+        ],
+        limit=1,
+    )
+
+
+def action_appel_joint(self):
+    """Le candidat a repondu : on avance, on efface le rappel, on ouvre.
+
+    Ouvrir la fiche est la moitie utile du geste. Le contact vient d'avoir
+    lieu, c'est le seul moment ou la conseillere se souvient de ce qui a
+    ete dit ; l'ecran doit etre devant elle sans qu'elle ait a le chercher.
+    """
+    self.ensure_one()
+    etape = self.env.ref(
+        "his_crm_pipeline.stage_vente_contact_etabli",
+        raise_if_not_found=False,
+    )
+    if etape:
+        self.stage_id = etape
+    self._his_rappel_existant().unlink()
+    return {
+        "type": "ir.actions.act_window",
+        "name": _("Candidat joint"),
+        "res_model": "crm.lead",
+        "res_id": self.id,
+        "view_mode": "form",
+        "target": "current",
+    }
 ```
 
 > **Note on `sudo()` in `action_appel_sans_reponse`:** the counter is written by the system recording a fact, not by the user asserting one. Without `sudo()` the capability guard in `crm_capacites.py` — which refuses `user_id` writes from non-managers and stage writes from Acquisition — would be evaluated against a write the adviser is entitled to make. `tentatives_appel` is `readonly=True`, so this is the only path that sets it.
@@ -666,8 +710,9 @@ class CrmLostReason(models.Model):
     cloture qu'on saute — exactement ce que la contrainte de motif obligatoire
     cherche a eviter.
     """
-    _inherit = 'crm.lost.reason'
-    _order = 'sequence, name'
+
+    _inherit = "crm.lost.reason"
+    _order = "sequence, name"
 
     sequence = fields.Integer(default=50)
 ```
@@ -679,39 +724,51 @@ Then register it in `his_crm_pipeline/models/__init__.py` (`from . import crm_lo
 Append to `his_crm_pipeline/tests/test_pipeline.py`:
 
 ```python
-    # --- Taxonomie des pertes ------------------------------------------------
+# --- Taxonomie des pertes ------------------------------------------------
 
-    def test_les_motifs_d_issue_d_appel_existent(self):
-        """Les leads meurent au telephone, pas en revue de dossier.
 
-        Les quatre motifs d'origine decrivent tous une mort tardive. Les
-        chiffres de GoHighLevel disent l'inverse : fantome, sans reponse et
-        numero errone sont la majorite des pertes expliquees.
-        """
-        for xmlid in (
-            'lost_reason_fantome', 'lost_reason_sans_reponse',
-            'lost_reason_numero_errone', 'lost_reason_bac_ancien',
-            'lost_reason_trop_cher', 'lost_reason_profil_inadapte',
-            'lost_reason_autre',
-        ):
-            motif = self.env.ref(
-                'his_crm_pipeline.%s' % xmlid, raise_if_not_found=False,
-            )
-            self.assertTrue(motif, "Motif manquant : %s" % xmlid)
+def test_les_motifs_d_issue_d_appel_existent(self):
+    """Les leads meurent au telephone, pas en revue de dossier.
 
-    def test_les_motifs_d_origine_survivent(self):
-        """noupdate et ondelete='restrict' : on ajoute, on ne remplace pas.
+    Les quatre motifs d'origine decrivent tous une mort tardive. Les
+    chiffres de GoHighLevel disent l'inverse : fantome, sans reponse et
+    numero errone sont la majorite des pertes expliquees.
+    """
+    for xmlid in (
+        "lost_reason_fantome",
+        "lost_reason_sans_reponse",
+        "lost_reason_numero_errone",
+        "lost_reason_bac_ancien",
+        "lost_reason_trop_cher",
+        "lost_reason_profil_inadapte",
+        "lost_reason_autre",
+    ):
+        motif = self.env.ref(
+            "his_crm_pipeline.%s" % xmlid,
+            raise_if_not_found=False,
+        )
+        self.assertTrue(motif, "Motif manquant : %s" % xmlid)
 
-        Un motif supprime emporterait avec lui tous les leads qui le portaient.
-        """
-        for xmlid in (
-            'lost_reason_hors_quota', 'lost_reason_dossier_non_retenu',
-            'lost_reason_dossier_incomplet', 'lost_reason_paiement_non_confirme',
-            'lost_reason_retour_production',
-        ):
-            self.assertTrue(self.env.ref(
-                'his_crm_pipeline.%s' % xmlid, raise_if_not_found=False,
-            ), "Motif d'origine perdu : %s" % xmlid)
+
+def test_les_motifs_d_origine_survivent(self):
+    """noupdate et ondelete='restrict' : on ajoute, on ne remplace pas.
+
+    Un motif supprime emporterait avec lui tous les leads qui le portaient.
+    """
+    for xmlid in (
+        "lost_reason_hors_quota",
+        "lost_reason_dossier_non_retenu",
+        "lost_reason_dossier_incomplet",
+        "lost_reason_paiement_non_confirme",
+        "lost_reason_retour_production",
+    ):
+        self.assertTrue(
+            self.env.ref(
+                "his_crm_pipeline.%s" % xmlid,
+                raise_if_not_found=False,
+            ),
+            "Motif d'origine perdu : %s" % xmlid,
+        )
 ```
 
 - [ ] **Step 3: Run to verify it fails, then add the data**
@@ -834,54 +891,63 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 - [ ] **Step 1: Write the failing tests**
 
 ```python
-    # --- Une perte doit dire quelque chose -----------------------------------
+# --- Une perte doit dire quelque chose -----------------------------------
 
-    def test_perdre_sans_motif_est_refuse(self):
-        """626 pertes, 193 motifs. Le vide n'est plus une option.
 
-        Contrainte serveur et non regle de vue : le kanban, l'import et l'API
-        contournent une vue. C'est la meme discipline que le verrou
-        d'approbation et que « gagne seulement si encaisse ».
-        """
-        lead = self.env['crm.lead'].create({
-            'name': "Candidat perdu",
-            'team_id': self.team_ventes.id,
-        })
-        with self.assertRaises(ValidationError):
-            lead.action_set_lost()
+def test_perdre_sans_motif_est_refuse(self):
+    """626 pertes, 193 motifs. Le vide n'est plus une option.
 
-    def test_perdre_avec_un_motif_passe(self):
-        lead = self.env['crm.lead'].create({
-            'name': "Candidat injoignable",
-            'team_id': self.team_ventes.id,
-        })
-        lead.action_set_lost(lost_reason_id=self.env.ref(
-            'his_crm_pipeline.lost_reason_sans_reponse').id)
-        self.assertFalse(lead.active)
+    Contrainte serveur et non regle de vue : le kanban, l'import et l'API
+    contournent une vue. C'est la meme discipline que le verrou
+    d'approbation et que « gagne seulement si encaisse ».
+    """
+    lead = self.env["crm.lead"].create(
+        {
+            "name": "Candidat perdu",
+            "team_id": self.team_ventes.id,
+        }
+    )
+    with self.assertRaises(ValidationError):
+        lead.action_set_lost()
 
-    def test_autre_sans_precision_est_refuse(self):
-        """La soupape d'honnetete a un prix : il faut ecrire la ligne.
 
-        Sans cela « Autre » deviendrait le raccourci universel et on aurait
-        remplace un vide par un mot qui ne dit pas davantage.
-        """
-        lead = self.env['crm.lead'].create({
-            'name': "Candidat indetermine",
-            'team_id': self.team_ventes.id,
-        })
-        with self.assertRaises(ValidationError):
-            lead.action_set_lost(lost_reason_id=self.env.ref(
-                'his_crm_pipeline.lost_reason_autre').id)
+def test_perdre_avec_un_motif_passe(self):
+    lead = self.env["crm.lead"].create(
+        {
+            "name": "Candidat injoignable",
+            "team_id": self.team_ventes.id,
+        }
+    )
+    lead.action_set_lost(lost_reason_id=self.env.ref("his_crm_pipeline.lost_reason_sans_reponse").id)
+    self.assertFalse(lead.active)
 
-    def test_autre_avec_precision_passe(self):
-        lead = self.env['crm.lead'].create({
-            'name': "Candidat indetermine",
-            'team_id': self.team_ventes.id,
-            'perte_precision': "Parti a l'etranger, ne rappellera pas.",
-        })
-        lead.action_set_lost(lost_reason_id=self.env.ref(
-            'his_crm_pipeline.lost_reason_autre').id)
-        self.assertFalse(lead.active)
+
+def test_autre_sans_precision_est_refuse(self):
+    """La soupape d'honnetete a un prix : il faut ecrire la ligne.
+
+    Sans cela « Autre » deviendrait le raccourci universel et on aurait
+    remplace un vide par un mot qui ne dit pas davantage.
+    """
+    lead = self.env["crm.lead"].create(
+        {
+            "name": "Candidat indetermine",
+            "team_id": self.team_ventes.id,
+        }
+    )
+    with self.assertRaises(ValidationError):
+        lead.action_set_lost(lost_reason_id=self.env.ref("his_crm_pipeline.lost_reason_autre").id)
+
+
+def test_autre_avec_precision_passe(self):
+    lead = self.env["crm.lead"].create(
+        {
+            "name": "Candidat indetermine",
+            "team_id": self.team_ventes.id,
+            "perte_precision": "Parti a l'etranger, ne rappellera pas.",
+        }
+    )
+    lead.action_set_lost(lost_reason_id=self.env.ref("his_crm_pipeline.lost_reason_autre").id)
+    self.assertFalse(lead.active)
 ```
 
 - [ ] **Step 2: Run to verify they fail**
@@ -893,62 +959,66 @@ Expected: the first test FAILS (no exception raised — `action_set_lost` succee
 Add the field beside the call-loop fields in `his_crm_pipeline/models/crm_lead.py`:
 
 ```python
-    perte_precision = fields.Char(
-        string="Precision sur la perte", copy=False,
-        help="Obligatoire avec le motif « Autre ». Ce que les motifs de la "
-             "liste ne savent pas dire.",
-    )
+perte_precision = fields.Char(
+    string="Precision sur la perte",
+    copy=False,
+    help="Obligatoire avec le motif « Autre ». Ce que les motifs de la liste ne savent pas dire.",
+)
 ```
 
 Add the constraint after `_check_livrables_approuves`:
 
 ```python
-    @api.constrains('active', 'lost_reason_id', 'perte_precision')
-    def _check_perte_motivee(self):
-        """On ne perd pas un candidat sans dire pourquoi.
+@api.constrains("active", "lost_reason_id", "perte_precision")
+def _check_perte_motivee(self):
+    """On ne perd pas un candidat sans dire pourquoi.
 
-        Dans GoHighLevel, 626 opportunites perdues portent 193 motifs : les
-        deux tiers ne disent rien. Ce n'est pas de la negligence — consigner
-        coutait six gestes et sauter n'en coutait aucun. La contrainte rend le
-        vide impossible ; la boucle d'appel et le pre-remplissage rendent le
-        motif bon marche. Les deux sont necessaires : une contrainte seule
-        pousserait a ne plus clore du tout, et le pipeline se remplirait de
-        cadavres — une panne pire que celle qu'on repare.
+    Dans GoHighLevel, 626 opportunites perdues portent 193 motifs : les
+    deux tiers ne disent rien. Ce n'est pas de la negligence — consigner
+    coutait six gestes et sauter n'en coutait aucun. La contrainte rend le
+    vide impossible ; la boucle d'appel et le pre-remplissage rendent le
+    motif bon marche. Les deux sont necessaires : une contrainte seule
+    pousserait a ne plus clore du tout, et le pipeline se remplirait de
+    cadavres — une panne pire que celle qu'on repare.
 
-        Contrainte serveur et non regle de vue, pour la meme raison que le
-        verrou d'approbation : le glisser-deposer du kanban, l'import et l'API
-        ne passent par aucune vue. Ils passent tous par write().
+    Contrainte serveur et non regle de vue, pour la meme raison que le
+    verrou d'approbation : le glisser-deposer du kanban, l'import et l'API
+    ne passent par aucune vue. Ils passent tous par write().
 
-        Les deux pipelines, sans distinction d'equipe. Brancher par equipe
-        serait du code de plus pour rien : la seule perte du pipeline Contenu
-        est « Retour production necessaire », qu'il renseigne deja.
-        """
-        autre = self.env.ref(
-            'his_crm_pipeline.lost_reason_autre', raise_if_not_found=False,
-        )
-        for lead in self:
-            # active=False sans motif : c'est une perte, pas un archivage.
-            # Odoo n'a pas d'autre marqueur — is_won vit sur l'etape, et une
-            # fiche perdue est exactement une fiche desactivee.
-            if lead.active:
-                continue
-            if not lead.lost_reason_id:
-                raise ValidationError(_(
+    Les deux pipelines, sans distinction d'equipe. Brancher par equipe
+    serait du code de plus pour rien : la seule perte du pipeline Contenu
+    est « Retour production necessaire », qu'il renseigne deja.
+    """
+    autre = self.env.ref(
+        "his_crm_pipeline.lost_reason_autre",
+        raise_if_not_found=False,
+    )
+    for lead in self:
+        # active=False sans motif : c'est une perte, pas un archivage.
+        # Odoo n'a pas d'autre marqueur — is_won vit sur l'etape, et une
+        # fiche perdue est exactement une fiche desactivee.
+        if lead.active:
+            continue
+        if not lead.lost_reason_id:
+            raise ValidationError(
+                _(
                     "« %(lead)s » ne peut pas etre perdu sans motif.\n\n"
                     "Le motif est ce qui permet de savoir ou l'on perd les "
                     "candidats. Si aucun de la liste ne convient, choisissez "
                     "« Autre - a preciser » et dites en une ligne ce qui s'est "
                     "passe.",
                     lead=lead.display_name,
-                ))
-            if autre and lead.lost_reason_id == autre \
-                    and not (lead.perte_precision or '').strip():
-                raise ValidationError(_(
+                )
+            )
+        if autre and lead.lost_reason_id == autre and not (lead.perte_precision or "").strip():
+            raise ValidationError(
+                _(
                     "« %(lead)s » : le motif « Autre » demande une precision.\n\n"
                     "Sans elle, « Autre » deviendrait le raccourci universel et "
                     "n'apprendrait rien de plus qu'un motif vide.",
                     lead=lead.display_name,
-                ))
+                )
+            )
 ```
 
 - [ ] **Step 4: Expose the precision field on the form**
@@ -1003,32 +1073,33 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 - [ ] **Step 1: Write the failing test**
 
 ```python
-    def test_apres_trois_tentatives_la_perte_propose_fantome(self):
-        """La fiche sait deja. Elle ne demande pas.
+def test_apres_trois_tentatives_la_perte_propose_fantome(self):
+    """La fiche sait deja. Elle ne demande pas.
 
-        C'est ce qui rend le motif obligatoire supportable : trois clics sans
-        reflexion plutot qu'un menu de onze lignes a lire.
-        """
-        lead = self._lead_pris_en_charge()
-        for _ in range(3):
-            lead.action_appel_sans_reponse()
-
-        action = lead.action_perdre_rapide()
-
-        self.assertEqual(
-            action['context']['default_lost_reason_id'],
-            self.env.ref('his_crm_pipeline.lost_reason_fantome').id,
-        )
-
-    def test_avant_trois_tentatives_aucun_motif_n_est_impose(self):
-        """Deviner a la place de la conseillere serait pire que ne rien
-        proposer : un motif faux ne se distingue pas d'un motif vrai."""
-        lead = self._lead_pris_en_charge()
+    C'est ce qui rend le motif obligatoire supportable : trois clics sans
+    reflexion plutot qu'un menu de onze lignes a lire.
+    """
+    lead = self._lead_pris_en_charge()
+    for _ in range(3):
         lead.action_appel_sans_reponse()
 
-        action = lead.action_perdre_rapide()
+    action = lead.action_perdre_rapide()
 
-        self.assertFalse(action['context'].get('default_lost_reason_id'))
+    self.assertEqual(
+        action["context"]["default_lost_reason_id"],
+        self.env.ref("his_crm_pipeline.lost_reason_fantome").id,
+    )
+
+
+def test_avant_trois_tentatives_aucun_motif_n_est_impose(self):
+    """Deviner a la place de la conseillere serait pire que ne rien
+    proposer : un motif faux ne se distingue pas d'un motif vrai."""
+    lead = self._lead_pris_en_charge()
+    lead.action_appel_sans_reponse()
+
+    action = lead.action_perdre_rapide()
+
+    self.assertFalse(action["context"].get("default_lost_reason_id"))
 ```
 
 - [ ] **Step 2: Run to verify it fails**
@@ -1040,34 +1111,34 @@ Expected: FAIL — `'crm.lead' object has no attribute 'action_perdre_rapide'`.
 Add after `action_appel_joint` in `his_crm_pipeline/models/crm_lead.py`:
 
 ```python
-    def action_perdre_rapide(self):
-        """Ouvre l'assistant de perte, pre-rempli quand la fiche sait deja.
+def action_perdre_rapide(self):
+    """Ouvre l'assistant de perte, pre-rempli quand la fiche sait deja.
 
-        Trois tentatives sans reponse SONT une candidature fantome : demander
-        a la conseillere de le retrouver dans une liste de onze motifs revient
-        a lui faire ressaisir ce que le compteur vient de mesurer.
+    Trois tentatives sans reponse SONT une candidature fantome : demander
+    a la conseillere de le retrouver dans une liste de onze motifs revient
+    a lui faire ressaisir ce que le compteur vient de mesurer.
 
-        En dessous de trois, rien n'est propose. Deviner serait pire que se
-        taire : un motif faux ne se distingue pas d'un motif vrai, et c'est
-        precisement le defaut de « Unknown » qu'on vient de retirer.
-        """
-        self.ensure_one()
-        contexte = dict(self.env.context, default_lead_ids=[self.id])
-        if self.tentatives_appel >= TENTATIVES_AVANT_FANTOME:
-            fantome = self.env.ref(
-                'his_crm_pipeline.lost_reason_fantome',
-                raise_if_not_found=False,
-            )
-            if fantome:
-                contexte['default_lost_reason_id'] = fantome.id
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _("Perdre le candidat"),
-            'res_model': 'crm.lead.lost',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': contexte,
-        }
+    En dessous de trois, rien n'est propose. Deviner serait pire que se
+    taire : un motif faux ne se distingue pas d'un motif vrai, et c'est
+    precisement le defaut de « Unknown » qu'on vient de retirer.
+    """
+    self.ensure_one()
+    contexte = dict(self.env.context, default_lead_ids=[self.id])
+    if self.tentatives_appel >= TENTATIVES_AVANT_FANTOME:
+        fantome = self.env.ref(
+            "his_crm_pipeline.lost_reason_fantome",
+            raise_if_not_found=False,
+        )
+        if fantome:
+            contexte["default_lost_reason_id"] = fantome.id
+    return {
+        "type": "ir.actions.act_window",
+        "name": _("Perdre le candidat"),
+        "res_model": "crm.lead.lost",
+        "view_mode": "form",
+        "target": "new",
+        "context": contexte,
+    }
 ```
 
 - [ ] **Step 4: Verify the lose wizard's model name and context key**
@@ -1142,29 +1213,31 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 Append to `his_crm_pipeline/tests/test_dashboard.py`:
 
 ```python
-    def test_les_segments_d_un_donut_somment_a_son_total(self):
-        """La regle du fichier : un indicateur est defini une seule fois.
+def test_les_segments_d_un_donut_somment_a_son_total(self):
+    """La regle du fichier : un indicateur est defini une seule fois.
 
-        Si un donut et sa tuile comptent la meme population differemment, le
-        directeur arbitre entre deux ecrans qui se contredisent.
-        """
-        spec = self.env['his.dashboard'].get_admissions('2020-01-01', '2100-01-01')
-        self.assertIn('donuts', spec)
-        for donut in spec['donuts']:
-            somme = sum(s['count'] for s in donut['segments'])
-            self.assertEqual(
-                somme, donut['total'],
-                "Le donut « %s » ne somme pas a son total" % donut['label'],
-            )
+    Si un donut et sa tuile comptent la meme population differemment, le
+    directeur arbitre entre deux ecrans qui se contredisent.
+    """
+    spec = self.env["his.dashboard"].get_admissions("2020-01-01", "2100-01-01")
+    self.assertIn("donuts", spec)
+    for donut in spec["donuts"]:
+        somme = sum(s["count"] for s in donut["segments"])
+        self.assertEqual(
+            somme,
+            donut["total"],
+            "Le donut « %s » ne somme pas a son total" % donut["label"],
+        )
 
-    def test_chaque_segment_porte_son_action(self):
-        """Un chiffre qu'on ne peut pas ouvrir doit etre cru sur parole, et
-        c'est aussi ce qui rend une definition fausse indetectable."""
-        spec = self.env['his.dashboard'].get_admissions('2020-01-01', '2100-01-01')
-        for donut in spec['donuts']:
-            for segment in donut['segments']:
-                self.assertTrue(segment['action'])
-                self.assertEqual(segment['action']['res_model'], 'crm.lead')
+
+def test_chaque_segment_porte_son_action(self):
+    """Un chiffre qu'on ne peut pas ouvrir doit etre cru sur parole, et
+    c'est aussi ce qui rend une definition fausse indetectable."""
+    spec = self.env["his.dashboard"].get_admissions("2020-01-01", "2100-01-01")
+    for donut in spec["donuts"]:
+        for segment in donut["segments"]:
+            self.assertTrue(segment["action"])
+            self.assertEqual(segment["action"]["res_model"], "crm.lead")
 ```
 
 - [ ] **Step 2: Run to verify it fails**
@@ -1176,50 +1249,51 @@ Expected: FAIL — `KeyError: 'donuts'` or the `assertIn` fails.
 Add to `his_crm_pipeline/models/his_dashboard.py`, after `_a_traiter`:
 
 ```python
-    def _donut(self, label, model, domain, groupby):
-        """Une repartition : un tout, decoupe en parts qui le somment.
+def _donut(self, label, model, domain, groupby):
+    """Une repartition : un tout, decoupe en parts qui le somment.
 
-        Un seul _read_group sur une colonne deja stockee. Aucun SQL, aucune
-        table d'agregat, comme partout dans ce fichier.
+    Un seul _read_group sur une colonne deja stockee. Aucun SQL, aucune
+    table d'agregat, comme partout dans ce fichier.
 
-        Les parts sont triees par effectif decroissant : une legende dans
-        l'ordre de la base fait chercher la plus grosse part a l'oeil.
+    Les parts sont triees par effectif decroissant : une legende dans
+    l'ordre de la base fait chercher la plus grosse part a l'oeil.
 
-        Chaque part porte son action, comme chaque tuile : cliquer une part
-        doit ouvrir exactement les enregistrements qu'elle compte. C'est ce qui
-        rend une definition fausse detectable au lieu de simplement fausse.
-        """
-        Model = self.env[model]
-        groupes = Model._read_group(domain, groupby=[groupby], aggregates=['__count'])
+    Chaque part porte son action, comme chaque tuile : cliquer une part
+    doit ouvrir exactement les enregistrements qu'elle compte. C'est ce qui
+    rend une definition fausse detectable au lieu de simplement fausse.
+    """
+    Model = self.env[model]
+    groupes = Model._read_group(domain, groupby=[groupby], aggregates=["__count"])
 
-        segments = []
-        total = 0
-        for valeur, compte in groupes:
-            total += compte
-            # _read_group rend un recordset pour un Many2one, la valeur brute
-            # pour une Selection, et False pour un groupe vide. display_name
-            # couvre le premier cas, le libelle du champ le second.
-            if hasattr(valeur, 'display_name'):
-                nom = valeur.display_name or "Non renseigne"
-                critere = valeur.id
-            else:
-                nom = str(valeur) if valeur else "Non renseigne"
-                critere = valeur
-            segments.append({
-                'label': nom,
-                'count': compte,
-                'action': self._action(
-                    "%s : %s" % (label, nom), model,
-                    domain + [(groupby, '=', critere)],
+    segments = []
+    total = 0
+    for valeur, compte in groupes:
+        total += compte
+        # _read_group rend un recordset pour un Many2one, la valeur brute
+        # pour une Selection, et False pour un groupe vide. display_name
+        # couvre le premier cas, le libelle du champ le second.
+        if hasattr(valeur, "display_name"):
+            nom = valeur.display_name or "Non renseigne"
+            critere = valeur.id
+        else:
+            nom = str(valeur) if valeur else "Non renseigne"
+            critere = valeur
+        segments.append(
+            {
+                "label": nom,
+                "count": compte,
+                "action": self._action(
+                    "%s : %s" % (label, nom),
+                    model,
+                    domain + [(groupby, "=", critere)],
                 ),
-            })
+            }
+        )
 
-        segments.sort(key=lambda s: s['count'], reverse=True)
-        for segment in segments:
-            segment['pourcentage'] = (
-                round(segment['count'] / total * 100, 1) if total else 0
-            )
-        return {'label': label, 'total': total, 'segments': segments}
+    segments.sort(key=lambda s: s["count"], reverse=True)
+    for segment in segments:
+        segment["pourcentage"] = round(segment["count"] / total * 100, 1) if total else 0
+    return {"label": label, "total": total, "segments": segments}
 ```
 
 - [ ] **Step 4: Build the four donuts**
@@ -1227,36 +1301,46 @@ Add to `his_crm_pipeline/models/his_dashboard.py`, after `_a_traiter`:
 Add to the same file, after `_entonnoir`:
 
 ```python
-    def _admissions_donuts(self, equipes, date_from, date_to):
-        """Les quatre repartitions du cockpit GoHighLevel.
+def _admissions_donuts(self, equipes, date_from, date_to):
+    """Les quatre repartitions du cockpit GoHighLevel.
 
-        Elles repondent a quatre questions distinctes : quelle qualite de
-        candidats arrive, ou en est le portefeuille, ou l'on perd, et d'ou
-        vient l'acquisition. Une cinquieme ferait double emploi.
+    Elles repondent a quatre questions distinctes : quelle qualite de
+    candidats arrive, ou en est le portefeuille, ou l'on perd, et d'ou
+    vient l'acquisition. Une cinquieme ferait double emploi.
 
-        `active_test: False` sur les deux dernieres : une candidature perdue
-        EST une fiche desactivee. Sans cela, le donut des motifs de perte
-        serait vide, ce qui est la seule chose plus inutile qu'un motif faux.
-        """
-        base = [('team_id', 'in', equipes.ids)] + self._entre(date_from, date_to)
-        perdus = self.with_context(active_test=False)
+    `active_test: False` sur les deux dernieres : une candidature perdue
+    EST une fiche desactivee. Sans cela, le donut des motifs de perte
+    serait vide, ce qui est la seule chose plus inutile qu'un motif faux.
+    """
+    base = [("team_id", "in", equipes.ids)] + self._entre(date_from, date_to)
+    perdus = self.with_context(active_test=False)
 
-        return [
-            self._donut(
-                "Candidats par score", 'crm.lead', base, 'score_academique',
-            ),
-            self._donut(
-                "Etat du portefeuille", 'crm.lead', base, 'stage_id',
-            ),
-            perdus._donut(
-                "Motifs de perte", 'crm.lead',
-                base + [('active', '=', False), ('lost_reason_id', '!=', False)],
-                'lost_reason_id',
-            ),
-            perdus._donut(
-                "Acquisition par source", 'crm.lead', base, 'source_id',
-            ),
-        ]
+    return [
+        self._donut(
+            "Candidats par score",
+            "crm.lead",
+            base,
+            "score_academique",
+        ),
+        self._donut(
+            "Etat du portefeuille",
+            "crm.lead",
+            base,
+            "stage_id",
+        ),
+        perdus._donut(
+            "Motifs de perte",
+            "crm.lead",
+            base + [("active", "=", False), ("lost_reason_id", "!=", False)],
+            "lost_reason_id",
+        ),
+        perdus._donut(
+            "Acquisition par source",
+            "crm.lead",
+            base,
+            "source_id",
+        ),
+    ]
 ```
 
 Then add the key to `get_admissions`'s return dict, beside `funnel`:
@@ -1548,25 +1632,25 @@ GoHighLevel's best idea, and the mechanism already exists here.
 - [ ] **Step 1: Write the failing test**
 
 ```python
-    def test_la_file_qualite_signale_ce_qui_manque(self):
-        """Le panneau « Fix your forecast data » de GHL, avec la mecanique
-        qui existe deja : _a_traiter rend un libelle, un compte, un apercu et
-        une action. C'est le meme objet."""
-        lead = self.env['crm.lead'].create({
-            'name': "Candidat sans rien",
-            'team_id': self.env.ref('his_crm_pipeline.crm_team_ventes').id,
-        })
-        spec = self.env['his.dashboard'].get_admissions('2020-01-01', '2100-01-01')
+def test_la_file_qualite_signale_ce_qui_manque(self):
+    """Le panneau « Fix your forecast data » de GHL, avec la mecanique
+    qui existe deja : _a_traiter rend un libelle, un compte, un apercu et
+    une action. C'est le meme objet."""
+    lead = self.env["crm.lead"].create(
+        {
+            "name": "Candidat sans rien",
+            "team_id": self.env.ref("his_crm_pipeline.crm_team_ventes").id,
+        }
+    )
+    spec = self.env["his.dashboard"].get_admissions("2020-01-01", "2100-01-01")
 
-        self.assertIn('qualite', spec)
-        libelles = [f['label'] for f in spec['qualite']]
-        self.assertIn("Sans telephone ni email", libelles)
+    self.assertIn("qualite", spec)
+    libelles = [f["label"] for f in spec["qualite"]]
+    self.assertIn("Sans telephone ni email", libelles)
 
-        sans_contact = next(
-            f for f in spec['qualite'] if f['label'] == "Sans telephone ni email"
-        )
-        self.assertGreaterEqual(sans_contact['count'], 1)
-        self.assertIn(lead.id, [l['id'] for l in sans_contact['apercu']])
+    sans_contact = next(f for f in spec["qualite"] if f["label"] == "Sans telephone ni email")
+    self.assertGreaterEqual(sans_contact["count"], 1)
+    self.assertIn(lead.id, [l["id"] for l in sans_contact["apercu"]])
 ```
 
 - [ ] **Step 2: Run to verify it fails**
@@ -1578,41 +1662,46 @@ Expected: FAIL — `KeyError: 'qualite'`.
 Add to `his_crm_pipeline/models/his_dashboard.py`, after `_admissions_donuts`:
 
 ```python
-    def _admissions_qualite(self, equipes):
-        """Ce qui manque, et qu'on peut aller corriger.
+def _admissions_qualite(self, equipes):
+    """Ce qui manque, et qu'on peut aller corriger.
 
-        C'est la meilleure idee du cockpit GoHighLevel — son panneau « Fix your
-        forecast data » — et la mecanique existe deja ici : _a_traiter rend un
-        libelle, un compte, un apercu de cinq lignes et une action. C'est
-        exactement le meme objet, donc trois appels et rien de plus.
+    C'est la meilleure idee du cockpit GoHighLevel — son panneau « Fix your
+    forecast data » — et la mecanique existe deja ici : _a_traiter rend un
+    libelle, un compte, un apercu de cinq lignes et une action. C'est
+    exactement le meme objet, donc trois appels et rien de plus.
 
-        C'est aussi ce qui rend les autres chiffres de l'ecran dignes de
-        confiance : un tableau de bord qui ne dit pas ce qu'il ignore laisse
-        croire qu'il sait tout.
+    C'est aussi ce qui rend les autres chiffres de l'ecran dignes de
+    confiance : un tableau de bord qui ne dit pas ce qu'il ignore laisse
+    croire qu'il sait tout.
 
-        Pas de « date de cloture manquante » ici, contrairement a GHL, ou les
-        505 opportunites ouvertes en manquent toutes : signaler un champ que
-        personne ne remplit et que rien n'utilise ne serait pas de la qualite
-        de donnee, seulement du bruit.
-        """
-        base = [('team_id', 'in', equipes.ids)]
-        files = [
-            self._a_traiter(
-                "Sans telephone ni email", 'crm.lead',
-                base + [('phone', '=', False), ('email_from', '=', False)],
-            ),
-            self._a_traiter(
-                "Sans specialite visee", 'crm.lead',
-                base + [('specialite_id', '=', False)],
-            ) if 'specialite_id' in self.env['crm.lead']._fields else None,
-            self._a_traiter(
-                "Sans source d'acquisition", 'crm.lead',
-                base + [('source_id', '=', False)],
-            ),
-        ]
-        # specialite_id vient de his_admission, qui est en aval : le pipeline
-        # doit rester installable seul.
-        return [file for file in files if file]
+    Pas de « date de cloture manquante » ici, contrairement a GHL, ou les
+    505 opportunites ouvertes en manquent toutes : signaler un champ que
+    personne ne remplit et que rien n'utilise ne serait pas de la qualite
+    de donnee, seulement du bruit.
+    """
+    base = [("team_id", "in", equipes.ids)]
+    files = [
+        self._a_traiter(
+            "Sans telephone ni email",
+            "crm.lead",
+            base + [("phone", "=", False), ("email_from", "=", False)],
+        ),
+        self._a_traiter(
+            "Sans specialite visee",
+            "crm.lead",
+            base + [("specialite_id", "=", False)],
+        )
+        if "specialite_id" in self.env["crm.lead"]._fields
+        else None,
+        self._a_traiter(
+            "Sans source d'acquisition",
+            "crm.lead",
+            base + [("source_id", "=", False)],
+        ),
+    ]
+    # specialite_id vient de his_admission, qui est en aval : le pipeline
+    # doit rester installable seul.
+    return [file for file in files if file]
 ```
 
 Add the key to `get_admissions`'s return dict:
@@ -1698,43 +1787,55 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 Append to `his_admission/tests/test_admission.py`:
 
 ```python
-    def test_sans_tarif_le_cockpit_ne_montre_aucun_montant(self):
-        """Un chiffre d'affaires invente est pire qu'un chiffre absent : il se
-        cite en reunion. Tant que la grille est vide, le bloc n'existe pas."""
-        self.env['his.tarif'].search([]).unlink()
-        spec = self.env['his.dashboard'].get_dossiers('2020-01-01', '2100-01-01')
-        cles = [t['cle'] for t in spec['tiles']]
-        self.assertNotIn('revenu_attendu', cles)
+def test_sans_tarif_le_cockpit_ne_montre_aucun_montant(self):
+    """Un chiffre d'affaires invente est pire qu'un chiffre absent : il se
+    cite en reunion. Tant que la grille est vide, le bloc n'existe pas."""
+    self.env["his.tarif"].search([]).unlink()
+    spec = self.env["his.dashboard"].get_dossiers("2020-01-01", "2100-01-01")
+    cles = [t["cle"] for t in spec["tiles"]]
+    self.assertNotIn("revenu_attendu", cles)
 
-    def test_avec_un_tarif_le_revenu_se_deduit(self):
-        """Deduit, jamais saisi. C'est la difference avec GoHighLevel, ou 454
-        opportunites sur 505 n'ont aucun montant parce qu'il fallait le taper."""
-        specialite = self.env.ref('his_admission.spec_info_systemes')
-        self.env['his.tarif'].create({
-            'specialite_id': specialite.id,
-            'frais_inscription': 400000.0,
-        })
-        self.env['crm.lead'].create({
-            'name': "Candidat chiffrable",
-            'team_id': self.env.ref('his_crm_pipeline.crm_team_ventes').id,
-            'specialite_id': specialite.id,
-        })
 
-        spec = self.env['his.dashboard'].get_dossiers('2020-01-01', '2100-01-01')
-        tuile = next(t for t in spec['tiles'] if t['cle'] == 'revenu_attendu')
-        self.assertEqual(tuile['valeur'], 400000.0)
+def test_avec_un_tarif_le_revenu_se_deduit(self):
+    """Deduit, jamais saisi. C'est la difference avec GoHighLevel, ou 454
+    opportunites sur 505 n'ont aucun montant parce qu'il fallait le taper."""
+    specialite = self.env.ref("his_admission.spec_info_systemes")
+    self.env["his.tarif"].create(
+        {
+            "specialite_id": specialite.id,
+            "frais_inscription": 400000.0,
+        }
+    )
+    self.env["crm.lead"].create(
+        {
+            "name": "Candidat chiffrable",
+            "team_id": self.env.ref("his_crm_pipeline.crm_team_ventes").id,
+            "specialite_id": specialite.id,
+        }
+    )
 
-    def test_un_seul_tarif_actif_par_specialite(self):
-        """Deux tarifs actifs pour la meme specialite donneraient deux revenus
-        possibles, et le cockpit choisirait au hasard."""
-        specialite = self.env.ref('his_admission.spec_info_systemes')
-        self.env['his.tarif'].create({
-            'specialite_id': specialite.id, 'frais_inscription': 400000.0,
-        })
-        with self.assertRaises(ValidationError):
-            self.env['his.tarif'].create({
-                'specialite_id': specialite.id, 'frais_inscription': 450000.0,
-            })
+    spec = self.env["his.dashboard"].get_dossiers("2020-01-01", "2100-01-01")
+    tuile = next(t for t in spec["tiles"] if t["cle"] == "revenu_attendu")
+    self.assertEqual(tuile["valeur"], 400000.0)
+
+
+def test_un_seul_tarif_actif_par_specialite(self):
+    """Deux tarifs actifs pour la meme specialite donneraient deux revenus
+    possibles, et le cockpit choisirait au hasard."""
+    specialite = self.env.ref("his_admission.spec_info_systemes")
+    self.env["his.tarif"].create(
+        {
+            "specialite_id": specialite.id,
+            "frais_inscription": 400000.0,
+        }
+    )
+    with self.assertRaises(ValidationError):
+        self.env["his.tarif"].create(
+            {
+                "specialite_id": specialite.id,
+                "frais_inscription": 450000.0,
+            }
+        )
 ```
 
 - [ ] **Step 2: Run to verify it fails**
@@ -1761,35 +1862,42 @@ chiffre deduit ne peut pas etre vide.
 his_engagement garde ses booleens paye / non paye. Le jour ou les montants
 comptent vraiment, c'est un chantier `account` ; ce fichier ne l'ouvre pas.
 """
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
 class HisTarif(models.Model):
-    _name = 'his.tarif'
+    _name = "his.tarif"
     _description = "Tarif par specialite"
-    _order = 'specialite_id'
+    _order = "specialite_id"
 
     specialite_id = fields.Many2one(
-        'his.specialite', string="Specialite", required=True,
-        ondelete='cascade',
+        "his.specialite",
+        string="Specialite",
+        required=True,
+        ondelete="cascade",
     )
     # Related et non recopie : le cycle vit sur la specialite, qui le porte
     # deja en champ requis. Le dupliquer donnerait deux verites.
     cycle = fields.Selection(
-        related='specialite_id.cycle', string="Cycle", store=True, readonly=True,
+        related="specialite_id.cycle",
+        string="Cycle",
+        store=True,
+        readonly=True,
     )
     frais_inscription = fields.Float(
-        string="Frais d'inscription", digits=(12, 2),
-        help="Les frais non remboursables. C'est leur encaissement qui gagne "
-             "le lead.",
+        string="Frais d'inscription",
+        digits=(12, 2),
+        help="Les frais non remboursables. C'est leur encaissement qui gagne le lead.",
     )
     frais_scolarite = fields.Float(
-        string="Frais de scolarite", digits=(12, 2),
+        string="Frais de scolarite",
+        digits=(12, 2),
     )
     active = fields.Boolean(default=True)
 
-    @api.constrains('specialite_id', 'active')
+    @api.constrains("specialite_id", "active")
     def _check_un_seul_tarif_actif(self):
         """Deux tarifs actifs pour la meme specialite donneraient deux revenus
         possibles, et le cockpit en choisirait un au hasard. Desactiver
@@ -1797,16 +1905,19 @@ class HisTarif(models.Model):
         for tarif in self:
             if not tarif.active:
                 continue
-            if self.search_count([
-                ('specialite_id', '=', tarif.specialite_id.id),
-                ('active', '=', True),
-                ('id', '!=', tarif.id),
-            ]):
-                raise ValidationError(_(
-                    "Un tarif actif existe deja pour « %(spec)s ». "
-                    "Desactivez-le avant d'en creer un nouveau.",
-                    spec=tarif.specialite_id.display_name,
-                ))
+            if self.search_count(
+                [
+                    ("specialite_id", "=", tarif.specialite_id.id),
+                    ("active", "=", True),
+                    ("id", "!=", tarif.id),
+                ]
+            ):
+                raise ValidationError(
+                    _(
+                        "Un tarif actif existe deja pour « %(spec)s ». Desactivez-le avant d'en creer un nouveau.",
+                        spec=tarif.specialite_id.display_name,
+                    )
+                )
 
     @api.model
     def _montant_pour(self, specialite):
@@ -1818,7 +1929,7 @@ class HisTarif(models.Model):
         """
         if not specialite:
             return 0.0
-        tarif = self.search([('specialite_id', '=', specialite.id)], limit=1)
+        tarif = self.search([("specialite_id", "=", specialite.id)], limit=1)
         return tarif.frais_inscription or 0.0
 ```
 
@@ -1878,37 +1989,40 @@ Add both to `his_admission/__manifest__.py` `'data'` (after the existing config 
 In `his_admission/models/his_dashboard.py`, inside `get_dossiers`, after the existing tiles are built:
 
 ```python
-        # Le revenu attendu, DEDUIT et jamais saisi.
-        #
-        # Chez GoHighLevel, 454 opportunites ouvertes sur 505 n'ont aucun
-        # montant : c'est la consequence directe d'avoir demande a un humain de
-        # taper un nombre qu'une grille connait deja. Ici il se calcule, donc
-        # il ne peut pas etre vide.
-        #
-        # La tuile n'apparait PAS tant qu'aucun tarif n'est saisi. Un chiffre
-        # d'affaires invente est pire qu'un chiffre absent : il se cite en
-        # reunion.
-        Tarif = self.env['his.tarif']
-        if Tarif.sudo().search_count([('frais_inscription', '>', 0)]):
-            equipes = self._equipes_admissions()
-            ouverts = self.env['crm.lead'].search([
-                ('team_id', 'in', equipes.ids),
-                ('active', '=', True),
-                ('specialite_id', '!=', False),
-            ])
-            attendu = sum(
-                Tarif.sudo()._montant_pour(lead.specialite_id)
-                for lead in ouverts
-            )
-            tuiles.append(self._tuile(
-                'revenu_attendu', "Revenu attendu", attendu, unite="DA",
-                action=self._action(
-                    "Candidatures ouvertes chiffrables", 'crm.lead',
-                    [('team_id', 'in', equipes.ids),
-                     ('active', '=', True),
-                     ('specialite_id', '!=', False)],
-                ),
-            ))
+# Le revenu attendu, DEDUIT et jamais saisi.
+#
+# Chez GoHighLevel, 454 opportunites ouvertes sur 505 n'ont aucun
+# montant : c'est la consequence directe d'avoir demande a un humain de
+# taper un nombre qu'une grille connait deja. Ici il se calcule, donc
+# il ne peut pas etre vide.
+#
+# La tuile n'apparait PAS tant qu'aucun tarif n'est saisi. Un chiffre
+# d'affaires invente est pire qu'un chiffre absent : il se cite en
+# reunion.
+Tarif = self.env["his.tarif"]
+if Tarif.sudo().search_count([("frais_inscription", ">", 0)]):
+    equipes = self._equipes_admissions()
+    ouverts = self.env["crm.lead"].search(
+        [
+            ("team_id", "in", equipes.ids),
+            ("active", "=", True),
+            ("specialite_id", "!=", False),
+        ]
+    )
+    attendu = sum(Tarif.sudo()._montant_pour(lead.specialite_id) for lead in ouverts)
+    tuiles.append(
+        self._tuile(
+            "revenu_attendu",
+            "Revenu attendu",
+            attendu,
+            unite="DA",
+            action=self._action(
+                "Candidatures ouvertes chiffrables",
+                "crm.lead",
+                [("team_id", "in", equipes.ids), ("active", "=", True), ("specialite_id", "!=", False)],
+            ),
+        )
+    )
 ```
 
 - [ ] **Step 6: Add the untariffed-specialty entry to the quality queue**
@@ -1916,22 +2030,36 @@ In `his_admission/models/his_dashboard.py`, inside `get_dossiers`, after the exi
 In `his_crm_pipeline/models/his_dashboard.py`'s `_admissions_qualite`, this belongs downstream — add it instead in `his_admission/models/his_dashboard.py` by overriding:
 
 ```python
-    def _admissions_qualite(self, equipes):
-        """Ajoute la lacune que seul ce module peut voir : une specialite sans
-        tarif rend une candidature non chiffrable, donc absente du revenu
-        attendu sans que rien ne le dise."""
-        files = super()._admissions_qualite(equipes)
-        sans_tarif = self.env['his.specialite'].search([]).filtered(
-            lambda s: not self.env['his.tarif'].sudo().search_count([
-                ('specialite_id', '=', s.id), ('frais_inscription', '>', 0),
-            ])
+def _admissions_qualite(self, equipes):
+    """Ajoute la lacune que seul ce module peut voir : une specialite sans
+    tarif rend une candidature non chiffrable, donc absente du revenu
+    attendu sans que rien ne le dise."""
+    files = super()._admissions_qualite(equipes)
+    sans_tarif = (
+        self.env["his.specialite"]
+        .search([])
+        .filtered(
+            lambda s: (
+                not self.env["his.tarif"]
+                .sudo()
+                .search_count(
+                    [
+                        ("specialite_id", "=", s.id),
+                        ("frais_inscription", ">", 0),
+                    ]
+                )
+            )
         )
-        if sans_tarif:
-            files.append(self._a_traiter(
-                "Specialites sans tarif", 'his.specialite',
-                [('id', 'in', sans_tarif.ids)],
-            ))
-        return files
+    )
+    if sans_tarif:
+        files.append(
+            self._a_traiter(
+                "Specialites sans tarif",
+                "his.specialite",
+                [("id", "in", sans_tarif.ids)],
+            )
+        )
+    return files
 ```
 
 - [ ] **Step 7: Run the tests**

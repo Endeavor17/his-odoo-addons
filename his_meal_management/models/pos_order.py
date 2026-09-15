@@ -12,20 +12,18 @@ class PosOrder(models.Model):
     so a cashier with the developer console open still cannot invent a credit.
     """
 
-    _inherit = 'pos.order'
+    _inherit = "pos.order"
 
     def _process_saved_order(self, draft):
         res = super()._process_saved_order(draft)
-        if not draft and self.state != 'cancel':
+        if not draft and self.state != "cancel":
             self._apply_meal_credits()
         return res
 
     def _already_applied(self):
         """Orders can be re-synced. Credits must move exactly once."""
         self.ensure_one()
-        return bool(self.env['his.meal.transaction'].sudo().search_count(
-            [('pos_order_id', '=', self.id)], limit=1
-        ))
+        return bool(self.env["his.meal.transaction"].sudo().search_count([("pos_order_id", "=", self.id)], limit=1))
 
     def _apply_meal_credits(self):
         self.ensure_one()
@@ -39,20 +37,24 @@ class PosOrder(models.Model):
         # named on this till's pos.config, which meant a shop served exactly
         # one meal and a shop with the field empty served none.
         meal_lines = self.lines.filtered(
-            lambda line: line.product_id.meal_credit_cost > 0
-            # A student meal is the free one. The same product sold at its real
-            # price is a paying customer and must not touch anyone's balance.
-            and float_is_zero(line.price_unit, precision_rounding=rounding)
+            lambda line: (
+                line.product_id.meal_credit_cost > 0
+                # A student meal is the free one. The same product sold at its real
+                # price is a paying customer and must not touch anyone's balance.
+                and float_is_zero(line.price_unit, precision_rounding=rounding)
+            )
         )
 
         if not plan_lines and not meal_lines:
             return
 
         if not self.partner_id:
-            raise UserError(_(
-                "Scan the student's card before validating: this order carries a "
-                "meal plan or a student meal but has no student on it."
-            ))
+            raise UserError(
+                _(
+                    "Scan the student's card before validating: this order carries a "
+                    "meal plan or a student meal but has no student on it."
+                )
+            )
 
         # sudo() so a cashier who is not allowed to touch subscriptions still
         # gets the credit moved. It bypasses access rights without changing the
@@ -89,6 +91,8 @@ class PosOrder(models.Model):
             cost = line.product_id.meal_credit_cost
             for _i in range(int(line.qty)):
                 partner._consume_meal_credit(
-                    amount=cost, pos_order=self, product=line.product_id,
+                    amount=cost,
+                    pos_order=self,
+                    product=line.product_id,
                     allow_overdraft=True,
                 )

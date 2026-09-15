@@ -10,19 +10,22 @@ class CampusApplicationScore(models.Model):
     was ranked at the time — which is what makes re-scoring safe.
     """
 
-    _name = 'campus.application.score'
-    _description = 'Campus+ Application Score Line'
-    _order = 'applicant_id, sequence, code_snapshot, id'
-    _rec_name = 'code_snapshot'
+    _name = "campus.application.score"
+    _description = "Campus+ Application Score Line"
+    _order = "applicant_id, sequence, code_snapshot, id"
+    _rec_name = "code_snapshot"
 
-    applicant_id = fields.Many2one(
-        'hr.applicant', "Application", required=True, ondelete='cascade', index=True)
+    applicant_id = fields.Many2one("hr.applicant", "Application", required=True, ondelete="cascade", index=True)
     criterion_id = fields.Many2one(
-        'campus.criterion', "Criterion", required=True, ondelete='restrict', index=True,
+        "campus.criterion",
+        "Criterion",
+        required=True,
+        ondelete="restrict",
+        index=True,
         help="Restricted on purpose: deleting a criterion must not erase the history "
-             "of how past candidates were scored.")
-    version_id = fields.Many2one(
-        'campus.evaluation.version', "Evaluation Version", index=True, ondelete='restrict')
+        "of how past candidates were scored.",
+    )
+    version_id = fields.Many2one("campus.evaluation.version", "Evaluation Version", index=True, ondelete="restrict")
     sequence = fields.Integer("Sequence", default=10)
 
     # --- snapshot: written at evaluation, never recomputed -------------
@@ -35,15 +38,18 @@ class CampusApplicationScore(models.Model):
     weight_snapshot = fields.Float("Weight", readonly=True, digits=(16, 10))
     weighted_score = fields.Float("Weighted", readonly=True, digits=(16, 6))
     contribution_percent = fields.Float(
-        "Contribution %", compute='_compute_contribution_percent', digits=(16, 2),
-        help="Share of this application's final score contributed by this criterion.")
-
-    _applicant_criterion_uniq = models.Constraint(
-        'unique(applicant_id, criterion_id)',
-        'A criterion can only be scored once per application.',
+        "Contribution %",
+        compute="_compute_contribution_percent",
+        digits=(16, 2),
+        help="Share of this application's final score contributed by this criterion.",
     )
 
-    @api.depends('weighted_score', 'applicant_id.campus_final_score')
+    _applicant_criterion_uniq = models.Constraint(
+        "unique(applicant_id, criterion_id)",
+        "A criterion can only be scored once per application.",
+    )
+
+    @api.depends("weighted_score", "applicant_id.campus_final_score")
     def _compute_contribution_percent(self):
         for line in self:
             total = line.applicant_id.campus_final_score
@@ -54,7 +60,7 @@ class CampusApplicationScore(models.Model):
                 # is already a percentage, so scale before dividing.
                 line.contribution_percent = (line.weighted_score * 100.0) / total * 100.0
 
-    @api.depends('code_snapshot', 'name_snapshot')
+    @api.depends("code_snapshot", "name_snapshot")
     def _compute_display_name(self):
         for line in self:
             line.display_name = f"{line.code_snapshot} — {line.name_snapshot}"

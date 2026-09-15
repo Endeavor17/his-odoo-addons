@@ -21,7 +21,8 @@ class CrmLeadLost(models.TransientModel):
     conseillere continue d'utiliser l'assistant natif, sans rien apprendre de
     nouveau.
     """
-    _inherit = 'crm.lead.lost'
+
+    _inherit = "crm.lead.lost"
 
     def action_lost_reason_apply(self):
         if not is_html_empty(self.lost_feedback):

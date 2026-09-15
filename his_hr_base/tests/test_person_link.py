@@ -1,19 +1,17 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 """hr.employee est un miroir du referentiel Personnes, jamais sa source."""
-from psycopg2 import IntegrityError
 
+from odoo.addons.his_hr_base import BACKUP_TABLE, post_init_hook
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import mute_logger
+from psycopg2 import IntegrityError
 
-from odoo.addons.his_hr_base import BACKUP_TABLE, post_init_hook
 
-
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestPersonLink(TransactionCase):
-
     def _employee(self, **vals):
-        return self.env['hr.employee'].create({'name': "Test Employe", **vals})
+        return self.env["hr.employee"].create({"name": "Test Employe", **vals})
 
     def _make_legacy(self, employee, matricule):
         """Ramene un employe a l'etat « avant reprise » : matricule brut, pas de fiche.
@@ -28,8 +26,7 @@ class TestPersonLink(TransactionCase):
         person.unlink()
         self.env.cr.execute(
             "INSERT INTO %s (employee_id, matricule) VALUES (%%s, %%s) "
-            "ON CONFLICT (employee_id) DO UPDATE SET matricule = EXCLUDED.matricule"
-            % BACKUP_TABLE,
+            "ON CONFLICT (employee_id) DO UPDATE SET matricule = EXCLUDED.matricule" % BACKUP_TABLE,
             (employee.id, matricule),
         )
 
@@ -38,9 +35,9 @@ class TestPersonLink(TransactionCase):
     def test_create_links_a_person(self):
         employee = self._employee()
         self.assertTrue(employee.person_id)
-        self.assertEqual(employee.person_id.type_personne, 'employe')
-        self.assertEqual(employee.person_id.source_system, 'odoo_hr')
-        self.assertRegex(employee.matricule_institutionnel, r'^HIS-\d{4}-\d{6}-[0-9X]$')
+        self.assertEqual(employee.person_id.type_personne, "employe")
+        self.assertEqual(employee.person_id.source_system, "odoo_hr")
+        self.assertRegex(employee.matricule_institutionnel, r"^HIS-\d{4}-\d{6}-[0-9X]$")
 
     def test_matricule_mirrors_the_person(self):
         """Le champ de l'employe suit la fiche : c'est un related, pas une copie."""
@@ -51,11 +48,13 @@ class TestPersonLink(TransactionCase):
         )
 
     def test_explicit_person_id_is_not_overridden(self):
-        person = self.env['his.person'].create({
-            'name': "Deja Enregistre",
-            'type_personne': 'enseignant',
-            'source_system': 'manual',
-        })
+        person = self.env["his.person"].create(
+            {
+                "name": "Deja Enregistre",
+                "type_personne": "enseignant",
+                "source_system": "manual",
+            }
+        )
         employee = self._employee(person_id=person.id)
         self.assertEqual(employee.person_id, person)
         self.assertEqual(employee.matricule_institutionnel, person.matricule_institutionnel)
@@ -68,15 +67,17 @@ class TestPersonLink(TransactionCase):
 
     def test_create_reuses_the_employee_work_contact(self):
         """La fiche personne se pose sur le contact que l'employe a deja."""
-        before = self.env['res.partner'].search_count([])
+        before = self.env["res.partner"].search_count([])
         employee = self._employee()
         self.assertTrue(employee.work_contact_id, "hr n'a pas cree de contact")
         self.assertEqual(
-            employee.person_id.partner_id, employee.work_contact_id,
+            employee.person_id.partner_id,
+            employee.work_contact_id,
             "la fiche personne pointe un autre contact que celui de l'employe",
         )
         self.assertEqual(
-            self.env['res.partner'].search_count([]), before + 1,
+            self.env["res.partner"].search_count([]),
+            before + 1,
             "un second contact a ete cree pour le meme humain",
         )
 
@@ -88,13 +89,14 @@ class TestPersonLink(TransactionCase):
 
     def test_a_partner_carries_at_most_one_person(self):
         employee = self._employee()
-        with self.assertRaises(IntegrityError), mute_logger('odoo.sql_db'):
-            with self.env.cr.savepoint():
-                self.env['his.person'].create({
-                    'partner_id': employee.work_contact_id.id,
-                    'type_personne': 'etudiant',
-                    'source_system': 'manual',
-                })
+        with self.assertRaises(IntegrityError), mute_logger("odoo.sql_db"), self.env.cr.savepoint():
+            self.env["his.person"].create(
+                {
+                    "partner_id": employee.work_contact_id.id,
+                    "type_personne": "etudiant",
+                    "source_system": "manual",
+                }
+            )
 
     def test_partner_of_a_live_person_cannot_be_deleted(self):
         """ondelete='restrict' : supprimer un contact ne detruit pas une identite.
@@ -104,20 +106,21 @@ class TestPersonLink(TransactionCase):
         contrainte n'entre en jeu. Le matricule est donc protege deux fois,
         mais c'est bien `restrict` qui couvre les etudiants, que hr ignore.
         """
-        person = self.env['his.person'].create({
-            'name': "Etudiante Test",
-            'type_personne': 'etudiant',
-            'source_system': 'manual',
-        })
-        with self.assertRaises(IntegrityError), mute_logger('odoo.sql_db'):
-            with self.env.cr.savepoint():
-                person.partner_id.unlink()
+        person = self.env["his.person"].create(
+            {
+                "name": "Etudiante Test",
+                "type_personne": "etudiant",
+                "source_system": "manual",
+            }
+        )
+        with self.assertRaises(IntegrityError), mute_logger("odoo.sql_db"), self.env.cr.savepoint():
+            person.partner_id.unlink()
 
     # --- Regle 2 : la reprise ne perd ni ne remplace aucune valeur ----------
 
     def test_backfill_preserves_existing_values(self):
         legacy = {}
-        for matricule in ('HIS-2023-000004-8', 'HIS-2024-000117-9', 'HIS-2022-000031'):
+        for matricule in ("HIS-2023-000004-8", "HIS-2024-000117-9", "HIS-2022-000031"):
             employee = self._employee()
             self._make_legacy(employee, matricule)
             legacy[employee] = matricule
@@ -127,35 +130,36 @@ class TestPersonLink(TransactionCase):
         for employee, matricule in legacy.items():
             self.assertTrue(employee.person_id, "employe non rattache")
             self.assertEqual(
-                employee.person_id.matricule_institutionnel, matricule,
+                employee.person_id.matricule_institutionnel,
+                matricule,
                 "matricule reemis ou derive au lieu d'etre repris",
             )
             self.assertEqual(employee.matricule_institutionnel, matricule)
-            self.assertEqual(employee.person_id.type_personne, 'employe')
+            self.assertEqual(employee.person_id.type_personne, "employe")
 
     def test_backfill_preserves_legacy_value_without_checksum(self):
         """Une valeur sans cle de controle est reprise telle quelle, pas rejetee."""
         employee = self._employee()
-        self._make_legacy(employee, 'HIS-2022-000031')
+        self._make_legacy(employee, "HIS-2022-000031")
         post_init_hook(self.env)
-        self.assertEqual(employee.matricule_institutionnel, 'HIS-2022-000031')
+        self.assertEqual(employee.matricule_institutionnel, "HIS-2022-000031")
 
     def test_backfill_is_idempotent(self):
         employee = self._employee()
-        self._make_legacy(employee, 'HIS-2023-000055-4')
+        self._make_legacy(employee, "HIS-2023-000055-4")
 
         post_init_hook(self.env)
         person = employee.person_id
-        count_before = self.env['his.person'].with_context(active_test=False).search_count([])
+        count_before = self.env["his.person"].with_context(active_test=False).search_count([])
 
         post_init_hook(self.env)
         self.assertEqual(employee.person_id, person, "fiche remplacee au second passage")
         self.assertEqual(
-            self.env['his.person'].with_context(active_test=False).search_count([]),
+            self.env["his.person"].with_context(active_test=False).search_count([]),
             count_before,
             "le second passage a cree des fiches en doublon",
         )
-        self.assertEqual(employee.matricule_institutionnel, 'HIS-2023-000055-4')
+        self.assertEqual(employee.matricule_institutionnel, "HIS-2023-000055-4")
 
     def test_backfill_mints_for_employees_without_any_matricule(self):
         """Un employe sans matricule du tout en recoit un neuf, et une fiche."""
@@ -164,7 +168,7 @@ class TestPersonLink(TransactionCase):
         self.assertFalse(employee.matricule_institutionnel)
         post_init_hook(self.env)
         self.assertTrue(employee.person_id)
-        self.assertRegex(employee.matricule_institutionnel, r'^HIS-\d{4}-\d{6}-[0-9X]$')
+        self.assertRegex(employee.matricule_institutionnel, r"^HIS-\d{4}-\d{6}-[0-9X]$")
 
     def test_backfill_advances_the_sequence_past_reused_numbers(self):
         """Le compteur repart au-dessus des numeros que l'ancienne sequence a brules.
@@ -175,26 +179,28 @@ class TestPersonLink(TransactionCase):
         deux personnes.
         """
         employee = self._employee()
-        self._make_legacy(employee, 'HIS-2022-000031')
+        self._make_legacy(employee, "HIS-2022-000031")
         post_init_hook(self.env)
 
-        newcomer = self.env['his.person'].create({
-            'name': "Nouvelle Recrue",
-            'type_personne': 'employe',
-            'source_system': 'odoo_hr',
-            'matricule_sequence_date': '2022-06-01',
-        })
-        number = int(newcomer.matricule_institutionnel.split('-')[2])
+        newcomer = self.env["his.person"].create(
+            {
+                "name": "Nouvelle Recrue",
+                "type_personne": "employe",
+                "source_system": "odoo_hr",
+                "matricule_sequence_date": "2022-06-01",
+            }
+        )
+        number = int(newcomer.matricule_institutionnel.split("-")[2])
         self.assertGreater(number, 31, newcomer.matricule_institutionnel)
 
     # --- Regle 3 : l'annee du matricule vient de la date d'entree -----------
 
     def test_date_start_working_drives_the_year(self):
-        if 'date_start_working' not in self.env['hr.employee']._fields:
+        if "date_start_working" not in self.env["hr.employee"]._fields:
             self.skipTest("date_start_working est fourni par maintenance_university")
-        employee = self._employee(date_start_working='2021-11-02')
+        employee = self._employee(date_start_working="2021-11-02")
         self.assertTrue(
-            employee.matricule_institutionnel.startswith('HIS-2021-'),
+            employee.matricule_institutionnel.startswith("HIS-2021-"),
             employee.matricule_institutionnel,
         )
 
@@ -207,13 +213,14 @@ class TestPersonLink(TransactionCase):
         desinstaller rendait le matricule invisible sur la fiche employe.
         """
         view = self.env.ref(
-            'his_hr_base.view_employee_form_inherit_his_hr_base',
+            "his_hr_base.view_employee_form_inherit_his_hr_base",
             raise_if_not_found=False,
         )
         self.assertTrue(view, "his_hr_base n'expose aucune vue de ses champs")
-        arch = self.env['hr.employee'].get_view(view_type='form')['arch']
+        arch = self.env["hr.employee"].get_view(view_type="form")["arch"]
         self.assertEqual(
-            arch.count('name="matricule_affiche"'), 1,
+            arch.count('name="matricule_affiche"'),
+            1,
             "matricule_institutionnel affiche zero ou plusieurs fois",
         )
         self.assertIn('name="person_id"', arch)
@@ -225,14 +232,16 @@ class TestPersonLink(TransactionCase):
         res.partner, le selecteur les proposait toutes.
         """
         employee = self._employee()
-        Partner = self.env['res.partner']
-        proposes = Partner.search([('his_person_ids', '=', False)])
+        Partner = self.env["res.partner"]
+        proposes = Partner.search([("his_person_ids", "=", False)])
         self.assertNotIn(
-            employee.person_id.partner_id, proposes,
+            employee.person_id.partner_id,
+            proposes,
             "le contact d'un employe est propose comme adresse de travail",
         )
         self.assertIn(
-            self.env.company.partner_id, proposes,
+            self.env.company.partner_id,
+            proposes,
             "l'adresse de la societe doit rester proposee",
         )
 
@@ -244,19 +253,19 @@ class TestPersonLink(TransactionCase):
         Ajoutes a cote des types livres par Odoo, jamais a leur place :
         renommer ou archiver ceux-ci casserait les fiches qui les utilisent.
         """
-        algeria = self.env.ref('base.dz')
+        algeria = self.env.ref("base.dz")
         for xmlid, code in [
-            ('his_hr_base.contract_type_dz_cdi', 'CDI'),
-            ('his_hr_base.contract_type_dz_cdd', 'CDD'),
-            ('his_hr_base.contract_type_dz_temps_partiel', 'CTP'),
-            ('his_hr_base.contract_type_dz_apprentissage', 'APP'),
+            ("his_hr_base.contract_type_dz_cdi", "CDI"),
+            ("his_hr_base.contract_type_dz_cdd", "CDD"),
+            ("his_hr_base.contract_type_dz_temps_partiel", "CTP"),
+            ("his_hr_base.contract_type_dz_apprentissage", "APP"),
         ]:
             contract_type = self.env.ref(xmlid)
             self.assertEqual(contract_type.code, code)
             self.assertEqual(contract_type.country_id, algeria)
 
         self.assertTrue(
-            self.env['hr.contract.type'].search_count([('name', 'ilike', 'Permanent')]),
+            self.env["hr.contract.type"].search_count([("name", "ilike", "Permanent")]),
             "les types livres par Odoo ont ete supprimes ou renommes",
         )
 
@@ -265,33 +274,33 @@ class TestPersonLink(TransactionCase):
     def test_badge_id_is_the_rfid_badge(self):
         """Le Badge ID natif EST le badge RFID : un seul numero, pas deux."""
         employee = self._employee()
-        employee.person_id.numero_carte = '0012345678'
+        employee.person_id.numero_carte = "0012345678"
         self.assertEqual(
-            employee.barcode, '0012345678',
+            employee.barcode,
+            "0012345678",
             "le lecteur de pointage ne verrait pas la carte de la personne",
         )
 
     def test_badge_written_on_the_employee_lands_on_the_person(self):
         """La saisie marche dans les deux sens, la fiche personne fait foi."""
         employee = self._employee()
-        employee.barcode = '0087654321'
-        self.assertEqual(employee.person_id.numero_carte, '0087654321')
+        employee.barcode = "0087654321"
+        self.assertEqual(employee.person_id.numero_carte, "0087654321")
 
     def test_badge_cannot_be_shared_by_two_people(self):
         first, second = self._employee(), self._employee()
-        first.barcode = '0011112222'
-        with self.assertRaises(IntegrityError), mute_logger('odoo.sql_db'):
-            with self.env.cr.savepoint():
-                second.barcode = '0011112222'
+        first.barcode = "0011112222"
+        with self.assertRaises(IntegrityError), mute_logger("odoo.sql_db"), self.env.cr.savepoint():
+            second.barcode = "0011112222"
 
     def test_malformed_badge_fails_loudly(self):
         """Odoo refuse un Badge ID non alphanumerique : on ne l'avale pas."""
         employee = self._employee()
         with self.assertRaises(ValidationError):
-            employee.person_id.numero_carte = '04:A2:B3:C4'
+            employee.person_id.numero_carte = "04:A2:B3:C4"
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestAccesReferentiel(TransactionCase):
     """Qui a le droit de lire le referentiel des personnes.
 
@@ -302,53 +311,68 @@ class TestAccesReferentiel(TransactionCase):
     """
 
     def _user(self, login, roles=()):
-        groupes = [self.env.ref('base.group_user').id]
+        groupes = [self.env.ref("base.group_user").id]
         groupes += [self.env.ref(r).id for r in roles]
-        return self.env['res.users'].create({
-            'name': login, 'login': login,
-            'group_ids': [(6, 0, groupes)],
-        })
+        return self.env["res.users"].create(
+            {
+                "name": login,
+                "login": login,
+                "group_ids": [(6, 0, groupes)],
+            }
+        )
 
     def test_un_salarie_ordinaire_ne_lit_pas_le_referentiel(self):
-        salarie = self._user('zz_salarie')
+        salarie = self._user("zz_salarie")
 
         with self.assertRaises(AccessError):
-            self.env['his.person'].with_user(salarie).search([])
+            self.env["his.person"].with_user(salarie).search([])
         with self.assertRaises(AccessError):
-            self.env['his.engagement'].with_user(salarie).search([])
+            self.env["his.engagement"].with_user(salarie).search([])
 
     def test_un_salarie_ordinaire_ne_voit_pas_le_menu_identite(self):
-        salarie = self._user('zz_salarie_menu')
+        salarie = self._user("zz_salarie_menu")
 
-        visibles = self.env['ir.ui.menu'].with_user(salarie).search(
-            [],
-        )._filter_visible_menus()
+        visibles = (
+            self.env["ir.ui.menu"]
+            .with_user(salarie)
+            .search(
+                [],
+            )
+            ._filter_visible_menus()
+        )
 
-        self.assertNotIn(self.env.ref('his_person_core.menu_his_person_root'), visibles)
+        self.assertNotIn(self.env.ref("his_person_core.menu_his_person_root"), visibles)
 
     def test_les_rh_lisent_le_referentiel_sans_pouvoir_l_ecrire(self):
         """Le formulaire employe affiche la fiche personne : sans lecture, il
         se bloquerait entierement pour l'equipe RH."""
-        rh = self._user('zz_rh', ['hr.group_hr_user'])
+        rh = self._user("zz_rh", ["hr.group_hr_user"])
 
-        self.env['his.person'].with_user(rh).search([])
+        self.env["his.person"].with_user(rh).search([])
         self.assertFalse(
-            self.env['his.person'].with_user(rh).check_access_rights(
-                'write', raise_exception=False,
+            self.env["his.person"]
+            .with_user(rh)
+            .check_access_rights(
+                "write",
+                raise_exception=False,
             ),
             "les RH lisent le referentiel, ils n'emettent pas de matricule",
         )
         self.assertIn(
-            self.env.ref('his_person_core.menu_his_person_root'),
-            self.env['ir.ui.menu'].with_user(rh).search([])._filter_visible_menus(),
+            self.env.ref("his_person_core.menu_his_person_root"),
+            self.env["ir.ui.menu"].with_user(rh).search([])._filter_visible_menus(),
         )
 
     def test_le_gestionnaire_garde_l_ecriture(self):
         gestionnaire = self._user(
-            'zz_gest', ['his_person_core.group_his_person_manager'],
+            "zz_gest",
+            ["his_person_core.group_his_person_manager"],
         )
         self.assertTrue(
-            self.env['his.person'].with_user(gestionnaire).check_access_rights(
-                'write', raise_exception=False,
+            self.env["his.person"]
+            .with_user(gestionnaire)
+            .check_access_rights(
+                "write",
+                raise_exception=False,
             ),
         )

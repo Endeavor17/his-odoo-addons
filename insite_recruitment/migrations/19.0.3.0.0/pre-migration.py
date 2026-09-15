@@ -6,8 +6,14 @@ conversion was written. If that is no longer true, stop here: the upgrade would
 otherwise drop real rows without a word.
 """
 
-TABLES = ('academic_person', 'academic_faculty', 'academic_engagement', 'insite_candidature',
-          'insite_contract', 'insite_submission')
+TABLES = (
+    "academic_person",
+    "academic_faculty",
+    "academic_engagement",
+    "insite_candidature",
+    "insite_contract",
+    "insite_submission",
+)
 
 
 def migrate(cr, version):

@@ -1,20 +1,19 @@
 from datetime import datetime, time, timedelta
 
 import pytz
-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 # Monday is 0 in Python. The working week here runs Sunday to Thursday, so the
 # defaults below reflect that rather than a Monday-to-Friday assumption.
 WEEKDAY_FIELDS = [
-    ('day_sun', 6, 'Sunday'),
-    ('day_mon', 0, 'Monday'),
-    ('day_tue', 1, 'Tuesday'),
-    ('day_wed', 2, 'Wednesday'),
-    ('day_thu', 3, 'Thursday'),
-    ('day_fri', 4, 'Friday'),
-    ('day_sat', 5, 'Saturday'),
+    ("day_sun", 6, "Sunday"),
+    ("day_mon", 0, "Monday"),
+    ("day_tue", 1, "Tuesday"),
+    ("day_wed", 2, "Wednesday"),
+    ("day_thu", 3, "Thursday"),
+    ("day_fri", 4, "Friday"),
+    ("day_sat", 5, "Saturday"),
 ]
 
 
@@ -27,15 +26,13 @@ class CampusSlotGenerate(models.TransientModel):
     fact.
     """
 
-    _name = 'campus.slot.generate'
-    _description = 'Campus+ Generate Interview Slots'
+    _name = "campus.slot.generate"
+    _description = "Campus+ Generate Interview Slots"
 
-    date_from = fields.Date(
-        "Week Starting", required=True,
-        default=lambda self: fields.Date.context_today(self))
+    date_from = fields.Date("Week Starting", required=True, default=lambda self: fields.Date.context_today(self))
     date_to = fields.Date(
-        "Until", required=True,
-        default=lambda self: fields.Date.context_today(self) + timedelta(days=6))
+        "Until", required=True, default=lambda self: fields.Date.context_today(self) + timedelta(days=6)
+    )
 
     day_sun = fields.Boolean("Sunday", default=True)
     day_mon = fields.Boolean("Monday", default=True)
@@ -49,30 +46,46 @@ class CampusSlotGenerate(models.TransientModel):
     time_to = fields.Float("To", default=12.0, required=True)
     duration = fields.Float("Slot Length", default=0.5, required=True, help="In hours.")
 
-    round = fields.Selection([
-        ('1', 'First Meeting'),
-        ('2', 'Second Meeting'),
-        ('any', 'Either'),
-    ], string="Meeting", default='1', required=True)
-    interviewer_id = fields.Many2one(
-        'res.users', "Interviewer", required=True,
-        default=lambda self: self.env.user)
+    round = fields.Selection(
+        [
+            ("1", "First Meeting"),
+            ("2", "Second Meeting"),
+            ("any", "Either"),
+        ],
+        string="Meeting",
+        default="1",
+        required=True,
+    )
+    interviewer_id = fields.Many2one("res.users", "Interviewer", required=True, default=lambda self: self.env.user)
 
-    preview = fields.Char("Preview", compute='_compute_preview')
+    preview = fields.Char("Preview", compute="_compute_preview")
 
     # ------------------------------------------------------------------
-    @api.depends('date_from', 'date_to', 'time_from', 'time_to', 'duration',
-                 'day_sun', 'day_mon', 'day_tue', 'day_wed', 'day_thu', 'day_fri', 'day_sat')
+    @api.depends(
+        "date_from",
+        "date_to",
+        "time_from",
+        "time_to",
+        "duration",
+        "day_sun",
+        "day_mon",
+        "day_tue",
+        "day_wed",
+        "day_thu",
+        "day_fri",
+        "day_sat",
+    )
     def _compute_preview(self):
         for wizard in self:
             try:
                 count = len(wizard._planned_starts())
             except (UserError, ValidationError):
                 count = 0
-            wizard.preview = _("%s slots will be created", count) if count \
-                else _("Nothing to create with these settings")
+            wizard.preview = (
+                _("%s slots will be created", count) if count else _("Nothing to create with these settings")
+            )
 
-    @api.constrains('time_from', 'time_to', 'duration')
+    @api.constrains("time_from", "time_to", "duration")
     def _check_times(self):
         for wizard in self:
             if not 0 <= wizard.time_from < 24 or not 0 < wizard.time_to <= 24:
@@ -82,11 +95,15 @@ class CampusSlotGenerate(models.TransientModel):
             if wizard.duration <= 0:
                 raise ValidationError(_("Slot length must be greater than zero."))
             if wizard.duration > (wizard.time_to - wizard.time_from):
-                raise ValidationError(_(
-                    "A %(len)s hour slot does not fit between %(from)s and %(to)s.",
-                    len=wizard.duration, **{'from': wizard.time_from, 'to': wizard.time_to}))
+                raise ValidationError(
+                    _(
+                        "A %(len)s hour slot does not fit between %(from)s and %(to)s.",
+                        len=wizard.duration,
+                        **{"from": wizard.time_from, "to": wizard.time_to},
+                    )
+                )
 
-    @api.constrains('date_from', 'date_to')
+    @api.constrains("date_from", "date_to")
     def _check_dates(self):
         for wizard in self:
             if wizard.date_to < wizard.date_from:
@@ -128,7 +145,7 @@ class CampusSlotGenerate(models.TransientModel):
         Odoo stores datetimes in UTC. Without this, a slot typed as 09:00 would be
         saved as 09:00 UTC and show on the calendar at the wrong hour.
         """
-        tz = pytz.timezone(self.env.user.tz or 'UTC')
+        tz = pytz.timezone(self.env.user.tz or "UTC")
         return tz.localize(naive_local).astimezone(pytz.UTC).replace(tzinfo=None)
 
     # ------------------------------------------------------------------
@@ -137,34 +154,42 @@ class CampusSlotGenerate(models.TransientModel):
         if not self._selected_weekdays():
             raise UserError(_("Pick at least one day of the week."))
 
-        Slot = self.env['campus.interview.slot']
+        Slot = self.env["campus.interview.slot"]
         starts = self._planned_starts()
         if not starts:
             raise UserError(_("These settings produce no slots. Check the dates and times."))
 
-        existing = set(Slot.search([
-            ('start_datetime', 'in', starts),
-            ('interviewer_id', '=', self.interviewer_id.id),
-            ('round', '=', self.round),
-        ]).mapped(lambda s: fields.Datetime.to_string(s.start_datetime)))
+        existing = set(
+            Slot.search(
+                [
+                    ("start_datetime", "in", starts),
+                    ("interviewer_id", "=", self.interviewer_id.id),
+                    ("round", "=", self.round),
+                ]
+            ).mapped(lambda s: fields.Datetime.to_string(s.start_datetime))
+        )
 
-        to_create = [{
-            'start_datetime': start,
-            'duration': self.duration,
-            'round': self.round,
-            'interviewer_id': self.interviewer_id.id,
-        } for start in starts if start not in existing]
+        to_create = [
+            {
+                "start_datetime": start,
+                "duration": self.duration,
+                "round": self.round,
+                "interviewer_id": self.interviewer_id.id,
+            }
+            for start in starts
+            if start not in existing
+        ]
 
         created = Slot.create(to_create) if to_create else Slot.browse()
 
         return {
-            'type': 'ir.actions.act_window',
-            'name': _("Available Slots"),
-            'res_model': 'campus.interview.slot',
-            'view_mode': 'list,calendar,form',
-            'domain': [('id', 'in', created.ids)] if created else [],
-            'context': {
-                'default_round': self.round,
-                'skipped': len(starts) - len(to_create),
+            "type": "ir.actions.act_window",
+            "name": _("Available Slots"),
+            "res_model": "campus.interview.slot",
+            "view_mode": "list,calendar,form",
+            "domain": [("id", "in", created.ids)] if created else [],
+            "context": {
+                "default_round": self.round,
+                "skipped": len(starts) - len(to_create),
             },
         }

@@ -1,5 +1,4 @@
-from . import models
-from . import wizard
+from . import models, wizard
 from .hooks import post_init_hook
 
 # Ce module n'avait plus ni hook ni reference a his_stock_mdm : un repas etant

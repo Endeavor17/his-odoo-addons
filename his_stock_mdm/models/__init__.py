@@ -1,9 +1,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from . import product_category
-from . import product_attribute
-from . import product_template_attribute_line
-from . import product_template
-from . import product_product
-from . import stock_scrap
-from . import stock_quant
-from . import his_inventaire_annuel
+from . import (
+    his_inventaire_annuel,
+    product_attribute,
+    product_category,
+    product_product,
+    product_template,
+    product_template_attribute_line,
+    stock_quant,
+    stock_scrap,
+)

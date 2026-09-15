@@ -23,9 +23,9 @@ n'ajoute que ce qui manque et ne retire jamais un onglet pose par l'exploitant.
 # Le Copy Center n'est pas un point de restauration : il ne sert donc aucun
 # repas, ce qui satisfait a la fois Abdo et la regle « rien de comestible ».
 RATTACHEMENTS = [
-    ('his_meal_management.pos_categ_repas', 'his_stock_mdm.pos_config_restaurant'),
-    ('his_meal_management.pos_categ_repas', 'his_stock_mdm.pos_config_cafeteria'),
-    ('his_meal_management.pos_categ_recharges', 'his_stock_mdm.pos_config_copy_center'),
+    ("his_meal_management.pos_categ_repas", "his_stock_mdm.pos_config_restaurant"),
+    ("his_meal_management.pos_categ_repas", "his_stock_mdm.pos_config_cafeteria"),
+    ("his_meal_management.pos_categ_recharges", "his_stock_mdm.pos_config_copy_center"),
 ]
 
 
@@ -36,10 +36,12 @@ def lier_categories_pos(env):
         if not categ or not config:
             continue
         if categ not in config.iface_available_categ_ids:
-            config.write({
-                'limit_categories': True,
-                'iface_available_categ_ids': [(4, categ.id)],
-            })
+            config.write(
+                {
+                    "limit_categories": True,
+                    "iface_available_categ_ids": [(4, categ.id)],
+                }
+            )
 
 
 def taguer_produits(env):
@@ -54,15 +56,14 @@ def taguer_produits(env):
     donc le pos_categ_ids ajoute dans meal_plans.xml ne les atteint pas. Sans
     rayon, un produit disparait de toute caisse qui restreint ses categories.
     """
-    Template = env['product.template']
-    recharges = env.ref('his_meal_management.pos_categ_recharges', raise_if_not_found=False)
-    repas = env.ref('his_meal_management.pos_categ_repas', raise_if_not_found=False)
+    Template = env["product.template"]
+    recharges = env.ref("his_meal_management.pos_categ_recharges", raise_if_not_found=False)
+    repas = env.ref("his_meal_management.pos_categ_repas", raise_if_not_found=False)
     if not recharges or not repas:
         return
 
-    for champ, rayon, rayon_a_retirer in (('meal_credits', recharges, repas),
-                                          ('meal_credit_cost', repas, recharges)):
-        for produit in Template.search([(champ, '>', 0)]):
+    for champ, rayon, rayon_a_retirer in (("meal_credits", recharges, repas), ("meal_credit_cost", repas, recharges)):
+        for produit in Template.search([(champ, ">", 0)]):
             commandes = []
             if rayon not in produit.pos_categ_ids:
                 commandes.append((4, rayon.id))
@@ -72,7 +73,7 @@ def taguer_produits(env):
             if not porte_les_deux and rayon_a_retirer in produit.pos_categ_ids:
                 commandes.append((3, rayon_a_retirer.id))
             if commandes:
-                produit.write({'available_in_pos': True, 'pos_categ_ids': commandes})
+                produit.write({"available_in_pos": True, "pos_categ_ids": commandes})
 
 
 def post_init_hook(env):

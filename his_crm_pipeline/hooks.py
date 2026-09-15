@@ -12,11 +12,12 @@ D'ou du code imperatif, appele des deux cotes : a l'installation (post_init_hook
 et a la mise a jour (migrations/19.0.3.3.0). Une seule fonction pour les deux,
 sinon les deux chemins finissent par diverger.
 """
+
 # « Too expensive » double « Frais trop eleves », en anglais. « Not enough
 # stock » n'a aucun sens pour une candidature. Un conseiller voyait donc deux
 # entrees pour la meme idee, dans deux langues — le compartiment coupe en deux
 # qu'on venait de fusionner pour « Sans reponse », reintroduit par le haut.
-MOTIFS_NATIFS = ('crm.lost_reason_1', 'crm.lost_reason_2', 'crm.lost_reason_3')
+MOTIFS_NATIFS = ("crm.lost_reason_1", "crm.lost_reason_2", "crm.lost_reason_3")
 
 
 def desactiver_motifs_natifs(env):
