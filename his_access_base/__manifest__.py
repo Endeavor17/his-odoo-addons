@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Socle de controle d'acces",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Technical",
     "summary": "Politique de droits du groupe, attribution par le poste, et les tests qui la tiennent",
     "description": """
