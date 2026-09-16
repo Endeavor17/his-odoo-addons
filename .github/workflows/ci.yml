@@ -14,7 +14,7 @@ concurrency:
 
 env:
   # Modules du depot (web_responsive est tiers OCA, non juge).
-  MODULES: campus_identity_bridge,campus_teacher_management,his_academic_base,his_access_base,his_admission,his_crm_identity_bridge,his_crm_pipeline,his_hr_base,his_meal_management,his_person_core,his_person_sync_sheets,his_pos_copy_center,his_pos_partner_scope,his_pos_ui,his_theme,his_web_ui,insite_recruitment,maintenance_university,his_stock_mdm
+  MODULES: campus_identity_bridge,campus_teacher_management,his_academic_base,his_access_base,his_admission,his_crm_identity_bridge,his_crm_pipeline,his_hr_base,his_meal_management,his_person_core,his_person_sync_sheets,his_pos_copy_center,his_pos_numbering,his_pos_partner_scope,his_pos_ui,his_theme,his_web_ui,insite_recruitment,maintenance_university,his_stock_mdm
 
 jobs:
   lint:
