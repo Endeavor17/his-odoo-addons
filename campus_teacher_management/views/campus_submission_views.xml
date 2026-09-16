@@ -29,8 +29,12 @@
         <field name="arch" type="xml">
             <form string="Raw Submission" create="false">
                 <header>
+                    <!-- Hidden for abuse rows: only a preview of their body was
+                         kept, so there is nothing to rebuild from. The server
+                         refuses them too - this is the convenience half. -->
                     <button name="action_reprocess" type="object" string="Re-process"
                             class="btn-primary"
+                            invisible="error_code in ('honeypot', 'rate_limited')"
                             confirm="Rebuild the application from this stored payload?"/>
                     <button name="action_view_applicant" type="object" string="Open Application"
                             invisible="not applicant_id"/>

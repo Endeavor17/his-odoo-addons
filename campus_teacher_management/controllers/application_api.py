@@ -17,12 +17,24 @@ from datetime import timedelta
 
 from odoo import fields, http
 from odoo.http import request
+from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 
 # Odoo needs a concrete value at import time to emit the preflight headers; the
 # per-request allowlist below is what actually decides who gets served.
 CORS_ANY = "*"
+
+# An application is a few kilobytes of answers and carries no attachment, so
+# anything past this is not a candidate. Odoo's own default is 128 MiB, and this
+# handler stores the body *before* validating it — without a cap that design
+# lets an anonymous caller persist as much as the default allows. Enforced by
+# the framework in pre_dispatch, so an oversized body never reaches the code
+# below: it is answered 413 and nothing is written.
+MAX_BODY_BYTES = 64 * 1024
+
+# How much of an abusive body is worth keeping; see _truncated_payload.
+REJECT_PREVIEW_CHARS = 2000
 
 PARAM_ORIGINS = "campus_teacher.allowed_origins"
 PARAM_RATE_IP = "campus_teacher.rate_limit_ip"
@@ -67,11 +79,31 @@ class CampusApplicationApi(http.Controller):
         return (origin or "").rstrip("/") in allowed
 
     def _client_ip(self):
-        headers = request.httprequest.headers
-        forwarded = headers.get("X-Forwarded-For")
-        if forwarded:
-            return forwarded.split(",")[0].strip()
+        """The address to count, taken from remote_addr and never from a header.
+
+        `X-Forwarded-For` is written by the caller, so reading it let anyone
+        reset their own counter simply by sending a new value. Odoo already
+        resolves the real client from the proxy's own hop (ProxyFix, x_for=1)
+        when proxy_mode is on, and remote_addr is that result.
+        """
         return request.httprequest.remote_addr or ""
+
+    def _client_ip_is_the_proxy(self):
+        """True when remote_addr cannot tell two clients apart.
+
+        Odoo applies ProxyFix only when the request also carries
+        `X-Forwarded-Host`. A reverse proxy that forwards `X-Forwarded-For` but
+        not `X-Forwarded-Host` therefore leaves remote_addr pointing at itself,
+        and every candidate shares a single address.
+
+        The three sound cases are excluded here: no proxy_mode (remote_addr is
+        the real peer and the header is simply ignored), `X-Forwarded-Host`
+        present (ProxyFix ran), and no `X-Forwarded-For` at all.
+        """
+        if not config["proxy_mode"]:
+            return False
+        headers = request.httprequest.headers
+        return bool(headers.get("X-Forwarded-For")) and not headers.get("X-Forwarded-Host")
 
     def _rate_limited(self, ip, email, exclude_id=None):
         """True if this IP or email has submitted too often lately.
@@ -86,6 +118,19 @@ class CampusApplicationApi(http.Controller):
             max_email = int(self._param(PARAM_RATE_EMAIL, "3") or 3)
         except ValueError:
             window, max_ip, max_email = 60, 20, 3
+
+        if ip and self._client_ip_is_the_proxy():
+            # Counting per IP here would reject every candidate behind the
+            # proxy, which is a worse outage than the flood it prevents. Stand
+            # the per-IP limit down, keep the per-email one, and say why.
+            _logger.warning(
+                "Campus+: remote_addr (%s) is the reverse proxy itself — it forwards X-Forwarded-For but not "
+                "X-Forwarded-Host, so Odoo's ProxyFix never runs and every candidate shares one address. "
+                "Per-IP rate limiting is stood down (per-email still applies). Fix the proxy to forward "
+                "X-Forwarded-Host.",
+                ip,
+            )
+            ip = None
 
         since = fields.Datetime.now() - timedelta(minutes=window)
         Submission = request.env["campus.submission"].sudo()
@@ -106,6 +151,19 @@ class CampusApplicationApi(http.Controller):
             return None
         return payload if isinstance(payload, dict) else None
 
+    def _truncated_payload(self, payload):
+        """What to keep of an abusive submission: enough to recognise it.
+
+        A genuine rejection keeps its full body, because Re-process rebuilds the
+        application from exactly those bytes. Honeypot hits and flood attempts
+        are never re-processed, so keeping them whole only offers free storage
+        to whoever is abusing the form.
+        """
+        return {
+            "_truncated": True,
+            "_preview": json.dumps(payload, ensure_ascii=False)[:REJECT_PREVIEW_CHARS],
+        }
+
     # ------------------------------------------------------------------
     # POST /api/campus/applications
     # ------------------------------------------------------------------
@@ -117,6 +175,7 @@ class CampusApplicationApi(http.Controller):
         csrf=False,
         cors=CORS_ANY,
         save_session=False,
+        max_content_length=MAX_BODY_BYTES,
     )
     def create_application(self, **kwargs):
         origin = request.httprequest.headers.get("Origin", "")
@@ -166,14 +225,24 @@ class CampusApplicationApi(http.Controller):
         honeypot = self._param(PARAM_HONEYPOT, "website") or "website"
         if (payload.get(honeypot) or "").strip():
             submission.write(
-                {"state": "rejected", "error_code": "honeypot", "error_message": "Honeypot field was filled."}
+                {
+                    "state": "rejected",
+                    "error_code": "honeypot",
+                    "error_message": "Honeypot field was filled.",
+                    "payload": self._truncated_payload(payload),
+                }
             )
             # Answer as though it worked so a bot learns nothing.
             return self._json({"success": True, "reference": submission.reference}, status=201)
 
         if self._rate_limited(ip, email, exclude_id=submission.id):
             submission.write(
-                {"state": "rejected", "error_code": "rate_limited", "error_message": "Too many submissions."}
+                {
+                    "state": "rejected",
+                    "error_code": "rate_limited",
+                    "error_message": "Too many submissions.",
+                    "payload": self._truncated_payload(payload),
+                }
             )
             return self._error("rate_limited", "Too many submissions. Please try again later.", 429)
 

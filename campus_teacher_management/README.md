@@ -232,6 +232,7 @@ Base URL in development: `http://localhost:8070`.
 | `400` `invalid_json` | Body is not a JSON object |
 | `403` `origin_not_allowed` | Origin is not in the allowlist |
 | `409` `duplicate_application` | This email already applied to this campaign |
+| `413` | Body larger than 64 KB. Refused by the framework *before* the handler, so this one is a plain HTML error page rather than the JSON shape above, and nothing is stored |
 | `422` | `missing_field`, `invalid_email`, `invalid_years`, `too_many_subjects`, `unknown_subject`, `no_published_version` |
 | `429` `rate_limited` | Too many submissions from this IP or email |
 
@@ -253,7 +254,18 @@ browser call work, and `curl` ignores it. The actual defenses are:
   testable. **Set this before going live.**
 - **Rate limiting** — `campus_teacher.rate_limit_ip` (default 20) and
   `campus_teacher.rate_limit_email` (default 3) per
-  `campus_teacher.rate_limit_window_minutes` (default 60).
+  `campus_teacher.rate_limit_window_minutes` (default 60). The address counted
+  is `remote_addr`, **never `X-Forwarded-For`** — that header is written by the
+  caller, so reading it let anyone reset their own counter by sending a new
+  value.
+  Behind a reverse proxy this needs `proxy_mode` **and** a proxy that forwards
+  `X-Forwarded-Host`, because that is the condition on which Odoo applies
+  ProxyFix. A proxy that forwards `X-Forwarded-For` but not `X-Forwarded-Host`
+  makes every candidate look like the proxy itself: per-IP limiting then stands
+  down (per-email still applies) and logs a warning naming the
+  misconfiguration, rather than rejecting every real applicant.
+- **Body size** — 64 KB on the POST route (`MAX_BODY_BYTES`). A larger body is
+  answered `413` before the handler runs, so it is never stored.
 - **Honeypot** — `campus_teacher.honeypot_field` (default `website`). A filled
   honeypot is answered `201` so a bot learns nothing, but nothing is created.
 - **Duplicate detection** by email per campaign, and `external_ref` idempotency.
@@ -264,6 +276,14 @@ proxy is complementary and recommended.
 
 Every request is written to `campus.submission` **before** parsing, so a mapping
 bug can be corrected and re-processed instead of losing an application.
+
+**Two kinds of rejection, two retention rules.** Honeypot hits and rate-limited
+requests keep only a truncated preview of their body — they are never
+re-processed, so storing them whole would just hand free disk to whoever is
+abusing the form. Every other rejection (missing field, unknown subject, closed
+campaign, duplicate) keeps its **full** payload, because that is exactly what
+**Re-process** rebuilds from. Re-process refuses a truncated row instead of
+silently doing nothing.
 
 ---
 
