@@ -35,6 +35,12 @@ class ResUsers(models.Model):
     def _his_reconcilier_roles(self, groupes_du_poste):
         """Aligne ce compte sur les roles de son poste, sans toucher au reste."""
         self.ensure_one()
+        # Defense en profondeur (faille S-1) : meme si un poste portait un role
+        # d'administration (impossible via la contrainte de hr.job, mais une
+        # base ancienne pourrait en avoir un), la reconciliation en sudo ne doit
+        # jamais l'accorder. On l'ecarte avant tout calcul.
+        interdits = self.env["hr.job"]._his_groupes_administration()
+        groupes_du_poste = groupes_du_poste - interdits
         a_retirer = self.role_ids_du_poste - groupes_du_poste
         a_ajouter = groupes_du_poste - self.group_ids
 

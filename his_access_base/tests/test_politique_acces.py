@@ -44,32 +44,28 @@ SEPARATION_DES_TACHES = [
     ),
 ]
 
-# Ce qu'un utilisateur interne SANS AUCUN ROLE doit voir, et rien de plus.
+# Ce qu'un utilisateur interne SANS AUCUN ROLE a le droit de voir. La propriete
+# de securite est : AUCUNE application METIER ne fuit vers un compte sans role.
+# On verifie donc une INCLUSION (le socle est un sous-ensemble des outils
+# communs autorises), et non une egalite : quels outils communs sont presents
+# depend des modules installes, et coupler ce test a une combinaison precise le
+# rendrait faux hors de la Cix complete.
 #
-# « Apps » en a fait partie par erreur. La note precedente affirmait qu'Odoo 19
-# livre ce menu sans groupe « y compris sur une base vierge — verifie » : c'est
-# faux, et la verification avait ete faite sur une base deja abimee. Une base
-# creee avec `-i base` seul porte bien « Role / Administrator » (group_system)
-# sur base.menu_management ; le source le declare (base/views/base_menus.xml).
-# Ce sont nos bases qui l'avaient perdu, maintenance_university l'ayant remplace
-# par un (6, 0, [...]) dont la desinstallation a emporte le dernier groupe.
-# socle_menus.xml le repose ; un graphiste ne voit plus la tuile « Apps ».
+# Outils communs tolerés :
+#  - Calendar : agenda partage, aucune donnee metier reservee.
+#  - Discuss : messagerie. maintenance_university le retire de `base.group_user`
+#    (decision de Mohamed du 2026-09-15 : un ouvrier ne garde pas Discuss) ;
+#    quand ce module n'est pas installe, Discuss reste visible. Les deux cas
+#    sont acceptables — ce n'est pas une fuite metier.
+#  - Dashboards : coquille de `spreadsheet_dashboard`, tiree transitivement par
+#    les modules-pont du POS, sans donnee pour un compte sans role. La fermer
+#    exigerait une dependance dure injustifiee.
 #
-# « Discuss » N'EN FAIT PLUS PARTIE (decision de Mohamed, 2026-09-15 : un
-# ouvrier ne garde pas Discuss). maintenance_university retire deja
-# `base.group_user` du menu Discuss ; comme un ouvrier de maintenance implique
-# `base.group_user`, retirer Discuss du socle est le SEUL moyen de le lui
-# retirer, et cela vaut donc pour tout compte sans role. Discuss redevient
-# visible pour qui porte un role qui le lui reaccorde. Ce test suppose donc
-# maintenance_university installe — c'est le cas en production et en CI.
-#
-# « Dashboards » est tolere : le menu de `spreadsheet_dashboard` est tire
-# transitivement par les modules-pont du POS (spreadsheet_dashboard_pos_*), ne
-# porte aucun groupe en natif et n'affiche AUCUNE donnee a un compte sans role.
-# Le fermer proprement exigerait une dependance dure vers un module sans rapport
-# (spreadsheet_dashboard) sur toutes les bases, POS ou non : cout injustifie
-# pour une coquille vide. Exception assumee, au meme titre que REFERENCE_PARTAGEE.
-SOCLE_ATTENDU = {"Calendar", "Dashboards"}
+# « Apps »/« Reglages » n'y figurent PAS : leur presence signalerait la
+# regression ou maintenance_university avait, par un (6, 0, [...]), fini par
+# laisser base.menu_management sans aucun groupe (donc ouvert a tous).
+# socle_menus.xml y repose base.group_system.
+SOCLE_AUTORISE = {"Calendar", "Discuss", "Dashboards"}
 
 
 @tagged("post_install", "-at_install")
@@ -145,14 +141,12 @@ class TestPolitiqueAcces(TransactionCase):
             .mapped("name")
         )
 
-        self.assertEqual(
-            vues,
-            SOCLE_ATTENDU,
-            "Le socle a change. En trop : %s. Manquant : %s."
-            % (
-                sorted(vues - SOCLE_ATTENDU) or "rien",
-                sorted(SOCLE_ATTENDU - vues) or "rien",
-            ),
+        fuite = vues - SOCLE_AUTORISE
+        self.assertFalse(
+            fuite,
+            "Une ou plusieurs applications fuient vers un compte sans role : %s. "
+            "Soit un menu racine reste sans groupe (regression base.menu_management), "
+            "soit une application metier doit etre fermee." % sorted(fuite),
         )
 
     def test_tout_modele_a_nous_porte_au_moins_une_acl(self):
