@@ -1,6 +1,7 @@
 import json
 
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class CampusSubmission(models.Model):
@@ -86,6 +87,17 @@ class CampusSubmission(models.Model):
         for submission in self:
             if not submission.payload:
                 continue
+            if isinstance(submission.payload, dict) and submission.payload.get("_truncated"):
+                # Refuse rather than report success and change nothing: an
+                # abusive submission keeps only a preview of its body, so there
+                # are no original bytes left to rebuild from.
+                raise UserError(
+                    _(
+                        "Submission %(reference)s was refused as abuse, so only a preview of its body was "
+                        "kept: there is nothing left to rebuild an application from.",
+                        reference=submission.reference,
+                    )
+                )
             applicant = Applicant._campus_apply_payload(submission.payload, applicant=submission.applicant_id)
             submission.write(
                 {
