@@ -45,7 +45,7 @@ registry.category("web_tour.tours").add("his_copy_job_tour", {
         // 24 copies of the A4 colour recto product, priced by the product and
         // not by the browser.
         ProductScreen.selectedOrderlineHas("Photocopie A4 Couleur Recto", "24"),
-    ],
+    ].flat(),
 });
 
 // The other path that matters: a combination nobody configured must refuse,
@@ -77,5 +77,5 @@ registry.category("web_tour.tours").add("his_copy_job_missing_tour", {
             content: "It refuses, and names the combination",
             trigger: ".modal:contains('No such copy')",
         },
-    ],
+    ].flat(),
 });

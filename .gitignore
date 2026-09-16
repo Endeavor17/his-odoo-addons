@@ -44,3 +44,6 @@ venv/
 /CLAUDE.md
 /MDM_Produits_Stock_POS_v1.md
 /Plan_Implementation_Stock_Module_Odoo19.md
+
+# Dependances npm installees localement pour lancer eslint comme la CI.
+node_modules/

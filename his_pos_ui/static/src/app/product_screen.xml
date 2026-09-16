@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The numpad stays on screen on an HIS till, even before the first
+         product is added: the cashier's hand never has to look for it.
+
+         Stock Odoo shows it only once a line is selected. That condition is
+         kept for a till with no theme, so an unthemed till stays exactly stock.
+         Pressing a key with no line selected is harmless: OrderSummary._setValue
+         does nothing without a selected line, and Qty / % / Price only switch
+         the mode. -->
+    <t t-name="his_pos_ui.ProductScreen" t-inherit="point_of_sale.ProductScreen" t-inherit-mode="extension">
+        <xpath expr="//Numpad" position="attributes">
+            <attribute name="t-if">pos.config.his_pos_theme or (!currentOrder?.isEmpty() and pos.getOrder()?.uiState.selected_orderline_uuid)</attribute>
+        </xpath>
+    </t>
+
+</templates>

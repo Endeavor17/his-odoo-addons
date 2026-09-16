@@ -1,117 +1,66 @@
-// The HIS till: a dark instrument panel with a sheet of paper on it.
+// The HIS till: stock Odoo 19, recoloured with the his.edu.dz palette.
 //
-// The direction comes from the subject, not from a mood board. Reprography IS
-// blueprints — cyanotype, the copy shop's own ancestor — so the Copy Center
-// works on a deep blueprint ground in cyanotype cyan, with the order rendered
-// as warm paper laid on top. Paper on blueprint is what a copy counter looks
-// like. The Restaurant and Cafétéria inherit the same instrument-panel skeleton
-// and change only their accent and their texture.
+// Only colour changes. Layout, shapes, spacing, sizes and type are Odoo's own -
+// nothing here overrides a dimension, a radius or a font. The approved preview
+// (HIS POS Preview artifact) is the reference for every value.
 //
-// Deliberately NOT near-black with one acid accent: that is the default answer
-// for "dark kiosk", and it would say nothing about copies, meals or coffee.
+//   teal  #006883  top bar, module buttons, selection accents
+//   gold  #cc9900  the buttons that take money (navy text: white on this gold
+//                  is too faint to read)
+//   navy  #003876  figures and product names
+//   tint  #c6dce2  selection - what Odoo itself derives when its action colour
+//                  is teal: mix(#006883, gray-100, 20%)
 //
-// Everything is a custom property because Odoo compiles its SCSS before ours
-// and its variables are out of reach. One class on the root re-themes the whole
-// application, and a till with no theme never gets the class at all.
+// Token NAMES are kept on purpose: his_pos_copy_center's dialog reads
+// --his-ground-raised, --his-paper, --his-accent and the rest.
 
 .his-pos {
-    // --- Ground: the instrument panel -----------------------------------
-    --his-ground: #0b1725;           // deep blueprint ink
-    --his-ground-raised: #12202f;    // panels, cards, keys
-    --his-ground-sunk: #081120;      // wells the panels sit in
-    --his-line: #1e3448;             // hairlines, key borders
-    --his-line-strong: #2c4a63;
+    // --- Brand (his.edu.dz) ------------------------------------------------
+    --his-teal: #006883;
+    --his-teal-hover: #00566d;
+    --his-navy: #003876;
+    --his-navy-deep: #001f45;
+    --his-gold: #cc9900;
+    --his-gold-hover: #b38600;
+    --his-gold-press: #9a7300;
+    --his-tint: #c6dce2;
 
-    // --- Paper: where the money is read ---------------------------------
-    // Warm, not white. A sheet out of a copier is never #fff, and the warmth
-    // is what separates the order from the machine around it.
-    --his-paper: #f4f0e6;
-    --his-paper-edge: #ded7c6;
-    --his-paper-ink: #14212e;
-    --his-paper-ink-muted: #5d6b78;
+    // --- Surfaces: Odoo's own greys ----------------------------------------
+    --his-ground: #f8f9fa;
+    --his-ground-raised: #ffffff;
+    --his-ground-sunk: #e9ecef;
+    --his-line: #dee2e6;
+    --his-line-strong: #ced4da;
+    --his-paper: #ffffff;
+    --his-paper-edge: #e9ecef;
+    --his-paper-ink: #212529;
+    --his-paper-ink-muted: #495057;
+    --his-text: #212529;
+    --his-text-muted: #495057;
 
-    // --- Text on the ground ---------------------------------------------
-    --his-text: #e8eef4;
-    --his-text-muted: #8fa6b8;
+    --his-accent: var(--his-teal);
+    --his-accent-ink: #ffffff;
+    --his-accent-dim: var(--his-tint);
 
-    // --- Accent: per theme, overridden below ----------------------------
-    --his-accent: #38bdf8;
-    --his-accent-ink: #04121d;       // text ON the accent
-    --his-accent-dim: #1b4a63;
-
-    // --- Signals ---------------------------------------------------------
-    --his-warn: #f5b544;
-    --his-danger: #ff6b6b;
-
-    // A blueprint grid, drawn in CSS. Off by default: only the Copy Center
-    // has any business looking like a drawing sheet.
-    --his-texture: none;
-
-    // --- Entry screen -----------------------------------------------------
-    --his-wallpaper: none;
-    --his-wallpaper-color: var(--his-ground);
-
-    // --- Type -------------------------------------------------------------
-    // No web font. A till on campus wifi should not wait on a font server to
-    // draw its first price, and the system stacks are good enough to carry the
-    // personality once the roles are properly separated.
-    //
-    // The panel speaks in three voices: small tracked capitals for machine
-    // labels, a plain sans for names, and monospace for every number. A copy
-    // shop counts things, so the numbers get their own face.
+    // Read only by the Copy job dialog; the system stack is what it always used.
     --his-font-label: 600 0.72rem/1.1 system-ui, -apple-system, "Segoe UI", sans-serif;
     --his-label-tracking: 0.09em;
     --his-font-mono: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "SF Mono", Menlo, Consolas, monospace;
 
-    // Odoo sizes every POS button from this one variable (pos_app.scss).
-    // Raising it IS the touch-target change: not one button rule is overridden.
-    --btn-height-size: 64px;
+    // --- Hooks Odoo already exposes ------------------------------------------
+    // orderline.scss paints a selected line from this variable.
+    --orderline-selected: var(--his-tint);
+    // navbar.scss draws the centre logo from this one.
+    --navbar-logo: url('/his_pos_ui/static/src/img/his_logo_white.png');
 
-    // Read by point_of_sale's own login_screen.scss.
+    // --- Entry screen (read by point_of_sale's login_screen.scss) -------------
+    --his-wallpaper: none;
+    --his-wallpaper-color: var(--his-navy-deep);
     --homeMenu-bg-color: var(--his-wallpaper-color);
     --homeMenu-bg-image: var(--his-wallpaper);
 }
 
-// --- Copy Center: cyanotype ---------------------------------------------
-// Blueprint cyan on blueprint ink, and a real drawing grid behind the panels.
-.his-theme-copy_center {
-    --his-accent: #38bdf8;
-    --his-accent-ink: #04121d;
-    --his-accent-dim: #1b4a63;
-    --his-wallpaper-color: #0b1725;
-    --his-wallpaper: url('/his_pos_ui/static/src/img/copy_center.webp');
-
-    // 8mm blueprint grid. Low enough contrast to read as texture rather than
-    // pattern, and it is the one place the metaphor is stated outright.
-    --his-texture:
-        repeating-linear-gradient(0deg, rgba(56, 189, 248, 0.05) 0 1px, transparent 1px 32px),
-        repeating-linear-gradient(90deg, rgba(56, 189, 248, 0.05) 0 1px, transparent 1px 32px);
-}
-
-// --- Restaurant: service green -------------------------------------------
-.his-theme-restaurant {
-    --his-accent: #4ade80;
-    --his-accent-ink: #05200f;
-    --his-accent-dim: #1c4d31;
-    --his-ground: #0c1a13;
-    --his-ground-raised: #12261b;
-    --his-ground-sunk: #081410;
-    --his-line: #1e3a2a;
-    --his-line-strong: #2c5540;
-    --his-wallpaper-color: #0c1a13;
-    --his-wallpaper: url('/his_pos_ui/static/src/img/restaurant.webp');
-}
-
-// --- Cafétéria: espresso amber -------------------------------------------
-.his-theme-cafeteria {
-    --his-accent: #f0a52e;
-    --his-accent-ink: #1d1204;
-    --his-accent-dim: #5c3f14;
-    --his-ground: #1a1410;
-    --his-ground-raised: #241c16;
-    --his-ground-sunk: #130e0a;
-    --his-line: #3a2c20;
-    --his-line-strong: #55402e;
-    --his-wallpaper-color: #1a1410;
-    --his-wallpaper: url('/his_pos_ui/static/src/img/cafeteria.webp');
-}
+// Same colours on every till; only the entry photograph changes.
+.his-theme-copy_center { --his-wallpaper: url('/his_pos_ui/static/src/img/copy_center.webp'); }
+.his-theme-restaurant { --his-wallpaper: url('/his_pos_ui/static/src/img/restaurant.webp'); }
+.his-theme-cafeteria { --his-wallpaper: url('/his_pos_ui/static/src/img/cafeteria.webp'); }
