@@ -14,9 +14,9 @@ class HisFaculty(models.Model):
     relation table), so existing rows are kept.
     """
 
-    _name = 'his.faculty'
+    _name = "his.faculty"
     _description = "HIS Faculty"
-    _order = 'code'
+    _order = "code"
 
     code = fields.Char(required=True, index=True, help="Short code as it appears in the HIS data, e.g. MI.")
     name = fields.Char(required=True, translate=True)
@@ -25,12 +25,15 @@ class HisFaculty(models.Model):
         help="Unticked when the full name is not yet confirmed by a received catalogue.",
     )
     person_ids = fields.Many2many(
-        'his.person', 'his_faculty_person_rel', 'faculty_id', 'person_id',
+        "his.person",
+        "his_faculty_person_rel",
+        "faculty_id",
+        "person_id",
         string="People",
     )
     active = fields.Boolean(default=True)
 
-    _code_unique = models.Constraint('UNIQUE(code)', "This faculty code already exists.")
+    _code_unique = models.Constraint("UNIQUE(code)", "This faculty code already exists.")
 
     def _compute_display_name(self):
         for faculty in self:

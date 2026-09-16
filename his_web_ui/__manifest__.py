@@ -1,8 +1,8 @@
 {
-    'name': 'HIS Web Interface',
-    'version': '19.0.1.0.0',
-    'summary': 'Land on the app grid, not on whichever menu happens to sort first',
-    'description': """
+    "name": "HIS Web Interface",
+    "version": "19.0.1.0.0",
+    "summary": "Land on the app grid, not on whichever menu happens to sort first",
+    "description": """
 HIS Web Interface
 =================
 Landing is a decision, not a sort order.
@@ -22,25 +22,21 @@ everyone else ended up in Discuss.
 * The install clears exactly one Home Action, the Direction dashboard, because
   it outlived the group that granted it. No other choice is touched.
 """,
-    'author': 'Abdo Chabouti',
-    'category': 'Technical',
-    'license': 'LGPL-3',
-
-    'depends': ['web_responsive'],
-
-    'assets': {
-        'web.assets_backend': [
+    "author": "Abdo Chabouti",
+    "category": "Technical",
+    "license": "LGPL-3",
+    "depends": ["web_responsive"],
+    "assets": {
+        "web.assets_backend": [
             # Listés et non globés : les jetons doivent être compilés avant les
             # règles qui les consomment.
-            'his_web_ui/static/src/scss/tokens.scss',
-            'his_web_ui/static/src/scss/navbar.scss',
-            'his_web_ui/static/src/scss/buttons.scss',
-            'his_web_ui/static/src/scss/app_grid.scss',
-            'his_web_ui/static/src/app/apps_menu_patch.esm.js',
+            "his_web_ui/static/src/scss/tokens.scss",
+            "his_web_ui/static/src/scss/navbar.scss",
+            "his_web_ui/static/src/scss/buttons.scss",
+            "his_web_ui/static/src/scss/app_grid.scss",
+            "his_web_ui/static/src/app/apps_menu_patch.esm.js",
         ],
     },
-
-    'post_init_hook': 'post_init_hook',
-
-    'installable': True,
+    "post_init_hook": "post_init_hook",
+    "installable": True,
 }

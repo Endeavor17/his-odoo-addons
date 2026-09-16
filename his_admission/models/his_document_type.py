@@ -6,18 +6,18 @@ from .his_specialite import CYCLE
 # Filieres du baccalaureat, telles que le classeur les nomme. Selection et non
 # modele : sept valeurs fixees par le systeme educatif national, pas par nous.
 BAC_FILIERE = [
-    ('se', "SE - Sciences experimentales"),
-    ('tm', "TM - Technique mathematique"),
-    ('ma', "MA - Mathematiques"),
-    ('ge', "GE - Gestion et economie"),
-    ('philo', "Philo - Lettres et philosophie"),
-    ('langue', "Langue - Lettres et langues etrangeres"),
-    ('equivalence', "Equivalence - Diplome etranger"),
+    ("se", "SE - Sciences experimentales"),
+    ("tm", "TM - Technique mathematique"),
+    ("ma", "MA - Mathematiques"),
+    ("ge", "GE - Gestion et economie"),
+    ("philo", "Philo - Lettres et philosophie"),
+    ("langue", "Langue - Lettres et langues etrangeres"),
+    ("equivalence", "Equivalence - Diplome etranger"),
 ]
 
 TYPE_INSCRIPTION = [
-    ('nouveau', "Nouvelle inscription"),
-    ('reinscription', "Reinscription"),
+    ("nouveau", "Nouvelle inscription"),
+    ("reinscription", "Reinscription"),
 ]
 
 
@@ -34,9 +34,10 @@ class HisDocumentType(models.Model):
     Ici l'applicabilite est une donnee. Ouvrir ou fermer une piece est de la
     configuration, pas une migration de schema.
     """
-    _name = 'his.document.type'
+
+    _name = "his.document.type"
     _description = "Type de piece du dossier d'admission"
-    _order = 'sequence, name'
+    _order = "sequence, name"
 
     name = fields.Char(string="Piece", required=True, translate=True)
     name_arabe = fields.Char(string="Piece (arabe)")
@@ -45,30 +46,35 @@ class HisDocumentType(models.Model):
     active = fields.Boolean(default=True)
 
     obligatoire = fields.Boolean(
-        string="Obligatoire", default=True,
+        string="Obligatoire",
+        default=True,
         help="Une piece obligatoire manquante empeche le passage a l'etat "
-             "« Inscrit ». Une piece facultative est suivie sans bloquer.",
+        "« Inscrit ». Une piece facultative est suivie sans bloquer.",
     )
 
     # Trois filtres d'applicabilite, tous optionnels : vide = s'applique a tout.
     # Trois suffisent a couvrir les cas du classeur ; en ajouter un quatrième
     # « au cas ou » serait de la flexibilite morte.
     cycle = fields.Selection(
-        CYCLE, string="Cycle concerne",
+        CYCLE,
+        string="Cycle concerne",
         help="Vide : toutes les pieces s'appliquent aux deux cycles.",
     )
     type_inscription = fields.Selection(
-        TYPE_INSCRIPTION, string="Type d'inscription concerne",
+        TYPE_INSCRIPTION,
+        string="Type d'inscription concerne",
         help="Vide : s'applique aux nouvelles inscriptions comme aux reinscriptions.",
     )
     bac_filiere = fields.Selection(
-        BAC_FILIERE, string="Filiere BAC concernee",
+        BAC_FILIERE,
+        string="Filiere BAC concernee",
         help="Vide : s'applique quelle que soit la filiere. Sert au certificat "
-             "d'equivalence, qui ne concerne que les dossiers en equivalence.",
+        "d'equivalence, qui ne concerne que les dossiers en equivalence.",
     )
 
     _code_unique = models.Constraint(
-        'unique(code)', "Ce code de piece est deja utilise.",
+        "unique(code)",
+        "Ce code de piece est deja utilise.",
     )
 
     def _applicable(self, cycle, type_inscription, bac_filiere):
@@ -79,8 +85,10 @@ class HisDocumentType(models.Model):
         tant que la filiere BAC n'est pas saisie, on ne reclame pas un
         certificat d'equivalence dont on ignore s'il s'applique.
         """
-        return self.filtered(lambda d: (
-            (not d.cycle or d.cycle == cycle)
-            and (not d.type_inscription or d.type_inscription == type_inscription)
-            and (not d.bac_filiere or d.bac_filiere == bac_filiere)
-        ))
+        return self.filtered(
+            lambda d: (
+                (not d.cycle or d.cycle == cycle)
+                and (not d.type_inscription or d.type_inscription == type_inscription)
+                and (not d.bac_filiere or d.bac_filiere == bac_filiere)
+            )
+        )

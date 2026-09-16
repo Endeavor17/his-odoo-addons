@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from . import models
-from . import wizard
+from . import models, wizard
 
 
 def post_init_hook(env):
@@ -19,7 +16,7 @@ def post_init_hook(env):
     # noupdate="1" in maintenance's own data, so an XML override from this
     # module would be silently ignored — only a direct ORM write gets past
     # that.
-    rule_xmlids = ['maintenance.equipment_request_rule_user', 'maintenance.equipment_rule_user']
+    rule_xmlids = ["maintenance.equipment_request_rule_user", "maintenance.equipment_rule_user"]
     for xmlid in rule_xmlids:
         rule = env.ref(xmlid, raise_if_not_found=False)
         if rule:

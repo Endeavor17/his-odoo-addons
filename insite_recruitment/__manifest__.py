@@ -1,8 +1,8 @@
 {
-    'name': 'InSite Recruitment',
-    'version': '19.0.3.0.0',
-    'summary': 'InSite teacher recruitment: need, internal/external candidates, contract, integration, module',
-    'description': """
+    "name": "InSite Recruitment",
+    "version": "19.0.3.0.0",
+    "summary": "InSite teacher recruitment: need, internal/external candidates, contract, integration, module",
+    "description": """
 InSite Recruitment
 ===================
 A second recruitment process inside the same Odoo Recruitment application as
@@ -29,41 +29,38 @@ fully separate from Campus+'s.
 * Campus+ itself is not modified: every touch point on a Campus+-owned model
   is an additive ``_inherit`` from this module, never an edit to its files.
 """,
-    'author': 'Abdo Chabouti',
-    'category': 'Human Resources/Recruitment',
-    'license': 'LGPL-3',
-
-    'depends': [
-        'base',
-        'mail',
-        'calendar',
-        'hr_recruitment',
-        'campus_teacher_management',
-        'his_person_core',
-        'his_academic_base',
-        'campus_identity_bridge',
+    "author": "Abdo Chabouti",
+    "category": "Human Resources/Recruitment",
+    "license": "LGPL-3",
+    "depends": [
+        "base",
+        "mail",
+        "calendar",
+        "hr_recruitment",
+        "campus_teacher_management",
+        "his_person_core",
+        "his_academic_base",
+        "campus_identity_bridge",
     ],
-
-    'data': [
-        'security/insite_security.xml',
-        'security/ir.model.access.csv',
-        'data/insite_process_data.xml',
-        'data/insite_mail_templates.xml',
-        'data/insite_cron.xml',
-        'views/insite_identity_match_wizard_views.xml',
-        'views/insite_submission_views.xml',
-        'views/insite_recruitment_need_views.xml',
-        'views/academic_engagement_views.xml',
-        'views/insite_contract_views.xml',
-        'views/insite_meeting_schedule_wizard_views.xml',
-        'views/insite_candidature_views.xml',
-        'views/insite_module_sheet_views.xml',
-        'views/insite_process_permission_views.xml',
-        'views/insite_menus.xml',
-        'views/his_person_views.xml',
+    "data": [
+        "security/insite_security.xml",
+        "security/ir.model.access.csv",
+        "data/insite_process_data.xml",
+        "data/insite_mail_templates.xml",
+        "data/insite_cron.xml",
+        "views/insite_identity_match_wizard_views.xml",
+        "views/insite_submission_views.xml",
+        "views/insite_recruitment_need_views.xml",
+        "views/academic_engagement_views.xml",
+        "views/insite_contract_views.xml",
+        "views/insite_meeting_schedule_wizard_views.xml",
+        "views/insite_candidature_views.xml",
+        "views/insite_module_sheet_views.xml",
+        "views/insite_process_permission_views.xml",
+        "views/insite_menus.xml",
+        "views/his_person_views.xml",
     ],
-
-    'installable': True,
-    'application': False,
-    'post_init_hook': '_insite_grant_manager_process_permissions',
+    "installable": True,
+    "application": False,
+    "post_init_hook": "_insite_grant_manager_process_permissions",
 }

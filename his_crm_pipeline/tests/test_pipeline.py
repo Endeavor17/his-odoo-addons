@@ -1,5 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 """Un test par regle du module. Il echoue si une regle saute."""
+
 from datetime import timedelta
 
 from odoo import fields
@@ -8,56 +9,65 @@ from odoo.tests import TransactionCase, tagged
 from odoo.tools.safe_eval import safe_eval
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestPipeline(TransactionCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.team_ventes = cls.env.ref('his_crm_pipeline.crm_team_ventes')
-        cls.team_contenu = cls.env.ref('his_crm_pipeline.crm_team_contenu')
-        cls.stage_pris_en_charge = cls.env.ref('his_crm_pipeline.stage_vente_pris_en_charge')
-        cls.stage_production = cls.env.ref('his_crm_pipeline.stage_contenu_production')
-        cls.stage_approbation = cls.env.ref('his_crm_pipeline.stage_contenu_approbation')
-        cls.type_copy = cls.env.ref('his_crm_pipeline.deliverable_type_copy')
-        cls.type_design = cls.env.ref('his_crm_pipeline.deliverable_type_design')
-        cls.type_video = cls.env.ref('his_crm_pipeline.deliverable_type_video')
+        cls.team_ventes = cls.env.ref("his_crm_pipeline.crm_team_ventes")
+        cls.team_contenu = cls.env.ref("his_crm_pipeline.crm_team_contenu")
+        cls.stage_pris_en_charge = cls.env.ref("his_crm_pipeline.stage_vente_pris_en_charge")
+        cls.stage_production = cls.env.ref("his_crm_pipeline.stage_contenu_production")
+        cls.stage_approbation = cls.env.ref("his_crm_pipeline.stage_contenu_approbation")
+        cls.type_copy = cls.env.ref("his_crm_pipeline.deliverable_type_copy")
+        cls.type_design = cls.env.ref("his_crm_pipeline.deliverable_type_design")
+        cls.type_video = cls.env.ref("his_crm_pipeline.deliverable_type_video")
 
     def _user(self, login, team=None):
-        user = self.env['res.users'].create({
-            'name': login,
-            'login': login,
-            'email': '%s@example.com' % login,
-            'group_ids': [(6, 0, [
-                self.env.ref('base.group_user').id,
-                self.env.ref('sales_team.group_sale_salesman_all_leads').id,
-            ])],
-        })
+        user = self.env["res.users"].create(
+            {
+                "name": login,
+                "login": login,
+                "email": "%s@example.com" % login,
+                "group_ids": [
+                    (
+                        6,
+                        0,
+                        [
+                            self.env.ref("base.group_user").id,
+                            self.env.ref("sales_team.group_sale_salesman_all_leads").id,
+                        ],
+                    )
+                ],
+            }
+        )
         if team:
-            self.env['crm.team.member'].create({
-                'crm_team_id': team.id, 'user_id': user.id,
-            })
+            self.env["crm.team.member"].create(
+                {
+                    "crm_team_id": team.id,
+                    "user_id": user.id,
+                }
+            )
         return user
 
     # --- Verrou d'approbation des livrables ---------------------------------
 
     def test_approbation_bloquee_tant_qu_un_livrable_n_est_pas_approuve(self):
-        lead = self.env['crm.lead'].create({
-            'name': "Campagne rentree",
-            'team_id': self.team_contenu.id,
-            'stage_id': self.stage_production.id,
-            'deliverable_ids': [
-                (0, 0, {'type_id': self.type_copy.id, 'statut': 'approuve'}),
-                (0, 0, {'type_id': self.type_design.id,
-                        'statut': 'revision_interne'}),
-            ],
-        })
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Campagne rentree",
+                "team_id": self.team_contenu.id,
+                "stage_id": self.stage_production.id,
+                "deliverable_ids": [
+                    (0, 0, {"type_id": self.type_copy.id, "statut": "approuve"}),
+                    (0, 0, {"type_id": self.type_design.id, "statut": "revision_interne"}),
+                ],
+            }
+        )
         with self.assertRaises(ValidationError):
             lead.stage_id = self.stage_approbation
 
-        lead.deliverable_ids.filtered(
-            lambda d: d.type_id == self.type_design
-        ).statut = 'approuve'
+        lead.deliverable_ids.filtered(lambda d: d.type_id == self.type_design).statut = "approuve"
         lead.stage_id = self.stage_approbation
         self.assertEqual(lead.stage_id, self.stage_approbation)
 
@@ -69,28 +79,36 @@ class TestPipeline(TransactionCase):
         besoin decoche obligeait a lire deux champs pour comprendre la meme
         chose.
         """
-        lead = self.env['crm.lead'].create({
-            'name': "Post simple",
-            'team_id': self.team_contenu.id,
-            'stage_id': self.stage_production.id,
-            'deliverable_ids': [
-                (0, 0, {'type_id': self.type_copy.id, 'statut': 'approuve'}),
-            ],
-        })
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Post simple",
+                "team_id": self.team_contenu.id,
+                "stage_id": self.stage_production.id,
+                "deliverable_ids": [
+                    (0, 0, {"type_id": self.type_copy.id, "statut": "approuve"}),
+                ],
+            }
+        )
         lead.stage_id = self.stage_approbation
         self.assertEqual(lead.stage_id, self.stage_approbation)
 
     def test_approbation_bloquee_si_le_livrable_est_ajoute_apres_coup(self):
         """La contrainte tient aussi quand c'est le livrable, et non l'etape, qui change."""
-        lead = self.env['crm.lead'].create({
-            'name': "Campagne bis",
-            'team_id': self.team_contenu.id,
-            'stage_id': self.stage_approbation.id,
-        })
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Campagne bis",
+                "team_id": self.team_contenu.id,
+                "stage_id": self.stage_approbation.id,
+            }
+        )
         with self.assertRaises(ValidationError):
-            lead.write({'deliverable_ids': [
-                (0, 0, {'type_id': self.type_video.id, 'statut': 'en_cours'}),
-            ]})
+            lead.write(
+                {
+                    "deliverable_ids": [
+                        (0, 0, {"type_id": self.type_video.id, "statut": "en_cours"}),
+                    ]
+                }
+            )
 
     # --- Le resume d'avancement de la carte kanban ---------------------------
 
@@ -102,37 +120,39 @@ class TestPipeline(TransactionCase):
         lien entre les deux — si le resume cessait de suivre, la carte
         afficherait un avancement perime sans que rien n'echoue.
         """
-        lead = self.env['crm.lead'].create({
-            'name': "Campagne resume",
-            'team_id': self.team_contenu.id,
-            'stage_id': self.stage_production.id,
-            'deliverable_ids': [
-                (0, 0, {'type_id': self.type_copy.id, 'statut': 'approuve'}),
-                (0, 0, {'type_id': self.type_design.id, 'statut': 'a_faire'}),
-            ],
-        })
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Campagne resume",
+                "team_id": self.team_contenu.id,
+                "stage_id": self.stage_production.id,
+                "deliverable_ids": [
+                    (0, 0, {"type_id": self.type_copy.id, "statut": "approuve"}),
+                    (0, 0, {"type_id": self.type_design.id, "statut": "a_faire"}),
+                ],
+            }
+        )
         self.assertEqual(lead.livrables_resume, "1/2 approuves")
 
-        design = lead.deliverable_ids.filtered(
-            lambda d: d.type_id == self.type_design
-        )
-        design.statut = 'approuve'
+        design = lead.deliverable_ids.filtered(lambda d: d.type_id == self.type_design)
+        design.statut = "approuve"
         self.assertEqual(lead.livrables_resume, "2/2 approuves")
 
         # Le retard vient de la ligne, pas d'un second calcul. L'echeance est
         # portee par la demande (date_echeance est related sur
         # lead_id.date_deadline) : elle vaut donc pour tous ses livrables.
-        design.statut = 'en_cours'
+        design.statut = "en_cours"
         lead.date_deadline = fields.Date.today() - timedelta(days=1)
         self.assertTrue(design.en_retard)
         self.assertEqual(lead.livrables_resume, "1/2 approuves - en retard")
 
     def test_une_demande_sans_livrable_n_a_pas_de_resume(self):
         """« 0/0 » dirait qu'on a mesure ; il n'y a rien a mesurer."""
-        lead = self.env['crm.lead'].create({
-            'name': "Pas encore arbitree",
-            'team_id': self.team_contenu.id,
-        })
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Pas encore arbitree",
+                "team_id": self.team_contenu.id,
+            }
+        )
         self.assertFalse(lead.livrables_resume)
 
     # --- Les actions doivent etre lisibles par le client web -----------------
@@ -149,16 +169,20 @@ class TestPipeline(TransactionCase):
         Ce test relit ce qui est REELLEMENT en base, pas ce que le XML voulait
         dire.
         """
-        actions = self.env['ir.actions.act_window'].search([]).filtered(
-            lambda a: a.get_external_id().get(a.id, '').startswith('his_crm_pipeline.'),
+        actions = (
+            self.env["ir.actions.act_window"]
+            .search([])
+            .filtered(
+                lambda a: a.get_external_id().get(a.id, "").startswith("his_crm_pipeline."),
+            )
         )
         self.assertTrue(actions, "Aucune action trouvee : le test ne verifie rien.")
-        contexte = {'uid': self.env.uid, 'context': {}, 'active_id': 1, 'active_ids': []}
+        contexte = {"uid": self.env.uid, "context": {}, "active_id": 1, "active_ids": []}
         for action in actions:
-            self.assertNotIn('%(', action.domain or '', action.display_name)
-            self.assertNotIn('%(', action.context or '', action.display_name)
-            safe_eval(action.domain or '[]', dict(contexte))
-            safe_eval(action.context or '{}', dict(contexte))
+            self.assertNotIn("%(", action.domain or "", action.display_name)
+            self.assertNotIn("%(", action.context or "", action.display_name)
+            safe_eval(action.domain or "[]", dict(contexte))
+            safe_eval(action.context or "{}", dict(contexte))
 
     def test_les_vues_enregistrees_sont_litterales_et_executables(self):
         """Les favoris, verrouilles de la meme facon que les actions.
@@ -177,17 +201,20 @@ class TestPipeline(TransactionCase):
 
         Ce test relit ce qui est REELLEMENT en base et l'execute.
         """
-        filtres = self.env['ir.filters'].search([]).filtered(
-            lambda f: f.get_external_id().get(f.id, '').startswith('his_crm_pipeline.'),
+        filtres = (
+            self.env["ir.filters"]
+            .search([])
+            .filtered(
+                lambda f: f.get_external_id().get(f.id, "").startswith("his_crm_pipeline."),
+            )
         )
         self.assertTrue(filtres, "Aucun favori trouve : le test ne verifie rien.")
         for filtre in filtres:
             domaine = filtre._get_eval_domain()
-            self.env['crm.lead'].search(domaine, limit=1)
+            self.env["crm.lead"].search(domaine, limit=1)
             self.assertTrue(
                 filtre.action_id,
-                "%s n'est rattache a aucune action : il apparaitrait dans les "
-                "deux pipelines." % filtre.name,
+                "%s n'est rattache a aucune action : il apparaitrait dans les deux pipelines." % filtre.name,
             )
 
     # --- Cloisonnement des deux pipelines -----------------------------------
@@ -198,8 +225,8 @@ class TestPipeline(TransactionCase):
         Reproduit le domaine natif de crm.lead.stage_id — c'est lui, et non nos
         vues, qui decide ce que la barre d'etat affiche.
         """
-        return self.env['crm.stage'].search(
-            ['|', ('team_ids', '=', False), ('team_ids', 'in', team.ids)],
+        return self.env["crm.stage"].search(
+            ["|", ("team_ids", "=", False), ("team_ids", "in", team.ids)],
         )
 
     def test_aucune_etape_sans_equipe_ne_fuit_dans_les_pipelines(self):
@@ -211,11 +238,10 @@ class TestPipeline(TransactionCase):
         (New, Qualified, Proposition, Won), qui se retrouvaient melees aux
         etapes Admissions comme aux etapes Production Contenu.
         """
-        orphelines = self.env['crm.stage'].search([('team_ids', '=', False)])
+        orphelines = self.env["crm.stage"].search([("team_ids", "=", False)])
         self.assertFalse(
             orphelines,
-            "Etapes sans equipe, donc visibles dans les deux pipelines : %s"
-            % orphelines.mapped('name'),
+            "Etapes sans equipe, donc visibles dans les deux pipelines : %s" % orphelines.mapped("name"),
         )
 
     def test_chaque_pipeline_ne_voit_que_ses_etapes(self):
@@ -223,17 +249,18 @@ class TestPipeline(TransactionCase):
         etapes_contenu = self._etapes_visibles(self.team_contenu)
 
         self.assertFalse(etapes_ventes & etapes_contenu)
-        self.assertIn(self.env.ref('his_crm_pipeline.stage_vente_contact_etabli'), etapes_ventes)
+        self.assertIn(self.env.ref("his_crm_pipeline.stage_vente_contact_etabli"), etapes_ventes)
         self.assertIn(self.stage_approbation, etapes_contenu)
         self.assertNotIn(self.stage_approbation, etapes_ventes)
         self.assertNotIn(
-            self.env.ref('his_crm_pipeline.stage_vente_contact_etabli'), etapes_contenu,
+            self.env.ref("his_crm_pipeline.stage_vente_contact_etabli"),
+            etapes_contenu,
         )
 
     def test_l_orientation_ne_voit_que_son_etape_d_exception(self):
         """La Cellule d'Orientation possede l'evaluation psychologique, rien d'autre."""
-        etapes = self._etapes_visibles(self.env.ref('his_crm_pipeline.crm_team_orientation'))
-        self.assertEqual(etapes, self.env.ref('his_crm_pipeline.stage_vente_evaluation_psy'))
+        etapes = self._etapes_visibles(self.env.ref("his_crm_pipeline.crm_team_orientation"))
+        self.assertEqual(etapes, self.env.ref("his_crm_pipeline.stage_vente_evaluation_psy"))
 
     def test_les_equipes_ne_voient_pas_les_leads_de_l_autre(self):
         """Odoo ne cloisonne PAS par equipe nativement : la regle est a nous.
@@ -241,23 +268,41 @@ class TestPipeline(TransactionCase):
         Le test tourne with_user() : en superuser toutes les regles sont
         contournees et le test passerait meme sans regle du tout.
         """
-        lead_vente = self.env['crm.lead'].create({
-            'name': "Candidat Amine", 'team_id': self.team_ventes.id,
-        })
-        lead_contenu = self.env['crm.lead'].create({
-            'name': "Video portes ouvertes", 'team_id': self.team_contenu.id,
-        })
-        user_vente = self._user('conseiller_ventes', self.team_ventes)
-        user_contenu = self._user('monteur_contenu', self.team_contenu)
+        lead_vente = self.env["crm.lead"].create(
+            {
+                "name": "Candidat Amine",
+                "team_id": self.team_ventes.id,
+            }
+        )
+        lead_contenu = self.env["crm.lead"].create(
+            {
+                "name": "Video portes ouvertes",
+                "team_id": self.team_contenu.id,
+            }
+        )
+        user_vente = self._user("conseiller_ventes", self.team_ventes)
+        user_contenu = self._user("monteur_contenu", self.team_contenu)
 
-        visibles_vente = self.env['crm.lead'].with_user(user_vente).search([
-            ('id', 'in', (lead_vente + lead_contenu).ids),
-        ])
+        visibles_vente = (
+            self.env["crm.lead"]
+            .with_user(user_vente)
+            .search(
+                [
+                    ("id", "in", (lead_vente + lead_contenu).ids),
+                ]
+            )
+        )
         self.assertEqual(visibles_vente, lead_vente)
 
-        visibles_contenu = self.env['crm.lead'].with_user(user_contenu).search([
-            ('id', 'in', (lead_vente + lead_contenu).ids),
-        ])
+        visibles_contenu = (
+            self.env["crm.lead"]
+            .with_user(user_contenu)
+            .search(
+                [
+                    ("id", "in", (lead_vente + lead_contenu).ids),
+                ]
+            )
+        )
         self.assertEqual(visibles_contenu, lead_contenu)
 
     def test_la_file_d_attente_ne_deborde_pas_sur_l_autre_equipe(self):
@@ -268,20 +313,23 @@ class TestPipeline(TransactionCase):
         proprietaire par construction, la file des Admissions serait visible de
         toute la Production Contenu sans le resserrement pose ici.
         """
-        capture = self.env['crm.lead'].create({
-            'name': "Capture Admissions", 'team_id': self.team_ventes.id,
-        })
+        capture = self.env["crm.lead"].create(
+            {
+                "name": "Capture Admissions",
+                "team_id": self.team_ventes.id,
+            }
+        )
         self.assertFalse(capture.user_id)
 
-        user_contenu = self._user('monteur_file', self.team_contenu)
+        user_contenu = self._user("monteur_file", self.team_contenu)
         self.assertFalse(
-            self.env['crm.lead'].with_user(user_contenu).search([('id', '=', capture.id)]),
+            self.env["crm.lead"].with_user(user_contenu).search([("id", "=", capture.id)]),
             "La file des Admissions ne doit pas etre visible a la Production Contenu.",
         )
 
-        user_vente = self._user('conseillere_file_visible', self.team_ventes)
+        user_vente = self._user("conseillere_file_visible", self.team_ventes)
         self.assertEqual(
-            self.env['crm.lead'].with_user(user_vente).search([('id', '=', capture.id)]),
+            self.env["crm.lead"].with_user(user_vente).search([("id", "=", capture.id)]),
             capture,
             "La file doit rester visible a son equipe, sinon personne n'affecte.",
         )
@@ -293,59 +341,68 @@ class TestPipeline(TransactionCase):
         candidat, leur conseillere. Seule l'ETAPE appartient aux deux equipes.
         La visibilite suit donc l'etape, et se referme quand le lead en sort.
         """
-        equipe_orientation = self.env.ref('his_crm_pipeline.crm_team_orientation')
-        psychologue = self._user('psychologue', equipe_orientation)
-        lead = self.env['crm.lead'].create({
-            'name': "Candidat a evaluer",
-            'team_id': self.team_ventes.id,
-            'stage_id': self.stage_pris_en_charge.id,
-        })
-        Lead = self.env['crm.lead'].with_user(psychologue)
+        equipe_orientation = self.env.ref("his_crm_pipeline.crm_team_orientation")
+        psychologue = self._user("psychologue", equipe_orientation)
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Candidat a evaluer",
+                "team_id": self.team_ventes.id,
+                "stage_id": self.stage_pris_en_charge.id,
+            }
+        )
+        Lead = self.env["crm.lead"].with_user(psychologue)
         self.assertFalse(
-            Lead.search([('id', '=', lead.id)]),
+            Lead.search([("id", "=", lead.id)]),
             "Avant la derivation, la Cellule n'a rien a voir.",
         )
 
-        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_evaluation_psy')
+        lead.stage_id = self.env.ref("his_crm_pipeline.stage_vente_evaluation_psy")
         self.assertEqual(
-            Lead.search([('id', '=', lead.id)]), lead,
+            Lead.search([("id", "=", lead.id)]),
+            lead,
             "Pendant l'evaluation, la Cellule doit voir le candidat.",
         )
 
-        lead.stage_id = self.env.ref('his_crm_pipeline.stage_vente_dossier')
+        lead.stage_id = self.env.ref("his_crm_pipeline.stage_vente_dossier")
         self.assertFalse(
-            Lead.search([('id', '=', lead.id)]),
+            Lead.search([("id", "=", lead.id)]),
             "Sorti de l'etape, le lead se referme sur son equipe.",
         )
 
     def test_l_etape_partagee_n_ouvre_pas_l_autre_pipeline(self):
         """La clause d'etape ne doit pas rouvrir ce que le cloisonnement ferme."""
-        user_contenu = self._user('monteur_etape', self.team_contenu)
-        lead_vente = self.env['crm.lead'].create({
-            'name': "Candidat", 'team_id': self.team_ventes.id,
-            'stage_id': self.env.ref('his_crm_pipeline.stage_vente_evaluation_psy').id,
-        })
+        user_contenu = self._user("monteur_etape", self.team_contenu)
+        lead_vente = self.env["crm.lead"].create(
+            {
+                "name": "Candidat",
+                "team_id": self.team_ventes.id,
+                "stage_id": self.env.ref("his_crm_pipeline.stage_vente_evaluation_psy").id,
+            }
+        )
         self.assertFalse(
-            self.env['crm.lead'].with_user(user_contenu).search([('id', '=', lead_vente.id)]),
+            self.env["crm.lead"].with_user(user_contenu).search([("id", "=", lead_vente.id)]),
         )
 
     def test_lead_sans_equipe_reste_visible(self):
         """Un lead entrant sans equipe ne doit disparaitre pour personne."""
-        lead = self.env['crm.lead'].create({'name': "Formulaire web", 'team_id': False})
-        user = self._user('trieur', self.team_contenu)
+        lead = self.env["crm.lead"].create({"name": "Formulaire web", "team_id": False})
+        user = self._user("trieur", self.team_contenu)
         self.assertEqual(
-            self.env['crm.lead'].with_user(user).search([('id', '=', lead.id)]), lead,
+            self.env["crm.lead"].with_user(user).search([("id", "=", lead.id)]),
+            lead,
         )
 
     # --- Relance SLA premier contact ----------------------------------------
 
     def _lead_en_retard(self, heures=5):
-        lead = self.env['crm.lead'].create({
-            'name': "Lead dormant",
-            'team_id': self.team_ventes.id,
-            'stage_id': self.stage_pris_en_charge.id,
-            'user_id': self.env.ref('base.user_admin').id,
-        })
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Lead dormant",
+                "team_id": self.team_ventes.id,
+                "stage_id": self.stage_pris_en_charge.id,
+                "user_id": self.env.ref("base.user_admin").id,
+            }
+        )
         # date_last_stage_update est calcule et stocke : le forcer en SQL est le
         # seul moyen de simuler le temps qui passe sans attendre quatre heures.
         #
@@ -358,21 +415,24 @@ class TestPipeline(TransactionCase):
             "UPDATE crm_lead SET date_last_stage_update = %s WHERE id = %s",
             (fields.Datetime.now() - timedelta(hours=heures), lead.id),
         )
-        lead.invalidate_recordset(['date_last_stage_update'])
+        lead.invalidate_recordset(["date_last_stage_update"])
         return lead
 
     def _relances(self, lead):
-        return self.env['mail.activity'].search([
-            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
-            ('summary', '=', "Relance SLA - premier contact en retard (>4h)"),
-        ])
+        return self.env["mail.activity"].search(
+            [
+                ("res_model", "=", "crm.lead"),
+                ("res_id", "=", lead.id),
+                ("summary", "=", "Relance SLA - premier contact en retard (>4h)"),
+            ]
+        )
 
     def test_sla_relance_le_responsable_pas_le_conseiller(self):
-        responsable = self._user('responsable_admissions', self.team_ventes)
+        responsable = self._user("responsable_admissions", self.team_ventes)
         self.team_ventes.user_id = responsable
         lead = self._lead_en_retard()
 
-        self.env['crm.lead']._cron_relance_sla_premier_contact()
+        self.env["crm.lead"]._cron_relance_sla_premier_contact()
 
         relances = self._relances(lead)
         self.assertEqual(len(relances), 1)
@@ -381,19 +441,19 @@ class TestPipeline(TransactionCase):
 
     def test_sla_ne_relance_qu_une_fois(self):
         """Le cron tourne toutes les heures : sans garde-fou il empilerait."""
-        self.team_ventes.user_id = self._user('responsable_bis', self.team_ventes)
+        self.team_ventes.user_id = self._user("responsable_bis", self.team_ventes)
         lead = self._lead_en_retard()
 
-        self.env['crm.lead']._cron_relance_sla_premier_contact()
-        self.env['crm.lead']._cron_relance_sla_premier_contact()
+        self.env["crm.lead"]._cron_relance_sla_premier_contact()
+        self.env["crm.lead"]._cron_relance_sla_premier_contact()
 
         self.assertEqual(len(self._relances(lead)), 1)
 
     def test_sla_ignore_les_leads_dans_les_temps(self):
-        self.team_ventes.user_id = self._user('responsable_ter', self.team_ventes)
+        self.team_ventes.user_id = self._user("responsable_ter", self.team_ventes)
         lead = self._lead_en_retard(heures=1)
 
-        self.env['crm.lead']._cron_relance_sla_premier_contact()
+        self.env["crm.lead"]._cron_relance_sla_premier_contact()
 
         self.assertFalse(self._relances(lead))
 
@@ -401,14 +461,20 @@ class TestPipeline(TransactionCase):
 
     def test_affectation_en_masse(self):
         """La vue multi_edit ecrit sur plusieurs leads en une passe."""
-        conseiller = self._user('conseiller_masse', self.team_ventes)
-        leads = self.env['crm.lead'].create([
-            {'name': "Lead %s" % i, 'team_id': self.team_ventes.id,
-             'stage_id': self.stage_pris_en_charge.id, 'score_academique': i}
-            for i in range(3)
-        ])
-        leads.write({'user_id': conseiller.id})
-        self.assertEqual(leads.mapped('user_id'), conseiller)
+        conseiller = self._user("conseiller_masse", self.team_ventes)
+        leads = self.env["crm.lead"].create(
+            [
+                {
+                    "name": "Lead %s" % i,
+                    "team_id": self.team_ventes.id,
+                    "stage_id": self.stage_pris_en_charge.id,
+                    "score_academique": i,
+                }
+                for i in range(3)
+            ]
+        )
+        leads.write({"user_id": conseiller.id})
+        self.assertEqual(leads.mapped("user_id"), conseiller)
 
     def test_un_lead_capture_arrive_sans_commercial(self):
         """Sinon la file d'affectation est vide en permanence.
@@ -418,30 +484,37 @@ class TestPipeline(TransactionCase):
         la file — qui filtre sur les leads sans commercial — ne se remplissait
         jamais. Le geste d'arbitrage du responsable n'existait pas.
         """
-        lead = self.env['crm.lead'].create({
-            'name': "Capture marketing",
-            'team_id': self.team_ventes.id,
-        })
-        self.assertEqual(lead.stage_id, self.env.ref('his_crm_pipeline.stage_vente_nouveau'))
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Capture marketing",
+                "team_id": self.team_ventes.id,
+            }
+        )
+        self.assertEqual(lead.stage_id, self.env.ref("his_crm_pipeline.stage_vente_nouveau"))
         self.assertFalse(lead.user_id, "Un lead capture ne doit appartenir a personne.")
 
     def test_un_lead_cree_directement_en_prise_en_charge_garde_son_commercial(self):
         """La regle vaut pour la file, pas pour un lead deja pris en charge."""
-        conseillere = self._user('conseillere_directe', self.team_ventes)
-        lead = self.env['crm.lead'].create({
-            'name': "Lead deja affecte",
-            'team_id': self.team_ventes.id,
-            'stage_id': self.stage_pris_en_charge.id,
-            'user_id': conseillere.id,
-        })
+        conseillere = self._user("conseillere_directe", self.team_ventes)
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Lead deja affecte",
+                "team_id": self.team_ventes.id,
+                "stage_id": self.stage_pris_en_charge.id,
+                "user_id": conseillere.id,
+            }
+        )
         self.assertEqual(lead.user_id, conseillere)
 
     def test_affecter_un_lead_de_la_file_reste_possible(self):
         """La regle ne joue qu'a la creation : elle ne doit rien bloquer ensuite."""
-        conseillere = self._user('conseillere_file', self.team_ventes)
-        lead = self.env['crm.lead'].create({
-            'name': "A affecter", 'team_id': self.team_ventes.id,
-        })
+        conseillere = self._user("conseillere_file", self.team_ventes)
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "A affecter",
+                "team_id": self.team_ventes.id,
+            }
+        )
         lead.user_id = conseillere
         self.assertEqual(lead.user_id, conseillere)
 
@@ -458,8 +531,8 @@ class TestPipeline(TransactionCase):
         Ce qu'il garantit, c'est que la file d'affectation presente les leads
         du meilleur score au moins bon.
         """
-        vue = self.env.ref('his_crm_pipeline.view_crm_lead_list_non_affectes')
-        self.assertIn('score_academique desc', vue.arch)
+        vue = self.env.ref("his_crm_pipeline.view_crm_lead_list_non_affectes")
+        self.assertIn("score_academique desc", vue.arch)
 
     # --- Telephone et lien WhatsApp -----------------------------------------
 
@@ -469,28 +542,33 @@ class TestPipeline(TransactionCase):
         C'est le lien WhatsApp qui en depend : wa.me refuse un zero initial et
         refuse le signe plus.
         """
-        for saisi in ('0555123456', '+213555123456', '00213555123456'):
-            lead = self.env['crm.lead'].create({
-                'name': "Candidat %s" % saisi,
-                'team_id': self.team_ventes.id,
-                'phone': saisi,
-            })
+        for saisi in ("0555123456", "+213555123456", "00213555123456"):
+            lead = self.env["crm.lead"].create(
+                {
+                    "name": "Candidat %s" % saisi,
+                    "team_id": self.team_ventes.id,
+                    "phone": saisi,
+                }
+            )
             self.assertEqual(
-                lead.telephone_e164, '+213555123456',
+                lead.telephone_e164,
+                "+213555123456",
                 "« %s » n'a pas ete normalise" % saisi,
             )
             self.assertEqual(
                 lead.whatsapp_url,
-                'https://wa.me/213555123456',
+                "https://wa.me/213555123456",
                 "Le lien WhatsApp doit porter les chiffres seuls",
             )
 
     def test_sans_telephone_il_n_y_a_pas_de_lien(self):
         """Un lien vide plutot qu'un lien casse : la carte le masque."""
-        lead = self.env['crm.lead'].create({
-            'name': "Sans telephone",
-            'team_id': self.team_ventes.id,
-        })
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Sans telephone",
+                "team_id": self.team_ventes.id,
+            }
+        )
         self.assertFalse(lead.telephone_e164)
         self.assertFalse(lead.whatsapp_url)
 
@@ -501,23 +579,27 @@ class TestPipeline(TransactionCase):
         URL WhatsApp pointant vers rien — un lien mort est pire qu'une absence
         de lien, parce qu'on clique dessus.
         """
-        lead = self.env['crm.lead'].create({
-            'name': "Numero casse",
-            'team_id': self.team_ventes.id,
-            'phone': 'a rappeler chez la tante',
-        })
+        lead = self.env["crm.lead"].create(
+            {
+                "name": "Numero casse",
+                "team_id": self.team_ventes.id,
+                "phone": "a rappeler chez la tante",
+            }
+        )
         self.assertFalse(lead.telephone_e164)
         self.assertFalse(lead.whatsapp_url)
 
     # --- Boucle d'appel ------------------------------------------------------
 
     def _lead_pris_en_charge(self):
-        return self.env['crm.lead'].create({
-            'name': "Candidat a rappeler",
-            'team_id': self.team_ventes.id,
-            'stage_id': self.stage_pris_en_charge.id,
-            'phone': '0555123456',
-        })
+        return self.env["crm.lead"].create(
+            {
+                "name": "Candidat a rappeler",
+                "team_id": self.team_ventes.id,
+                "stage_id": self.stage_pris_en_charge.id,
+                "phone": "0555123456",
+            }
+        )
 
     def test_une_tentative_sans_reponse_incremente_et_replanifie(self):
         lead = self._lead_pris_en_charge()
@@ -529,9 +611,12 @@ class TestPipeline(TransactionCase):
         self.assertTrue(lead.derniere_tentative)
         # L'etape ne bouge pas : une tentative n'est pas un contact.
         self.assertEqual(lead.stage_id, self.stage_pris_en_charge)
-        rappels = self.env['mail.activity'].search([
-            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
-        ])
+        rappels = self.env["mail.activity"].search(
+            [
+                ("res_model", "=", "crm.lead"),
+                ("res_id", "=", lead.id),
+            ]
+        )
         self.assertEqual(len(rappels), 1)
 
     def test_trois_tentatives_ne_posent_qu_un_seul_rappel(self):
@@ -542,9 +627,12 @@ class TestPipeline(TransactionCase):
             lead.action_appel_sans_reponse()
 
         self.assertEqual(lead.tentatives_appel, 3)
-        rappels = self.env['mail.activity'].search([
-            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
-        ])
+        rappels = self.env["mail.activity"].search(
+            [
+                ("res_model", "=", "crm.lead"),
+                ("res_id", "=", lead.id),
+            ]
+        )
         self.assertEqual(len(rappels), 1, "Un seul rappel, replanifie")
 
     def test_joint_avance_a_contact_etabli_et_efface_le_rappel(self):
@@ -555,13 +643,19 @@ class TestPipeline(TransactionCase):
 
         self.assertEqual(
             lead.stage_id,
-            self.env.ref('his_crm_pipeline.stage_vente_contact_etabli'),
+            self.env.ref("his_crm_pipeline.stage_vente_contact_etabli"),
         )
-        self.assertFalse(self.env['mail.activity'].search([
-            ('res_model', '=', 'crm.lead'), ('res_id', '=', lead.id),
-        ]), "Le rappel n'a plus d'objet une fois le candidat joint")
-        self.assertEqual(action['res_id'], lead.id)
-        self.assertEqual(action['res_model'], 'crm.lead')
+        self.assertFalse(
+            self.env["mail.activity"].search(
+                [
+                    ("res_model", "=", "crm.lead"),
+                    ("res_id", "=", lead.id),
+                ]
+            ),
+            "Le rappel n'a plus d'objet une fois le candidat joint",
+        )
+        self.assertEqual(action["res_id"], lead.id)
+        self.assertEqual(action["res_model"], "crm.lead")
 
     # --- Taxonomie des pertes ------------------------------------------------
 
@@ -573,13 +667,17 @@ class TestPipeline(TransactionCase):
         numero errone sont la majorite des pertes expliquees.
         """
         for xmlid in (
-            'lost_reason_fantome', 'lost_reason_sans_reponse',
-            'lost_reason_numero_errone', 'lost_reason_bac_ancien',
-            'lost_reason_trop_cher', 'lost_reason_profil_inadapte',
-            'lost_reason_autre',
+            "lost_reason_fantome",
+            "lost_reason_sans_reponse",
+            "lost_reason_numero_errone",
+            "lost_reason_bac_ancien",
+            "lost_reason_trop_cher",
+            "lost_reason_profil_inadapte",
+            "lost_reason_autre",
         ):
             motif = self.env.ref(
-                'his_crm_pipeline.%s' % xmlid, raise_if_not_found=False,
+                "his_crm_pipeline.%s" % xmlid,
+                raise_if_not_found=False,
             )
             self.assertTrue(motif, "Motif manquant : %s" % xmlid)
 
@@ -589,13 +687,19 @@ class TestPipeline(TransactionCase):
         Un motif supprime emporterait avec lui tous les leads qui le portaient.
         """
         for xmlid in (
-            'lost_reason_hors_quota', 'lost_reason_dossier_non_retenu',
-            'lost_reason_dossier_incomplet', 'lost_reason_paiement_non_confirme',
-            'lost_reason_retour_production',
+            "lost_reason_hors_quota",
+            "lost_reason_dossier_non_retenu",
+            "lost_reason_dossier_incomplet",
+            "lost_reason_paiement_non_confirme",
+            "lost_reason_retour_production",
         ):
-            self.assertTrue(self.env.ref(
-                'his_crm_pipeline.%s' % xmlid, raise_if_not_found=False,
-            ), "Motif d'origine perdu : %s" % xmlid)
+            self.assertTrue(
+                self.env.ref(
+                    "his_crm_pipeline.%s" % xmlid,
+                    raise_if_not_found=False,
+                ),
+                "Motif d'origine perdu : %s" % xmlid,
+            )
 
     def test_les_motifs_anglais_natifs_sont_retires_de_la_liste(self):
         """« Too expensive » doublait « Frais trop eleves », en anglais.
@@ -605,7 +709,7 @@ class TestPipeline(TransactionCase):
         supprimes : lost_reason_id est en ondelete='restrict' et l'un d'eux
         portait deja un lead sur la base de recette.
         """
-        for xmlid in ('crm.lost_reason_1', 'crm.lost_reason_2', 'crm.lost_reason_3'):
+        for xmlid in ("crm.lost_reason_1", "crm.lost_reason_2", "crm.lost_reason_3"):
             motif = self.env.ref(xmlid, raise_if_not_found=False)
             if not motif:
                 continue
@@ -617,9 +721,8 @@ class TestPipeline(TransactionCase):
     def test_aucun_motif_selectionnable_n_est_en_anglais(self):
         """Le garde-fou general : la liste que voit la conseillere est
         entierement en francais, sans quoi deux vocabulaires cohabitent."""
-        actifs = self.env['crm.lost.reason'].search([]).mapped('name')
-        for interdit in ("Too expensive", "We don't have people/skills",
-                         "Not enough stock"):
+        actifs = self.env["crm.lost.reason"].search([]).mapped("name")
+        for interdit in ("Too expensive", "We don't have people/skills", "Not enough stock"):
             self.assertNotIn(interdit, actifs)
 
     def test_les_motifs_sont_ordonnes_par_frequence_reelle(self):
@@ -627,8 +730,8 @@ class TestPipeline(TransactionCase):
         se retrouverait au milieu d'une liste de onze. Trois motifs couvrent
         environ 70 % des pertes ; ils doivent etre en tete, sinon la cloture
         coute assez cher pour etre sautee."""
-        motifs = self.env['crm.lost.reason'].search([])
-        noms = motifs.mapped('name')
+        motifs = self.env["crm.lost.reason"].search([])
+        noms = motifs.mapped("name")
         self.assertEqual(noms[0], "Sans reponse")
         self.assertEqual(noms[1], "Candidature fantome")
         self.assertEqual(noms[-1], "Autre - a preciser")
@@ -636,9 +739,9 @@ class TestPipeline(TransactionCase):
     # --- Une perte doit dire quelque chose -----------------------------------
 
     def _lead_simple(self, **kw):
-        vals = {'name': "Candidat", 'team_id': self.team_ventes.id}
+        vals = {"name": "Candidat", "team_id": self.team_ventes.id}
         vals.update(kw)
-        return self.env['crm.lead'].create(vals)
+        return self.env["crm.lead"].create(vals)
 
     def test_perdre_sans_motif_est_refuse(self):
         """626 pertes, 193 motifs. Le vide n'est plus une option.
@@ -653,9 +756,8 @@ class TestPipeline(TransactionCase):
 
     def test_perdre_avec_un_motif_passe(self):
         lead = self._lead_simple()
-        lead.action_set_lost(lost_reason_id=self.env.ref(
-            'his_crm_pipeline.lost_reason_sans_reponse').id)
-        self.assertEqual(lead.won_status, 'lost')
+        lead.action_set_lost(lost_reason_id=self.env.ref("his_crm_pipeline.lost_reason_sans_reponse").id)
+        self.assertEqual(lead.won_status, "lost")
 
     def test_autre_sans_precision_est_refuse(self):
         """La soupape d'honnetete a un prix : il faut ecrire la ligne. Sans
@@ -663,15 +765,12 @@ class TestPipeline(TransactionCase):
         vide par un mot qui n'en dit pas davantage."""
         lead = self._lead_simple()
         with self.assertRaises(ValidationError):
-            lead.action_set_lost(lost_reason_id=self.env.ref(
-                'his_crm_pipeline.lost_reason_autre').id)
+            lead.action_set_lost(lost_reason_id=self.env.ref("his_crm_pipeline.lost_reason_autre").id)
 
     def test_autre_avec_precision_passe(self):
-        lead = self._lead_simple(
-            perte_precision="Parti a l'etranger, ne rappellera pas.")
-        lead.action_set_lost(lost_reason_id=self.env.ref(
-            'his_crm_pipeline.lost_reason_autre').id)
-        self.assertEqual(lead.won_status, 'lost')
+        lead = self._lead_simple(perte_precision="Parti a l'etranger, ne rappellera pas.")
+        lead.action_set_lost(lost_reason_id=self.env.ref("his_crm_pipeline.lost_reason_autre").id)
+        self.assertEqual(lead.won_status, "lost")
 
     def test_archiver_n_est_pas_perdre(self):
         """La contrainte porte sur won_status, pas sur active.
@@ -683,7 +782,7 @@ class TestPipeline(TransactionCase):
         lead = self._lead_simple(probability=40)
         lead.action_archive()
         self.assertFalse(lead.active)
-        self.assertNotEqual(lead.won_status, 'lost')
+        self.assertNotEqual(lead.won_status, "lost")
 
     def test_la_note_de_cloture_atterrit_sur_le_lead(self):
         """Odoo ne se sert de lost_feedback que comme message de suivi : aucun
@@ -691,13 +790,15 @@ class TestPipeline(TransactionCase):
         sur la fiche, ce qui rend « Autre » exigeable depuis l'assistant natif.
         """
         lead = self._lead_simple()
-        wizard = self.env['crm.lead.lost'].create({
-            'lead_ids': [(6, 0, [lead.id])],
-            'lost_reason_id': self.env.ref('his_crm_pipeline.lost_reason_autre').id,
-            'lost_feedback': '<p>Recu a l universite d Alger.</p>',
-        })
+        wizard = self.env["crm.lead.lost"].create(
+            {
+                "lead_ids": [(6, 0, [lead.id])],
+                "lost_reason_id": self.env.ref("his_crm_pipeline.lost_reason_autre").id,
+                "lost_feedback": "<p>Recu a l universite d Alger.</p>",
+            }
+        )
         wizard.action_lost_reason_apply()
-        self.assertEqual(lead.won_status, 'lost')
+        self.assertEqual(lead.won_status, "lost")
         self.assertIn("Alger", lead.perte_precision)
 
     def test_apres_trois_tentatives_la_perte_propose_fantome(self):
@@ -713,10 +814,10 @@ class TestPipeline(TransactionCase):
         action = lead.action_perdre_rapide()
 
         self.assertEqual(
-            action['context']['default_lost_reason_id'],
-            self.env.ref('his_crm_pipeline.lost_reason_fantome').id,
+            action["context"]["default_lost_reason_id"],
+            self.env.ref("his_crm_pipeline.lost_reason_fantome").id,
         )
-        self.assertEqual(action['res_model'], 'crm.lead.lost')
+        self.assertEqual(action["res_model"], "crm.lead.lost")
 
     def test_avant_trois_tentatives_aucun_motif_n_est_impose(self):
         """Deviner a la place de la conseillere serait pire que ne rien
@@ -727,7 +828,7 @@ class TestPipeline(TransactionCase):
 
         action = lead.action_perdre_rapide()
 
-        self.assertFalse(action['context'].get('default_lost_reason_id'))
+        self.assertFalse(action["context"].get("default_lost_reason_id"))
 
     def test_chaque_tentative_laisse_une_trace_datee(self):
         """Le compteur dit combien ; le fil dit quand. Le second explique le

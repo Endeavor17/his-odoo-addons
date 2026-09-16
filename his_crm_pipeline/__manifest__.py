@@ -1,10 +1,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
-    'name': "CRM Ventes/Admissions et Production Contenu",
-    'version': '19.0.3.3.0',
-    'category': 'Sales/CRM',
-    'summary': "Deux pipelines CRM natifs : admissions candidats et production de contenu",
-    'description': """
+    "name": "CRM Ventes/Admissions et Production Contenu",
+    "version": "19.0.3.3.0",
+    "category": "Sales/CRM",
+    "summary": "Deux pipelines CRM natifs : admissions candidats et production de contenu",
+    "description": """
 Remplace GoHighLevel par le CRM natif d'Odoo, sans quitter crm.lead.
 
 Deux processus sans rapport partagent le meme modele, separes par equipe :
@@ -17,41 +17,41 @@ atteindre l'etape Approbation tant qu'un livrable demande n'est pas approuve.
 C'est ce qui remplace la colonne « Approval Status » du tableur, restee vide
 dans presque toutes les lignes reelles.
     """,
-    'author': "Groupe HIS-HTC-IRA",
-    'license': 'LGPL-3',
-    'depends': [
-        'crm',
-        'mail',
+    "author": "Groupe HIS-HTC-IRA",
+    "license": "LGPL-3",
+    "depends": [
+        "crm",
+        "mail",
         # Normalisation E.164 des numeros algeriens. Module Community, deja
         # present dans l'image : c'est celui qu'Odoo utilise lui-meme. Ecrire
         # l'expression reguliere a la main serait reimplementer une dependance
         # deja installee.
-        'phone_validation',
+        "phone_validation",
     ],
-    'data': [
-        'security/his_crm_roles.xml',
-        'security/ir.model.access.csv',
-        'security/his_crm_security.xml',
-        'data/crm_team_data.xml',
-        'data/crm_team_member_data.xml',
-        'data/his_content_deliverable_type_data.xml',
-        'data/crm_stage_data.xml',
-        'data/crm_stage_native_data.xml',
-        'data/crm_lost_reason_data.xml',
-        'data/crm_tag_data.xml',
-        'data/ir_cron_data.xml',
-        'views/crm_lead_views.xml',
-        'views/crm_menus.xml',
-        'views/his_dashboard_views.xml',
+    "data": [
+        "security/his_crm_roles.xml",
+        "security/ir.model.access.csv",
+        "security/his_crm_security.xml",
+        "data/crm_team_data.xml",
+        "data/crm_team_member_data.xml",
+        "data/his_content_deliverable_type_data.xml",
+        "data/crm_stage_data.xml",
+        "data/crm_stage_native_data.xml",
+        "data/crm_lost_reason_data.xml",
+        "data/crm_tag_data.xml",
+        "data/ir_cron_data.xml",
+        "views/crm_lead_views.xml",
+        "views/crm_menus.xml",
+        "views/his_dashboard_views.xml",
         # Apres crm_menus.xml : chaque filtre est rattache a l'action de son
         # pipeline, qui doit donc exister au moment du chargement.
-        'data/ir_filters_data.xml',
+        "data/ir_filters_data.xml",
     ],
-    'assets': {
-        'web.assets_backend': [
-            'his_crm_pipeline/static/src/dashboard/**/*',
+    "assets": {
+        "web.assets_backend": [
+            "his_crm_pipeline/static/src/dashboard/**/*",
         ],
     },
-    'post_init_hook': 'post_init_hook',
-    'installable': True,
+    "post_init_hook": "post_init_hook",
+    "installable": True,
 }

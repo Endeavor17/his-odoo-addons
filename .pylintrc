@@ -1,0 +1,47 @@
+# pylint-odoo pour les modules du Groupe. Odoo 19.
+# But : attraper les fautes propres a Odoo (SQL, manifeste, unlink, traductions,
+# API depreciee) sans noyer le signal. Le style est le domaine de ruff, et les
+# faux positifs de l'ORM dynamique d'Odoo (no-member, no-name-in-module,
+# import-error) ne sont PAS actives : pylint ne resout pas les recordsets.
+# A lancer dans l'image odoo:19.0 (ou `odoo` est importable) :
+#   python3 -m pylint --rcfile=.pylintrc <modules>
+[MAIN]
+load-plugins=pylint_odoo
+ignore=web_responsive
+
+[MESSAGES CONTROL]
+# On PART de rien, puis on active EXPLICITEMENT les verifs qui attrapent une
+# vraie faute. Pas de categorie 'E' en bloc : elle inclut no-member & co,
+# ingerables avec l'ORM dynamique.
+# Volontairement NON actives (style OCA, sans valeur de correctness ici) :
+#   manifest-deprecated-key   -> "description" est une metadonnee utile, gardee
+#   manifest-superfluous-key  -> installable=True explicite, lisible
+#   missing-readme            -> couvert par l'axe documentation de l'audit
+#   no-search-all             -> search([]) sur de petites tables de reference
+disable=all
+enable=
+    # --- verifs Odoo (pylint_odoo) ---
+    sql-injection,
+    no-raise-unlink,
+    inheritable-method-lambda,
+    method-required-super,
+    super-method-mismatch,
+    missing-return,
+    translation-required,
+    translation-positional-used,
+    translation-not-lazy,
+    # --- vraies erreurs / pieges Python fiables avec Odoo ---
+    used-before-assignment,
+    unused-import,
+    unused-variable,
+    redefined-builtin,
+    dangerous-default-value,
+    raise-missing-from,
+    broad-exception-caught,
+    cell-var-from-loop,
+    assigning-non-slot,
+    return-in-init,
+    unreachable
+
+[REPORTS]
+score=no

@@ -15,10 +15,8 @@ class ProductProduct(models.Model):
     so reading them off a variant is ordinary delegation.
     """
 
-    _inherit = 'product.product'
+    _inherit = "product.product"
 
     @api.model
     def _load_pos_data_fields(self, config):
-        return super()._load_pos_data_fields(config) + [
-            'copy_service', 'copy_format', 'copy_color', 'copy_sides',
-        ]
+        return [*super()._load_pos_data_fields(config), "copy_service", "copy_format", "copy_color", "copy_sides"]

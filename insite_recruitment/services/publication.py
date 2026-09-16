@@ -15,7 +15,7 @@ None of this is hardcoded here.
 
 from collections import namedtuple
 
-PublicationResult = namedtuple('PublicationResult', ['success', 'message', 'payload'])
+PublicationResult = namedtuple("PublicationResult", ["success", "message", "payload"])
 
 
 class InsitePublicationService:
@@ -26,11 +26,11 @@ class InsitePublicationService:
     def _build_payload(self, module_sheet):
         engagement = module_sheet.engagement_id
         return {
-            'module': engagement.module_id.display_name,
-            'plan': module_sheet.plan,
-            'chapters': module_sheet.chapters,
-            'clos': module_sheet.clos,
-            'teachers': [engagement.person_id.display_name],
+            "module": engagement.module_id.display_name,
+            "plan": module_sheet.plan,
+            "chapters": module_sheet.chapters,
+            "clos": module_sheet.clos,
+            "teachers": [engagement.person_id.display_name],
         }
 
     def publish(self, module_sheet):
@@ -38,7 +38,7 @@ class InsitePublicationService:
         return PublicationResult(
             success=False,
             message="Publication is not configured. No student/module platform "
-                    "API is set up for this deployment — publish manually, "
-                    "then mark it done.",
+            "API is set up for this deployment — publish manually, "
+            "then mark it done.",
             payload=payload,
         )

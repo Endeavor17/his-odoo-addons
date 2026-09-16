@@ -1,0 +1,14 @@
+# Fins de ligne normalisees en LF dans le depot : la CI tourne sous Linux et le
+# formateur (ruff) attend du LF. Sans cela, un poste Windows (autocrlf) ferait
+# diverger le controle de format entre local et CI.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.xlsx binary
+*.zip binary
+*.gz binary

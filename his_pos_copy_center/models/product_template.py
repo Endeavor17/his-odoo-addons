@@ -3,8 +3,8 @@ from odoo import api, fields, models
 # The his_stock_mdm categories matching the two copy_service values. Looked up
 # softly: this module does not depend on his_stock_mdm.
 COPY_CATEGORIES = (
-    'his_stock_mdm.categ_copy_photocopie',
-    'his_stock_mdm.categ_copy_impression',
+    "his_stock_mdm.categ_copy_photocopie",
+    "his_stock_mdm.categ_copy_impression",
 )
 
 
@@ -27,37 +27,37 @@ class ProductTemplate(models.Model):
     behaves exactly as it did before this module was installed.
     """
 
-    _inherit = 'product.template'
+    _inherit = "product.template"
 
     copy_service = fields.Selection(
         [
-            ('photocopie', "Photocopie"),
-            ('impression', "Impression"),
+            ("photocopie", "Photocopie"),
+            ("impression", "Impression"),
         ],
         string="Copy Service",
         help="Marks this product as a copy service the Copy Center job builder "
-             "can offer. Leave empty for every other product.",
+        "can offer. Leave empty for every other product.",
     )
     copy_format = fields.Selection(
-        [('a4', "A4"), ('a3', "A3")],
+        [("a4", "A4"), ("a3", "A3")],
         string="Copy Format",
     )
     copy_color = fields.Selection(
-        [('bw', "N&B"), ('color', "Couleur")],
+        [("bw", "N&B"), ("color", "Couleur")],
         string="Copy Colour",
     )
     copy_sides = fields.Selection(
-        [('recto', "Recto"), ('duplex', "Recto-verso")],
+        [("recto", "Recto"), ("duplex", "Recto-verso")],
         string="Copy Sides",
     )
-    copy_center_visible = fields.Boolean(compute='_compute_copy_center_visible')
+    copy_center_visible = fields.Boolean(compute="_compute_copy_center_visible")
 
     def _copy_center_categories(self):
-        return [categ for categ in (
-            self.env.ref(xmlid, raise_if_not_found=False) for xmlid in COPY_CATEGORIES
-        ) if categ]
+        return [
+            categ for categ in (self.env.ref(xmlid, raise_if_not_found=False) for xmlid in COPY_CATEGORIES) if categ
+        ]
 
-    @api.depends('copy_service', 'categ_id')
+    @api.depends("copy_service", "categ_id")
     def _compute_copy_center_visible(self):
         """Show the form group only where it means something.
 
@@ -71,5 +71,5 @@ class ProductTemplate(models.Model):
             template.copy_center_visible = (
                 not paths
                 or bool(template.copy_service)
-                or any((template.categ_id.parent_path or '').startswith(path) for path in paths)
+                or any((template.categ_id.parent_path or "").startswith(path) for path in paths)
             )

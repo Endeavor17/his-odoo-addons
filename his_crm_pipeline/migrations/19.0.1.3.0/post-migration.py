@@ -26,17 +26,18 @@ les remet au domaine natif puis nos donnees les resserrent a nouveau dans la
 meme passe. Seul un `-u crm` isole les laisserait larges — ce qui ne se fait
 pas.
 """
+
 from odoo import SUPERUSER_ID, api
 
 # Copie conforme de security/his_crm_security.xml. Les deux doivent rester
 # identiques : le XML sert a l'installation, ce script aux bases existantes.
 DOMAINES = {
-    'crm.crm_rule_all_lead': (
+    "crm.crm_rule_all_lead": (
         "['|', '|', ('team_id', '=', False), "
         "('team_id', 'in', user.crm_team_ids.ids), "
         "('stage_id.team_ids', 'in', user.crm_team_ids.ids)]"
     ),
-    'crm.crm_rule_personal_lead': (
+    "crm.crm_rule_personal_lead": (
         "['&', '|', ('team_id', '=', False), "
         "('team_id', 'in', user.crm_team_ids.ids), "
         "'|', ('user_id', '=', user.id), ('user_id', '=', False)]"
@@ -52,8 +53,10 @@ def migrate(cr, version):
         if regle:
             regle.domain_force = domaine
 
-    env['ir.model.data'].search([
-        ('model', '=', 'ir.rule'),
-        ('module', '=', 'crm'),
-        ('name', 'in', [x.split('.', 1)[1] for x in DOMAINES]),
-    ]).noupdate = False
+    env["ir.model.data"].search(
+        [
+            ("model", "=", "ir.rule"),
+            ("module", "=", "crm"),
+            ("name", "in", [x.split(".", 1)[1] for x in DOMAINES]),
+        ]
+    ).noupdate = False

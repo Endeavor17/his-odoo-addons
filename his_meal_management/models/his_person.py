@@ -16,7 +16,7 @@ class HisPerson(models.Model):
     The one field this module takes over is `numero_carte` - see below.
     """
 
-    _inherit = 'his.person'
+    _inherit = "his.person"
 
     # --- The badge, taken over from his_person_core -------------------------
     #
@@ -40,19 +40,17 @@ class HisPerson(models.Model):
     # the till accepts and the attendance reader refuses. There is exactly one
     # place a badge number lives now: an active his.meal.card row.
     numero_carte = fields.Char(
-        compute='_compute_numero_carte',
-        inverse='_inverse_numero_carte',
+        compute="_compute_numero_carte",
+        inverse="_inverse_numero_carte",
         store=True,
         readonly=False,
     )
 
-    @api.depends('partner_id.meal_card_ids.code', 'partner_id.meal_card_ids.state')
+    @api.depends("partner_id.meal_card_ids.code", "partner_id.meal_card_ids.state")
     def _compute_numero_carte(self):
         """The badge is whatever the person's active card says it is."""
         for person in self:
-            active = person.partner_id.meal_card_ids.filtered(
-                lambda card: card.state == 'active'
-            )[:1]
+            active = person.partner_id.meal_card_ids.filtered(lambda card: card.state == "active")[:1]
             person.numero_carte = active.code or False
 
     def _inverse_numero_carte(self):
@@ -66,21 +64,23 @@ class HisPerson(models.Model):
         """
         for person in self:
             partner = person.partner_id
-            active = partner.meal_card_ids.filtered(lambda card: card.state == 'active')
+            active = partner.meal_card_ids.filtered(lambda card: card.state == "active")
             if active and active[0].code == person.numero_carte:
                 continue
 
             # Retire first: _check_single_active_card refuses two at once, and
             # 'replaced' is only honest when something replaces it.
             if active:
-                active.state = 'replaced' if person.numero_carte else 'blocked'
+                active.state = "replaced" if person.numero_carte else "blocked"
 
             if person.numero_carte:
-                self.env['his.meal.card'].create({
-                    'partner_id': partner.id,
-                    'code': person.numero_carte,
-                    'replaced_card_id': active[:1].id or False,
-                })
+                self.env["his.meal.card"].create(
+                    {
+                        "partner_id": partner.id,
+                        "code": person.numero_carte,
+                        "replaced_card_id": active[:1].id or False,
+                    }
+                )
 
     def action_open_meal_transactions(self):
         """Delegation carries fields across, not methods.

@@ -6,8 +6,14 @@ conversion was written. If that is no longer true, stop here: the upgrade would
 otherwise drop real rows without a word.
 """
 
-TABLES = ('academic_person', 'academic_faculty', 'academic_engagement', 'insite_candidature',
-          'insite_contract', 'insite_submission')
+TABLES = (
+    "academic_person",
+    "academic_faculty",
+    "academic_engagement",
+    "insite_candidature",
+    "insite_contract",
+    "insite_submission",
+)
 
 
 def migrate(cr, version):
@@ -15,7 +21,8 @@ def migrate(cr, version):
         cr.execute("SELECT to_regclass(%s)", (table,))
         if not cr.fetchone()[0]:
             continue
-        cr.execute(f'SELECT count(*) FROM "{table}"')  # noqa: table names are constants
+        # table est une constante du module, pas une entree utilisateur.
+        cr.execute(f'SELECT count(*) FROM "{table}"')
         count = cr.fetchone()[0]
         if count:
             raise Exception(

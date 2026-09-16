@@ -1,0 +1,134 @@
+# Garde-fou avant fusion. Un push sur main declenche le redeploiement de la
+# production (Dokploy autoDeploy) : rien ne doit y arriver sans etre passe ici.
+# Pour que ce soit un vrai verrou, activer la protection de branche sur main
+# (Settings -> Branches) : exiger une PR et le succes de « lint » et « tests ».
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Modules du depot (web_responsive est tiers OCA, non juge).
+  MODULES: campus_identity_bridge,campus_teacher_management,his_academic_base,his_access_base,his_admission,his_crm_identity_bridge,his_crm_pipeline,his_hr_base,his_meal_management,his_person_core,his_person_sync_sheets,his_pos_copy_center,his_pos_partner_scope,his_pos_ui,his_theme,his_web_ui,insite_recruitment,maintenance_university,his_stock_mdm
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # gitleaks scanne tout l'historique
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer les linters
+        run: pip install ruff==0.16.7 pylint-odoo
+
+      - name: ruff (lint)
+        run: ruff check .
+
+      - name: ruff (format)
+        run: ruff format --check .
+
+      - name: pylint-odoo
+        # Les modeles seulement ; tools/ et docs/ sont des scripts odoo shell.
+        run: |
+          MODS=$(echo "$MODULES" | tr ',' ' ')
+          pylint --rcfile=.pylintrc $MODS
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: eslint
+        run: |
+          npm install --no-save eslint@9 @eslint/js@9 globals
+          npx eslint .
+
+      - name: gitleaks (secrets dans l'historique)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  tests:
+    runs-on: ubuntu-latest
+    container:
+      image: odoo:19.0
+      options: --user root
+    services:
+      db:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd "pg_isready -U odoo"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parametres communs
+        run: |
+          DB="--db_host=db --db_user=odoo --db_password=odoo --db_port=5432"
+          echo "ODOO=odoo $DB" >> "$GITHUB_ENV"
+          # Le sous-commande `shell` doit venir juste apres `odoo`, avant les
+          # options — sinon Odoo repond « unrecognized parameters: shell ».
+          echo "ODOO_SHELL=odoo shell $DB" >> "$GITHUB_ENV"
+          echo "ADDONS=/usr/lib/python3/dist-packages/odoo/addons,$GITHUB_WORKSPACE" >> "$GITHUB_ENV"
+
+      # 1. Socle : le POS exige un plan comptable pour creer une pos.config, et
+      #    his_stock_mdm se rattache a une arborescence de categories. On les
+      #    met en place AVANT nos modules, comme en production.
+      - name: Prerequis (plan comptable + POS)
+        run: $ODOO -d ci --addons-path="$ADDONS" --without-demo=True --stop-after-init
+          -i l10n_dz,point_of_sale,his_person_core,his_academic_base
+
+      # Fichiers pipes, pas de heredoc : un terminateur de heredoc indente dans
+      # un bloc `run:` YAML n'est pas reconnu par le shell.
+      - name: Charger le plan comptable et l'arborescence de categories
+        run: |
+          $ODOO_SHELL -d ci --addons-path="$ADDONS" --no-http --log-level=warn < tools/charger_plan_comptable_dz.py
+          $ODOO_SHELL -d ci --addons-path="$ADDONS" --no-http --log-level=warn < tools/seed_categories.py
+
+      # 2. Installer tous les modules avec leurs tests.
+      - name: Installer et tester
+        run: |
+          TAGS=$(echo "$MODULES" | tr ',' '\n' | sed 's#^#/#' | paste -sd,)
+          $ODOO -d ci --addons-path="$ADDONS" --without-demo=True --stop-after-init \
+            -i "$MODULES" --test-enable --test-tags "$TAGS" --log-level=test 2>&1 | tee test.log
+
+      # 3. Un log vert ne suffit pas : on lit la ligne de resultat d'Odoo et on
+      #    echoue sur le moindre echec/erreur, ou si trop peu de tests ont
+      #    tourne (garde contre un « 0 failed » creux).
+      - name: Verifier le resultat
+        run: |
+          LINE=$(grep -E "[0-9]+ failed, [0-9]+ error\(s\) of [0-9]+ tests" test.log | tail -1)
+          echo "Resultat : $LINE"
+          if [ -z "$LINE" ]; then echo "::error::Aucune ligne de resultat de test trouvee."; exit 1; fi
+          FAILED=$(echo "$LINE" | sed -E 's/.* ([0-9]+) failed.*/\1/')
+          ERRORS=$(echo "$LINE" | sed -E 's/.* ([0-9]+) error\(s\).*/\1/')
+          TOTAL=$(echo "$LINE" | sed -E 's/.* of ([0-9]+) tests.*/\1/')
+          if [ "$FAILED" -ne 0 ] || [ "$ERRORS" -ne 0 ]; then
+            echo "::error::$FAILED echec(s), $ERRORS erreur(s)."; exit 1; fi
+          # Garde contre une collecte tronquee (tags casses -> 0 test) : la suite
+          # complete tourne ~516 tests ; un plancher a 400 laisse de la marge aux
+          # variations de « skipped » tout en attrapant un run quasi vide.
+          if [ "$TOTAL" -lt 400 ]; then
+            echo "::error::Seulement $TOTAL tests ont tourne (< 400) : suite tronquee ?"; exit 1; fi
+          # NB : on ne balaie PAS le log a la recherche de « ERROR ». Beaucoup de
+          # tests declenchent volontairement une exception (asserter qu'une
+          # ValidationError/AccessError est bien levee) : Odoo journalise alors
+          # une ligne ERROR + trace alors que le test PASSE. Le decompte
+          # « X failed, Y error(s) » d'Odoo, lui, ne compte que les vrais echecs,
+          # et un plantage de chargement (CRITICAL) fait deja echouer l'etape
+          # d'installation avant celle-ci. C'est donc ce decompte qui fait foi.

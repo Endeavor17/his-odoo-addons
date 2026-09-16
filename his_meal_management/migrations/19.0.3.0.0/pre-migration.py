@@ -12,6 +12,7 @@ by the time it does.
 
 Order matters: a transaction points at the subscription that produced it.
 """
+
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -32,5 +33,6 @@ def migrate(cr, version):
     _logger.info(
         "his_meal_management 19.0.3.0.0: cleared %s ledger line(s) and %s "
         "subscription(s). Balances restart at zero under the new credit scale.",
-        transactions, subscriptions,
+        transactions,
+        subscriptions,
     )

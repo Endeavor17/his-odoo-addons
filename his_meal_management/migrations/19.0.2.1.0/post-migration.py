@@ -16,6 +16,7 @@ the same number it started with.
 Nothing to do on a database where the wallet always owned the badge: every card
 holder already has a row, and the loop below finds nobody.
 """
+
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -39,11 +40,11 @@ def _backfill_badges_from_cards(env):
     # still has to agree with it. Skipping them would leave a row whose card
     # says one number and whose badge says nothing - and the day someone is
     # unarchived, the till and the attendance reader would disagree about them.
-    People = env['his.person'].sudo().with_context(active_test=False)
-    stale = People.search([('partner_id.meal_card_ids.state', '=', 'active')])
+    People = env["his.person"].sudo().with_context(active_test=False)
+    stale = People.search([("partner_id.meal_card_ids.state", "=", "active")])
     if not stale:
         return 0
-    env.add_to_compute(People._fields['numero_carte'], stale)
+    env.add_to_compute(People._fields["numero_carte"], stale)
     env.flush_all()
     return len(stale)
 
@@ -68,19 +69,20 @@ def migrate(cr, version):
     """)
     rows = cr.fetchall()
     env = api.Environment(cr, SUPERUSER_ID, {})
-    Card = env['his.meal.card'].sudo()
+    Card = env["his.meal.card"].sudo()
     created = 0
     for person_id, partner_id, numero in rows:
         # A number already held by someone else cannot be issued twice - the
         # card's unique(code) would refuse it, and rightly: the till would not
         # know whom to debit. Leave it, log it, let a human arbitrate.
-        if Card.search_count([('code', '=', numero)]):
+        if Card.search_count([("code", "=", numero)]):
             _logger.warning(
-                "Badge %s (person %s) is already carried by another card - "
-                "no card issued, to be settled by hand.", numero, person_id,
+                "Badge %s (person %s) is already carried by another card - no card issued, to be settled by hand.",
+                numero,
+                person_id,
             )
             continue
-        Card.create({'partner_id': partner_id, 'code': numero})
+        Card.create({"partner_id": partner_id, "code": numero})
         created += 1
 
     if not rows:

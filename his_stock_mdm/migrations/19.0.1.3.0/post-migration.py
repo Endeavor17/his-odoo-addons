@@ -13,19 +13,20 @@ Odoo refuse de detracer un produit dont des lots existent encore.
 La valorisation FIFO du frais n'est pas touchee : c'est une decision de cout,
 pas de tracabilite.
 """
-from odoo import api, SUPERUSER_ID
+
+from odoo import SUPERUSER_ID, api
 
 
 def migrate(cr, version):
     env = api.Environment(cr, SUPERUSER_ID, {})
 
-    traces = env['product.template'].search([('tracking', '!=', 'none')])
+    traces = env["product.template"].search([("tracking", "!=", "none")])
     if traces:
-        traces.write({'tracking': 'none', 'use_expiration_date': False})
+        traces.write({"tracking": "none", "use_expiration_date": False})
 
     # Les valeurs par defaut des categories sont remises a plat par le fichier
     # de donnees (hors noupdate), mais on ne laisse pas la base decider : une
     # categorie qui garderait `lot` retracerait le prochain produit cree.
-    categories = env['product.category'].search([('default_tracking', '=', 'lot')])
+    categories = env["product.category"].search([("default_tracking", "=", "lot")])
     if categories:
-        categories.write({'default_tracking': 'none', 'default_use_expiration_date': False})
+        categories.write({"default_tracking": "none", "default_use_expiration_date": False})

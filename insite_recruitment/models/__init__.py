@@ -1,9 +1,11 @@
-from . import campus_process
-from . import his_person
-from . import academic_period
-from . import insite_recruitment_need
-from . import academic_engagement
-from . import insite_candidature
-from . import insite_submission
-from . import insite_contract
-from . import insite_module_sheet
+from . import (
+    academic_engagement,
+    academic_period,
+    campus_process,
+    his_person,
+    insite_candidature,
+    insite_contract,
+    insite_module_sheet,
+    insite_recruitment_need,
+    insite_submission,
+)

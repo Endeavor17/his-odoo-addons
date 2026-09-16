@@ -1,0 +1,41 @@
+# Verifs locales avant commit. Memes outils que la CI (.github/workflows/ci.yml),
+# pour qu'un echec se voie AVANT le push — un push sur main deploie en prod.
+# Installer une fois : pip install pre-commit && pre-commit install
+# Le module tiers web_responsive est exclu partout : on ne le maitrise pas.
+exclude: '^web_responsive/'
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.7
+    hooks:
+      - id: ruff
+        name: ruff (lint)
+        args: [--fix]
+      - id: ruff-format
+        name: ruff (format)
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-xml
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  # pylint-odoo et eslint tournent en CI (ils demandent l'environnement Odoo /
+  # Node). En local, un hook manuel les rend disponibles a la demande :
+  #   pre-commit run --hook-stage manual pylint-odoo
+  - repo: local
+    hooks:
+      - id: pylint-odoo
+        name: pylint-odoo (manuel / CI)
+        entry: pylint --load-plugins=pylint_odoo --valid-odoo-versions=19.0
+        language: system
+        types: [python]
+        stages: [manual]

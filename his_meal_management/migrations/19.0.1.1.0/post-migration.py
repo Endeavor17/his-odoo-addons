@@ -28,18 +28,20 @@ def migrate(cr, version):
            AND name = 'seq_matricule'
     """)
     if removed:
-        from odoo import api, SUPERUSER_ID
+        from odoo import SUPERUSER_ID, api
+
         env = api.Environment(cr, SUPERUSER_ID, {})
-        env['ir.logging'].create({
-            'name': 'his_meal_management',
-            'type': 'server',
-            'level': 'INFO',
-            'dbname': cr.dbname,
-            'message': (
-                "Removed the his.matricule sequence: matricules are issued by "
-                "HIS and are no longer generated here."
-            ),
-            'path': 'migrations/19.0.1.1.0/post-migration.py',
-            'func': 'migrate',
-            'line': '0',
-        })
+        env["ir.logging"].create(
+            {
+                "name": "his_meal_management",
+                "type": "server",
+                "level": "INFO",
+                "dbname": cr.dbname,
+                "message": (
+                    "Removed the his.matricule sequence: matricules are issued by HIS and are no longer generated here."
+                ),
+                "path": "migrations/19.0.1.1.0/post-migration.py",
+                "func": "migrate",
+                "line": "0",
+            }
+        )

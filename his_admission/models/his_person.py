@@ -12,19 +12,21 @@ class HisPerson(models.Model):
     Les parents ne changent pas d'une inscription a l'autre : ces champs
     appartiennent a l'humain, pas au parcours.
     """
-    _inherit = 'his.person'
+
+    _inherit = "his.person"
 
     # --- Etat civil, ce que his_person_core ne portait pas encore ------------
 
     genre = fields.Selection(
-        selection=[('male', "Masculin"), ('female', "Feminin")],
+        selection=[("male", "Masculin"), ("female", "Feminin")],
         string="Genre",
     )
     date_naissance = fields.Date(string="Date de naissance")
     commune_naissance = fields.Char(string="Commune de naissance")
     wilaya_naissance = fields.Char(string="Wilaya de naissance")
     numero_identite = fields.Char(
-        string="Numero d'identite nationale", copy=False,
+        string="Numero d'identite nationale",
+        copy=False,
         help="Numero de la piece d'identite nationale.",
     )
     date_expiration_identite = fields.Date(string="Expiration de la piece d'identite")

@@ -1,2 +1,1 @@
-from . import common
-from . import test_insite_scenarios
+from . import common, test_insite_scenarios

@@ -1,10 +1,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
-    'name': "Campus+ - Referentiel Personnes (pont)",
-    'version': '19.0.1.0.0',
-    'category': 'Human Resources/Recruitment',
-    'summary': "Rattache les candidats enseignants Campus+ au referentiel Identite",
-    'description': """
+    "name": "Campus+ - Referentiel Personnes (pont)",
+    "version": "19.0.1.0.0",
+    "category": "Human Resources/Recruitment",
+    "summary": "Rattache les candidats enseignants Campus+ au referentiel Identite",
+    "description": """
 Pont entre le recrutement enseignant Campus+ et le referentiel Identite.
 
 Jusqu'ici l'API Campus+ creait un hr.applicant, et hr_recruitment un contact nu,
@@ -24,17 +24,17 @@ d'un etudiant. Pour un enseignant, c'est le hr.applicant qui porte le parcours.
 n8n n'est pas modifie : /json/2 refuse les methodes prefixees par « _ », le
 rapprochement se fait donc cote serveur.
     """,
-    'author': "Groupe HIS-HTC-IRA",
-    'license': 'LGPL-3',
-    'depends': [
-        'campus_teacher_management',
-        'his_person_core',
-        'his_hr_base',
+    "author": "Groupe HIS-HTC-IRA",
+    "license": "LGPL-3",
+    "depends": [
+        "campus_teacher_management",
+        "his_person_core",
+        "his_hr_base",
     ],
-    'data': [
-        'security/ir.model.access.csv',
-        'views/hr_applicant_views.xml',
+    "data": [
+        "security/ir.model.access.csv",
+        "views/hr_applicant_views.xml",
     ],
-    'post_init_hook': '_campus_identity_backfill',
-    'installable': True,
+    "post_init_hook": "_campus_identity_backfill",
+    "installable": True,
 }

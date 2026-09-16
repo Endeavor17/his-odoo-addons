@@ -15,11 +15,12 @@ l'ancien sans que rien ne signale l'ecart.
 Seuls les LIBELLES changent. Les identifiants techniques, les droits et les
 membres de ces groupes ne bougent pas.
 """
+
 from odoo import SUPERUSER_ID, api
 
 LIBELLES = {
-    'his_admission.group_his_admission': "Dossier - Instruction",
-    'his_admission.group_his_finance': "Dossier - Guichet",
+    "his_admission.group_his_admission": "Dossier - Instruction",
+    "his_admission.group_his_finance": "Dossier - Guichet",
 }
 
 

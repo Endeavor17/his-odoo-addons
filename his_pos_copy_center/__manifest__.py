@@ -1,8 +1,8 @@
 {
-    'name': 'HIS POS Copy Center',
-    'version': '19.0.1.1.0',
-    'summary': 'One dialog to compose a copy job, instead of one popup per dimension',
-    'description': """
+    "name": "HIS POS Copy Center",
+    "version": "19.0.1.1.0",
+    "summary": "One dialog to compose a copy job, instead of one popup per dimension",
+    "description": """
 HIS POS Copy Center
 ===================
 A copy is priced by its dimensions — copies, format, colour, sides — and stock
@@ -22,30 +22,25 @@ job.
   exactly as it does today. The Copy Center group on the product form only
   shows on Photocopie/Impression products (or wherever copy_service is set).
 """,
-    'author': 'Abdo Chabouti',
-    'category': 'Sales/Point of Sale',
-    'license': 'LGPL-3',
-
-    'depends': ['his_pos_ui'],
-
-    'data': [
-        'views/product_template_views.xml',
+    "author": "Abdo Chabouti",
+    "category": "Sales/Point of Sale",
+    "license": "LGPL-3",
+    "depends": ["his_pos_ui"],
+    "data": [
+        "views/product_template_views.xml",
     ],
-
-    'demo': [
-        'demo/copy_products.xml',
+    "demo": [
+        "demo/copy_products.xml",
     ],
-
-    'assets': {
-        'point_of_sale._assets_pos': [
-            'his_pos_copy_center/static/src/app/*.scss',
-            'his_pos_copy_center/static/src/app/*.js',
-            'his_pos_copy_center/static/src/app/*.xml',
+    "assets": {
+        "point_of_sale._assets_pos": [
+            "his_pos_copy_center/static/src/app/*.scss",
+            "his_pos_copy_center/static/src/app/*.js",
+            "his_pos_copy_center/static/src/app/*.xml",
         ],
-        'web.assets_tests': [
-            'his_pos_copy_center/static/tests/tours/**/*',
+        "web.assets_tests": [
+            "his_pos_copy_center/static/tests/tours/**/*",
         ],
     },
-
-    'installable': True,
+    "installable": True,
 }

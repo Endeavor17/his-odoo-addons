@@ -3,11 +3,12 @@ from odoo import fields, models
 
 
 class ProductAttribute(models.Model):
-    _inherit = 'product.attribute'
+    _inherit = "product.attribute"
 
     allowed_categ_ids = fields.Many2many(
-        'product.category',
+        "product.category",
         string="Catégories éligibles",
         help="Si renseigné, cet attribut ne peut être utilisé que sur des produits "
-             "appartenant à ces catégories. Laisser vide pour un attribut sans "
-             "restriction (cas de « Marque »).")
+        "appartenant à ces catégories. Laisser vide pour un attribut sans "
+        "restriction (cas de « Marque »).",
+    )

@@ -1,7 +1,7 @@
 from odoo.tests import TransactionCase, tagged
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestPosTheme(TransactionCase):
     """The theme is a label on the till, and nothing more.
 
@@ -11,15 +11,15 @@ class TestPosTheme(TransactionCase):
     """
 
     def test_theme_is_optional(self):
-        config = self.env['pos.config'].create({'name': "Untouched Till"})
+        config = self.env["pos.config"].create({"name": "Untouched Till"})
         self.assertFalse(
             config.his_pos_theme,
             "A new point of sale must carry no theme, so it renders as stock Odoo.",
         )
 
     def test_theme_accepts_the_three_points_of_sale(self):
-        config = self.env['pos.config'].create({'name': "Themed Till"})
-        for theme in ('copy_center', 'restaurant', 'cafeteria'):
+        config = self.env["pos.config"].create({"name": "Themed Till"})
+        for theme in ("copy_center", "restaurant", "cafeteria"):
             config.his_pos_theme = theme
             self.assertEqual(config.his_pos_theme, theme)
 
@@ -33,10 +33,12 @@ class TestPosTheme(TransactionCase):
         real cause, than to debug a stylesheet that was never given a class to
         hang on.
         """
-        config = self.env['pos.config'].create({
-            'name': "Loaded Till",
-            'his_pos_theme': 'copy_center',
-        })
-        fields = self.env['pos.config']._load_pos_data_fields(config)
+        config = self.env["pos.config"].create(
+            {
+                "name": "Loaded Till",
+                "his_pos_theme": "copy_center",
+            }
+        )
+        fields = self.env["pos.config"]._load_pos_data_fields(config)
         loaded = config.read(fields, load=False)[0]
-        self.assertEqual(loaded.get('his_pos_theme'), 'copy_center')
+        self.assertEqual(loaded.get("his_pos_theme"), "copy_center")

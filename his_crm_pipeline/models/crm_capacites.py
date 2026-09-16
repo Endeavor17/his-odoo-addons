@@ -18,6 +18,7 @@ Les vues masquent les memes gestes (boutons, champs en lecture seule), mais
 elles ne protegent rien : un import, l'API ou le kanban les contournent. Ce
 fichier est la ou la regle tient reellement.
 """
+
 from odoo import _, api, models
 from odoo.exceptions import AccessError
 
@@ -29,7 +30,7 @@ from odoo.exceptions import AccessError
 
 
 class CrmLead(models.Model):
-    _inherit = 'crm.lead'
+    _inherit = "crm.lead"
 
     # --- Points d'entree -----------------------------------------------------
 
@@ -60,7 +61,8 @@ class CrmLead(models.Model):
     def _his_est_contenu(self):
         self.ensure_one()
         equipe = self.env.ref(
-            'his_crm_pipeline.crm_team_contenu', raise_if_not_found=False,
+            "his_crm_pipeline.crm_team_contenu",
+            raise_if_not_found=False,
         )
         return bool(equipe) and self.team_id == equipe
 
@@ -73,36 +75,40 @@ class CrmLead(models.Model):
     def _his_capacites_contenu(self, vals):
         self.ensure_one()
         etape_production = self.env.ref(
-            'his_crm_pipeline.stage_contenu_production', raise_if_not_found=False,
+            "his_crm_pipeline.stage_contenu_production",
+            raise_if_not_found=False,
         )
-        peut_approuver = self.env.user.has_group('his_crm_pipeline.group_contenu_approbation')
-        peut_prioriser = self.env.user.has_group('his_crm_pipeline.group_contenu_priorisation')
+        peut_approuver = self.env.user.has_group("his_crm_pipeline.group_contenu_approbation")
+        peut_prioriser = self.env.user.has_group("his_crm_pipeline.group_contenu_priorisation")
 
         # 1. Sortir de « Production » — approuver, publier, renvoyer — est le
         #    geste du directeur. C'est precisement ce qu'un producteur pouvait
         #    faire jusqu'ici en cliquant « Gagne » ou « Perdu ».
         sortie = (
-            ('stage_id' in vals and etape_production
-             and self.stage_id == etape_production
-             and vals['stage_id'] != etape_production.id)
-            or vals.get('active') is False
-            or vals.get('lost_reason_id')
+            (
+                "stage_id" in vals
+                and etape_production
+                and self.stage_id == etape_production
+                and vals["stage_id"] != etape_production.id
+            )
+            or vals.get("active") is False
+            or vals.get("lost_reason_id")
         )
         if sortie and not peut_approuver:
-            self._his_refus(_(
-                "Approuver, publier ou refuser une demande de contenu demande le "
-                "role « Approbation ». Votre role vous permet de faire avancer "
-                "votre livrable, pas de clore la demande."
-            ))
+            self._his_refus(
+                _(
+                    "Approuver, publier ou refuser une demande de contenu demande le "
+                    "role « Approbation ». Votre role vous permet de faire avancer "
+                    "votre livrable, pas de clore la demande."
+                )
+            )
 
         # 2. Faire avancer l'etape avant la production appartient au tri, donc a
         #    la priorisation. L'avancement des livrables eux-memes est garde
         #    dans his.content.deliverable.write(), aupres de l'enregistrement
         #    qu'il concerne.
-        if not peut_prioriser and 'stage_id' in vals and not sortie:
-            self._his_refus(_(
-                "Faire avancer une demande demande le role « Priorisation »."
-            ))
+        if not peut_prioriser and "stage_id" in vals and not sortie:
+            self._his_refus(_("Faire avancer une demande demande le role « Priorisation »."))
 
     # --- Admissions ----------------------------------------------------------
 
@@ -113,48 +119,57 @@ class CrmLead(models.Model):
         # Un lead sans role Admissions n'est pas de notre ressort : le CRM natif
         # reste utilisable pour d'autres equipes, ce module n'a pas a policer
         # leurs pipelines.
-        if not user.has_group('his_crm_pipeline.group_admissions_acquisition') \
-                and not user.has_group('his_crm_pipeline.group_admissions_orientation'):
+        if not user.has_group("his_crm_pipeline.group_admissions_acquisition") and not user.has_group(
+            "his_crm_pipeline.group_admissions_orientation"
+        ):
             return
 
         # 1. La Cellule d'Orientation n'agit que sur un candidat qui se trouve
         #    dans SON etape. Elle voit les autres passer, elle n'y touche pas.
         etape_psy = self.env.ref(
-            'his_crm_pipeline.stage_vente_evaluation_psy', raise_if_not_found=False,
+            "his_crm_pipeline.stage_vente_evaluation_psy",
+            raise_if_not_found=False,
         )
-        if user.has_group('his_crm_pipeline.group_admissions_orientation') \
-                and not user.has_group('his_crm_pipeline.group_admissions_conseiller') \
-                and etape_psy and self.stage_id != etape_psy:
-            self._his_refus(_(
-                "La Cellule d'Orientation n'intervient que sur un candidat en "
-                "evaluation psychologique."
-            ))
+        if (
+            user.has_group("his_crm_pipeline.group_admissions_orientation")
+            and not user.has_group("his_crm_pipeline.group_admissions_conseiller")
+            and etape_psy
+            and self.stage_id != etape_psy
+        ):
+            self._his_refus(_("La Cellule d'Orientation n'intervient que sur un candidat en evaluation psychologique."))
 
         # 2. Le Marketing capture et score. La prise en charge appartient aux
         #    Ventes : c'est la passation, elle doit rester un geste des Ventes.
         etape_nouveau = self.env.ref(
-            'his_crm_pipeline.stage_vente_nouveau', raise_if_not_found=False,
+            "his_crm_pipeline.stage_vente_nouveau",
+            raise_if_not_found=False,
         )
-        if 'stage_id' in vals and etape_nouveau \
-                and self.stage_id == etape_nouveau \
-                and vals['stage_id'] != etape_nouveau.id \
-                and not user.has_group('his_crm_pipeline.group_admissions_conseiller'):
-            self._his_refus(_(
-                "Le role « Acquisition » capture et score les candidatures. Faire "
-                "avancer un lead au-dela de « Nouveau (score) » appartient aux "
-                "conseilleres."
-            ))
+        if (
+            "stage_id" in vals
+            and etape_nouveau
+            and self.stage_id == etape_nouveau
+            and vals["stage_id"] != etape_nouveau.id
+            and not user.has_group("his_crm_pipeline.group_admissions_conseiller")
+        ):
+            self._his_refus(
+                _(
+                    "Le role « Acquisition » capture et score les candidatures. Faire "
+                    "avancer un lead au-dela de « Nouveau (score) » appartient aux "
+                    "conseilleres."
+                )
+            )
 
         # 3. Affecter est l'arbitrage du responsable. Sans cela, une conseillere
         #    pourrait se servir dans la file avant ses collegues, ce que le tri
         #    par score existe precisement pour eviter.
-        if 'user_id' in vals \
-                and not user.has_group('his_crm_pipeline.group_admissions_responsable'):
-            self._his_refus(_(
-                "Affecter un lead a une conseillere appartient au responsable "
-                "d'equipe. La file est triee par score : s'y servir soi-meme "
-                "viderait ce tri de son sens."
-            ))
+        if "user_id" in vals and not user.has_group("his_crm_pipeline.group_admissions_responsable"):
+            self._his_refus(
+                _(
+                    "Affecter un lead a une conseillere appartient au responsable "
+                    "d'equipe. La file est triee par score : s'y servir soi-meme "
+                    "viderait ce tri de son sens."
+                )
+            )
 
     # --- Creation ------------------------------------------------------------
 
@@ -174,12 +189,13 @@ class CrmLead(models.Model):
         precis ou elle commence a avancer.
         """
         equipe_contenu = self.env.ref(
-            'his_crm_pipeline.crm_team_contenu', raise_if_not_found=False,
+            "his_crm_pipeline.crm_team_contenu",
+            raise_if_not_found=False,
         )
         if equipe_contenu:
-            defaut = self.env.context.get('default_team_id')
+            defaut = self.env.context.get("default_team_id")
             for vals in vals_list:
-                equipe = vals.get('team_id', defaut)
-                if equipe == equipe_contenu.id and not vals.get('demandeur_id'):
-                    vals['demandeur_id'] = self.env.uid
+                equipe = vals.get("team_id", defaut)
+                if equipe == equipe_contenu.id and not vals.get("demandeur_id"):
+                    vals["demandeur_id"] = self.env.uid
         return super().create(vals_list)

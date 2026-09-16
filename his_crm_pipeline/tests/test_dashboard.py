@@ -6,37 +6,42 @@ nombre d'enregistrements qu'il connait et verifie le chiffre affiché, plus le
 fait que l'action attachee ramene bien ce meme nombre — c'est ce dernier point
 qui attrape une definition qui derive entre la tuile et le clic.
 """
+
 from datetime import date, timedelta
 
 from odoo.exceptions import AccessError
 from odoo.tests import TransactionCase, tagged
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestDashboard(TransactionCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.team_ventes = cls.env.ref('his_crm_pipeline.crm_team_ventes')
-        cls.team_contenu = cls.env.ref('his_crm_pipeline.crm_team_contenu')
-        cls.st_nouveau = cls.env.ref('his_crm_pipeline.stage_vente_nouveau')
+        cls.team_ventes = cls.env.ref("his_crm_pipeline.crm_team_ventes")
+        cls.team_contenu = cls.env.ref("his_crm_pipeline.crm_team_contenu")
+        cls.st_nouveau = cls.env.ref("his_crm_pipeline.stage_vente_nouveau")
         # Pas l'etape gagnante : une contrainte serveur refuse qu'on l'y mette a
         # la main, y compris en test. C'est voulu — un lead n'est gagne qu'a
         # l'encaissement. On mesure donc l'avancement sur « Pre-admis ».
-        cls.st_pre_admis = cls.env.ref('his_crm_pipeline.stage_vente_pre_admis')
+        cls.st_pre_admis = cls.env.ref("his_crm_pipeline.stage_vente_pre_admis")
         cls.aujourdhui = date.today()
-        cls.Dashboard = cls.env['his.dashboard']
+        cls.Dashboard = cls.env["his.dashboard"]
 
     def _tuile(self, spec, cle):
-        return next(t for t in spec['tiles'] if t['cle'] == cle)
+        return next(t for t in spec["tiles"] if t["cle"] == cle)
 
     def _candidatures(self, combien, stage=None):
-        return self.env['crm.lead'].create([{
-            'name': "Candidat %s" % i,
-            'team_id': self.team_ventes.id,
-            'stage_id': (stage or self.st_nouveau).id,
-        } for i in range(combien)])
+        return self.env["crm.lead"].create(
+            [
+                {
+                    "name": "Candidat %s" % i,
+                    "team_id": self.team_ventes.id,
+                    "stage_id": (stage or self.st_nouveau).id,
+                }
+                for i in range(combien)
+            ]
+        )
 
     # ------------------------------------------------------------------------
 
@@ -51,7 +56,7 @@ class TestDashboard(TransactionCase):
 
         spec = self.Dashboard.get_admissions(self.aujourdhui, self.aujourdhui)
 
-        self.assertEqual(self._tuile(spec, 'candidatures')['valeur'], 3)
+        self.assertEqual(self._tuile(spec, "candidatures")["valeur"], 3)
 
     def test_chaque_tuile_ouvre_exactement_ce_qu_elle_annonce(self):
         """Le test qui attrape une definition fausse.
@@ -65,20 +70,21 @@ class TestDashboard(TransactionCase):
 
         spec = self.Dashboard.get_admissions(self.aujourdhui, self.aujourdhui)
 
-        for tuile in spec['tiles']:
-            if not tuile.get('action') or tuile.get('unite') == '%':
+        for tuile in spec["tiles"]:
+            if not tuile.get("action") or tuile.get("unite") == "%":
                 continue
-            trouves = self.env[tuile['action']['res_model']].search_count(
-                tuile['action']['domain'],
+            trouves = self.env[tuile["action"]["res_model"]].search_count(
+                tuile["action"]["domain"],
             )
             self.assertEqual(
-                trouves, tuile['valeur'],
-                "la tuile « %s » n'ouvre pas ce qu'elle annonce" % tuile['label'],
+                trouves,
+                tuile["valeur"],
+                "la tuile « %s » n'ouvre pas ce qu'elle annonce" % tuile["label"],
             )
 
     def test_le_taux_de_conversion_ne_divise_pas_par_zero(self):
         spec = self.Dashboard.get_admissions(self.aujourdhui, self.aujourdhui)
-        self.assertEqual(self._tuile(spec, 'conversion')['valeur'], 0)
+        self.assertEqual(self._tuile(spec, "conversion")["valeur"], 0)
 
     def test_l_ecart_est_muet_quand_la_periode_precedente_est_vide(self):
         """Passer de 0 a 5 n'est pas « +100 % » : ce n'est pas exprimable.
@@ -87,37 +93,41 @@ class TestDashboard(TransactionCase):
         """
         self._candidatures(5)
         spec = self.Dashboard.get_admissions(self.aujourdhui, self.aujourdhui)
-        self.assertIsNone(self._tuile(spec, 'candidatures')['ecart'])
+        self.assertIsNone(self._tuile(spec, "candidatures")["ecart"])
 
     def test_l_objectif_donne_atteinte_rythme_et_projection(self):
         self._candidatures(30)
         debut = self.aujourdhui - timedelta(days=9)
-        self.env['his.objectif'].create({
-            'name': "Rentree 2026", 'axe': 'candidatures',
-            'valeur_cible': 100,
-            'date_debut': debut, 'date_fin': debut + timedelta(days=19),
-        })
+        self.env["his.objectif"].create(
+            {
+                "name": "Rentree 2026",
+                "axe": "candidatures",
+                "valeur_cible": 100,
+                "date_debut": debut,
+                "date_fin": debut + timedelta(days=19),
+            }
+        )
 
         tuile = self._tuile(
             self.Dashboard.get_admissions(self.aujourdhui, self.aujourdhui),
-            'candidatures',
+            "candidatures",
         )
 
-        self.assertEqual(tuile['cible'], 100)
-        self.assertEqual(tuile['atteinte'], 30.0)
-        self.assertEqual(tuile['jours_restants'], 10)
+        self.assertEqual(tuile["cible"], 100)
+        self.assertEqual(tuile["atteinte"], 30.0)
+        self.assertEqual(tuile["jours_restants"], 10)
         # 70 restants sur 10 jours.
-        self.assertEqual(tuile['rythme_requis'], 7.0)
+        self.assertEqual(tuile["rythme_requis"], 7.0)
         # 30 en 10 jours ecoules, sur 20 jours au total.
-        self.assertEqual(tuile['projection'], 60)
+        self.assertEqual(tuile["projection"], 60)
 
     def test_sans_objectif_la_tuile_n_invente_pas_de_cible(self):
         self._candidatures(2)
         tuile = self._tuile(
             self.Dashboard.get_admissions(self.aujourdhui, self.aujourdhui),
-            'candidatures',
+            "candidatures",
         )
-        self.assertNotIn('cible', tuile)
+        self.assertNotIn("cible", tuile)
 
     def test_l_entonnoir_ne_remonte_jamais(self):
         """Un entonnoir cumulatif : chaque marche contient les suivantes.
@@ -129,15 +139,16 @@ class TestDashboard(TransactionCase):
         self._candidatures(2, stage=self.st_pre_admis)
 
         marches = self.Dashboard.get_admissions(
-            self.aujourdhui, self.aujourdhui,
-        )['funnel']
+            self.aujourdhui,
+            self.aujourdhui,
+        )["funnel"]
 
-        comptes = [m['count'] for m in marches]
+        comptes = [m["count"] for m in marches]
         self.assertEqual(comptes, sorted(comptes, reverse=True))
         self.assertEqual(comptes[0], 7, "la premiere marche porte tout le monde")
 
-        pre_admis = next(m for m in marches if m['label'] == self.st_pre_admis.name)
-        self.assertEqual(pre_admis['count'], 2)
+        pre_admis = next(m for m in marches if m["label"] == self.st_pre_admis.name)
+        self.assertEqual(pre_admis["count"], 2)
         # Personne n'a encaisse : la marche gagnante est vide, et c'est la
         # regle metier — un lead n'est gagne qu'au paiement.
         self.assertEqual(comptes[-1], 0)
@@ -150,18 +161,18 @@ class TestDashboard(TransactionCase):
         admissions = self.Dashboard.get_admissions(self.aujourdhui, self.aujourdhui)
 
         self.assertEqual(
-            self._tuile(direction, 'candidatures')['valeur'],
-            self._tuile(admissions, 'candidatures')['valeur'],
+            self._tuile(direction, "candidatures")["valeur"],
+            self._tuile(admissions, "candidatures")["valeur"],
         )
 
     def test_la_direction_ne_montre_que_les_files_non_vides(self):
         spec = self.Dashboard.get_direction(self.aujourdhui, self.aujourdhui)
-        self.assertTrue(all(f['count'] for f in spec['attention']))
+        self.assertTrue(all(f["count"] for f in spec["attention"]))
 
     # ========================== Repartitions ==============================
 
     def _spec(self):
-        return self.Dashboard.get_admissions('2020-01-01', '2100-01-01')
+        return self.Dashboard.get_admissions("2020-01-01", "2100-01-01")
 
     def test_les_segments_d_un_donut_somment_a_son_total(self):
         """La regle du fichier : un indicateur est defini une seule fois.
@@ -171,29 +182,30 @@ class TestDashboard(TransactionCase):
         """
         self._candidatures(3)
         spec = self._spec()
-        self.assertIn('donuts', spec)
-        self.assertTrue(spec['donuts'], "Aucune repartition produite")
-        for donut in spec['donuts']:
-            somme = sum(s['count'] for s in donut['segments'])
+        self.assertIn("donuts", spec)
+        self.assertTrue(spec["donuts"], "Aucune repartition produite")
+        for donut in spec["donuts"]:
+            somme = sum(s["count"] for s in donut["segments"])
             self.assertEqual(
-                somme, donut['total'],
-                "Le donut « %s » ne somme pas a son total" % donut['label'],
+                somme,
+                donut["total"],
+                "Le donut « %s » ne somme pas a son total" % donut["label"],
             )
 
     def test_chaque_segment_ouvre_exactement_ce_qu_il_compte(self):
         """Un chiffre qu'on ne peut pas ouvrir doit etre cru sur parole, et
         c'est aussi ce qui rend une definition fausse indetectable."""
         self._candidatures(4)
-        for donut in self._spec()['donuts']:
-            for segment in donut['segments']:
-                self.assertTrue(segment['action'])
-                lus = self.env[segment['action']['res_model']].search_count(
-                    segment['action']['domain'],
+        for donut in self._spec()["donuts"]:
+            for segment in donut["segments"]:
+                self.assertTrue(segment["action"])
+                lus = self.env[segment["action"]["res_model"]].search_count(
+                    segment["action"]["domain"],
                 )
                 self.assertEqual(
-                    lus, segment['count'],
-                    "« %s / %s » : le clic ne ramene pas son propre compte"
-                    % (donut['label'], segment['label']),
+                    lus,
+                    segment["count"],
+                    "« %s / %s » : le clic ne ramene pas son propre compte" % (donut["label"], segment["label"]),
                 )
 
     def test_le_donut_des_pertes_voit_les_fiches_archivees(self):
@@ -201,13 +213,10 @@ class TestDashboard(TransactionCase):
         False, le donut des motifs serait vide en permanence — la seule chose
         plus inutile qu'un motif faux."""
         lead = self._candidatures(1)
-        lead.action_set_lost(lost_reason_id=self.env.ref(
-            'his_crm_pipeline.lost_reason_sans_reponse').id)
-        pertes = next(
-            d for d in self._spec()['donuts'] if d['label'] == "Motifs de perte"
-        )
-        self.assertEqual(pertes['total'], 1)
-        self.assertEqual(pertes['segments'][0]['label'], "Sans reponse")
+        lead.action_set_lost(lost_reason_id=self.env.ref("his_crm_pipeline.lost_reason_sans_reponse").id)
+        pertes = next(d for d in self._spec()["donuts"] if d["label"] == "Motifs de perte")
+        self.assertEqual(pertes["total"], 1)
+        self.assertEqual(pertes["segments"][0]["label"], "Sans reponse")
 
     def test_les_donuts_comptent_la_meme_population_que_les_tuiles(self):
         """Deux totaux differents cote a cote sur le meme ecran sont
@@ -220,18 +229,17 @@ class TestDashboard(TransactionCase):
         """
         self._candidatures(4)
         perdu = self._candidatures(1)
-        perdu.action_set_lost(lost_reason_id=self.env.ref(
-            'his_crm_pipeline.lost_reason_sans_reponse').id)
+        perdu.action_set_lost(lost_reason_id=self.env.ref("his_crm_pipeline.lost_reason_sans_reponse").id)
 
         spec = self._spec()
-        recues = self._tuile(spec, 'candidatures')['valeur']
-        for donut in spec['donuts']:
-            if donut['label'] == "Motifs de perte":
+        recues = self._tuile(spec, "candidatures")["valeur"]
+        for donut in spec["donuts"]:
+            if donut["label"] == "Motifs de perte":
                 continue
             self.assertEqual(
-                donut['total'], recues,
-                "« %s » ne compte pas la meme population que les tuiles"
-                % donut['label'],
+                donut["total"],
+                recues,
+                "« %s » ne compte pas la meme population que les tuiles" % donut["label"],
             )
 
     def test_les_parts_sont_triees_de_la_plus_grosse_a_la_plus_petite(self):
@@ -239,14 +247,12 @@ class TestDashboard(TransactionCase):
         part a l'oeil."""
         self._candidatures(5)
         self._candidatures(2, stage=self.st_pre_admis)
-        etat = next(
-            d for d in self._spec()['donuts'] if d['label'] == "Etat du portefeuille"
-        )
-        comptes = [s['count'] for s in etat['segments']]
+        etat = next(d for d in self._spec()["donuts"] if d["label"] == "Etat du portefeuille")
+        comptes = [s["count"] for s in etat["segments"]]
         self.assertEqual(comptes, sorted(comptes, reverse=True))
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestDashboardRoles(TransactionCase):
     """Les cockpits joues par de vrais utilisateurs, jamais en superuser.
 
@@ -263,35 +269,57 @@ class TestDashboardRoles(TransactionCase):
         cls.aujourdhui = date.today()
 
     def _user(self, login, role, team_xmlid=None):
-        user = self.env['res.users'].create({
-            'name': login, 'login': login,
-            'group_ids': [(6, 0, [
-                self.env.ref('base.group_user').id, self.env.ref(role).id,
-            ])],
-        })
+        user = self.env["res.users"].create(
+            {
+                "name": login,
+                "login": login,
+                "group_ids": [
+                    (
+                        6,
+                        0,
+                        [
+                            self.env.ref("base.group_user").id,
+                            self.env.ref(role).id,
+                        ],
+                    )
+                ],
+            }
+        )
         if team_xmlid:
-            self.env['crm.team.member'].create({
-                'crm_team_id': self.env.ref(team_xmlid).id, 'user_id': user.id,
-            })
+            self.env["crm.team.member"].create(
+                {
+                    "crm_team_id": self.env.ref(team_xmlid).id,
+                    "user_id": user.id,
+                }
+            )
         return user
 
     def _appeler(self, user, methode):
         return getattr(
-            self.env['his.dashboard'].with_user(user), methode,
+            self.env["his.dashboard"].with_user(user),
+            methode,
         )(self.aujourdhui, self.aujourdhui)
 
     def test_chaque_role_ouvre_son_cockpit(self):
         cas = [
-            ('d_resp', 'his_crm_pipeline.group_admissions_responsable',
-             'his_crm_pipeline.crm_team_ventes', 'get_admissions'),
-            ('d_prio', 'his_crm_pipeline.group_contenu_priorisation',
-             'his_crm_pipeline.crm_team_contenu', 'get_contenu'),
-            ('d_dir', 'his_crm_pipeline.group_direction', None, 'get_direction'),
+            (
+                "d_resp",
+                "his_crm_pipeline.group_admissions_responsable",
+                "his_crm_pipeline.crm_team_ventes",
+                "get_admissions",
+            ),
+            (
+                "d_prio",
+                "his_crm_pipeline.group_contenu_priorisation",
+                "his_crm_pipeline.crm_team_contenu",
+                "get_contenu",
+            ),
+            ("d_dir", "his_crm_pipeline.group_direction", None, "get_direction"),
         ]
         for login, role, team, methode in cas:
             user = self._user(login, role, team)
             spec = self._appeler(user, methode)
-            self.assertTrue(spec['tiles'], "%s : aucune tuile" % login)
+            self.assertTrue(spec["tiles"], "%s : aucune tuile" % login)
 
     def test_un_explorer_repond_a_la_question_de_son_libelle(self):
         """« Charge par personne » doit s'ouvrir groupe par personne.
@@ -301,27 +329,38 @@ class TestDashboardRoles(TransactionCase):
         chiffre unique. Le defaut ne se voyait qu'en rendu reel.
         """
         cas = [
-            ('e_resp', 'his_crm_pipeline.group_admissions_responsable',
-             'his_crm_pipeline.crm_team_ventes', 'get_admissions'),
-            ('e_prio', 'his_crm_pipeline.group_contenu_priorisation',
-             'his_crm_pipeline.crm_team_contenu', 'get_contenu'),
-            ('e_dir', 'his_crm_pipeline.group_direction', None, 'get_direction'),
+            (
+                "e_resp",
+                "his_crm_pipeline.group_admissions_responsable",
+                "his_crm_pipeline.crm_team_ventes",
+                "get_admissions",
+            ),
+            (
+                "e_prio",
+                "his_crm_pipeline.group_contenu_priorisation",
+                "his_crm_pipeline.crm_team_contenu",
+                "get_contenu",
+            ),
+            ("e_dir", "his_crm_pipeline.group_direction", None, "get_direction"),
         ]
         for login, role, team, methode in cas:
             spec = self._appeler(self._user(login, role, team), methode)
-            for entree in spec['explore']:
-                action = entree['action']
-                vues = {v[1] for v in action['views']}
-                if not vues & {'pivot', 'graph'}:
+            for entree in spec["explore"]:
+                action = entree["action"]
+                vues = {v[1] for v in action["views"]}
+                if not vues & {"pivot", "graph"}:
                     continue
-                contexte = action.get('context') or {}
+                contexte = action.get("context") or {}
                 self.assertTrue(
-                    any(contexte.get(cle) for cle in (
-                        'pivot_row_groupby', 'pivot_column_groupby',
-                        'graph_groupbys',
-                    )),
-                    "« %s » s'ouvre sans groupby : une seule case Total"
-                    % entree['label'],
+                    any(
+                        contexte.get(cle)
+                        for cle in (
+                            "pivot_row_groupby",
+                            "pivot_column_groupby",
+                            "graph_groupbys",
+                        )
+                    ),
+                    "« %s » s'ouvre sans groupby : une seule case Total" % entree["label"],
                 )
 
     def test_une_file_nomme_ses_enregistrements_sans_champ_name(self):
@@ -329,36 +368,46 @@ class TestDashboardRoles(TransactionCase):
 
         Le cockpit Dossiers levait un KeyError des qu'une file etait peuplee.
         """
-        directeur = self._user('d_dir_files', 'his_crm_pipeline.group_direction')
-        spec = self._appeler(directeur, 'get_direction')
+        directeur = self._user("d_dir_files", "his_crm_pipeline.group_direction")
+        spec = self._appeler(directeur, "get_direction")
 
-        for file in spec['attention']:
-            for ligne in file['apercu']:
-                self.assertTrue(ligne['nom'], file['label'])
+        for file in spec["attention"]:
+            for ligne in file["apercu"]:
+                self.assertTrue(ligne["nom"], file["label"])
 
     def test_l_objectif_s_affiche_sans_droit_sur_le_modele(self):
         """La Priorisation n'a aucun droit sur his.objectif, et doit pourtant
         voir sa cible : c'est un chiffre affiche, pas une donnee reservee.
         L'ecriture, elle, reste a la Direction."""
-        self.env['his.objectif'].create({
-            'name': "Publications", 'axe': 'publications', 'valeur_cible': 50,
-            'date_debut': self.aujourdhui - timedelta(days=5),
-            'date_fin': self.aujourdhui + timedelta(days=5),
-        })
+        self.env["his.objectif"].create(
+            {
+                "name": "Publications",
+                "axe": "publications",
+                "valeur_cible": 50,
+                "date_debut": self.aujourdhui - timedelta(days=5),
+                "date_fin": self.aujourdhui + timedelta(days=5),
+            }
+        )
         prio = self._user(
-            'd_prio_obj', 'his_crm_pipeline.group_contenu_priorisation',
-            'his_crm_pipeline.crm_team_contenu',
+            "d_prio_obj",
+            "his_crm_pipeline.group_contenu_priorisation",
+            "his_crm_pipeline.crm_team_contenu",
         )
 
-        spec = self._appeler(prio, 'get_contenu')
-        tuile = next(t for t in spec['tiles'] if t['cle'] == 'publications')
-        self.assertEqual(tuile['cible'], 50)
+        spec = self._appeler(prio, "get_contenu")
+        tuile = next(t for t in spec["tiles"] if t["cle"] == "publications")
+        self.assertEqual(tuile["cible"], 50)
 
         with self.assertRaises(AccessError, msg="la Priorisation ne fixe pas les cibles"):
-            self.env['his.objectif'].with_user(prio).create({
-                'name': "Cible pirate", 'axe': 'publications', 'valeur_cible': 1,
-                'date_debut': self.aujourdhui, 'date_fin': self.aujourdhui,
-            })
+            self.env["his.objectif"].with_user(prio).create(
+                {
+                    "name": "Cible pirate",
+                    "axe": "publications",
+                    "valeur_cible": 1,
+                    "date_debut": self.aujourdhui,
+                    "date_fin": self.aujourdhui,
+                }
+            )
 
     def test_un_cockpit_ne_montre_que_ce_que_l_utilisateur_peut_voir(self):
         """Une conseillere ne voit que ses candidatures, jusque dans le chiffre.
@@ -367,22 +416,32 @@ class TestDashboardRoles(TransactionCase):
         groupe — et donnerait a une conseillere le sentiment d'un retard qui
         n'est pas le sien.
         """
-        ventes = self.env.ref('his_crm_pipeline.crm_team_ventes')
+        ventes = self.env.ref("his_crm_pipeline.crm_team_ventes")
         conseillere = self._user(
-            'd_conseil', 'his_crm_pipeline.group_admissions_conseiller',
-            'his_crm_pipeline.crm_team_ventes',
+            "d_conseil",
+            "his_crm_pipeline.group_admissions_conseiller",
+            "his_crm_pipeline.crm_team_ventes",
         )
-        etape = self.env.ref('his_crm_pipeline.stage_vente_pris_en_charge')
-        self.env['crm.lead'].create([
-            {'name': "A elle", 'team_id': ventes.id, 'stage_id': etape.id,
-             'user_id': conseillere.id},
-            {'name': "A une autre", 'team_id': ventes.id, 'stage_id': etape.id,
-             'user_id': self.env.ref('base.user_admin').id},
-        ])
+        etape = self.env.ref("his_crm_pipeline.stage_vente_pris_en_charge")
+        self.env["crm.lead"].create(
+            [
+                {"name": "A elle", "team_id": ventes.id, "stage_id": etape.id, "user_id": conseillere.id},
+                {
+                    "name": "A une autre",
+                    "team_id": ventes.id,
+                    "stage_id": etape.id,
+                    "user_id": self.env.ref("base.user_admin").id,
+                },
+            ]
+        )
 
-        vu = self._appeler(conseillere, 'get_admissions')
-        tuile = next(t for t in vu['tiles'] if t['cle'] == 'candidatures')
-        lus = self.env['crm.lead'].with_user(conseillere).search_count(
-            tuile['action']['domain'],
+        vu = self._appeler(conseillere, "get_admissions")
+        tuile = next(t for t in vu["tiles"] if t["cle"] == "candidatures")
+        lus = (
+            self.env["crm.lead"]
+            .with_user(conseillere)
+            .search_count(
+                tuile["action"]["domain"],
+            )
         )
-        self.assertEqual(tuile['valeur'], lus)
+        self.assertEqual(tuile["valeur"], lus)

@@ -62,11 +62,14 @@ The cost of the split is one extra manifest.
 A selection field on `pos.config`:
 
 ```python
-his_pos_theme = fields.Selection([
-    ('copy_center', "Copy Center"),
-    ('restaurant', "Restaurant"),
-    ('cafeteria', "Cafétéria"),
-], string="HIS Theme")
+his_pos_theme = fields.Selection(
+    [
+        ("copy_center", "Copy Center"),
+        ("restaurant", "Restaurant"),
+        ("cafeteria", "Cafétéria"),
+    ],
+    string="HIS Theme",
+)
 ```
 
 Empty means stock Odoo appearance. Nothing breaks when it is unset; that is the
@@ -216,10 +219,10 @@ running total visible before anything is committed.
 Four selection fields on `product.template`, owned by `his_pos_copy_center`:
 
 ```python
-copy_service = fields.Selection([('photocopie', ...), ('impression', ...)])
-copy_format  = fields.Selection([('a4', "A4"), ('a3', "A3")])
-copy_color   = fields.Selection([('bw', "N&B"), ('color', "Couleur")])
-copy_sides   = fields.Selection([('recto', "Recto"), ('duplex', "Recto-verso")])
+copy_service = fields.Selection([("photocopie", ...), ("impression", ...)])
+copy_format = fields.Selection([("a4", "A4"), ("a3", "A3")])
+copy_color = fields.Selection([("bw", "N&B"), ("color", "Couleur")])
+copy_sides = fields.Selection([("recto", "Recto"), ("duplex", "Recto-verso")])
 ```
 
 They tag an existing product with the dimensions it already represents. They add

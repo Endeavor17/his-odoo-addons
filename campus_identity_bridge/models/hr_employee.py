@@ -3,7 +3,7 @@ from odoo import models
 
 
 class HrEmployee(models.Model):
-    _inherit = 'hr.employee'
+    _inherit = "hr.employee"
 
     def _create_his_person(self):
         """L'embauche Campus+ reprend la fiche du candidat au lieu d'en refuser une.
@@ -25,8 +25,8 @@ class HrEmployee(models.Model):
         person = self.sudo().applicant_ids.his_person_id[:1]
         if not person or self.sudo().work_contact_id.employee_ids - self:
             return super()._create_his_person()
-        person.write({'type_personne': 'enseignant'})
+        person.write({"type_personne": "enseignant"})
         person._his_attribuer_matricule(
-            sequence_date=self.date_start_working if 'date_start_working' in self._fields else None,
+            sequence_date=self.date_start_working if "date_start_working" in self._fields else None,
         )
         return person

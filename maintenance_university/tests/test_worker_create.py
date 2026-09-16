@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """L'assistant « Creer des travailleurs » ne doit plus fabriquer de doublons.
 
 C'etait la porte ouverte du referentiel : chaque passage creait un utilisateur,
@@ -6,38 +5,51 @@ un contact, un employe et — via his_hr_base._create_his_person() — une fiche
 personne neuve avec un matricule neuf. Une meme personne a fini avec trois
 fiches. Ces tests verrouillent le comportement corrige.
 """
+
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestWorkerCreate(TransactionCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         # L'assistant refuse quiconque n'est pas gestionnaire : c'est son
         # premier garde-fou, et il n'est pas ce qu'on teste ici.
-        cls.env.user.group_ids = [(
-            4, cls.env.ref('maintenance_university.group_maintenance_manager').id,
-        )]
+        cls.env.user.group_ids = [
+            (
+                4,
+                cls.env.ref("maintenance_university.group_maintenance_manager").id,
+            )
+        ]
 
     def _person(self, name, **vals):
-        return self.env['his.person'].create({
-            'name': name,
-            'type_personne': 'etudiant',
-            'source_system': 'manual',
-            **vals,
-        })
+        return self.env["his.person"].create(
+            {
+                "name": name,
+                "type_personne": "etudiant",
+                "source_system": "manual",
+                **vals,
+            }
+        )
 
     def _wizard(self, **line_vals):
-        return self.env['maintenance.university.worker.create'].create({
-            'line_ids': [(0, 0, {
-                'name': "Sans Nom",
-                'login': "sans.nom@his.test",
-                **line_vals,
-            })],
-        })
+        return self.env["maintenance.university.worker.create"].create(
+            {
+                "line_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "name": "Sans Nom",
+                            "login": "sans.nom@his.test",
+                            **line_vals,
+                        },
+                    )
+                ],
+            }
+        )
 
     # --- Le garde-fou -------------------------------------------------------
 
@@ -65,13 +77,16 @@ class TestWorkerCreate(TransactionCase):
         """Deux humains peuvent porter le meme nom : la case le dit explicitement."""
         self._person("Homonyme Reel")
         wizard = self._wizard(
-            name="Homonyme Reel", login="homonyme2@his.test", confirmed_new=True,
+            name="Homonyme Reel",
+            login="homonyme2@his.test",
+            confirmed_new=True,
         )
         wizard.action_create_workers()
         employee = wizard.line_ids.employee_id
         self.assertTrue(employee.person_id)
         self.assertEqual(
-            self.env['his.person'].search_count([('name', '=', "Homonyme Reel")]), 2,
+            self.env["his.person"].search_count([("name", "=", "Homonyme Reel")]),
+            2,
         )
 
     # --- Le rattachement ----------------------------------------------------
@@ -80,10 +95,12 @@ class TestWorkerCreate(TransactionCase):
         known = self._person("Deja Enregistre")
         matricule = known.matricule_institutionnel
         partner = known.partner_id
-        people_before = self.env['his.person'].search_count([])
+        people_before = self.env["his.person"].search_count([])
 
         wizard = self._wizard(
-            name="Deja Enregistre", login="deja@his.test", person_id=known.id,
+            name="Deja Enregistre",
+            login="deja@his.test",
+            person_id=known.id,
         )
         wizard.action_create_workers()
 
@@ -91,36 +108,45 @@ class TestWorkerCreate(TransactionCase):
         self.assertEqual(employee.person_id, known)
         self.assertEqual(employee.matricule_institutionnel, matricule)
         self.assertEqual(
-            employee.user_id.partner_id, partner,
+            employee.user_id.partner_id,
+            partner,
             "un second contact a ete cree pour la meme personne",
         )
         self.assertEqual(
-            self.env['his.person'].search_count([]), people_before,
+            self.env["his.person"].search_count([]),
+            people_before,
             "une fiche personne a ete emise alors qu'elle existait deja",
         )
 
     def test_attaching_reuses_an_account_the_person_already_has(self):
         known = self._person("Deja Connecte")
-        existing_user = self.env['res.users'].create({
-            'name': "Deja Connecte",
-            'login': "deja.connecte@his.test",
-            'partner_id': known.partner_id.id,
-        })
-        users_before = self.env['res.users'].search_count([])
+        existing_user = self.env["res.users"].create(
+            {
+                "name": "Deja Connecte",
+                "login": "deja.connecte@his.test",
+                "partner_id": known.partner_id.id,
+            }
+        )
+        users_before = self.env["res.users"].search_count([])
 
         wizard = self._wizard(
-            name="Deja Connecte", login="autre.login@his.test", person_id=known.id,
+            name="Deja Connecte",
+            login="autre.login@his.test",
+            person_id=known.id,
         )
         wizard.action_create_workers()
 
         self.assertEqual(wizard.line_ids.employee_id.user_id, existing_user)
         self.assertEqual(
-            self.env['res.users'].search_count([]), users_before,
+            self.env["res.users"].search_count([]),
+            users_before,
             "un second compte a ete cree pour la meme personne",
         )
-        self.assertTrue(existing_user.has_group(
-            'maintenance_university.group_maintenance_worker',
-        ))
+        self.assertTrue(
+            existing_user.has_group(
+                "maintenance_university.group_maintenance_worker",
+            )
+        )
         self.assertFalse(
             wizard.line_ids.password,
             "un mot de passe a ete affiche pour un compte qu'on n'a pas cree",
@@ -128,10 +154,12 @@ class TestWorkerCreate(TransactionCase):
 
     def test_a_person_who_already_works_here_is_refused(self):
         known = self._person("Deja Employe")
-        self.env['hr.employee'].create({'name': "Deja Employe", 'person_id': known.id})
+        self.env["hr.employee"].create({"name": "Deja Employe", "person_id": known.id})
 
         wizard = self._wizard(
-            name="Deja Employe", login="deja.emp@his.test", person_id=known.id,
+            name="Deja Employe",
+            login="deja.emp@his.test",
+            person_id=known.id,
         )
         with self.assertRaises(UserError):
             wizard.action_create_workers()
@@ -144,7 +172,7 @@ class TestWorkerCreate(TransactionCase):
 
         employee = wizard.line_ids.employee_id
         self.assertTrue(employee.person_id)
-        self.assertRegex(employee.matricule_institutionnel, r'^HIS-\d{4}-\d{6}-[0-9X]$')
+        self.assertRegex(employee.matricule_institutionnel, r"^HIS-\d{4}-\d{6}-[0-9X]$")
         self.assertTrue(wizard.line_ids.password)
         self.assertEqual(employee.initial_password, wizard.line_ids.password)
 

@@ -18,9 +18,8 @@ TENTATIVES_AVANT_FANTOME = 3
 RESUME_RAPPEL = "Rappeler le candidat"
 
 
-
 class CrmLead(models.Model):
-    _inherit = 'crm.lead'
+    _inherit = "crm.lead"
 
     # --- Parcours candidat (equipe Ventes / Admissions) ---------------------
 
@@ -32,7 +31,7 @@ class CrmLead(models.Model):
     score_academique = fields.Integer(
         string="Score academique",
         help="Score pose par le Marketing a la capture : profil academique et "
-             "motivation. C'est lui qui ordonne la file des leads a affecter.",
+        "motivation. C'est lui qui ordonne la file des leads a affecter.",
     )
     motivation_notes = fields.Text(
         string="Notes de motivation",
@@ -41,8 +40,8 @@ class CrmLead(models.Model):
     score_opportunite = fields.Integer(
         string="Score d'opportunite",
         help="Evaluation des Ventes apres contact direct : engagement, "
-             "adequation au programme, potentiel de conversion. Distinct du "
-             "score academique, qui lui precede tout echange.",
+        "adequation au programme, potentiel de conversion. Distinct du "
+        "score academique, qui lui precede tout echange.",
     )
     visite_campus_effectuee = fields.Boolean(string="Visite du campus effectuee")
     date_visite_campus = fields.Datetime(string="Date de visite du campus")
@@ -54,11 +53,13 @@ class CrmLead(models.Model):
     # versions du meme numero finissent toujours par diverger. Le cout est nul,
     # le calcul est une expression reguliere sur une chaine deja en memoire.
     telephone_e164 = fields.Char(
-        string="Telephone (E.164)", compute='_compute_telephone_e164',
+        string="Telephone (E.164)",
+        compute="_compute_telephone_e164",
         help="Le numero au format international, seule forme que WhatsApp accepte.",
     )
     whatsapp_url = fields.Char(
-        string="Lien WhatsApp", compute='_compute_telephone_e164',
+        string="Lien WhatsApp",
+        compute="_compute_telephone_e164",
     )
 
     # --- La boucle d'appel ---------------------------------------------------
@@ -67,23 +68,28 @@ class CrmLead(models.Model):
     # en un fait porte par la fiche. Sans lui, la conseillere qui reprend un
     # lead ne sait pas si personne n'a essaye ou si six personnes ont echoue.
     tentatives_appel = fields.Integer(
-        string="Tentatives d'appel", default=0, copy=False, readonly=True,
-        help="Nombre d'appels restes sans reponse. Remis a zero par aucun "
-             "geste : c'est un historique, pas un etat.",
+        string="Tentatives d'appel",
+        default=0,
+        copy=False,
+        readonly=True,
+        help="Nombre d'appels restes sans reponse. Remis a zero par aucun geste : c'est un historique, pas un etat.",
     )
     derniere_tentative = fields.Datetime(
-        string="Derniere tentative", copy=False, readonly=True,
+        string="Derniere tentative",
+        copy=False,
+        readonly=True,
     )
 
     # Ce que les motifs de la liste ne savent pas dire. Obligatoire avec
     # « Autre » : voir _check_perte_motivee. Alimente par l'assistant natif,
     # dont la note de cloture n'atterrissait nulle part (voir crm_lead_lost.py).
     perte_precision = fields.Char(
-        string="Precision sur la perte", copy=False,
+        string="Precision sur la perte",
+        copy=False,
         help="Obligatoire avec le motif « Autre - a preciser ».",
     )
 
-    @api.depends('phone', 'country_id')
+    @api.depends("phone", "country_id")
     def _compute_telephone_e164(self):
         """Normalise le numero saisi, quelle que soit la forme.
 
@@ -104,12 +110,12 @@ class CrmLead(models.Model):
             try:
                 e164 = phone_validation.phone_format(
                     lead.phone,
-                    pays.code or 'DZ',
+                    pays.code or "DZ",
                     pays.phone_code or 213,
-                    force_format='E164',
+                    force_format="E164",
                     raise_exception=False,
                 )
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
                 # Un numero illisible n'est pas une erreur bloquante : la
                 # conseillere le corrigera. Perdre la fiche pour un numero mal
                 # tape serait hors de proportion.
@@ -118,21 +124,21 @@ class CrmLead(models.Model):
             # verifie sur l'image : « n importe quoi » ressort inchange. Sans
             # ce controle, une faute de frappe deviendrait une URL WhatsApp
             # pointant vers rien.
-            if not e164 or not e164.startswith('+'):
+            if not e164 or not e164.startswith("+"):
                 lead.telephone_e164 = False
                 lead.whatsapp_url = False
                 continue
             lead.telephone_e164 = e164
-            lead.whatsapp_url = 'https://wa.me/%s' % e164[1:]
+            lead.whatsapp_url = "https://wa.me/%s" % e164[1:]
 
     # --- Production Contenu (equipe Production Contenu) ---------------------
 
     departement_demandeur = fields.Selection(
         selection=[
-            ('sales', "Ventes / Admissions"),
-            ('hr', "Ressources humaines"),
-            ('pedagogie', "Pedagogie"),
-            ('marketing', "Marketing"),
+            ("sales", "Ventes / Admissions"),
+            ("hr", "Ressources humaines"),
+            ("pedagogie", "Pedagogie"),
+            ("marketing", "Marketing"),
         ],
         string="Departement demandeur",
     )
@@ -146,31 +152,36 @@ class CrmLead(models.Model):
     # charge par personne et le delai par livrable groupables. Voir
     # his_content_deliverable.py.
     deliverable_ids = fields.One2many(
-        'his.content.deliverable', 'lead_id', string="Livrables",
+        "his.content.deliverable",
+        "lead_id",
+        string="Livrables",
     )
 
     livrables_resume = fields.Char(
         string="Avancement des livrables",
-        compute='_compute_livrables_resume',
+        compute="_compute_livrables_resume",
         help="Resume d'une ligne, pour la carte du tableau kanban.",
     )
 
     demandeur_id = fields.Many2one(
-        'res.users', string="Demandeur", copy=False, index=True,
+        "res.users",
+        string="Demandeur",
+        copy=False,
+        index=True,
         help="Qui a depose la demande. Distinct du commercial, qui change de "
-             "main a la priorisation — c'est ce champ, et non user_id, qui "
-             "determine ce qu'un demandeur voit de ses propres demandes.",
+        "main a la priorisation — c'est ce champ, et non user_id, qui "
+        "determine ce qu'un demandeur voit de ses propres demandes.",
     )
     marque = fields.Selection(
         selection=[
-            ('his', "HIS"),
-            ('htc', "HTC"),
-            ('ira', "IRA"),
+            ("his", "HIS"),
+            ("htc", "HTC"),
+            ("ira", "IRA"),
         ],
         string="Marque",
     )
 
-    @api.depends('deliverable_ids.statut', 'deliverable_ids.en_retard')
+    @api.depends("deliverable_ids.statut", "deliverable_ids.en_retard")
     def _compute_livrables_resume(self):
         """L'avancement en une ligne, pour la carte du kanban.
 
@@ -196,9 +207,9 @@ class CrmLead(models.Model):
             if not livrables:
                 lead.livrables_resume = False
                 continue
-            approuves = len(livrables.filtered(lambda d: d.statut == 'approuve'))
+            approuves = len(livrables.filtered(lambda d: d.statut == "approuve"))
             resume = "%s/%s approuves" % (approuves, len(livrables))
-            if any(livrables.mapped('en_retard')):
+            if any(livrables.mapped("en_retard")):
                 resume += " - en retard"
             lead.livrables_resume = resume
 
@@ -220,14 +231,18 @@ class CrmLead(models.Model):
             # sudo() : c'est le systeme qui enregistre un fait, pas
             # l'utilisateur qui affirme quelque chose. tentatives_appel est en
             # readonly, donc ce chemin est le seul qui l'ecrit.
-            lead.sudo().write({
-                'tentatives_appel': lead.tentatives_appel + 1,
-                'derniere_tentative': fields.Datetime.now(),
-            })
-            lead.message_post(body=_(
-                "Appel sans reponse (tentative n° %(n)s).",
-                n=lead.tentatives_appel,
-            ))
+            lead.sudo().write(
+                {
+                    "tentatives_appel": lead.tentatives_appel + 1,
+                    "derniere_tentative": fields.Datetime.now(),
+                }
+            )
+            lead.message_post(
+                body=_(
+                    "Appel sans reponse (tentative n° %(n)s).",
+                    n=lead.tentatives_appel,
+                )
+            )
             lead._his_replanifier_rappel()
 
     def _his_replanifier_rappel(self):
@@ -246,7 +261,7 @@ class CrmLead(models.Model):
             activite.date_deadline = echeance
             return
         self.activity_schedule(
-            'mail.mail_activity_data_call',
+            "mail.mail_activity_data_call",
             date_deadline=echeance,
             summary=RESUME_RAPPEL,
             user_id=self.user_id.id or self.env.uid,
@@ -255,11 +270,14 @@ class CrmLead(models.Model):
     def _his_rappel_existant(self):
         """Le rappel pose par cette boucle, s'il y en a un."""
         self.ensure_one()
-        return self.env['mail.activity'].search([
-            ('res_model', '=', 'crm.lead'),
-            ('res_id', '=', self.id),
-            ('summary', '=', RESUME_RAPPEL),
-        ], limit=1)
+        return self.env["mail.activity"].search(
+            [
+                ("res_model", "=", "crm.lead"),
+                ("res_id", "=", self.id),
+                ("summary", "=", RESUME_RAPPEL),
+            ],
+            limit=1,
+        )
 
     def action_appel_joint(self):
         """Le candidat a repondu : on avance, on efface le rappel, on ouvre.
@@ -270,19 +288,19 @@ class CrmLead(models.Model):
         """
         self.ensure_one()
         etape = self.env.ref(
-            'his_crm_pipeline.stage_vente_contact_etabli',
+            "his_crm_pipeline.stage_vente_contact_etabli",
             raise_if_not_found=False,
         )
         if etape:
             self.stage_id = etape
         self._his_rappel_existant().unlink()
         return {
-            'type': 'ir.actions.act_window',
-            'name': _("Candidat joint"),
-            'res_model': 'crm.lead',
-            'res_id': self.id,
-            'view_mode': 'form',
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": _("Candidat joint"),
+            "res_model": "crm.lead",
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "current",
         }
 
     # --- La file d'attente d'affectation -------------------------------------
@@ -309,7 +327,8 @@ class CrmLead(models.Model):
         """
         leads = super().create(vals_list)
         etape = self.env.ref(
-            'his_crm_pipeline.stage_vente_nouveau', raise_if_not_found=False,
+            "his_crm_pipeline.stage_vente_nouveau",
+            raise_if_not_found=False,
         )
         if etape:
             # Apres super() et non sur les vals : crm.lead.stage_id est un champ
@@ -320,12 +339,12 @@ class CrmLead(models.Model):
             # cree. Sans cela le garde-fou « seul le responsable affecte »
             # refuserait notre propre ecriture, et le Marketing ne pourrait plus
             # rien capturer.
-            leads.filtered(lambda l: l.stage_id == etape and l.user_id).sudo().user_id = False
+            leads.filtered(lambda lead: lead.stage_id == etape and lead.user_id).sudo().user_id = False
         return leads
 
     # --- Verrou d'approbation ----------------------------------------------
 
-    @api.constrains('stage_id', 'deliverable_ids', 'deliverable_ids.statut')
+    @api.constrains("stage_id", "deliverable_ids", "deliverable_ids.statut")
     def _check_livrables_approuves(self):
         """Interdit l'etape Approbation tant qu'un livrable demande n'est pas approuve.
 
@@ -337,26 +356,27 @@ class CrmLead(models.Model):
         Entree. Meme raisonnement que la gouvernance de his_stock_mdm.
         """
         approbation = self.env.ref(
-            'his_crm_pipeline.stage_contenu_approbation', raise_if_not_found=False,
+            "his_crm_pipeline.stage_contenu_approbation",
+            raise_if_not_found=False,
         )
         if not approbation:
             return
         for lead in self:
             if lead.stage_id != approbation:
                 continue
-            manquants = lead.deliverable_ids.filtered(
-                lambda d: d.statut != 'approuve'
-            ).type_id.mapped('name')
+            manquants = lead.deliverable_ids.filtered(lambda d: d.statut != "approuve").type_id.mapped("name")
             if manquants:
-                raise ValidationError(_(
-                    "« %(lead)s » ne peut pas passer en Approbation : "
-                    "le ou les livrables suivants ne sont pas approuves — "
-                    "%(manquants)s.\n\n"
-                    "Chaque livrable demande doit porter le statut « Approuve » "
-                    "avant la validation finale.",
-                    lead=lead.display_name,
-                    manquants=", ".join(manquants),
-                ))
+                raise ValidationError(
+                    _(
+                        "« %(lead)s » ne peut pas passer en Approbation : "
+                        "le ou les livrables suivants ne sont pas approuves — "
+                        "%(manquants)s.\n\n"
+                        "Chaque livrable demande doit porter le statut « Approuve » "
+                        "avant la validation finale.",
+                        lead=lead.display_name,
+                        manquants=", ".join(manquants),
+                    )
+                )
 
     def action_perdre_rapide(self):
         """Ouvre l'assistant de perte, pre-rempli quand la fiche sait deja.
@@ -373,18 +393,18 @@ class CrmLead(models.Model):
         contexte = dict(self.env.context, default_lead_ids=[(6, 0, self.ids)])
         if self.tentatives_appel >= TENTATIVES_AVANT_FANTOME:
             fantome = self.env.ref(
-                'his_crm_pipeline.lost_reason_fantome',
+                "his_crm_pipeline.lost_reason_fantome",
                 raise_if_not_found=False,
             )
             if fantome:
-                contexte['default_lost_reason_id'] = fantome.id
+                contexte["default_lost_reason_id"] = fantome.id
         return {
-            'type': 'ir.actions.act_window',
-            'name': _("Perdre le candidat"),
-            'res_model': 'crm.lead.lost',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': contexte,
+            "type": "ir.actions.act_window",
+            "name": _("Perdre le candidat"),
+            "res_model": "crm.lead.lost",
+            "view_mode": "form",
+            "target": "new",
+            "context": contexte,
         }
 
     def action_set_lost(self, **additional_values):
@@ -399,11 +419,11 @@ class CrmLead(models.Model):
         On pose donc le motif d'abord. Une perte SANS motif echoue toujours —
         elle echoue simplement a l'archivage, ce qui est le bon moment.
         """
-        if additional_values.get('lost_reason_id'):
-            self.lost_reason_id = additional_values['lost_reason_id']
+        if additional_values.get("lost_reason_id"):
+            self.lost_reason_id = additional_values["lost_reason_id"]
         return super().action_set_lost(**additional_values)
 
-    @api.constrains('won_status', 'lost_reason_id', 'perte_precision')
+    @api.constrains("won_status", "lost_reason_id", "perte_precision")
     def _check_perte_motivee(self):
         """On ne perd pas un candidat sans dire pourquoi.
 
@@ -429,28 +449,32 @@ class CrmLead(models.Model):
         est « Retour production necessaire », qu'il renseigne deja.
         """
         autre = self.env.ref(
-            'his_crm_pipeline.lost_reason_autre', raise_if_not_found=False,
+            "his_crm_pipeline.lost_reason_autre",
+            raise_if_not_found=False,
         )
         for lead in self:
-            if lead.won_status != 'lost':
+            if lead.won_status != "lost":
                 continue
             if not lead.lost_reason_id:
-                raise ValidationError(_(
-                    "« %(lead)s » ne peut pas etre perdu sans motif.\n\n"
-                    "Le motif est ce qui permet de savoir OU l'on perd les "
-                    "candidats. Si aucun de la liste ne convient, choisissez "
-                    "« Autre - a preciser » et dites en une ligne ce qui s'est "
-                    "passe.",
-                    lead=lead.display_name,
-                ))
-            if autre and lead.lost_reason_id == autre \
-                    and not (lead.perte_precision or '').strip():
-                raise ValidationError(_(
-                    "« %(lead)s » : le motif « Autre » demande une precision.\n\n"
-                    "Sans elle, « Autre » deviendrait le raccourci universel et "
-                    "n'apprendrait rien de plus qu'un motif vide.",
-                    lead=lead.display_name,
-                ))
+                raise ValidationError(
+                    _(
+                        "« %(lead)s » ne peut pas etre perdu sans motif.\n\n"
+                        "Le motif est ce qui permet de savoir OU l'on perd les "
+                        "candidats. Si aucun de la liste ne convient, choisissez "
+                        "« Autre - a preciser » et dites en une ligne ce qui s'est "
+                        "passe.",
+                        lead=lead.display_name,
+                    )
+                )
+            if autre and lead.lost_reason_id == autre and not (lead.perte_precision or "").strip():
+                raise ValidationError(
+                    _(
+                        "« %(lead)s » : le motif « Autre » demande une precision.\n\n"
+                        "Sans elle, « Autre » deviendrait le raccourci universel et "
+                        "n'apprendrait rien de plus qu'un motif vide.",
+                        lead=lead.display_name,
+                    )
+                )
 
     # --- Relance SLA premier contact ----------------------------------------
 
@@ -466,17 +490,20 @@ class CrmLead(models.Model):
         une activite.
         """
         stage = self.env.ref(
-            'his_crm_pipeline.stage_vente_pris_en_charge', raise_if_not_found=False,
+            "his_crm_pipeline.stage_vente_pris_en_charge",
+            raise_if_not_found=False,
         )
         if not stage:
             return
         limite = fields.Datetime.now() - timedelta(hours=SLA_PREMIER_CONTACT_HEURES)
-        activity_type = self.env.ref('mail.mail_activity_data_todo')
-        leads = self.search([
-            ('stage_id', '=', stage.id),
-            ('date_last_stage_update', '<', limite),
-            ('active', '=', True),
-        ])
+        activity_type = self.env.ref("mail.mail_activity_data_todo")
+        leads = self.search(
+            [
+                ("stage_id", "=", stage.id),
+                ("date_last_stage_update", "<", limite),
+                ("active", "=", True),
+            ]
+        )
         for lead in leads:
             responsable = lead.team_id.user_id
             # Sans responsable d'equipe, il n'y a personne a prevenir. Poser
@@ -487,17 +514,19 @@ class CrmLead(models.Model):
             # Une seule relance par retard. Sans ce filtre, le cron horaire
             # empilerait une activite par heure sur le meme lead et le
             # responsable cesserait de les lire.
-            deja = self.env['mail.activity'].search_count([
-                ('res_model', '=', 'crm.lead'),
-                ('res_id', '=', lead.id),
-                ('activity_type_id', '=', activity_type.id),
-                ('user_id', '=', responsable.id),
-                ('summary', '=', "Relance SLA - premier contact en retard (>4h)"),
-            ])
+            deja = self.env["mail.activity"].search_count(
+                [
+                    ("res_model", "=", "crm.lead"),
+                    ("res_id", "=", lead.id),
+                    ("activity_type_id", "=", activity_type.id),
+                    ("user_id", "=", responsable.id),
+                    ("summary", "=", "Relance SLA - premier contact en retard (>4h)"),
+                ]
+            )
             if deja:
                 continue
             lead.activity_schedule(
-                'mail.mail_activity_data_todo',
+                "mail.mail_activity_data_todo",
                 summary="Relance SLA - premier contact en retard (>4h)",
                 note=_(
                     "Ce lead est en « Pris en charge » depuis plus de %(heures)s heures "

@@ -10,4 +10,4 @@ def _campus_identity_backfill(env):
     ignoree. Au 2026-09-13 aucune ne l'est en production (les 249 sont
     « not_selected »), mais une installation ulterieure ne doit rien oublier.
     """
-    env['hr.applicant'].search([])._his_creer_ou_rapprocher_personne()
+    env["hr.applicant"].search([])._his_creer_ou_rapprocher_personne()

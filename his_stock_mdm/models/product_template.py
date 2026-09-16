@@ -1,11 +1,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import api, models
+from odoo import _, api, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_is_zero
 
 
 class ProductTemplate(models.Model):
-    _inherit = 'product.template'
+    _inherit = "product.template"
 
     # --- Hooks create/write --------------------------------------------------
     #
@@ -25,23 +25,22 @@ class ProductTemplate(models.Model):
             # automatiquement. Une valeur fournie explicitement est respectee
             # (cas de reprise ou de saisie manuelle justifiee), sous reserve
             # des controles d'unicite et de format (cf. product_product.py).
-            if not vals.get('default_code'):
-                vals['default_code'] = self.env['ir.sequence'].next_by_code(
-                    'product.internal.reference')
+            if not vals.get("default_code"):
+                vals["default_code"] = self.env["ir.sequence"].next_by_code("product.internal.reference")
         templates = super().create(vals_list)
-        for template, vals in zip(templates, vals_list):
+        for template, vals in zip(templates, vals_list, strict=False):
             template._apply_mdm_category_defaults(vals)
         templates._assert_mdm_default_code()
         return templates
 
     def write(self, vals):
         res = super().write(vals)
-        if 'default_code' in vals or 'active' in vals:
+        if "default_code" in vals or "active" in vals:
             self._assert_mdm_default_code()
         # MDM regle 3 bis (cf. plus bas). Pas de boucle : l'ecriture de
         # sale_ok ne porte ni list_price ni available_in_pos.
-        if ('list_price' in vals or 'available_in_pos' in vals) and 'sale_ok' not in vals:
-            self._mdm_a_mettre_en_vente().write({'sale_ok': True})
+        if ("list_price" in vals or "available_in_pos" in vals) and "sale_ok" not in vals:
+            self._mdm_a_mettre_en_vente().write({"sale_ok": True})
         return res
 
     # --- MDM Phase 5 : tracabilite heritee de la categorie -------------------
@@ -56,9 +55,9 @@ class ProductTemplate(models.Model):
         """
         self.ensure_one()
         categ = self.categ_id
-        if 'tracking' not in vals and self.is_storable and categ.default_tracking:
+        if "tracking" not in vals and self.is_storable and categ.default_tracking:
             self.tracking = categ.default_tracking
-        if 'use_expiration_date' not in vals and self.tracking != 'none':
+        if "use_expiration_date" not in vals and self.tracking != "none":
             self.use_expiration_date = categ.default_use_expiration_date
 
     # --- MDM regle 1 : reference interne obligatoire -------------------------
@@ -78,34 +77,43 @@ class ProductTemplate(models.Model):
             if len(template.product_variant_ids) > 1:
                 continue
             if not template.default_code:
-                raise ValidationError(
-                    "La référence interne est obligatoire pour « %s »." % template.name)
+                raise ValidationError(_("La référence interne est obligatoire pour « %s ».", template.name))
 
     # --- MDM regle 2 : categorie feuille obligatoire -------------------------
 
-    @api.constrains('categ_id')
+    @api.constrains("categ_id")
     def _check_mdm_leaf_category(self):
         for template in self:
             if template.categ_id.child_id:
                 raise ValidationError(
-                    "La catégorie « %s » est un nœud intermédiaire. Un produit doit "
-                    "être rattaché à une catégorie terminale (sans sous-catégorie).\n"
-                    "Sous-catégories disponibles : %s." % (
-                        template.categ_id.complete_name,
-                        ", ".join(template.categ_id.child_id.mapped('name')),
-                    ))
+                    _(
+                        "La catégorie « %(categ)s » est un nœud intermédiaire. Un produit doit "
+                        "être rattaché à une catégorie terminale (sans sous-catégorie).\n"
+                        "Sous-catégories disponibles : %(children)s.",
+                        categ=template.categ_id.complete_name,
+                        children=", ".join(template.categ_id.child_id.mapped("name")),
+                    )
+                )
 
     # --- MDM regle 3 : prix de vente obligatoire si stockable et vendable ----
 
-    @api.constrains('list_price', 'type', 'is_storable', 'sale_ok')
+    @api.constrains("list_price", "type", "is_storable", "sale_ok")
     def _check_mdm_sale_price(self):
-        precision = self.env['decimal.precision'].precision_get('Product Price')
+        precision = self.env["decimal.precision"].precision_get("Product Price")
         for template in self:
-            if (template.type == 'consu' and template.is_storable and template.sale_ok
-                    and float_is_zero(template.list_price, precision_digits=precision)):
+            if (
+                template.type == "consu"
+                and template.is_storable
+                and template.sale_ok
+                and float_is_zero(template.list_price, precision_digits=precision)
+            ):
                 raise ValidationError(
-                    "Le prix de vente est obligatoire pour « %s » : il s'agit d'un "
-                    "produit stockable marqué comme vendable." % template.name)
+                    _(
+                        "Le prix de vente est obligatoire pour « %s » : il s'agit d'un "
+                        "produit stockable marqué comme vendable.",
+                        template.name,
+                    )
+                )
 
     # --- MDM regle 3 bis — mise en vente automatique au prix saisi -----------
     #
@@ -126,11 +134,14 @@ class ProductTemplate(models.Model):
     #  - create() n'est pas concerne : l'import y passe sale_ok=False expres.
 
     def _mdm_a_mettre_en_vente(self):
-        precision = self.env['decimal.precision'].precision_get('Product Price')
-        return self.filtered(lambda t: t.available_in_pos and not t.sale_ok and not float_is_zero(
-            t.list_price, precision_digits=precision))
+        precision = self.env["decimal.precision"].precision_get("Product Price")
+        return self.filtered(
+            lambda t: (
+                t.available_in_pos and not t.sale_ok and not float_is_zero(t.list_price, precision_digits=precision)
+            )
+        )
 
-    @api.onchange('list_price')
+    @api.onchange("list_price")
     def _onchange_mdm_mise_en_vente(self):
         # Meme regle que write(), mais visible avant l'enregistrement : sans
         # elle, l'utilisateur ne comprend pas pourquoi l'article est devenu

@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <!-- Onglets de caisse. DEUX, et non un seul : une recharge de compte et
+         un repas ne se vendent pas au meme endroit. Le Restaurant ne sert que
+         des repas ; le Copy Center vend des fournitures et prend les
+         recharges, mais rien de comestible.
+
+         Ils appartiennent a ce module et non a his_stock_mdm : c'est ici que
+         les produits sont definis, donc ici que se decide le rayon sous lequel
+         le caissier les trouve.
+
+         Definis AVANT les forfaits du bloc noupdate qui les referencent
+         (pos_categ_ids) : un ref() vers un enregistrement pas encore charge
+         casse l'installation sur une base neuve. HORS noupdate, comme le
+         perimetre des caisses cote his_stock_mdm : ces rattachements sont une
+         decision du module et doivent se reappliquer a chaque mise a jour. -->
+
+    <record id="pos_categ_repas" model="pos.category">
+        <field name="name">Repas</field>
+        <field name="sequence">5</field>
+    </record>
+    <record id="pos_categ_recharges" model="pos.category">
+        <field name="name">Recharges</field>
+        <field name="sequence">6</field>
+    </record>
+
     <data noupdate="1">
 
         <!-- The six plans as sold by the IT centre, and the two meals they pay
@@ -157,27 +182,5 @@
         </record>
 
     </data>
-
-    <!-- Onglets de caisse. DEUX, et non un seul : une recharge de compte et
-         un repas ne se vendent pas au meme endroit. Le Restaurant ne sert que
-         des repas ; le Copy Center vend des fournitures et prend les
-         recharges, mais rien de comestible.
-
-         Ils appartiennent a ce module et non a his_stock_mdm : c'est ici que
-         les produits sont definis, donc ici que se decide le rayon sous lequel
-         le caissier les trouve.
-
-         HORS noupdate, comme le perimetre des caisses cote his_stock_mdm : ces
-         rattachements sont une decision du module et doivent se reappliquer a
-         chaque mise a jour. -->
-
-    <record id="pos_categ_repas" model="pos.category">
-        <field name="name">Repas</field>
-        <field name="sequence">5</field>
-    </record>
-    <record id="pos_categ_recharges" model="pos.category">
-        <field name="name">Recharges</field>
-        <field name="sequence">6</field>
-    </record>
 
 </odoo>

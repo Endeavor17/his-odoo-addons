@@ -19,14 +19,16 @@ HIDDEN_PARTNER_IDS = SQL("""
 
 
 class PosConfig(models.Model):
-    _inherit = 'pos.config'
+    _inherit = "pos.config"
 
     def get_limited_partners_loading(self, offset=0):
         # Requete du coeur (point_of_sale/models/pos_config.py) recopiee a
         # l'identique — tri, limite, decalage — avec la seule clause NOT IN en
         # plus. Filtrer APRES super() rendrait moins de 100 contacts au lieu
         # de laisser les vrais clients remonter dans les places liberees.
-        return self.env.execute_query(SQL("""
+        return self.env.execute_query(
+            SQL(
+                """
             WITH pm AS
             (
                      SELECT   partner_id,
@@ -44,4 +46,10 @@ class PosConfig(models.Model):
             AND partner.id NOT IN (%s)
             ORDER BY  COALESCE(pm.order_count, 0) DESC,
                       NAME limit %s offset %s;
-        """, self.company_id.id, HIDDEN_PARTNER_IDS, self._get_limited_partner_count(), offset))
+        """,
+                self.company_id.id,
+                HIDDEN_PARTNER_IDS,
+                self._get_limited_partner_count(),
+                offset,
+            )
+        )

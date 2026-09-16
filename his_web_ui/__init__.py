@@ -28,17 +28,16 @@ def post_init_hook(env):
     Install-time only, so a later upgrade never overrides what someone has
     since chosen for themselves.
     """
-    direction = env.ref(
-        'his_crm_pipeline.action_dashboard_direction', raise_if_not_found=False)
+    direction = env.ref("his_crm_pipeline.action_dashboard_direction", raise_if_not_found=False)
 
     if direction:
         # action_id points at ir.actions.actions; every action subtype shares
         # that id space, so a client action compares directly.
-        stranded = env['res.users'].search([('action_id', '=', direction.id)])
+        stranded = env["res.users"].search([("action_id", "=", direction.id)])
         if stranded:
             _logger.info(
                 "his_web_ui: clearing the Direction home action for %s.",
-                ", ".join(stranded.mapped('login')),
+                ", ".join(stranded.mapped("login")),
             )
             # Clearing action_id re-fires _compute_redirect_home, which now
             # sets the flag — these users need no second write.
@@ -46,11 +45,13 @@ def post_init_hook(env):
 
     # Everyone else who has no Home Action at all: the compute only runs when
     # action_id changes, so existing rows still hold the stored False.
-    grounded = env['res.users'].search([
-        ('action_id', '=', False),
-        ('is_redirect_home', '=', False),
-        ('share', '=', False),
-    ])
+    grounded = env["res.users"].search(
+        [
+            ("action_id", "=", False),
+            ("is_redirect_home", "=", False),
+            ("share", "=", False),
+        ]
+    )
     if grounded:
         grounded.is_redirect_home = True
         _logger.info(

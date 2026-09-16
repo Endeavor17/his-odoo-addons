@@ -18,27 +18,28 @@ class ProductTemplate(models.Model):
     meal and a shop with the field empty could serve none at all.
     """
 
-    _inherit = 'product.template'
+    _inherit = "product.template"
 
     meal_credits = fields.Float(
-        string="Meal Credits Granted", digits=(16, 2),
+        string="Meal Credits Granted",
+        digits=(16, 2),
         help="Credits given to the student when this product is sold. "
-             "Any product with credits above zero is a meal plan.",
+        "Any product with credits above zero is a meal plan.",
     )
     meal_credit_cost = fields.Float(
-        string="Meal Credit Cost", digits=(16, 2),
+        string="Meal Credit Cost",
+        digits=(16, 2),
         help="Credits taken from the student when this product is served at "
-             "zero price. Any product with a cost above zero is a meal. "
-             "The 300 DA meal costs 0.5, the 600 DA meal costs 1.",
+        "zero price. Any product with a cost above zero is a meal. "
+        "The 300 DA meal costs 0.5, the 600 DA meal costs 1.",
     )
     meal_validity_days = fields.Integer(
         string="Validity (days)",
         default=0,
-        help="How long the credits stay usable, counted from the day of "
-             "purchase. Zero means they never expire.",
+        help="How long the credits stay usable, counted from the day of purchase. Zero means they never expire.",
     )
 
-    @api.constrains('meal_credits', 'meal_credit_cost', 'meal_validity_days')
+    @api.constrains("meal_credits", "meal_credit_cost", "meal_validity_days")
     def _check_meal_plan(self):
         for product in self:
             if product.meal_credits < 0:
@@ -47,21 +48,23 @@ class ProductTemplate(models.Model):
                 raise ValidationError(_("A meal cannot cost a negative number of credits."))
             # Being both would make selling it grant and spend at the same time.
             if product.meal_credits and product.meal_credit_cost:
-                raise ValidationError(_(
-                    "%s cannot be a meal plan and a meal at once: it either grants "
-                    "credits or costs them.",
-                    product.display_name,
-                ))
+                raise ValidationError(
+                    _(
+                        "%s cannot be a meal plan and a meal at once: it either grants credits or costs them.",
+                        product.display_name,
+                    )
+                )
             if product.meal_validity_days < 0:
-                raise ValidationError(_(
-                    "%s cannot have a negative validity. Use zero for credits that "
-                    "never expire.",
-                    product.display_name,
-                ))
+                raise ValidationError(
+                    _(
+                        "%s cannot have a negative validity. Use zero for credits that never expire.",
+                        product.display_name,
+                    )
+                )
 
 
 class ProductProduct(models.Model):
-    _inherit = 'product.product'
+    _inherit = "product.product"
 
     @api.model
     def _load_pos_data_fields(self, *args, **kwargs):
@@ -81,4 +84,4 @@ class ProductProduct(models.Model):
         argument between POS versions (config_id / config), and this override
         does not care which it is - it only appends to whatever core returns.
         """
-        return super()._load_pos_data_fields(*args, **kwargs) + ['meal_credit_cost']
+        return [*super()._load_pos_data_fields(*args, **kwargs), "meal_credit_cost"]

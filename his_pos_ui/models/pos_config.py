@@ -14,15 +14,14 @@ class PosConfig(models.Model):
     module hangs off a class that an empty theme never adds.
     """
 
-    _inherit = 'pos.config'
+    _inherit = "pos.config"
 
     his_pos_theme = fields.Selection(
         [
-            ('copy_center', "Copy Center"),
-            ('restaurant', "Restaurant"),
-            ('cafeteria', "Cafétéria"),
+            ("copy_center", "Copy Center"),
+            ("restaurant", "Restaurant"),
+            ("cafeteria", "Cafétéria"),
         ],
         string="HIS Theme",
-        help="Appearance of this point of sale. Leave empty to keep the stock "
-             "Odoo interface.",
+        help="Appearance of this point of sale. Leave empty to keep the stock Odoo interface.",
     )

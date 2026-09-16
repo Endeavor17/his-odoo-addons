@@ -19,42 +19,54 @@ class HisMealCard(models.Model):
     # his.card if a second module ever has to depend on it.
     """
 
-    _name = 'his.meal.card'
+    _name = "his.meal.card"
     _description = "Meal Card"
-    _rec_name = 'code'
-    _order = 'create_date desc'
+    _rec_name = "code"
+    _order = "create_date desc"
 
     code = fields.Char(
-        required=True, copy=False, index=True,
+        required=True,
+        copy=False,
+        index=True,
         help="For an RFID card this is the 10-digit UID the reader sends, e.g. "
-             "0007197786 — tap the card into this field rather than typing it, so "
-             "the leading zeros cannot be lost. Printed cards use a HIS- code "
-             "instead; both are matched by their own barcode rule.",
+        "0007197786 — tap the card into this field rather than typing it, so "
+        "the leading zeros cannot be lost. Printed cards use a HIS- code "
+        "instead; both are matched by their own barcode rule.",
     )
     partner_id = fields.Many2one(
-        'res.partner', string="Person", required=True, index=True, ondelete='cascade',
+        "res.partner",
+        string="Person",
+        required=True,
+        index=True,
+        ondelete="cascade",
     )
     state = fields.Selection(
         [
-            ('active', "Active"),
-            ('blocked', "Blocked"),
-            ('lost', "Lost"),
-            ('replaced', "Replaced"),
+            ("active", "Active"),
+            ("blocked", "Blocked"),
+            ("lost", "Lost"),
+            ("replaced", "Replaced"),
         ],
-        default='active', required=True, index=True,
+        default="active",
+        required=True,
+        index=True,
     )
     # Not readonly: `action_replace` seeds it through the context, and a readonly
     # field is not sent back by the web client.
     replaced_card_id = fields.Many2one(
-        'his.meal.card', string="Replaces", ondelete='set null',
+        "his.meal.card",
+        string="Replaces",
+        ondelete="set null",
     )
     credits_remaining = fields.Float(
-        related='partner_id.meal_credits_remaining', string="Credits", readonly=True,
+        related="partner_id.meal_credits_remaining",
+        string="Credits",
+        readonly=True,
     )
 
-    _code_unique = models.Constraint('UNIQUE(code)', "This card code is already in use.")
+    _code_unique = models.Constraint("UNIQUE(code)", "This card code is already in use.")
 
-    @api.constrains('partner_id')
+    @api.constrains("partner_id")
     def _check_meal_holder_is_registered(self):
         """No wallet without an identity.
 
@@ -67,27 +79,33 @@ class HisMealCard(models.Model):
         """
         for card in self:
             if not card.partner_id.sudo().his_person_ids:
-                raise ValidationError(_(
-                    "%s has no person record, so no card can be issued.\n\n"
-                    "A meal card belongs to a registered person. Ask for the person "
-                    "to be created in the Personnes referential first — by HR for an "
-                    "employee, or through the student import.",
-                    card.partner_id.display_name,
-                ))
+                raise ValidationError(
+                    _(
+                        "%s has no person record, so no card can be issued.\n\n"
+                        "A meal card belongs to a registered person. Ask for the person "
+                        "to be created in the Personnes referential first — by HR for an "
+                        "employee, or through the student import.",
+                        card.partner_id.display_name,
+                    )
+                )
 
-    @api.constrains('state', 'partner_id')
+    @api.constrains("state", "partner_id")
     def _check_single_active_card(self):
-        for card in self.filtered(lambda c: c.state == 'active'):
-            others = self.search_count([
-                ('partner_id', '=', card.partner_id.id),
-                ('state', '=', 'active'),
-                ('id', '!=', card.id),
-            ])
+        for card in self.filtered(lambda c: c.state == "active"):
+            others = self.search_count(
+                [
+                    ("partner_id", "=", card.partner_id.id),
+                    ("state", "=", "active"),
+                    ("id", "!=", card.id),
+                ]
+            )
             if others:
-                raise ValidationError(_(
-                    "%s already holds an active card. Block, lose or replace it first.",
-                    card.partner_id.display_name,
-                ))
+                raise ValidationError(
+                    _(
+                        "%s already holds an active card. Block, lose or replace it first.",
+                        card.partner_id.display_name,
+                    )
+                )
 
     def _sync_partner_barcode(self):
         """Mirror the active card's code onto the person's contact.
@@ -118,7 +136,7 @@ class HisMealCard(models.Model):
         """
         for card in self:
             partner = card.partner_id
-            if card.state == 'active':
+            if card.state == "active":
                 partner.barcode = card.code
             elif partner.barcode == card.code:
                 # Only clear it if this card still owns the barcode; a newer
@@ -134,9 +152,9 @@ class HisMealCard(models.Model):
     def write(self, vals):
         # The old code must be cleared off the partner before the new one lands,
         # otherwise a renamed card leaves its previous code scannable.
-        stale = self.filtered(lambda c: c.state == 'active' and 'code' in vals)
+        stale = self.filtered(lambda c: c.state == "active" and "code" in vals)
         res = super().write(vals)
-        if {'code', 'state', 'partner_id'} & vals.keys():
+        if {"code", "state", "partner_id"} & vals.keys():
             for card in stale:
                 card.partner_id.barcode = False
             self._sync_partner_barcode()
@@ -155,16 +173,16 @@ class HisMealCard(models.Model):
 
     @api.model
     def _next_code(self):
-        return self.env['ir.sequence'].next_by_code('his.meal.card')
+        return self.env["ir.sequence"].next_by_code("his.meal.card")
 
     def action_print_card(self):
-        return self.env.ref('his_meal_management.action_report_meal_card').report_action(self)
+        return self.env.ref("his_meal_management.action_report_meal_card").report_action(self)
 
     def action_block(self):
-        self.write({'state': 'blocked'})
+        self.write({"state": "blocked"})
 
     def action_activate(self):
-        self.write({'state': 'active'})
+        self.write({"state": "active"})
 
     def action_replace(self):
         """Retire this card and open a blank one for the new card to be tapped.
@@ -178,16 +196,16 @@ class HisMealCard(models.Model):
         self.ensure_one()
         # Retire first: the single-active-card constraint would refuse the new
         # one otherwise.
-        if self.state == 'active':
-            self.state = 'replaced'
+        if self.state == "active":
+            self.state = "replaced"
         return {
-            'type': 'ir.actions.act_window',
-            'name': _("Tap the new card"),
-            'res_model': 'his.meal.card',
-            'view_mode': 'form',
-            'target': 'current',
-            'context': {
-                'default_partner_id': self.partner_id.id,
-                'default_replaced_card_id': self.id,
+            "type": "ir.actions.act_window",
+            "name": _("Tap the new card"),
+            "res_model": "his.meal.card",
+            "view_mode": "form",
+            "target": "current",
+            "context": {
+                "default_partner_id": self.partner_id.id,
+                "default_replaced_card_id": self.id,
             },
         }

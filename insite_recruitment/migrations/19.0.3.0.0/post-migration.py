@@ -4,6 +4,7 @@ The templates are loaded with noupdate="1", so the new email_to in the data
 file never reaches an existing database; left alone they would read
 person_id.email_institutional, a field that no longer exists, at send time.
 """
+
 from odoo import SUPERUSER_ID, api
 
 
@@ -18,9 +19,17 @@ def migrate(cr, version):
                              academic_faculty CASCADE
     """)
     env = api.Environment(cr, SUPERUSER_ID, {})
-    templates = env['mail.template'].with_context(active_test=False).search([
-        ('email_to', 'like', 'email_institutional'),
-    ])
-    templates.write({
-        'email_to': "{{ object.person_id.email_personnel or object.person_id.email }}",
-    })
+    templates = (
+        env["mail.template"]
+        .with_context(active_test=False)
+        .search(
+            [
+                ("email_to", "like", "email_institutional"),
+            ]
+        )
+    )
+    templates.write(
+        {
+            "email_to": "{{ object.person_id.email_personnel or object.person_id.email }}",
+        }
+    )

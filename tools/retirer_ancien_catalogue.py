@@ -27,25 +27,26 @@ Les produits repas (forfaits et repas d'Abdo), et les produits speciaux des
 caisses -- le pourboire notamment, qu'Odoo refuse d'archiver tant qu'une
 configuration POS le designe.
 """
+
 import os
 
-MODE = os.environ.get('MODE', 'archiver')
-Template = env['product.template']
-Product = env['product.product']
+MODE = os.environ.get("MODE", "archiver")
+Template = env["product.template"]
+Product = env["product.product"]
 
 
 def compter(modele, champ, libelle):
     lignes = env[modele].search([])
     produits = lignes.mapped(champ)
-    return libelle, len(produits.mapped('product_tmpl_id'))
+    return libelle, len(produits.mapped("product_tmpl_id"))
 
 
 print("=== CE QUI RATTACHE LES ARTICLES A LA VIE DE L'ENTREPRISE ===")
 mesures = []
 for modele, champ, libelle in (
-    ('stock.quant', 'product_id', 'articles avec du stock'),
-    ('stock.move', 'product_id', 'articles avec un mouvement'),
-    ('pos.order.line', 'product_id', 'articles vendus en caisse'),
+    ("stock.quant", "product_id", "articles avec du stock"),
+    ("stock.move", "product_id", "articles avec un mouvement"),
+    ("pos.order.line", "product_id", "articles vendus en caisse"),
 ):
     try:
         mesures.append(compter(modele, champ, libelle))
@@ -56,19 +57,19 @@ for libelle, valeur in mesures:
 
 # Les produits du module repas ne font pas partie du catalogue a retirer.
 domaine = []
-if 'meal_credits' in Template._fields:
-    domaine = [('meal_credits', '=', 0), ('meal_credit_cost', '=', 0)]
+if "meal_credits" in Template._fields:
+    domaine = [("meal_credits", "=", 0), ("meal_credit_cost", "=", 0)]
 cibles = Template.search(domaine)
 
 # Un produit special d'une caisse (pourboire, remise) casse le POS s'il part.
-speciaux = env['pos.config'].search([])._get_special_products().product_tmpl_id
+speciaux = env["pos.config"].search([])._get_special_products().product_tmpl_id
 cibles -= speciaux
 
 # Odoo refuse de supprimer un produit disponible en caisse tant qu'une session
 # est ouverte. Sans ce controle on obtient une ligne d'erreur identique par
 # article -- 916 fois le meme message -- au lieu de la seule chose a faire.
-ouvertes = env['pos.session'].search([('state', '!=', 'closed')])
-if ouvertes and MODE == 'supprimer':
+ouvertes = env["pos.session"].search([("state", "!=", "closed")])
+if ouvertes and MODE == "supprimer":
     print()
     print("=== ARRET : %d session(s) de caisse ouverte(s) ===" % len(ouvertes))
     for s in ouvertes:
@@ -81,23 +82,26 @@ if ouvertes and MODE == 'supprimer':
     raise SystemExit(1)
 
 print()
-print("=== %s ===" % ('SUPPRESSION' if MODE == 'supprimer' else 'ARCHIVAGE'))
+print("=== %s ===" % ("SUPPRESSION" if MODE == "supprimer" else "ARCHIVAGE"))
 print("articles en base :", Template.search_count([]))
-print("cibles           :", len(cibles), "(%d epargnes : repas et produits speciaux)"
-      % (Template.search_count([]) - len(cibles)))
+print(
+    "cibles           :",
+    len(cibles),
+    "(%d epargnes : repas et produits speciaux)" % (Template.search_count([]) - len(cibles)),
+)
 
 traites, bloques = 0, []
 for tmpl in cibles:
     nom = tmpl.name
     savepoint = env.cr.savepoint()
     try:
-        if MODE == 'supprimer':
+        if MODE == "supprimer":
             tmpl.unlink()
         else:
             tmpl.active = False
     except Exception as exc:
         savepoint.close(rollback=True)
-        bloques.append((nom, str(exc).split('\n')[0][:90]))
+        bloques.append((nom, str(exc).split("\n")[0][:90]))
     else:
         savepoint.close(rollback=False)
         traites += 1

@@ -22,9 +22,9 @@ class ResUsers(models.Model):
     only re-fires when `action_id` changes.
     """
 
-    _inherit = 'res.users'
+    _inherit = "res.users"
 
-    @api.depends('action_id')
-    def _compute_redirect_home(self):
+    @api.depends("action_id")
+    def _compute_redirect_home(self):  # pylint: disable=missing-return
         super()._compute_redirect_home()
         self.filtered(lambda user: not user.action_id).is_redirect_home = True
