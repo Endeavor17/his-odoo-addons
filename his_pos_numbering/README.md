@@ -30,27 +30,37 @@ navigateur, l'affichage passerait meme a cinq caracteres (`10001`).
 
 ## 2. Ce qui est affiche maintenant
 
-`sequence_number`, que le coeur pose **deja** sur chaque commande depuis
-`pos.config.order_seq_id` : une sequence **par caisse**, en `no_gap`, qui ne se
-reinitialise jamais. Le 1, 2, 3 attendu existait donc deja en base — ce module
-ne fait que le montrer.
+Le numero porte par **`pos_reference`**, que le coeur pose des la **creation**
+de la commande : `{AA}{peripherique}-{caisse}-{numero}`, par exemple
+« 266-1-000003 ». Son troisieme segment est le numero, non rembourre et sans
+repli modulo. Le coeur le lit lui-meme ainsi
+(`extractNumberFromReference` dans `utils/devices_identifier_sequence.js`) :
+ce module reutilise sa lecture au lieu de deviner un format.
 
 Ordre de preference, le premier qui repond gagne :
 
 1. **`floating_order_name`** — le nom qu'un caissier a donne a la commande.
    Une intention humaine explicite passe devant un compteur.
-2. **`sequence_number`** — le numero d'operation de cette caisse.
-3. **`…`** — la commande n'est pas encore synchronisee.
+2. **le numero tire de `pos_reference`** — disponible immediatement et
+   inchange par la synchronisation.
+3. **`sequence_number`** — repli, si une commande arrive sans reference
+   exploitable.
+4. **`…`** — aucun numero connu. Jamais un chiffre : rien ne doit ressembler a
+   un numero d'operation quand il n'y en a pas.
 
-### Pourquoi un marqueur et pas le numero local
+### Pourquoi pas `sequence_number` en premier
 
-Le numero d'operation est attribue par le **serveur**, a la creation de la
-commande. Avant la synchronisation il n'existe pas. Afficher a la place le
-compteur local du navigateur donnerait un numero qui **change** ensuite : un
-caissier qui l'a annonce a voix haute aurait dit faux. Le module prefere
-avouer l'attente. `isSynced` (`related_models/base.js`) est
-`typeof id === "number"` : c'est exactement « la commande a-t-elle atteint le
-serveur ».
+C'etait le plan initial, et **le rendu l'a dementi**. `sequence_number` est
+pose par le SERVEUR a la creation de l'enregistrement ; il vaut 0 tant que la
+commande n'est pas synchronisee, et une commande POS ne se synchronise qu'a la
+validation. En ouvrant une vraie caisse, les deux onglets affichaient donc
+« … » cote a cote la ou le caissier attend 1 et 2 — pendant toute la saisie,
+c'est-a-dire tout le temps qui compte.
+
+`pos_reference` n'a pas ce defaut : il est attribue en meme temps que la
+commande, le serveur le conserve tel quel a la synchronisation
+(`_process_order` cree l'enregistrement avec les valeurs du navigateur), donc
+le numero annonce a voix haute par le caissier ne change jamais.
 
 ## 3. Ce que ce module ne touche pas
 
