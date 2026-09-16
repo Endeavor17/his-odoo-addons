@@ -1289,11 +1289,62 @@ class TestAtteignabilitéAuComptoir(TransactionCase):
 
     Depuis que his_stock_mdm donne un perimetre de categories a chaque caisse,
     un produit sans pos.category -- ou dont la categorie n'est pas au perimetre
-    de cette caisse -- disparait de la grille ET du bouton de service, qui ne
-    propose que les repas charges (`mealProducts` dans control_buttons.js).
+    de cette caisse -- disparait de la grille, qui est le seul endroit ou un
+    repas se sert (`addProductToOrder` dans product_screen.js).
 
     Ces tests interrogent donc le vrai domaine de chargement d'Odoo.
     """
+
+    def test_le_cout_en_credits_arrive_bien_dans_le_navigateur(self):
+        """La grille est le SEUL chemin de service : elle doit pouvoir decider.
+
+        `addProductToOrder` (product_screen.js) recoit un product.template, prend
+        `product_variant_ids[0]` et teste `variant.meal_credit_cost > 0` pour
+        savoir s'il s'agit d'un repas etudiant. Or `enhanceProductTemplate`
+        (product_product.js du coeur) ne fait suivre a la fiche modele QUE les
+        methodes et les getters : un champ simplement charge, lui, ne retombe
+        PAS. Le cout doit donc figurer dans la liste blanche POS de
+        **product.product** -- c'est ce que fait l'override de
+        `product_template.py:70` (classe ProductProduct, ligne 66).
+
+        Si cet override disparait, rien ne casse visiblement : le test
+        `variant.meal_credit_cost > 0` est alors toujours faux, le tap tombe
+        dans `super()` et le repas est vendu AU PRIX NORMAL sans prelever le
+        moindre credit. Silencieux, et c'est de l'argent. Le bouton de service
+        couvrait ce chemin auparavant ; il n'existe plus.
+        """
+        cfg = self.env.ref("his_stock_mdm.pos_config_cafeteria")
+        champs = self.env["product.product"]._load_pos_data_fields(cfg)
+        self.assertIn(
+            "meal_credit_cost",
+            champs,
+            "le cout en credits n'est plus demande sur product.product : "
+            "le tap vendra les repas au prix normal sans prelever de credit",
+        )
+
+        repas = self.env["product.product"].search([("meal_credit_cost", ">", 0)], limit=1)
+        self.assertTrue(repas, "aucun repas en base : le module n'est pas charge")
+        charge = repas.read(champs, load=False)[0]
+        self.assertGreater(
+            charge.get("meal_credit_cost") or 0,
+            0,
+            "le cout en credits ne survit pas au chargement POS de la variante",
+        )
+
+    def test_chaque_repas_charge_a_bien_une_variante(self):
+        """`product_variant_ids?.[0]` doit exister, sinon le tap ne fait rien."""
+        for xmlid in ("his_stock_mdm.pos_config_cafeteria", "his_stock_mdm.pos_config_restaurant"):
+            caisse = self.env.ref(xmlid)
+            repas_charges = self._chargeables(xmlid).filtered(lambda t: t.meal_credit_cost > 0)
+            self.assertTrue(
+                repas_charges,
+                "%s ne charge aucun repas : plus aucun moyen d'en servir un" % caisse.name,
+            )
+            for plat in repas_charges:
+                self.assertTrue(
+                    plat.product_variant_ids,
+                    "« %s » n'a aucune variante : product_variant_ids[0] est undefined en caisse" % plat.name,
+                )
 
     def _chargeables(self, config_xmlid):
         config = self.env.ref(config_xmlid)
