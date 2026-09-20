@@ -41,7 +41,14 @@ class PosOrder(models.Model):
                 line.product_id.meal_credit_cost > 0
                 # A student meal is the free one. The same product sold at its real
                 # price is a paying customer and must not touch anyone's balance.
-                and float_is_zero(line.price_unit, precision_rounding=rounding)
+                #
+                # What counts is what the student actually pays, not the price
+                # printed on the line: this read `price_unit` alone until a test
+                # walked a meal out of the restaurant on a 100% discount. The
+                # discount button is on every till, needs no developer console,
+                # and left the meal ledger empty - so the food was gone and
+                # nothing anywhere counted it.
+                and float_is_zero(line._his_meal_price_paid(), precision_rounding=rounding)
             )
         )
 
@@ -96,3 +103,20 @@ class PosOrder(models.Model):
                     product=line.product_id,
                     allow_overdraft=True,
                 )
+
+
+class PosOrderLine(models.Model):
+    """One line, and the only question this module asks of it."""
+
+    _inherit = "pos.order.line"
+
+    def _his_meal_price_paid(self):
+        """What the student hands over for one of these, discount included.
+
+        A separate method rather than an expression inside the filter because
+        this is the whole definition of "free meal" and it deserves a name a
+        reader can grep for. Any other way of making a line cost nothing - a
+        pricelist at zero, a future discount field - should land here too.
+        """
+        self.ensure_one()
+        return self.price_unit * (1.0 - (self.discount or 0.0) / 100.0)

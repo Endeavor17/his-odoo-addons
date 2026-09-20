@@ -209,7 +209,14 @@ so the ledger keeps one line per meal rather than one per order line.
 
 A **student meal is the free one**. The same product sold at its real price is a
 paying walk-in customer and must not touch anyone's balance — that is what the
-`float_is_zero` check on `price_unit` is for.
+`float_is_zero` check on `_his_meal_price_paid()` is for.
+
+That check reads **what the student actually pays**, discount included, and not
+the price printed on the line. It read `price_unit` alone until 19.0.3.6.0, when
+a test walked a meal out of the restaurant on a 100% discount: the discount
+button is on every till, the student paid nothing, and the meal ledger never
+heard about it. Any future way of making a line cost nothing — a pricelist at
+zero, another discount field — belongs in that method, not beside it.
 
 `_already_applied()` makes the whole thing idempotent by looking for an existing
 ledger line on the order: POS orders re-sync, and credits must move exactly once.
