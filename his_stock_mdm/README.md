@@ -70,6 +70,7 @@ verrou en caisse.
 | Valorisation FIFO / CUMP par catégorie | `data/product_category_data.xml` | Donnée |
 | Motif de perte obligatoire, commentaire si « Autre » | `models/stock_scrap.py` | Bloquant |
 | 3 points de vente à stock séparé | `data/stock_location_data.xml` + `pos_config_data.xml` | Chaque caisse décrémente son propre emplacement |
+| Un comptoir se réapprovisionne depuis le magasin | `data/stock_route_data.xml` | Une règle min/max sur un comptoir crée un transfert `WH/Stock → comptoir`, jamais un achat |
 | Séparation des tâches : Collaborateur propose, Manager valide | `models/stock_scrap.py` + `models/stock_quant.py` | Bloquant sur `do_scrap()` et `action_apply_inventory()` (natifs `stock.group_stock_user`/`stock.group_stock_manager`) |
 | Inventaire physique annuel : clôture bloquée si comptage non appliqué | `models/his_inventaire_annuel.py` | Bloquant à la clôture, quel que soit le chemin d'écriture |
 
@@ -110,16 +111,29 @@ ORM directe, pas seulement via le bouton. Une fois clôturé, l'enregistrement
 est verrouillé (aucune modification ni suppression) : c'est une pièce d'audit,
 pas un document de travail.
 
-## Phase 4 — Seuils minimums
+## Phase 4 — Réapprovisionnement des comptoirs
 
-Aucun code : `stock.warehouse.orderpoint` est natif et importable par CSV.
+Une règle min/max (`stock.warehouse.orderpoint`) posée sur un comptoir tire
+désormais du magasin : la route **Réappro comptoirs**
+(`data/stock_route_data.xml`) porte trois règles `WH/Stock → comptoir`, chacune
+sur son type « Réappro … ». **Sans elle, Odoo remontait au parent WH/Stock et
+créait une réception fournisseur vers le comptoir**, stock du magasin ignoré.
+`tests/test_reappro_comptoirs.py` garde ce cas, la rupture au magasin (le
+transfert attend, aucun achat) et le double clic.
 
-Procédure quand les seuils réels seront connus :
+Déclenchement **manuel**, une fois par semaine : Inventaire ▸ Opérations ▸
+Réapprovisionnement, filtrer l'emplacement, *Commander* → un seul transfert
+« Réappro … » pour la semaine. Commander est réservé au **Manager** Inventaire :
+le Collaborateur lit les règles sans pouvoir les exécuter (droits natifs).
 
-1. Inventaire ▸ Opérations ▸ Réapprovisionnement, créer une règle témoin.
-2. Exporter la liste (colonnes `product_id`, `location_id`, `product_min_qty`,
-   `product_max_qty`, `trigger`) avec « Je veux mettre à jour des données ».
-3. Remplir, réimporter.
+Niveaux de départ de la Cafétéria : `tools/seed_reappro_cafeteria.py`, une
+valeur par famille, à corriger après 3–4 semaines de ventes. Pour corriger en
+masse :
+
+1. Réapprovisionnement, filtrer l'emplacement, tout sélectionner, exporter
+   (colonnes `product_id`, `location_id`, `product_min_qty`, `product_max_qty`,
+   `trigger`) avec « Je veux mettre à jour des données ».
+2. Corriger, réimporter.
 
 `qty_multiple` n'existe plus en 19.0 ; l'arrondi passe par `replenishment_uom_id`.
 
