@@ -191,3 +191,32 @@ S'ils badgent pour l'accès ou l'assiduité, cela passe par le système externe.
 
 La contrainte native d'Odoo reste active (alphanumérique, 18 caractères max) :
 un numéro non conforme **échoue bruyamment** au lieu d'être avalé.
+
+## Profil public : ce qu'un utilisateur sans droits RH lit d'un employé
+
+Le cœur d'Odoo pose une règle en tête de `hr/models/hr_employee.py` : **tout
+champ présent sur `hr.employee` et absent de `hr.employee.public` porte
+`groups="hr.group_hr_user"`.** Sinon :
+
+1. le prefetch le charge pour un utilisateur qui n'a pas accès au modèle ;
+2. `_check_private_fields` refuse alors la lecture **entière**, et le moindre
+   accès à un employé échoue.
+
+Vécu le 2026-09-21 : avec `pos_hr` installé, la caisse restait **blanche** pour
+tout caissier non RH (« Could not load model pos.config »). Lire le simple nom
+d'un employé suffisait à le reproduire.
+
+| Champ | Module | Lisible par |
+|---|---|---|
+| `person_id` | ce module | RH seulement (`groups="hr.group_hr_user"`) |
+| `matricule_institutionnel` | ce module | **tout utilisateur interne** : déclaré sur `hr.employee.public`, il est imprimé sur le badge |
+| `date_start_working` | `maintenance_university` | RH et responsables maintenance |
+
+La création d'un employé n'a pas besoin de `sudo()` pour ces champs : le cœur
+exige déjà les droits RH pour créer un employé (son `create()` lit `version_ids`,
+réservé aux RH). Le seul créateur sans ces droits, l'assistant « Créer des
+travailleurs » de `maintenance_university`, passe déjà par `sudo()`.
+
+**Le garde-fou** : `test_every_stored_employee_field_is_public_or_guarded`
+échoue, en nommant le champ, dès qu'un module installé ajoute à `hr.employee`
+un champ stocké ni public ni protégé.
