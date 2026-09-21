@@ -211,6 +211,9 @@ A **student meal is the free one**. The same product sold at its real price is a
 paying walk-in customer and must not touch anyone's balance — that is what the
 `float_is_zero` check on `_his_meal_price_paid()` is for.
 
+The whole definition lives in one method, `pos.order.line._his_is_credit_meal()`,
+and the till's `isServedOnMealCredits` asks the same question in the browser.
+
 That check reads **what the student actually pays**, discount included, and not
 the price printed on the line. It read `price_unit` alone until 19.0.3.6.0, when
 a test walked a meal out of the restaurant on a 100% discount: the discount
@@ -240,6 +243,30 @@ be tricked into serving a meal the student cannot pay for.
 `get_meal_balance()` feeds it, and returns `matricule_affiche` — the displayed
 form without the check digit, because nobody copies this number by hand; it is
 read off a card.
+
+### Payment on a meal served on credits (19.0.3.7.0)
+
+An order made **only** of meals served on credits has nothing to pay, so
+**Payment skips the payment screen**. `PosStore.pay()` ticks the invoice box and
+validates the order through core's own `OrderPaymentValidation`: the same checks,
+sync and receipt as the payment screen, the way `validateOrderFast` does it. The
+till lands on the **receipt page**.
+
+- **The invoice is emailed by core, not by this module.** Invoicing a POS order
+  ends in `invoice._generate_and_send()`, whose default sending method is email.
+  The mail goes to the student's `email` when there is one, and nothing is sent
+  when there is not.
+- **Student with an email:** the cashier sees "Invoice sent to …", and the PDF
+  is not downloaded on the till.
+- **Student without one:** the PDF is shown, as for any invoiced order.
+- **The invoice stays at 0 DA.** The money came in when the pack was sold, and
+  invoicing the meal at its price would book that revenue twice. Instead each
+  meal line says what paid for it: *"Paid with 1 meal credit(s), value
+  600,00 DA"* (`pos.order._get_invoice_lines_values`).
+- **Anything else keeps the ordinary payment screen:** one paid line on the order
+  (a drink next to the meal), no student, or a till with no invoice journal.
+- **Delivery needs an outgoing mail server.** Without one the mail waits in the
+  queue, and the till's notification only means the invoice was issued.
 
 ---
 
@@ -392,5 +419,11 @@ On Git Bash, prefix with `MSYS_NO_PATHCONV=1`. Python changes need
 impossible negative balance, card lifecycle and replacement, the append-only
 ledger, POS behaviour at both tills, the identity boundary, RFID parsing, and the
 full badge chain from card to employee.
+
+`tests/test_meal_credit_invoice.py` covers the invoice of a meal served on
+credits (0 DA, the credits line, the email or its absence, all through
+`sync_from_ui`) and three POS tours. The tours need Chrome **and**
+`python3-websocket` in the image; without them they are skipped and the summary
+still says "0 failed", so read the `skipped` lines.
 
 **Depends on** `base`, `product`, `point_of_sale`, `his_person_core`.

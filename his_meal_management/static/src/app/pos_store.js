@@ -2,6 +2,7 @@ import { _t } from "@web/core/l10n/translation";
 import { PosStore } from "@point_of_sale/app/services/pos_store";
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { patch } from "@web/core/utils/patch";
+import OrderPaymentValidation from "@point_of_sale/app/utils/order_payment_validation";
 import { ServeMealDialog } from "./serve_meal_dialog";
 
 // Serving a student meal is a convenience, not a control. It shows the cashier
@@ -13,6 +14,45 @@ import { ServeMealDialog } from "./serve_meal_dialog";
 // The product grid is the only way in (product_screen.js): there are no
 // per-meal control buttons, a meal is served by tapping it on the menu.
 patch(PosStore.prototype, {
+    // Payment on an order eaten entirely on credits has nothing to take: Cash,
+    // Card and Customer Account would all be asked to record 0 DA. So the order
+    // is validated from here, invoiced, and the till goes straight to the
+    // receipt. It runs through the very OrderPaymentValidation the payment
+    // screen uses - the same checks, the same sync, the same receipt - exactly
+    // as core's validateOrderFast does, only without a payment line to add.
+    //
+    // Anything else takes the ordinary road: a paid line on the order, no
+    // student, or a till with no invoice journal (the invoice could not be
+    // made, and a blocked till is worse than one extra screen).
+    async pay() {
+        const order = this.getOrder();
+        if (!order?.isServedOnMealCredits || !this.config.canInvoice) {
+            return super.pay(...arguments);
+        }
+        // The payment screen guards its Validate button with an async lock; this
+        // is the same guard for the Payment button, so a second tap while the
+        // first order syncs does not validate it twice.
+        if (this.hisMealValidationInProgress) {
+            return;
+        }
+        this.hisMealValidationInProgress = true;
+        const wasToInvoice = order.isToInvoice();
+        try {
+            order.setToInvoice(true);
+            await new OrderPaymentValidation({ pos: this, orderUuid: order.uuid }).validateOrder(false);
+            // Still a draft means it did not go through - a check refused it, or
+            // the server did, and either one has said why. The order is still
+            // being edited, and a drink added next should not find the invoice
+            // box ticked on its payment screen. (Offline, the order is "paid"
+            // and queued, and keeps its invoice for when it syncs.)
+            if (order.state === "draft") {
+                order.setToInvoice(wasToInvoice);
+            }
+        } finally {
+            this.hisMealValidationInProgress = false;
+        }
+    },
+
     async serveStudentMeal(product) {
         const order = this.getOrder();
         const partner = order.getPartner();
