@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Route « un comptoir se reapprovisionne depuis WH/Stock ».
+
+             Sans elle, une regle min/max posee sur un comptoir ne trouve
+             aucune regle de stock qui cible le comptoir : stock.rule._get_rule
+             remonte alors au parent WH/Stock et prend la seule regle qui y
+             mene, « Fournisseurs -> Stock ». Resultat verifie : une RECEPTION
+             FOURNISSEUR vers la Cafeteria, alors que le magasin avait le stock.
+
+             _get_rule parcourt les emplacements du comptoir vers ses parents
+             et s'arrete a la premiere regle trouvee : une regle dont la
+             destination est le comptoir passe donc avant celle du magasin.
+             La route est rattachee a l'entrepot (warehouse_ids), ce qui la
+             place dans warehouse_id.route_ids, la liste que _get_rule consulte ;
+             aucun article n'a a la porter.
+
+             make_to_stock : si le magasin manque, le transfert est cree quand
+             meme et attend (remise partielle, reliquat). Il ne declenche jamais
+             d'achat. -->
+
+        <record id="route_reappro_comptoirs" model="stock.route">
+            <field name="name">Réappro comptoirs</field>
+            <field name="sequence">20</field>
+            <field name="product_selectable" eval="False"/>
+            <field name="warehouse_selectable" eval="True"/>
+            <field name="warehouse_ids" eval="[Command.link(ref('stock.warehouse0'))]"/>
+        </record>
+
+        <record id="rule_reappro_cafeteria" model="stock.rule">
+            <field name="name">WH/Stock → Cafétéria</field>
+            <field name="route_id" ref="route_reappro_comptoirs"/>
+            <field name="action">pull</field>
+            <field name="procure_method">make_to_stock</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="picking_type_id" ref="picking_type_reappro_cafeteria"/>
+            <field name="location_src_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+            <field name="location_dest_id" ref="loc_cafeteria"/>
+        </record>
+        <record id="rule_reappro_restaurant" model="stock.rule">
+            <field name="name">WH/Stock → Restaurant</field>
+            <field name="route_id" ref="route_reappro_comptoirs"/>
+            <field name="action">pull</field>
+            <field name="procure_method">make_to_stock</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="picking_type_id" ref="picking_type_reappro_restaurant"/>
+            <field name="location_src_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+            <field name="location_dest_id" ref="loc_restaurant"/>
+        </record>
+        <record id="rule_reappro_copy_center" model="stock.rule">
+            <field name="name">WH/Stock → Copy Center</field>
+            <field name="route_id" ref="route_reappro_comptoirs"/>
+            <field name="action">pull</field>
+            <field name="procure_method">make_to_stock</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="picking_type_id" ref="picking_type_reappro_copy_center"/>
+            <field name="location_src_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+            <field name="location_dest_id" ref="loc_copy_center"/>
+        </record>
+
+    </data>
+</odoo>
