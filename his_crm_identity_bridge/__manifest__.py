@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "CRM - Referentiel Personnes (pont)",
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.3.0",
     "category": "Sales/CRM",
     "summary": "Cree la fiche personne du candidat au premier contact commercial",
     "description": """
@@ -26,6 +26,7 @@ Aucune dependance a hr ni a his_hr_base : un candidat n'est pas un employe.
         "his_person_core",
     ],
     "data": [
+        "security/his_crm_identity_bridge_security.xml",
         "views/crm_lead_views.xml",
     ],
     "installable": True,

@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "POS - Perimetre des clients",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Sales/Point of Sale",
     "summary": "Ecarte des caisses les contacts qui ne sont que des candidats au recrutement",
     "description": """
@@ -30,6 +30,9 @@ candidatures vivent sur ces contacts.
         "point_of_sale",
         "hr_recruitment",
         "his_person_core",
+    ],
+    "data": [
+        "security/his_pos_partner_scope_security.xml",
     ],
     "installable": True,
 }

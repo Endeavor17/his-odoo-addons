@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Socle Personnes - Groupe HIS-HTC-IRA",
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.3.0",
     "category": "Technical",
     "summary": "Identite unique des personnes du groupe et matricule institutionnel",
     "description": """

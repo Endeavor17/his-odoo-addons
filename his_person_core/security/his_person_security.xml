@@ -27,4 +27,35 @@
         </record>
 
     </data>
+
+    <!-- Audit S-6. Core lets every internal user read every res.partner, and a
+         his.person delegates to a real one: a cook read a candidate's email
+         and phone. Students and candidates are closed to base.group_user.
+
+         Group rules OR together, so each role that has business with these
+         people re-opens them with its own (1, '=', 1) rule, declared by the
+         module that owns the role (his_meal_management, his_hr_base,
+         his_pos_partner_scope, his_crm_identity_bridge, his_admission,
+         his_access_base). A role missing from that list gets a blank where a
+         student's name should be: add a rule there, never widen this one. -->
+    <data noupdate="0">
+
+        <record id="rule_partner_student_candidate_private" model="ir.rule">
+            <field name="name">Contacts : etudiants et candidats reserves aux roles metier</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">['|', '|',
+                ('his_person_ids', '=', False),
+                ('his_person_ids.type_personne', 'not in', ['etudiant', 'candidat']),
+                ('id', '=', user.partner_id.id)]</field>
+        </record>
+
+        <record id="rule_partner_all_person_manager" model="ir.rule">
+            <field name="name">Contacts : tous (gestionnaire des personnes, administrateur)</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4, ref('group_his_person_manager')), (4, ref('base.group_system'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+    </data>
 </odoo>

@@ -3,7 +3,7 @@ from datetime import timedelta
 import psycopg2
 from odoo import Command, fields
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import mute_logger
 
@@ -1450,4 +1450,54 @@ class TestAtteignabilitéAuComptoir(TransactionCase):
         self.assertFalse(
             comestibles,
             "le Copy Center propose des repas : %s" % comestibles.mapped("name"),
+        )
+
+
+@tagged("post_install", "-at_install")
+class TestMealPrivacy(TransactionCase):
+    """Audit S-6, the meal half: what a till may learn about a student."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.student = make_person(cls.env, "Samia").partner_id
+        cls.other = make_person(cls.env, "Karim").partner_id
+        plan = cls.env["product.product"].create({"name": "Plan S6", "type": "service", "meal_credits": 6})
+        cls.student._grant_meal_credits(plan)
+        cls.other._grant_meal_credits(plan)
+
+        def user(login, *xmlids):
+            return cls.env["res.users"].create(
+                {
+                    "name": login,
+                    "login": login,
+                    "group_ids": [Command.set([cls.env.ref(x).id for x in ("base.group_user", *xmlids)])],
+                }
+            )
+
+        cls.staff = user("sans.role.meal")
+        cls.cashier = user("caissier.meal.s6", "his_meal_management.group_meal_cashier")
+        cls.officer = user("officier.meal.s6", "his_meal_management.group_meal_officer")
+
+    def test_the_balance_is_for_tills_only(self):
+        """Probe P7: any employee got the matricule, plan and balance back."""
+        with self.assertRaises(AccessError):
+            self.student.with_user(self.staff).get_meal_balance()
+        balance = self.student.with_user(self.cashier).get_meal_balance()
+        self.assertEqual(balance["credits"], 6)
+
+    def test_a_cashier_still_finds_the_student(self):
+        self.assertEqual(self.student.with_user(self.cashier).read(["name"])[0]["name"], "Samia")
+
+    def test_a_cashier_reads_only_the_ledger_lines_they_wrote(self):
+        """Probe P3: a cashier read every student's meal history."""
+        self.student.with_user(self.cashier).sudo()._consume_meal_credit()
+        Ledger = self.env["his.meal.transaction"]
+        seen = Ledger.with_user(self.cashier).search([])
+        self.assertTrue(seen)
+        self.assertEqual(seen.user_id, self.cashier)
+        self.assertEqual(
+            Ledger.with_user(self.officer).search_count([("partner_id", "in", (self.student | self.other).ids)]),
+            3,
+            "the officer still reads the whole ledger",
         )
