@@ -1,4 +1,4 @@
-from odoo import _, models
+from odoo import _, api, models
 from odoo.exceptions import UserError
 from odoo.tools import float_compare, float_is_zero
 
@@ -31,19 +31,7 @@ class PosOrder(models.Model):
             return
 
         plan_lines = self.lines.filtered(lambda line: line.product_id.meal_credits > 0)
-        rounding = self.currency_id.rounding
-        # A meal is any product carrying a credit cost - the mirror of how a
-        # plan is any product granting credits. It used to be the one product
-        # named on this till's pos.config, which meant a shop served exactly
-        # one meal and a shop with the field empty served none.
-        meal_lines = self.lines.filtered(
-            lambda line: (
-                line.product_id.meal_credit_cost > 0
-                # A student meal is the free one. The same product sold at its real
-                # price is a paying customer and must not touch anyone's balance.
-                and float_is_zero(line.price_unit, precision_rounding=rounding)
-            )
-        )
+        meal_lines = self.lines.filtered(lambda line: line._his_is_credit_meal())
 
         if not plan_lines and not meal_lines:
             return
@@ -70,7 +58,9 @@ class PosOrder(models.Model):
             # Audit S-5: credits are only as good as the money taken for them.
             # A plan at 0, or at its price with the discount button pressed,
             # used to hand over every credit as an ordinary purchase.
-            paid = line.price_unit * (1.0 - (line.discount or 0.0) / 100.0)
+            # Same definition of "paid" as the free-meal test below.
+            paid = line._his_meal_price_paid()
+            rounding = self.currency_id.rounding
             if line.qty > 0 and float_compare(paid, line.product_id.lst_price, precision_rounding=rounding) < 0:
                 raise UserError(
                     _(
@@ -109,3 +99,68 @@ class PosOrder(models.Model):
                     product=line.product_id,
                     allow_overdraft=True,
                 )
+
+    @api.model
+    def _get_invoice_lines_values(self, line_values, pos_line, move_type):
+        """Say on the invoice what a meal at 0 DA was really paid with.
+
+        A meal served on credits is invoiced at zero, and rightly so: the money
+        came in when the pack was sold, and invoicing the meal at its price
+        would book the same revenue twice. But a line reading "Repas 600 -
+        0,00" tells the student nothing, so the credits it took and what they
+        are worth go into the line's label. The amounts are left alone.
+        """
+        values = super()._get_invoice_lines_values(line_values, pos_line, move_type)
+        if values.get("display_type") or not pos_line._his_is_credit_meal():
+            return values
+        order = pos_line.order_id
+        note = _(
+            "Paid with %(credits)s meal credit(s), value %(value)s",
+            credits=f"{pos_line.product_id.meal_credit_cost * pos_line.qty:g}",
+            value=order.currency_id.format(pos_line.product_id.lst_price * pos_line.qty),
+        )
+        values["name"] = f"{values['name']}\n{note}" if values.get("name") else note
+        return values
+
+
+class PosOrderLine(models.Model):
+    """One line, and the only question this module asks of it."""
+
+    _inherit = "pos.order.line"
+
+    def _his_meal_price_paid(self):
+        """What the student hands over for one of these, discount included.
+
+        A separate method rather than an expression inside the filter because
+        this is the whole definition of "free meal" and it deserves a name a
+        reader can grep for. Any other way of making a line cost nothing - a
+        pricelist at zero, a future discount field - should land here too.
+        """
+        self.ensure_one()
+        return self.price_unit * (1.0 - (self.discount or 0.0) / 100.0)
+
+    def _his_is_credit_meal(self):
+        """A meal the student eats on credits rather than pays for.
+
+        A meal is any product carrying a credit cost - the mirror of how a plan
+        is any product granting credits. It used to be the one product named on
+        the till's pos.config, which meant a shop served exactly one meal and a
+        shop with the field empty served none.
+
+        The credit meal is the free one. The same product sold at its real price
+        is a paying customer and must not touch anyone's balance.
+
+        What counts is what the student actually pays, not the price printed on
+        the line: this read `price_unit` alone until a test walked a meal out of
+        the restaurant on a 100% discount. The discount button is on every till,
+        needs no developer console, and left the meal ledger empty - so the food
+        was gone and nothing anywhere counted it.
+
+        The till's `isServedOnMealCredits` (static/src/app/pos_order.js) asks
+        the same question to decide which screen to show; this one decides what
+        the credits do.
+        """
+        self.ensure_one()
+        return self.product_id.meal_credit_cost > 0 and float_is_zero(
+            self._his_meal_price_paid(), precision_rounding=self.order_id.currency_id.rounding
+        )
