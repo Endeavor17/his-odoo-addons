@@ -12,7 +12,8 @@ class ResUsers(models.Model):
         it over, but it stayed there in clear for as long as the employee lived.
         Called by `_login` as the user who just logged in.
         """
-        super()._update_last_login()
+        res = super()._update_last_login()
         self.env["hr.employee"].sudo().search(
             [("user_id", "=", self.env.uid), ("initial_password", "!=", False)]
         ).initial_password = False
+        return res
