@@ -1,5 +1,13 @@
 # Fiches de réapprovisionnement — notice de remplissage
 
+> **Cafétéria : fiche remplacée le 2026-09-21.** Faute de retour des
+> responsables, les niveaux de départ sont imposés par famille par
+> `tools/seed_reappro_cafeteria.py` (649 règles sur `his_dev`, famille « Divers »
+> exclue). La fiche Cafétéria ne sert plus qu'à transmettre une correction si un
+> responsable envoie un jour des chiffres ; on corrige alors dans l'écran
+> Réapprovisionnement (procédure dans le README de `his_stock_mdm`). Les fiches
+> Restaurant et Copy Center restent le canal prévu.
+
 Un fichier par point de vente, à faire remplir par son responsable :
 
 | Fichier | Point de vente | Articles |

@@ -1,5 +1,5 @@
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare
 
 # Credits move in halves. Two decimals is one more than the scheme needs, which
@@ -140,6 +140,20 @@ class HisMealSubscription(models.Model):
             # No end date means it never stops being usable.
             and (not self.date_end or on_date <= self.date_end)
         )
+
+    def write(self, vals):
+        """The counters move only through the ledger, whoever asks.
+
+        `readonly=True` above is display only: an officer holds write access
+        here (to cancel, to fix a date) and the audit (S-4) typed 1 -> 500 into
+        credits_total over RPC with no ledger line. Refused even in sudo, since
+        the one legitimate writer, `_consume_meal_credit`, says so explicitly.
+        """
+        if {"credits_total", "credits_used"} & vals.keys() and not self.env.context.get("his_meal_ledger"):
+            raise UserError(
+                _("Meal credits change only through a sale, a meal or the Correct Credits wizard, which log them.")
+            )
+        return super().write(vals)
 
     def action_cancel(self):
         self.write({"state": "cancelled"})

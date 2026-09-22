@@ -14,10 +14,22 @@ class HrEmployee(models.Model):
         ondelete="restrict",
         copy=False,
         index=True,
+        # Regle du coeur (tete de hr/models/hr_employee.py) : un champ present
+        # sur hr.employee et absent de hr.employee.public porte
+        # groups="hr.group_hr_user". Sans lui, le prefetch le charge pour un
+        # utilisateur sans droits RH, _check_private_fields refuse la lecture
+        # ENTIERE, et le moindre acces a un employe echoue - une caisse avec
+        # pos_hr restait blanche pour tout caissier non RH. La vue le masquait
+        # deja a ce groupe ; c'est desormais l'ORM qui le fait.
+        groups="hr.group_hr_user",
     )
     # Miroir, pas source. Le nom du champ est conserve a l'identique : la vue
     # hr_employee_views.xml de maintenance_university le reference par ce nom
     # et continue de fonctionner sans modification.
+    #
+    # PUBLIC, et declare comme tel sur hr.employee.public
+    # (hr_employee_public.py) : le matricule est imprime sur le badge, tout
+    # utilisateur interne peut le lire, comme le nom ou le poste.
     matricule_institutionnel = fields.Char(
         string="Matricule institutionnel",
         related="person_id.matricule_institutionnel",
@@ -68,6 +80,11 @@ class HrEmployee(models.Model):
         # avant, c'est garantir un SECOND partenaire pour le meme humain —
         # exactement le probleme que la delegation existe pour eviter.
         employees = super().create(vals_list)
+        # Pas de sudo() pour lire ou ecrire person_id (reserve aux RH) : le
+        # coeur exige deja les droits RH pour creer un employe - son create()
+        # lit version_ids, lui-meme groups="hr.group_hr_user". Le seul
+        # createur sans ces droits, l'assistant de maintenance_university,
+        # passe deja par sudo().
         for employee in employees:
             if not employee.person_id:
                 employee.person_id = employee._create_his_person()

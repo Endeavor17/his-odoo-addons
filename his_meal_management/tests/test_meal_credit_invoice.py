@@ -114,9 +114,7 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
         # Invoicing is a document, not a second charge.
         self.assertEqual(self.with_email.meal_credits_remaining, 5.0)
         self.assertEqual(
-            self.env["his.meal.transaction"].search_count(
-                [("pos_order_id", "=", order.id), ("type", "=", "consume")]
-            ),
+            self.env["his.meal.transaction"].search_count([("pos_order_id", "=", order.id), ("type", "=", "consume")]),
             1,
         )
 

@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tools import float_compare, float_round
 
 from .meal_subscription import ALLOWANCE_MEALS, CREDIT_PRECISION
@@ -372,7 +372,8 @@ class ResPartner(models.Model):
                     )
                 )
             take = min(subscription.credits_remaining, left_to_spend)
-            subscription.credits_used += take
+            # The one writer his.meal.subscription.write lets through.
+            subscription.with_context(his_meal_ledger=True).credits_used += take
             left_to_spend = float_round(
                 left_to_spend - take,
                 precision_digits=CREDIT_PRECISION,
@@ -420,8 +421,17 @@ class ResPartner(models.Model):
 
         sudo because the cashier is shown a balance without being given read
         access to the subscriptions behind it.
+
+        Which is why it checks who is asking first (audit S-6, probe P7): a
+        public method reading in sudo handed any employee a student's matricule,
+        plan and balance - the matricule his.person refuses them directly.
         """
         self.ensure_one()
+        user = self.env.user
+        if not (
+            user.has_group("his_meal_management.group_meal_cashier") or user.has_group("point_of_sale.group_pos_user")
+        ):
+            raise AccessError(_("Only a till or the meal office can read a meal balance."))
         subs = self.sudo()._usable_subscriptions()
         # The displayed matricule, not the stored one: his_person_core hides the
         # check digit on screen because a check digit only helps whoever copies

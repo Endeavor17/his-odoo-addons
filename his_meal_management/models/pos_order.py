@@ -1,6 +1,6 @@
 from odoo import _, api, models
 from odoo.exceptions import UserError
-from odoo.tools import float_is_zero
+from odoo.tools import float_compare, float_is_zero
 
 
 class PosOrder(models.Model):
@@ -55,6 +55,21 @@ class PosOrder(models.Model):
         # an officer settles both with the correction wizard. Handle them here
         # only if refunds turn out to be common.
         for line in plan_lines:
+            # Audit S-5: credits are only as good as the money taken for them.
+            # A plan at 0, or at its price with the discount button pressed,
+            # used to hand over every credit as an ordinary purchase.
+            # Same definition of "paid" as the free-meal test below.
+            paid = line._his_meal_price_paid()
+            rounding = self.currency_id.rounding
+            if line.qty > 0 and float_compare(paid, line.product_id.lst_price, precision_rounding=rounding) < 0:
+                raise UserError(
+                    _(
+                        "%(plan)s must be sold at its price, %(price)s. Meal credits are "
+                        "not granted on a discounted or zero-priced plan.",
+                        plan=line.product_id.display_name,
+                        price=self.currency_id.format(line.product_id.lst_price),
+                    )
+                )
             for _n in range(int(line.qty)):
                 partner._grant_meal_credits(line.product_id, pos_order=self)
 

@@ -192,7 +192,7 @@ class TestFiftyStudentsOverATerm(AccountTestInvoicingCommon):
             return False
         return True
 
-    def _halves(self, credits):
+    def _halves(self, credits):  # pylint: disable=redefined-builtin
         """Credits to integer half-credits, refusing anything off the grid."""
         doubled = credits * 2
         self.assertAlmostEqual(
@@ -683,8 +683,10 @@ class TestWaysToEatForFree(AccountTestInvoicingCommon):
                 "group_ids": [Command.link(self.env.ref("his_meal_management.group_meal_cashier").id)],
             }
         )
-        with self.assertRaises(AccessError), self.env.cr.savepoint():
+        # The S-4 guard answers (UserError) before the ACL would (AccessError).
+        with self.assertRaises(UserError), self.env.cr.savepoint():
             sub.with_user(cashier).write({"credits_total": 999.0})
+        self.assertEqual(sub.credits_total, 6.0)
         with self.assertRaises(AccessError), self.env.cr.savepoint():
             self.env["his.meal.subscription"].with_user(cashier).create(
                 {

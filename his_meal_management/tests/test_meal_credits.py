@@ -3,7 +3,7 @@ from datetime import timedelta
 import psycopg2
 from odoo import Command, fields
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import mute_logger
 
@@ -139,8 +139,59 @@ class TestMealCredits(TransactionCase):
         """The database refuses it, not just the Python."""
         sub = self.student._grant_meal_credits(self.weekly)
         with self.assertRaises(psycopg2.errors.CheckViolation), mute_logger("odoo.sql_db"), self.cr.savepoint():
-            sub.credits_used = sub.credits_total + 1
+            # The ledger's own context, so the Python guard lets it through and
+            # it is the CHECK constraint that has to say no.
+            sub.with_context(his_meal_ledger=True).credits_used = sub.credits_total + 1
             sub.flush_recordset()
+
+    def test_a_counter_cannot_be_rewritten_outside_the_ledger(self):
+        """Audit S-4: an officer typed 1 -> 500 and no ledger line was written.
+
+        `readonly` on the field is display only. Refused even in sudo: the only
+        writer of these counters is `_consume_meal_credit`, which logs.
+        """
+        sub = self.student._grant_meal_credits(self.weekly)
+        officer = self.env["res.users"].create(
+            {
+                "name": "Officier S4",
+                "login": "officier.s4.test",
+                "group_ids": [Command.link(self.env.ref("his_meal_management.group_meal_officer").id)],
+            }
+        )
+        for field in ("credits_total", "credits_used"):
+            for env_sub in (sub.with_user(officer), sub.sudo()):
+                with self.assertRaises(UserError), self.cr.savepoint():
+                    env_sub.write({field: 3})
+        self.assertEqual(sub.credits_total, 6)
+        self.assertEqual(sub.credits_used, 0)
+        # Everything else an officer does to a subscription still works.
+        sub.with_user(officer).action_cancel()
+        self.assertEqual(sub.state, "cancelled")
+
+    def test_a_real_officer_can_grant_and_take_back_through_the_wizard(self):
+        """The wizard is the sanctioned door, so it must open for a real officer.
+
+        It did not: the officer holds no create right on subscriptions, and the
+        grant branch created one as the officer. Every other test ran it as the
+        superuser, which is why nobody saw it.
+        """
+        officer = self.env["res.users"].create(
+            {
+                "name": "Officier Wizard",
+                "login": "officier.wizard.test",
+                "group_ids": [Command.link(self.env.ref("his_meal_management.group_meal_officer").id)],
+            }
+        )
+        Wizard = self.env["his.meal.adjust.wizard"].with_user(officer)
+        Wizard.create({"partner_id": self.student.id, "credits": 3, "reason": "geste"}).action_apply()
+        Wizard.create({"partner_id": self.student.id, "credits": -1, "reason": "erreur"}).action_apply()
+
+        self.assertEqual(self.student.meal_credits_remaining, 2)
+        adjusts = self.env["his.meal.transaction"].search(
+            [("partner_id", "=", self.student.id), ("type", "=", "adjust")]
+        )
+        self.assertEqual(sorted(adjusts.mapped("credits")), [-1, 3])
+        self.assertEqual(adjusts.user_id, officer, "the ledger names the officer, not the superuser")
 
     def test_half_a_credit_can_be_spent_and_the_constraint_still_holds(self):
         """A 300 DA meal costs 0.5, so the balance has to carry halves."""
@@ -441,16 +492,17 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
         """
         return self.student.sudo()._grant_meal_credits(self.monthly)
 
-    def _order(self, product, qty=1, price_unit=0.0, partner=None):
+    def _order(self, product, qty=1, price_unit=0.0, partner=None, discount=0.0):
         """A validated-looking order, straight to the hook under test."""
+        paid = price_unit * qty * (1 - discount / 100)
         return self.env["pos.order"].create(
             {
                 "company_id": self.env.company.id,
                 "session_id": self.session.id,
                 "partner_id": (partner or self.student).id if partner is not False else False,
                 "amount_tax": 0.0,
-                "amount_total": price_unit * qty,
-                "amount_paid": price_unit * qty,
+                "amount_total": paid,
+                "amount_paid": paid,
                 "amount_return": 0.0,
                 "lines": [
                     Command.create(
@@ -458,13 +510,28 @@ class TestMealCreditsAtThePos(AccountTestInvoicingCommon):
                             "product_id": product.id,
                             "qty": qty,
                             "price_unit": price_unit,
-                            "price_subtotal": price_unit * qty,
-                            "price_subtotal_incl": price_unit * qty,
+                            "discount": discount,
+                            "price_subtotal": paid,
+                            "price_subtotal_incl": paid,
                         }
                     )
                 ],
             }
         )
+
+    def test_a_plan_sold_below_its_price_grants_nothing(self):
+        """Audit S-5: the till checked the meal's price but never the plan's.
+
+        A plan at 0, or a plan at its price with the discount button pressed,
+        handed over the full credits as an ordinary purchase. Refusing rolls the
+        whole order back, like a meal with no card on it.
+        """
+        for price, discount in ((0.0, 0.0), (12000.0, 100.0), (12000.0, 50.0), (6000.0, 0.0)):
+            order = self._order(self.monthly, price_unit=price, discount=discount)
+            with self.assertRaises(UserError), self.cr.savepoint():
+                order._apply_meal_credits()
+        self.assertFalse(self.env["his.meal.subscription"].search([("partner_id", "=", self.student.id)]))
+        self.assertEqual(self.student.meal_credits_remaining, 0)
 
     def test_selling_a_plan_grants_the_credits(self):
         order = self._order(self.monthly, price_unit=12000.0)
@@ -1383,4 +1450,54 @@ class TestAtteignabilitéAuComptoir(TransactionCase):
         self.assertFalse(
             comestibles,
             "le Copy Center propose des repas : %s" % comestibles.mapped("name"),
+        )
+
+
+@tagged("post_install", "-at_install")
+class TestMealPrivacy(TransactionCase):
+    """Audit S-6, the meal half: what a till may learn about a student."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.student = make_person(cls.env, "Samia").partner_id
+        cls.other = make_person(cls.env, "Karim").partner_id
+        plan = cls.env["product.product"].create({"name": "Plan S6", "type": "service", "meal_credits": 6})
+        cls.student._grant_meal_credits(plan)
+        cls.other._grant_meal_credits(plan)
+
+        def user(login, *xmlids):
+            return cls.env["res.users"].create(
+                {
+                    "name": login,
+                    "login": login,
+                    "group_ids": [Command.set([cls.env.ref(x).id for x in ("base.group_user", *xmlids)])],
+                }
+            )
+
+        cls.staff = user("sans.role.meal")
+        cls.cashier = user("caissier.meal.s6", "his_meal_management.group_meal_cashier")
+        cls.officer = user("officier.meal.s6", "his_meal_management.group_meal_officer")
+
+    def test_the_balance_is_for_tills_only(self):
+        """Probe P7: any employee got the matricule, plan and balance back."""
+        with self.assertRaises(AccessError):
+            self.student.with_user(self.staff).get_meal_balance()
+        balance = self.student.with_user(self.cashier).get_meal_balance()
+        self.assertEqual(balance["credits"], 6)
+
+    def test_a_cashier_still_finds_the_student(self):
+        self.assertEqual(self.student.with_user(self.cashier).read(["name"])[0]["name"], "Samia")
+
+    def test_a_cashier_reads_only_the_ledger_lines_they_wrote(self):
+        """Probe P3: a cashier read every student's meal history."""
+        self.student.with_user(self.cashier).sudo()._consume_meal_credit()
+        Ledger = self.env["his.meal.transaction"]
+        seen = Ledger.with_user(self.cashier).search([])
+        self.assertTrue(seen)
+        self.assertEqual(seen.user_id, self.cashier)
+        self.assertEqual(
+            Ledger.with_user(self.officer).search_count([("partner_id", "in", (self.student | self.other).ids)]),
+            3,
+            "the officer still reads the whole ledger",
         )
