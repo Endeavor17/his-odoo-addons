@@ -7,4 +7,5 @@ from . import (
     maintenance_university_request,
     maintenance_university_request_time,
     maintenance_university_workday,
+    res_users,
 )
