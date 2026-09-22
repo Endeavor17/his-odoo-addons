@@ -49,7 +49,10 @@ class MealAdjustWizard(models.TransientModel):
 
     def action_apply(self):
         self.ensure_one()
-        partner = self.partner_id
+        # sudo because the officer holds no create right on subscriptions - on
+        # purpose, so this wizard stays the only door. It keeps the user, so
+        # the ledger still names the officer.
+        partner = self.partner_id.sudo()
         if self.credits > 0:
             if self.validity_days < 0:
                 raise UserError(_("A validity cannot be negative. Use zero for credits that never expire."))

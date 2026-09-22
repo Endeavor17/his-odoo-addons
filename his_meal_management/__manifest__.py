@@ -1,6 +1,6 @@
 {
     "name": "HIS Meal Management",
-    "version": "19.0.3.5.1",
+    "version": "19.0.3.8.0",
     "summary": "HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS",
     "description": """
 HIS Meal Management

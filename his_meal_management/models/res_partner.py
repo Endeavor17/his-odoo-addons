@@ -372,7 +372,8 @@ class ResPartner(models.Model):
                     )
                 )
             take = min(subscription.credits_remaining, left_to_spend)
-            subscription.credits_used += take
+            # The one writer his.meal.subscription.write lets through.
+            subscription.with_context(his_meal_ledger=True).credits_used += take
             left_to_spend = float_round(
                 left_to_spend - take,
                 precision_digits=CREDIT_PRECISION,
