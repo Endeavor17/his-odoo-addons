@@ -33,4 +33,31 @@
             ledger line.</field>
     </record>
 
+    <!-- Audit S-6 : rouvre les etudiants que
+         his_person_core.rule_partner_student_candidate_private ferme. Le
+         caissier retrouve un etudiant par sa carte ; l'officier en herite. -->
+    <record id="rule_partner_all_meal_cashier" model="ir.rule">
+        <field name="name">Contacts : tous (restauration)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="groups" eval="[(4, ref('group_meal_cashier'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Audit S-6 (sonde P3) : un caissier lisait l'historique de repas de tous
+         les etudiants. Il ne lit plus que les lignes qu'il a passees ; le solde
+         affiche en caisse vient de get_meal_balance, qui lit en sudo. -->
+    <record id="rule_meal_transaction_cashier_own" model="ir.rule">
+        <field name="name">Grand livre repas : ses propres lignes (caissier)</field>
+        <field name="model_id" ref="model_his_meal_transaction"/>
+        <field name="groups" eval="[(4, ref('group_meal_cashier'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_meal_transaction_officer_all" model="ir.rule">
+        <field name="name">Grand livre repas : tout (officier)</field>
+        <field name="model_id" ref="model_his_meal_transaction"/>
+        <field name="groups" eval="[(4, ref('group_meal_officer'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
 </odoo>

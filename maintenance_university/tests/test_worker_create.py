@@ -182,3 +182,18 @@ class TestWorkerCreate(TransactionCase):
         employee = wizard.line_ids.employee_id
         wizard.action_create_workers()
         self.assertEqual(wizard.line_ids.employee_id, employee)
+
+    # --- Audit S-7 ------------------------------------------------------------
+
+    def test_the_temporary_password_goes_at_the_first_login(self):
+        """Kept in clear for as long as the employee lived, readable by every
+        maintenance manager present and future. Now only until it is used."""
+        wizard = self._wizard(name="Premier Login", login="premier.login@his.test")
+        wizard.action_create_workers()
+        employee = wizard.line_ids.employee_id
+        self.assertTrue(employee.initial_password, "the manager can still hand it over")
+
+        # What res.users._login calls, as the user who just logged in.
+        self.env["res.users"].with_user(employee.user_id).sudo()._update_last_login()
+
+        self.assertFalse(employee.initial_password)

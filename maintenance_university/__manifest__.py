@@ -1,6 +1,6 @@
 {
     "name": "University Maintenance",
-    "version": "19.0.3.0.1",
+    "version": "19.0.3.0.2",
     "summary": "University maintenance management system",
     "description": """
 University Maintenance

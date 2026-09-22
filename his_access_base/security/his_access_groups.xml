@@ -28,5 +28,13 @@
             <field name="comment">Voir l'annuaire des employes et le carnet de contacts. N'ouvre aucun acces metier.</field>
         </record>
 
+        <!-- Audit S-6 : rouvre les etudiants et candidats que
+             his_person_core.rule_partner_student_candidate_private ferme. -->
+        <record id="rule_partner_all_annuaire" model="ir.rule">
+            <field name="name">Contacts : tous (consultation annuaire)</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4, ref('group_annuaire'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
     </data>
 </odoo>
