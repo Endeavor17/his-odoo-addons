@@ -24,9 +24,17 @@ patch(PosStore.prototype, {
     // Anything else takes the ordinary road: a paid line on the order, no
     // student, or a till with no invoice journal (the invoice could not be
     // made, and a blocked till is worse than one extra screen).
+    //
+    // That ordinary road still gets the invoice box ticked when the order moves
+    // credits (pos_order.js hisMovesMealCredits), so the student is emailed for a
+    // meal plus a drink, or a top-up, exactly as for a meal alone. The cashier
+    // can still untick it on the payment screen.
     async pay() {
         const order = this.getOrder();
         if (!order?.isServedOnMealCredits || !this.config.canInvoice) {
+            if (order?.hisMovesMealCredits && this.config.canInvoice) {
+                order.setToInvoice(true);
+            }
             return super.pay(...arguments);
         }
         // The payment screen guards its Validate button with an async lock; this
@@ -53,7 +61,44 @@ patch(PosStore.prototype, {
         }
     },
 
-    async serveStudentMeal(product) {
+    // The customer picked AFTER the meal was rung up - card scanned second, or
+    // chosen from the list. The meal went on as a walk-in sale at its full
+    // price, and without this it stayed that way: the student paid cash and the
+    // invoice showed 600 DA. Every full-price meal already on the order is
+    // offered to the student's credits instead, through the same dialog as a
+    // meal tapped with the student already on it.
+    //
+    // A customer with no plan at all is left alone - a member of staff buying a
+    // meal pays for it, and that is no reason to pop a refusal at the cashier.
+    //
+    // Both of core's ways in (the partner list and a card scan in
+    // product_screen.js) go through this one method.
+    setPartnerToCurrentOrder(partner) {
+        const result = super.setPartnerToCurrentOrder(...arguments);
+        if (partner) {
+            this.hisServeRungMealsOnCredits();
+        }
+        return result;
+    },
+
+    async hisServeRungMealsOnCredits() {
+        const order = this.getOrder();
+        const rung = order.lines.filter(
+            (line) =>
+                line.product_id.meal_credit_cost > 0 &&
+                !order.currency.isZero(line.price_unit * (1 - (line.discount || 0) / 100))
+        );
+        // ponytail: one dialog per line, stacked, each checked against the same
+        // balance; the server still refuses whatever the credits cannot cover.
+        // Chain them if a cashier ever rings several meal lines before the card.
+        for (const line of rung) {
+            await this.serveStudentMeal(line.product_id, line);
+        }
+    },
+
+    // `line`: a meal already on the order at its price, to be put on credits in
+    // place rather than added again (hisServeRungMealsOnCredits).
+    async serveStudentMeal(product, line = null) {
         const order = this.getOrder();
         const partner = order.getPartner();
         if (!partner) {
@@ -68,14 +113,20 @@ patch(PosStore.prototype, {
 
         // Against this meal's own cost, not merely "has some credit": with a
         // 300 and a 600 meal sharing one wallet, half a credit is enough for
-        // one of them and not the other.
-        const cost = product.meal_credit_cost;
+        // one of them and not the other. A line already rung may carry several.
+        const qty = line ? line.getQuantity() : 1;
+        const cost = product.meal_credit_cost * qty;
+        const mealName = qty === 1 ? product.display_name : `${qty} × ${product.display_name}`;
         // Short of credits is no longer the end of it: a student who has bought
         // a plan carries two meals of allowance, and the till serves them behind
         // a warning rather than turning the person away. Only when that is spent
         // too does the refusal below stand.
         const onAllowance = balance.credits < cost;
         if (onAllowance && balance.allowance_left < 1) {
+            // Not a subscriber: the meal rung up earlier simply stays a sale.
+            if (line && !balance.plan) {
+                return;
+            }
             this.dialog.add(AlertDialog, {
                 title: _t("Not enough meal credits"),
                 body: _t(
@@ -83,7 +134,7 @@ patch(PosStore.prototype, {
                     {
                         name: balance.name,
                         credits: balance.credits,
-                        meal: product.display_name,
+                        meal: mealName,
                         cost: cost,
                     }
                 ),
@@ -107,12 +158,20 @@ patch(PosStore.prototype, {
             plan: balance.plan,
             expires: balance.expires,
             credits: balance.credits,
-            mealName: product.display_name,
+            mealName: mealName,
             cost: cost,
             onAllowance: onAllowance,
             allowanceLeft: balance.allowance_left,
             allowanceDebt: balance.allowance_debt,
             confirm: async () => {
+                if (line) {
+                    // "manual", as addLineToCurrentOrder marks a line given a
+                    // price, so a later pricelist change does not put the 600
+                    // back on it.
+                    line.setUnitPrice(0);
+                    line.price_type = "manual";
+                    return;
+                }
                 await this.addLineToCurrentOrder(
                     {
                         product_tmpl_id: product.product_tmpl_id,

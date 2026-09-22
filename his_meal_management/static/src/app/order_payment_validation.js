@@ -2,7 +2,7 @@ import { _t } from "@web/core/l10n/translation";
 import OrderPaymentValidation from "@point_of_sale/app/utils/order_payment_validation";
 import { patch } from "@web/core/utils/patch";
 
-// A meal served on credits is invoiced (PosStore.pay sets the box), and core
+// An order moving meal credits is invoiced (PosStore.pay sets the box), and core
 // then emails the invoice itself: pos.order._generate_pos_order_invoice ends in
 // invoice._generate_and_send(), whose default sending method is email, sent to
 // the invoice partner's `email` when there is one. Nothing here sends mail.
@@ -16,7 +16,7 @@ import { patch } from "@web/core/utils/patch";
 // `email` and not `invoice_emails`: the receipt screen pre-fills the latter, but
 // the invoice mail goes to move.partner_id.email and nowhere else.
 function emailsTheInvoice(order) {
-    return Boolean(order.isServedOnMealCredits && order.getPartner()?.email);
+    return Boolean(order.hisMovesMealCredits && order.getPartner()?.email);
 }
 
 patch(OrderPaymentValidation.prototype, {

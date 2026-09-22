@@ -53,7 +53,7 @@
         <!-- Pack 300: the 300 DA meal, six / twenty-five / eighty of them. -->
 
         <record id="product_plan_300_weekly" model="product.template">
-            <field name="name">Pack 300 - Weekly (6 meals)</field>
+            <field name="name">Meal subscription 300 - 6 meals (weekly)</field>
             <field name="type">service</field>
             <field name="categ_id" ref="product_category_meal_plans"/>
             <field name="list_price">1500.0</field>
@@ -68,7 +68,7 @@
         </record>
 
         <record id="product_plan_300_monthly" model="product.template">
-            <field name="name">Pack 300 - Monthly (25 meals)</field>
+            <field name="name">Meal subscription 300 - 25 meals (monthly)</field>
             <field name="type">service</field>
             <field name="categ_id" ref="product_category_meal_plans"/>
             <field name="list_price">6000.0</field>
@@ -83,7 +83,7 @@
         </record>
 
         <record id="product_plan_300_semester" model="product.template">
-            <field name="name">Pack 300 - Semesterly (80 meals)</field>
+            <field name="name">Meal subscription 300 - 80 meals (semester)</field>
             <field name="type">service</field>
             <field name="categ_id" ref="product_category_meal_plans"/>
             <field name="list_price">18000.0</field>
@@ -103,7 +103,7 @@
              resolves - they were this tier all along, under shorter names. -->
 
         <record id="product_plan_weekly" model="product.template">
-            <field name="name">Pack 600 - Weekly (6 meals)</field>
+            <field name="name">Meal subscription 600 - 6 meals (weekly)</field>
             <field name="type">service</field>
             <field name="categ_id" ref="product_category_meal_plans"/>
             <field name="list_price">3000.0</field>
@@ -118,7 +118,7 @@
         </record>
 
         <record id="product_plan_monthly" model="product.template">
-            <field name="name">Pack 600 - Monthly (25 meals)</field>
+            <field name="name">Meal subscription 600 - 25 meals (monthly)</field>
             <field name="type">service</field>
             <field name="categ_id" ref="product_category_meal_plans"/>
             <field name="list_price">12000.0</field>
@@ -133,7 +133,7 @@
         </record>
 
         <record id="product_plan_semester" model="product.template">
-            <field name="name">Pack 600 - Semesterly (80 meals)</field>
+            <field name="name">Meal subscription 600 - 80 meals (semester)</field>
             <field name="type">service</field>
             <field name="categ_id" ref="product_category_meal_plans"/>
             <field name="list_price">36000.0</field>
@@ -153,7 +153,7 @@
              is read by every till - there is nothing to set per shop. -->
 
         <record id="product_meal_300" model="product.template">
-            <field name="name">Meal 300</field>
+            <field name="name">Meal 300 (credits or cash)</field>
             <!-- 'consu' without is_storable: a meal is not tracked in stock.
                  (is_storable lives in the stock module, which this one does not
                  depend on, so it is deliberately not set here.) -->
@@ -170,7 +170,7 @@
         <!-- Keeps the product_daily_meal XML ID: this is the same 600 DA meal
              the module has always sold, renamed and given its cost. -->
         <record id="product_daily_meal" model="product.template">
-            <field name="name">Meal 600</field>
+            <field name="name">Meal 600 (credits or cash)</field>
             <field name="type">consu</field>
             <field name="list_price">600.0</field>
             <field name="meal_credit_cost">1.0</field>
