@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Socle RH - Groupe HIS-HTC-IRA",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.1.1",
     "category": "Human Resources",
     "summary": "Rattache hr.employee au referentiel Personnes (his.person)",
     "description": """

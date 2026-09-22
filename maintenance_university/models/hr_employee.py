@@ -8,10 +8,18 @@ class HrEmployee(models.Model):
     # HR/the Administrator sets this — it may be backdated (a hire entered
     # late) or in the future (hired now, starting later). It's what the
     # institutional ID's year is generated from, not the record's create date.
+    #
+    # HR data, so restricted: Odoo requires a `groups=` on every hr.employee
+    # field that is not on the public profile (see the top of
+    # hr/models/hr_employee.py). Without it the field was prefetched for users
+    # with no HR rights and their whole read of an employee was refused - a
+    # till with pos_hr stayed blank for every cashier. Maintenance managers keep
+    # it: they set it when creating workers (that wizard writes through sudo()).
     date_start_working = fields.Date(
         string="Start Date",
         default=fields.Date.context_today,
         help="When this employee starts working — determines the year in their institutional ID.",
+        groups="hr.group_hr_user,maintenance_university.group_maintenance_manager",
     )
 
     # Computed rather than a plain inverse Many2many field: a request's
