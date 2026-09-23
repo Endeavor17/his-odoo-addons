@@ -30,6 +30,7 @@ est ce qui arrive avec un simple `git pull` — voir `web_responsive/VENDOR.md`.
 | [`his_pos_ui`](his_pos_ui/) | POS — habillage partagé des trois caisses, identité par point de vente, ergonomie tactile | Développé, 3 tests |
 | [`his_pos_copy_center`](his_pos_copy_center/) | POS Copy Center — composition d'un travail de copie en un seul écran | Développé, 5 tests + 2 tours |
 | [`his_web_ui`](his_web_ui/) | Interface web — atterrissage sur la grille d'applications plutôt que sur le premier menu trié | Développé, 3 tests |
+| [`his_mail_async`](his_mail_async/) | Comptabilité — l'envoi d'une facture par courriel ne bloque plus la requête (dépôt en file au lieu d'un envoi immédiat) | Développé, 1 test |
 | [`web_responsive`](web_responsive/) | **Tiers (OCA)** — grille d'applications plein écran, absente d'Odoo Community | Copié, `19.0.1.1.0` |
 | _(à venir)_ | Achats | Autre intervenant |
 | _(à venir)_ | Point de Vente avancé | Autre intervenant |
