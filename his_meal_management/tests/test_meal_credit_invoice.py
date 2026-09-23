@@ -99,6 +99,11 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
         return self.env["pos.order"].search([("uuid", "=", uuid)])
 
     def _invoice_mails(self, invoice, partner):
+        # With his_mail_async installed, PDF and email are left to the "Send
+        # invoices automatically" cron: do what it does (minus its commit).
+        pending = invoice.filtered("sending_data")
+        if pending:
+            self.env["account.move.send"]._generate_and_send_invoices(pending, from_cron=True)
         return invoice.message_ids.filtered(lambda message: partner in message.partner_ids)
 
     def test_a_credit_meal_is_invoiced_at_zero_with_its_credits_stated(self):
