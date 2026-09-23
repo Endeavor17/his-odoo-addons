@@ -8,12 +8,13 @@ class AccountMoveSend(models.AbstractModel):
     @api.model
     def _send_mail(self, move, mail_template, **kwargs):
         # mail_notify_force_send vaut True par defaut dans mail.thread
-        # (_notify_thread) : en dessous de 50 destinataires, ce qui est
-        # toujours le cas pour une facture, le courriel part tout de suite
-        # dans le fil de la requete au lieu d'etre depose en file. On le met
-        # a False pour laisser mail.mail a l'etat outgoing ; le cron
-        # "Mail: Email Queue Manager" l'envoie ensuite, en general en
-        # quelques secondes.
-        return super(
-            AccountMoveSend, self.with_context(mail_notify_force_send=False)
-        )._send_mail(move, mail_template, **kwargs)
+        # (_notify_thread_by_email) : sous mail.mail.force.send.limit
+        # destinataires (100), le courriel part dans la requete au lieu d'etre
+        # depose en file. Le contexte va sur `move` : c'est lui qui fait
+        # message_post, celui de `self` ne l'atteint pas.
+        res = super()._send_mail(move.with_context(mail_notify_force_send=False), mail_template, **kwargs)
+        # Le cron "Mail: Email Queue Manager" ne tourne que toutes les heures
+        # et rien ne le reveille quand un courriel entre en file : on le
+        # declenche au plus tot (apres le commit de la requete).
+        self.env.ref("mail.ir_cron_mail_scheduler_action")._trigger()
+        return res
