@@ -1,5 +1,5 @@
 import { _t } from "@web/core/l10n/translation";
-import { onMounted } from "@odoo/owl";
+import { onMounted, onWillStart } from "@odoo/owl";
 import { ReceiptScreen } from "@point_of_sale/app/screens/receipt_screen/receipt_screen";
 import { patch } from "@web/core/utils/patch";
 
@@ -14,23 +14,66 @@ import { patch } from "@web/core/utils/patch";
 // offline, core's button would open an "Unsynced order" dialog; a ticket nobody
 // asked for is not worth one.
 //
-// ponytail: remembered per page load, so reloading the browser on a receipt
-// sends it again. Store it on the order if that ever happens in real use.
-const sent = new Set();
+// Sent once per tab, reloads included: remembered in sessionStorage. Not on
+// pos.order.email - core COMPUTES that from the customer, so it is set on every
+// order with a customer whether anything was sent or not. The Email button
+// stays there for a resend on request.
+const SENT_KEY = "his_meal_management.tickets_sent";
+
+function readSent() {
+    try {
+        return JSON.parse(sessionStorage.getItem(SENT_KEY) || "[]");
+    } catch {
+        return [];
+    }
+}
+
+function markSent(uuid) {
+    try {
+        // The last 200 are plenty to cover a reload; the list never grows past it.
+        sessionStorage.setItem(SENT_KEY, JSON.stringify([...readSent(), uuid].slice(-200)));
+    } catch {
+        // Storage refused (private mode, quota): at worst a reload resends.
+    }
+}
 
 patch(ReceiptScreen.prototype, {
     setup() {
         super.setup(...arguments);
+        // Before the first render, so the ticket on screen AND the image
+        // emailed right after both carry the balance.
+        onWillStart(() => this.hisLoadMealBalance());
         onMounted(() => this.hisEmailTicket());
+    },
+
+    // What the student has left, printed on the ticket (receipt_screen.xml): a
+    // meal at 0 DA raises the question, the balance answers it. Asked of the
+    // server once the order is synced, so the credits this order took are
+    // already gone. Only for a customer who holds a plan or owes allowance
+    // meals; offline, or on any error, the ticket simply goes without it.
+    async hisLoadMealBalance() {
+        const order = this.currentOrder;
+        const partner = order.getPartner();
+        if (!partner || !order.isSynced) {
+            return;
+        }
+        try {
+            const balance = await this.pos.data.call("res.partner", "get_meal_balance", [[partner.id]]);
+            if (balance.plan || balance.credits > 0 || balance.allowance_debt > 0) {
+                order.hisMealBalance = balance;
+            }
+        } catch {
+            // The balance is a courtesy; a missing one must never block a ticket.
+        }
     },
 
     async hisEmailTicket() {
         const order = this.currentOrder;
         const email = order.getPartner()?.email;
-        if (!email || order.isToInvoice() || !order.isSynced || sent.has(order.uuid)) {
+        if (!email || order.isToInvoice() || !order.isSynced || readSent().includes(order.uuid)) {
             return;
         }
-        sent.add(order.uuid);
+        markSent(order.uuid);
         await this.sendReceipt.call({ action: "action_send_receipt", destination: email, name: "Email" });
         if (this.sendReceipt.status === "success") {
             this.notification.add(_t("Ticket sent to %s", email), { type: "success" });

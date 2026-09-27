@@ -264,6 +264,8 @@ does not depend on the invoice — the session closing posts it for tickets too.
   customer has an `email` and the order is not invoiced (`receipt_screen.js`):
   core's own Email button, pressed for the cashier, who sees "Ticket sent to …".
   `his_mail_async` puts it in the mail queue so the till does not wait on SMTP.
+- **The ticket shows the balance left** after the order ("Meal credits left", and
+  allowance meals owed if any), for a customer holding a plan (`receipt_screen.xml`).
 - **A meal at 0 DA says what paid for it** on the ticket: *"Paid with 1 meal
   credit(s) per meal, value 600,00 DA"*, as the line's customer note.
 - **An invoice, when asked for, stays at 0 DA.** The money came in when the pack

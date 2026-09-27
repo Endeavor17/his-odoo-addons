@@ -44,6 +44,10 @@ registry.category("web_tour.tours").add("his_meal_credit_payment_email_tour", {
                 trigger: ".pos-receipt .customer-note:contains('Paid with 1 meal credit(s) per meal')",
             },
             {
+                content: "The ticket says what the student has left: 6 credits, 1 eaten",
+                trigger: ".pos-receipt .his_meal_balance:contains('Meal credits left'):contains('5')",
+            },
+            {
                 content: "The cashier is told where the ticket went",
                 trigger: ".o_notification:contains('Ticket sent to tour.email@his.edu.dz')",
             },

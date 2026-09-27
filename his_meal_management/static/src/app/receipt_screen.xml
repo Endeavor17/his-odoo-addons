@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The student's balance after this order, set by receipt_screen.js.
+         Under the total and the payments, above the "Need an invoice?" QR. -->
+    <t t-name="his_meal_management.OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('pos-receipt-qr')]" position="before">
+            <div t-if="order.hisMealBalance" class="his_meal_balance pt-3">
+                <div class="d-flex">
+                    <span>Meal credits left</span>
+                    <span class="ms-auto font-monospace" t-esc="order.hisMealBalance.credits"/>
+                </div>
+                <div t-if="order.hisMealBalance.allowance_debt" class="d-flex">
+                    <span>Allowance meals to repay</span>
+                    <span class="ms-auto font-monospace" t-esc="order.hisMealBalance.allowance_debt"/>
+                </div>
+            </div>
+        </xpath>
+    </t>
+
+</templates>
