@@ -76,12 +76,12 @@ class ProductProduct(models.Model):
         loaded field like this one does not fall through, so without this line
         the meal buttons cannot price a meal or check it against the balance.
 
-        Only the cost: `meal_credits` belongs to selling a plan, which happens
-        server-side in pos.order._apply_meal_credits, and nothing in the
-        browser reads it.
+        `meal_credits` too, but only so the till knows an order carries a plan
+        and ticks its invoice box (pos_order.js hisMovesMealCredits). Granting
+        the credits still happens server-side in pos.order._apply_meal_credits.
 
         *args rather than the declared parameter: core has renamed this
         argument between POS versions (config_id / config), and this override
         does not care which it is - it only appends to whatever core returns.
         """
-        return [*super()._load_pos_data_fields(*args, **kwargs), "meal_credit_cost"]
+        return [*super()._load_pos_data_fields(*args, **kwargs), "meal_credit_cost", "meal_credits"]

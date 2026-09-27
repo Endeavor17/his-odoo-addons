@@ -24,4 +24,23 @@ patch(PosOrder.prototype, {
                 )
         );
     },
+
+    // An order that moves a student's meal credits: a meal eaten on them, or a
+    // plan that tops them up. Its invoice is how the student learns what their
+    // card did, so the till ticks the invoice box (pos_store.js) and core emails
+    // it - on a meal plus a drink, and on a top-up at the Copy Center, as much
+    // as on a meal alone.
+    //
+    // `meal_credits` is loaded for this alone (product_template.py).
+    get hisMovesMealCredits() {
+        return Boolean(
+            this.getPartner() &&
+                this.lines.some(
+                    (line) =>
+                        line.product_id.meal_credits > 0 ||
+                        (line.product_id.meal_credit_cost > 0 &&
+                            this.currency.isZero(line.price_unit * (1 - (line.discount || 0) / 100)))
+                )
+        );
+    },
 });

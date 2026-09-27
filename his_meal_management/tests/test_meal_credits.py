@@ -1388,6 +1388,9 @@ class TestAtteignabilitéAuComptoir(TransactionCase):
             "le cout en credits n'est plus demande sur product.product : "
             "le tap vendra les repas au prix normal sans prelever de credit",
         )
+        # Sans lui, la caisse ne voit plus qu'une commande porte un forfait :
+        # la case Facture reste vide et l'etudiant n'est plus prevenu par email.
+        self.assertIn("meal_credits", champs)
 
         repas = self.env["product.product"].search([("meal_credit_cost", ">", 0)], limit=1)
         self.assertTrue(repas, "aucun repas en base : le module n'est pas charge")
