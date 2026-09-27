@@ -247,26 +247,32 @@ read off a card.
 ### Payment on a meal served on credits (19.0.3.7.0)
 
 An order made **only** of meals served on credits has nothing to pay, so
-**Payment skips the payment screen**. `PosStore.pay()` ticks the invoice box and
-validates the order through core's own `OrderPaymentValidation`: the same checks,
-sync and receipt as the payment screen, the way `validateOrderFast` does it. The
-till lands on the **receipt page**.
+**Payment skips the payment screen**. `PosStore.pay()` validates the order
+through core's own `OrderPaymentValidation`: the same checks, sync and receipt as
+the payment screen, the way `validateOrderFast` does it. The till lands on the
+**receipt page**.
 
-- **The invoice is emailed by core, not by this module.** Invoicing a POS order
-  ends in `invoice._generate_and_send()`, whose default sending method is email.
-  The mail goes to the student's `email` when there is one, and nothing is sent
-  when there is not.
-- **Student with an email:** the cashier sees "Invoice sent to …", and the PDF
-  is not downloaded on the till.
-- **Student without one:** the PDF is shown, as for any invoiced order.
-- **The invoice stays at 0 DA.** The money came in when the pack was sold, and
-  invoicing the meal at its price would book that revenue twice. Instead each
-  meal line says what paid for it: *"Paid with 1 meal credit(s), value
-  600,00 DA"* (`pos.order._get_invoice_lines_values`).
+### A ticket, emailed — not an invoice (19.0.3.11.0)
+
+A sale to a student gets a **ticket**. Nothing is invoiced unless the cashier
+ticks the Invoice box: loi 04-02, art. 10 requires a ticket for a consumer and an
+invoice only when the customer asks for one. A company or an institution buying
+plans must still be invoiced (art. 10, CTCA art. 64): tick the box for them. TVA
+does not depend on the invoice — the session closing posts it for tickets too.
+
+- **The ticket is emailed** as soon as the receipt page shows, whenever the
+  customer has an `email` and the order is not invoiced (`receipt_screen.js`):
+  core's own Email button, pressed for the cashier, who sees "Ticket sent to …".
+  `his_mail_async` puts it in the mail queue so the till does not wait on SMTP.
+- **A meal at 0 DA says what paid for it** on the ticket: *"Paid with 1 meal
+  credit(s) per meal, value 600,00 DA"*, as the line's customer note.
+- **An invoice, when asked for, stays at 0 DA.** The money came in when the pack
+  was sold, and invoicing the meal at its price would book that revenue twice.
+  Each meal line carries the same statement (`pos.order._get_invoice_lines_values`).
 - **Anything else keeps the ordinary payment screen:** one paid line on the order
-  (a drink next to the meal), no student, or a till with no invoice journal.
+  (a drink next to the meal), or no student.
 - **Delivery needs an outgoing mail server.** Without one the mail waits in the
-  queue, and the till's notification only means the invoice was issued.
+  queue, and the till's notification only means the ticket was queued.
 
 ---
 
@@ -421,8 +427,9 @@ ledger, POS behaviour at both tills, the identity boundary, RFID parsing, and th
 full badge chain from card to employee.
 
 `tests/test_meal_credit_invoice.py` covers the invoice of a meal served on
-credits (0 DA, the credits line, the email or its absence, all through
-`sync_from_ui`) and three POS tours. The tours need Chrome **and**
+credits when one is asked for (0 DA, the credits line, the email or its absence,
+all through `sync_from_ui`) and three POS tours (no invoice, the ticket emailed
+and its credits note, the payment screen kept for anything to pay). The tours need Chrome **and**
 `python3-websocket` in the image; without them they are skipped and the summary
 still says "0 failed", so read the `skipped` lines.
 
