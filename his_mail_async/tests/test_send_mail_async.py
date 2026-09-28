@@ -112,3 +112,44 @@ class TestPosInvoiceInBackground(AccountTestInvoicingCommon):
         self.assertTrue(invoice.invoice_pdf_report_id, "le cron n'a pas produit le PDF")
         self.assertFalse(invoice.sending_data)
         self.assertTrue(self.env["mail.mail"].search([("model", "=", "account.move"), ("res_id", "=", invoice.id)]))
+
+    def test_receipt_mail_is_queued_not_force_sent(self):
+        """Le ticket part apres chaque vente a un client qui a un email : en file."""
+        order = self.env["pos.order"].create(
+            {
+                "session_id": self.config.current_session_id.id,
+                "partner_id": self.partner_a.id,
+                "lines": [
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": self.product.id,
+                            "qty": 1,
+                            "price_unit": 100,
+                            "price_subtotal": 100,
+                            "price_subtotal_incl": 100,
+                        },
+                    )
+                ],
+                "amount_total": 100,
+                "amount_tax": 0,
+                "amount_paid": 0,
+                "amount_return": 0,
+            }
+        )
+        cron = self.env.ref("mail.ir_cron_mail_scheduler_action")
+        Trigger = self.env["ir.cron.trigger"]
+        triggers_before = Trigger.search_count([("cron_id", "=", cron.id)])
+        MailMail = type(self.env["mail.mail"])
+        jpeg = "/9j/4AAQSkZJRgABAQ=="  # le contenu importe peu : c'est une piece jointe
+
+        with patch.object(MailMail, "send", autospec=True) as send:
+            order.action_send_receipt("etudiant@his.edu.dz", jpeg, False)
+
+        mail = self.env["mail.mail"].search([("model", "=", "pos.order"), ("res_id", "=", order.id)])
+        self.assertEqual(mail.state, "outgoing", "le ticket doit etre en file")
+        self.assertEqual(mail.email_to, "etudiant@his.edu.dz")
+        self.assertTrue(mail.attachment_ids, "le ticket est parti sans son image")
+        self.assertFalse(send.called, "le ticket a ete envoye dans la requete de la caisse")
+        self.assertGreater(Trigger.search_count([("cron_id", "=", cron.id)]), triggers_before)

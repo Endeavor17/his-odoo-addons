@@ -16,25 +16,20 @@ import { ServeMealDialog } from "./serve_meal_dialog";
 patch(PosStore.prototype, {
     // Payment on an order eaten entirely on credits has nothing to take: Cash,
     // Card and Customer Account would all be asked to record 0 DA. So the order
-    // is validated from here, invoiced, and the till goes straight to the
-    // receipt. It runs through the very OrderPaymentValidation the payment
-    // screen uses - the same checks, the same sync, the same receipt - exactly
-    // as core's validateOrderFast does, only without a payment line to add.
+    // is validated from here and the till goes straight to the receipt, which
+    // is emailed to the student (receipt_screen.js). It runs through the very
+    // OrderPaymentValidation the payment screen uses - the same checks, the same
+    // sync, the same receipt - exactly as core's validateOrderFast does, only
+    // without a payment line to add. Core accepts an order at 0 DA with no
+    // payment line, invoiced or not.
     //
-    // Anything else takes the ordinary road: a paid line on the order, no
-    // student, or a till with no invoice journal (the invoice could not be
-    // made, and a blocked till is worse than one extra screen).
-    //
-    // That ordinary road still gets the invoice box ticked when the order moves
-    // credits (pos_order.js hisMovesMealCredits), so the student is emailed for a
-    // meal plus a drink, or a top-up, exactly as for a meal alone. The cashier
-    // can still untick it on the payment screen.
+    // Nothing is invoiced unless the cashier ticks the box: a sale to a student
+    // gets a ticket (loi 04-02, art. 10 - an invoice only when the customer asks
+    // for one). A company or an institution buying plans must still be invoiced,
+    // and the box is there for that.
     async pay() {
         const order = this.getOrder();
-        if (!order?.isServedOnMealCredits || !this.config.canInvoice) {
-            if (order?.hisMovesMealCredits && this.config.canInvoice) {
-                order.setToInvoice(true);
-            }
+        if (!order?.isServedOnMealCredits) {
             return super.pay(...arguments);
         }
         // The payment screen guards its Validate button with an async lock; this
@@ -44,18 +39,8 @@ patch(PosStore.prototype, {
             return;
         }
         this.hisMealValidationInProgress = true;
-        const wasToInvoice = order.isToInvoice();
         try {
-            order.setToInvoice(true);
             await new OrderPaymentValidation({ pos: this, orderUuid: order.uuid }).validateOrder(false);
-            // Still a draft means it did not go through - a check refused it, or
-            // the server did, and either one has said why. The order is still
-            // being edited, and a drink added next should not find the invoice
-            // box ticked on its payment screen. (Offline, the order is "paid"
-            // and queued, and keeps its invoice for when it syncs.)
-            if (order.state === "draft") {
-                order.setToInvoice(wasToInvoice);
-            }
         } finally {
             this.hisMealValidationInProgress = false;
         }
@@ -170,15 +155,25 @@ patch(PosStore.prototype, {
                     // back on it.
                     line.setUnitPrice(0);
                     line.price_type = "manual";
-                    return;
+                } else {
+                    line = await this.addLineToCurrentOrder(
+                        {
+                            product_tmpl_id: product.product_tmpl_id,
+                            product_id: product,
+                            price_unit: 0,
+                        },
+                        {}
+                    );
                 }
-                await this.addLineToCurrentOrder(
-                    {
-                        product_tmpl_id: product.product_tmpl_id,
-                        product_id: product,
-                        price_unit: 0,
-                    },
-                    {}
+                // The ticket is what the student gets now, and "Meal 600 -
+                // 0,00 DA" tells them nothing. Core prints a line's customer
+                // note on the receipt. Worded per meal because core merges two
+                // lines of the same meal carrying the same note.
+                line?.setCustomerNote(
+                    _t("Paid with %(credits)s meal credit(s) per meal, value %(value)s", {
+                        credits: product.meal_credit_cost,
+                        value: this.env.utils.formatCurrency(product.lst_price),
+                    })
                 );
             },
         });

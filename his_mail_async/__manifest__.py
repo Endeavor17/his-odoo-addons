@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Envoi de facture asynchrone",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Accounting/Accounting",
     "summary": "PDF et courriel de facture hors de la requete (caisse POS, comptabilite)",
     "description": """
@@ -29,6 +29,10 @@ automatically », comme un envoi par lot, en le reveillant (il ne tourne
 qu'une fois par jour). Si ce cron est archive, le comportement du coeur
 reste. Mesure en local : facturer une commande POS passe de 5,7-6,6 s a
 1,5-2,3 s ; PDF et courriel suivent en arriere-plan en quelques secondes.
+
+Ticket de caisse : `pos.order.action_send_receipt` (bouton Email de l'ecran de
+ticket, et envoi automatique de his_meal_management) passe lui aussi en file,
+cron reveille. Le coeur l'envoie par SMTP dans la requete (`force_send=True`).
 
 Ne touche ni au serveur sortant, ni a l'adresse d'expedition, ni au contenu
 du courriel : seulement au moment ou il part.

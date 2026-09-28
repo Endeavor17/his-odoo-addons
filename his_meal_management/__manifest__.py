@@ -1,6 +1,6 @@
 {
     "name": "HIS Meal Management",
-    "version": "19.0.3.10.0",
+    "version": "19.0.3.11.0",
     "summary": "HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS",
     "description": """
 HIS Meal Management
@@ -61,6 +61,10 @@ Credits do not expire; they keep until they are eaten.
         # existed through available_in_pos; declaring it makes the load order
         # explicit instead of accidental.
         "his_stock_mdm",
+        # Every sale to a customer with an email ends in an emailed ticket
+        # (receipt_screen.js). his_mail_async queues it; without it core sends
+        # it by SMTP inside the till's request and the queue waits.
+        "his_mail_async",
     ],
     "data": [
         "security/meal_security.xml",

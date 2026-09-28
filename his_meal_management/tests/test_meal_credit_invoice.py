@@ -1,15 +1,17 @@
-"""A meal eaten on credits: no payment screen, an invoice, and its email.
+"""A meal eaten on credits: no payment screen, a ticket, and its email.
 
 Two halves, because the feature has two:
 
-* `TestTheCreditMealInvoice` is the server. The till only sets `to_invoice`; it
-  is core that invoices the order and emails the invoice. What this module adds
-  is the line on that invoice saying which credits paid for a 0 DA meal - and
-  the promise that nothing about the credits themselves moved.
+* `TestTheCreditMealInvoice` is the server, for the student who ASKS for an
+  invoice (the cashier ticks the box; nothing is invoiced otherwise). It is core
+  that invoices the order and emails the invoice. What this module adds is the
+  line on that invoice saying which credits paid for a 0 DA meal - and the
+  promise that nothing about the credits themselves moved.
 
 * `TestTheCreditMealTill` drives a real till: Payment on a meal served on
-  credits must land on the receipt without ever showing the payment screen,
-  and an order with anything to pay must still show it.
+  credits must land on the receipt without ever showing the payment screen, the
+  ticket is emailed rather than an invoice made, and an order with anything to
+  pay must still show the payment screen.
 """
 
 from odoo import Command, fields
@@ -196,17 +198,25 @@ class TestTheCreditMealTill(TestPointOfSaleHttpCommon):
         self.start_pos_tour(tour)
         return self.env["pos.order"].search([("config_id", "=", self.main_pos_config.id)], order="id desc", limit=1)
 
-    def test_payment_on_a_credit_meal_goes_straight_to_the_receipt(self):
-        order = self._run("his_meal_credit_payment_email_tour")
-        self.assertTrue(order.to_invoice)
-        self.assertEqual(order.state, "done", "an invoiced order ends 'done'")
-        self.assertFalse(order.payment_ids, "a meal on credits was recorded as paid by something")
-        self.assertEqual(order.account_move.amount_total, 0.0)
-        self.assertEqual(self.with_email.meal_credits_remaining, 5.0)
+    def _ticket_mails(self, order):
+        return self.env["mail.mail"].search([("model", "=", "pos.order"), ("res_id", "=", order.id)])
 
-    def test_a_student_with_no_email_still_gets_the_invoice_and_the_receipt(self):
+    def test_payment_on_a_credit_meal_goes_straight_to_an_emailed_ticket(self):
+        """A ticket, not an invoice (loi 04-02, art. 10), and the ticket is emailed."""
+        order = self._run("his_meal_credit_payment_email_tour")
+        self.assertFalse(order.to_invoice, "a student sale was invoiced without being asked to")
+        self.assertFalse(order.account_move)
+        self.assertEqual(order.state, "paid")
+        self.assertFalse(order.payment_ids, "a meal on credits was recorded as paid by something")
+        self.assertEqual(self.with_email.meal_credits_remaining, 5.0)
+        mail = self._ticket_mails(order)
+        self.assertEqual(mail.email_to, "tour.email@his.edu.dz")
+        self.assertTrue(mail.attachment_ids, "the ticket went out without its image")
+
+    def test_a_student_with_no_email_gets_the_receipt_and_nothing_is_sent(self):
         order = self._run("his_meal_credit_payment_no_email_tour")
-        self.assertTrue(order.account_move)
+        self.assertFalse(order.account_move)
+        self.assertFalse(self._ticket_mails(order))
         self.assertEqual(self.without_email.meal_credits_remaining, 5.0)
 
     def test_anything_to_pay_keeps_the_payment_screen(self):

@@ -10,7 +10,8 @@ import { registry } from "@web/core/registry";
 // Payment on a meal served on credits, the way a cashier does it: pick the
 // student, tap the meal, confirm it, press Payment. The Python side of each tour
 // (tests/test_meal_credit_invoice.py) then reads the order back and checks it
-// was invoiced, paid by nothing, and charged to the credits once.
+// was NOT invoiced, paid by nothing, charged to the credits once, and that its
+// ticket went to the mail queue.
 
 function serveMealTo(partnerName) {
     return [
@@ -39,8 +40,16 @@ registry.category("web_tour.tours").add("his_meal_credit_payment_email_tour", {
             ProductScreen.clickPayButton(false),
             ReceiptScreen.isShown(),
             {
-                content: "The cashier is told where the invoice went",
-                trigger: ".o_notification:contains('Invoice sent to tour.email@his.edu.dz')",
+                content: "The ticket says what paid for a meal at 0 DA",
+                trigger: ".pos-receipt .customer-note:contains('Paid with 1 meal credit(s) per meal')",
+            },
+            {
+                content: "The ticket says what the student has left: 6 credits, 1 eaten",
+                trigger: ".pos-receipt .his_meal_balance:contains('Meal credits left'):contains('5')",
+            },
+            {
+                content: "The cashier is told where the ticket went",
+                trigger: ".o_notification:contains('Ticket sent to tour.email@his.edu.dz')",
             },
         ].flat(),
 });
