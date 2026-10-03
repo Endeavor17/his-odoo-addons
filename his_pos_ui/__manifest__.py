@@ -34,6 +34,7 @@ The interface may be redesigned; the transaction may not.
             "his_pos_ui/static/src/scss/pos.scss",
             "his_pos_ui/static/src/scss/login.scss",
             "his_pos_ui/static/src/app/*.xml",
+            "his_pos_ui/static/src/app/*.js",
         ],
     },
     "installable": True,

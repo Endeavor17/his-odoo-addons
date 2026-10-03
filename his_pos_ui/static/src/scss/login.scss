@@ -5,9 +5,12 @@
 // point_of_sale's login_screen.scss already draws .login-overlay from
 // --homeMenu-bg-color and --homeMenu-bg-image, and tokens.scss points both at
 // the theme, so the wallpaper arrives with no template override.
+//
+// No `position` here: Odoo's `fixed-top` already anchors the scrim below, and
+// making the overlay relative dropped it under the navbar, leaving Register
+// and Orders clickable on a locked till.
 
 .his-pos .login-overlay {
-    position: relative;
     color: #ffffff;
 
     &::before {
