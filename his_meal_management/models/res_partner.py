@@ -416,22 +416,29 @@ class ResPartner(models.Model):
             )
         )
 
-    def get_meal_balance(self):
-        """Read-only summary for the POS button. UX only — never authoritative.
+    def _check_meal_balance_reader(self):
+        """A till or the meal office, nobody else (audit S-6, probe P7).
 
-        sudo because the cashier is shown a balance without being given read
-        access to the subscriptions behind it.
-
-        Which is why it checks who is asking first (audit S-6, probe P7): a
-        public method reading in sudo handed any employee a student's matricule,
-        plan and balance - the matricule his.person refuses them directly.
+        Every public method that reads a wallet in sudo asks this first: one
+        that did not handed any employee a student's matricule, plan and
+        balance - the matricule his.person refuses them directly.
         """
-        self.ensure_one()
         user = self.env.user
         if not (
             user.has_group("his_meal_management.group_meal_cashier") or user.has_group("point_of_sale.group_pos_user")
         ):
             raise AccessError(_("Only a till or the meal office can read a meal balance."))
+
+    def get_meal_balance(self):
+        """Read-only summary for the POS button and the balance screen. UX only
+        — never authoritative.
+
+        sudo because the cashier is shown a balance without being given read
+        access to the subscriptions behind it, which is why it checks who is
+        asking first.
+        """
+        self.ensure_one()
+        self._check_meal_balance_reader()
         subs = self.sudo()._usable_subscriptions()
         # The displayed matricule, not the stored one: his_person_core hides the
         # check digit on screen because a check digit only helps whoever copies
@@ -442,6 +449,11 @@ class ResPartner(models.Model):
             "name": self.display_name,
             "matricule": person.matricule_affiche or "",
             "credits": sum(subs.mapped("credits_remaining")),
+            # What the balance screen shows as "used / total". Over the same
+            # usable subscriptions, so used + left = total always holds: a plan
+            # eaten to the last credit drops out of all three together.
+            "credits_total": sum(subs.mapped("credits_total")),
+            "credits_used": sum(subs.mapped("credits_used")),
             "plan": subs[:1].product_id.display_name or "",
             # Empty when the credits never expire, which the till reads as
             # "don't mention a date" rather than "no date known".
@@ -452,6 +464,45 @@ class ResPartner(models.Model):
             "allowance_left": self.sudo().meal_allowance_left,
             "allowance_debt": self.sudo().meal_allowance_debt,
         }
+
+    @api.model
+    def search_meal_holders(self, query):
+        """Who a scanned card, a name or a matricule points to, for the balance screen.
+
+        A card is a card: its code is matched exactly first, since an active
+        card mirrors it onto `barcode` (meal_card._sync_partner_barcode), and a
+        hit ends the search. Otherwise the name or the displayed matricule, at
+        most 8 people, only those who carry a his.person - no identity, no
+        wallet.
+
+        sudo after the same check as get_meal_balance: his_person_core hides
+        students from most users, and all this returns is a name and the
+        matricule a card already shows.
+        """
+        self._check_meal_balance_reader()
+        query = (query or "").strip()
+        if not query:
+            return []
+        partners = self.sudo().search([("barcode", "=", query), ("his_person_ids", "!=", False)], limit=1)
+        if not partners:
+            partners = self.sudo().search(
+                [
+                    ("his_person_ids", "!=", False),
+                    "|",
+                    ("name", "ilike", query),
+                    ("his_person_ids.matricule_affiche", "ilike", query),
+                ],
+                limit=8,
+                order="name",
+            )
+        return [
+            {
+                "id": partner.id,
+                "name": partner.display_name,
+                "matricule": partner.his_person_ids[:1].matricule_affiche or "",
+            }
+            for partner in partners
+        ]
 
     def action_open_meal_transactions(self):
         self.ensure_one()
