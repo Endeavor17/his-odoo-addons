@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Shown once the three system parameters are set; until then the menu
+         stays stock. Anchored before "Backend" like pos_hr, pos_restaurant and
+         his_pos_ui: they all find that item by its text, and none removes it. -->
+    <t t-name="his_pos_dashboard.Navbar" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+        <xpath expr="//DropdownItem[contains(text(), 'Backend')]" position="before">
+            <DropdownItem t-if="pos.config.his_dashboard_available" onSelected="() => pos.navigate('HisDashboardScreen')">
+                Dashboard
+            </DropdownItem>
+        </xpath>
+    </t>
+
+</templates>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="his_pos_dashboard.DashboardScreen">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <iframe t-if="url" t-att-src="url" class="w-100 h-100 border-0" title="Dashboard"/>
+            <p t-else="" class="m-0 p-4 text-muted fs-4 text-center" t-esc="error"/>
+        </div>
+    </t>
+
+</templates>

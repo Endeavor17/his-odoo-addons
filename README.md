@@ -29,6 +29,7 @@ est ce qui arrive avec un simple `git pull` — voir `web_responsive/VENDOR.md`.
 | [`maintenance_university`](maintenance_university/) | Maintenance universitaire — demandes, inspections, constats, tableau de bord | Développé ; ne possède plus le matricule (v19.0.2.0.0) |
 | [`his_pos_ui`](his_pos_ui/) | POS — habillage partagé des trois caisses, identité par point de vente, ergonomie tactile | Développé, 3 tests |
 | [`his_pos_copy_center`](his_pos_copy_center/) | POS Copy Center — composition d'un travail de copie en un seul écran | Développé, 5 tests + 2 tours |
+| [`his_pos_dashboard`](his_pos_dashboard/) | POS — tableau de bord Metabase ouvert depuis le menu de la caisse ; URL signée côté serveur, clé hors dépôt | Développé, 3 tests |
 | [`his_web_ui`](his_web_ui/) | Interface web — atterrissage sur la grille d'applications plutôt que sur le premier menu trié | Développé, 3 tests |
 | [`his_mail_async`](his_mail_async/) | Comptabilité et POS — PDF et courriel de facture générés hors de la requête (la caisse n'attend plus wkhtmltopdf ni le SMTP) | Développé, 2 tests |
 | [`web_responsive`](web_responsive/) | **Tiers (OCA)** — grille d'applications plein écran, absente d'Odoo Community | Copié, `19.0.1.1.0` |
