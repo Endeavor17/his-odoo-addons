@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="maintenance_university.MetabaseDashboard">
+        <div class="o_content h-100 d-flex align-items-center justify-content-center">
+            <iframe t-if="url" t-att-src="url" class="w-100 h-100 border-0" title="Dashboard"/>
+            <p t-else="" class="m-0 p-4 fs-4 text-muted text-center" t-esc="error"/>
+        </div>
+    </t>
+
+</templates>

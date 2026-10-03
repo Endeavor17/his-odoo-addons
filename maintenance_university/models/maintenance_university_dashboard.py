@@ -1,12 +1,66 @@
+import base64
+import hashlib
+import hmac
+import json
+import time
+
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, UserError
 from odoo.tools import format_date
+
+# The Metabase instance's site and key are shared with his_pos_dashboard (one
+# place to rotate the key); the dashboard number is this app's. Set by an
+# administrator, never committed: the repository is public.
+METABASE_PARAMS = (
+    "his_metabase.site_url",
+    "his_metabase.secret_key",
+    "maintenance_university.metabase_dashboard_id",
+)
+
+
+# ponytail: the same HS256 signing as his_pos_dashboard, copied rather than
+# shared. Depending on a new module would need an upgrade at deploy to install
+# it, and deploys here run none. Extract a shared module at a third dashboard.
+def _b64(raw):
+    return base64.urlsafe_b64encode(raw).rstrip(b"=")
+
+
+def _b64_json(data):
+    return _b64(json.dumps(data, separators=(",", ":")).encode())
 
 
 class MaintenanceUniversityDashboard(models.AbstractModel):
     _name = "maintenance.university.dashboard"
     _description = "Monthly Recap Dashboard Data"
+
+    @api.model
+    def get_metabase_url(self):
+        """Signed embed URL for the Metabase dashboard, asked for on each opening.
+
+        The key is read in sudo and never leaves the server: the browser gets a
+        10-minute token. Manager-only like get_recap_data, and checked here for
+        the same reason: the method is reachable by RPC whatever the menu says.
+        """
+        if not self.env.user.has_group("maintenance_university.group_maintenance_manager"):
+            raise AccessError(self.env._("Only a manager can view the maintenance dashboard."))
+        get_param = self.env["ir.config_parameter"].sudo().get_param
+        site_url, key, dashboard_id = (get_param(name) for name in METABASE_PARAMS)
+        if not (site_url and key and dashboard_id):
+            raise UserError(
+                self.env._(
+                    "The maintenance dashboard is not configured: set the his_metabase.site_url, "
+                    "his_metabase.secret_key and maintenance_university.metabase_dashboard_id system parameters."
+                )
+            )
+        signing_input = (
+            _b64_json({"alg": "HS256", "typ": "JWT"})
+            + b"."
+            + _b64_json({"resource": {"dashboard": int(dashboard_id)}, "params": {}, "exp": int(time.time()) + 600})
+        )
+        signature = _b64(hmac.new(key.encode(), signing_input, hashlib.sha256).digest())
+        token = (signing_input + b"." + signature).decode()
+        return f"{site_url.rstrip('/')}/embed/dashboard/{token}#bordered=true&titled=true"
 
     @api.model
     def get_recap_data(self, month_offset=0):
