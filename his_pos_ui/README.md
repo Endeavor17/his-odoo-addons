@@ -6,9 +6,10 @@ Cafétéria, Restaurant, Copy Center.
 L'idée directrice, énoncée d'abord :
 
 > **L'interface peut être redessinée ; la transaction, non.** Ce module ne
-> contient que du CSS et une classe. Il ne patche aucun composant, n'ajoute
-> aucun appel serveur et ne touche à aucune ligne de commande. Aucune décision
-> d'habillage ne peut donc casser une vente.
+> contient que du CSS, une classe et deux retouches de navigation : l'entrée
+> « Return » du menu et le verrou de l'écran de connexion (`inert`). Il
+> n'ajoute aucun appel serveur et ne touche à aucune ligne de commande. Aucune
+> décision d'habillage ne peut donc casser une vente.
 
 ---
 

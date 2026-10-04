@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- "Return" to the backend is always in the menu.
+
+         With pos_hr, stock Odoo shows "Backend" only when the cashier is the
+         employee linked to the logged-in user. On a shared till nobody is, so
+         the menu had no way out. The stock item is hidden, not replaced:
+         pos_hr and pos_restaurant find it by its text, and a class survives
+         whatever t-if pos_hr puts on it, whichever module loads last. -->
+    <t t-name="his_pos_ui.Navbar" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+        <xpath expr="//DropdownItem[contains(text(), 'Backend')]" position="attributes">
+            <attribute name="class">'d-none'</attribute>
+        </xpath>
+        <xpath expr="//DropdownItem[contains(text(), 'Backend')]" position="after">
+            <DropdownItem onSelected="() => pos.closePos()">
+                Return
+            </DropdownItem>
+        </xpath>
+
+        <!-- A locked till is locked for the keyboard too. The login screen
+             covers the navbar, but its buttons stay focusable behind it: Tab
+             then Enter on "Register" opened the till with no cashier. inert
+             takes the whole bar out of reach, whatever the CSS stacking. -->
+        <xpath expr="//div[hasclass('pos-topheader')]" position="attributes">
+            <attribute name="t-att-inert">pos.router.state.current === 'LoginScreen'</attribute>
+        </xpath>
+    </t>
+
+</templates>

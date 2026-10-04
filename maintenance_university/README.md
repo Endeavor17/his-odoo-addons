@@ -232,6 +232,23 @@ worker, plus breakdowns by category and building. `get_recap_data()` re-checks
 the Manager group itself: the menu is already restricted, but the method is
 reachable by RPC regardless of which menu called it.
 
+**Dashboard** (19.0.3.1.0) — a Metabase dashboard, full page. On each opening
+`get_metabase_url()` re-checks the Manager group, then signs a 10-minute HS256
+token on the server; the browser never sees the key. Three system parameters,
+set by an administrator and **never committed** (the repository is public):
+
+| Key | Value |
+|---|---|
+| `his_metabase.site_url` | Metabase's **https** URL (an `http://` frame is blocked inside https Odoo) |
+| `his_metabase.secret_key` | Metabase → Admin → Embedding → static embedding key |
+| `maintenance_university.metabase_dashboard_id` | the dashboard number (`6`) |
+
+The first two are the Metabase instance's and shared with `his_pos_dashboard`,
+so the key rotates in one place. The signing is copied from that module rather
+than imported: a dependency on a new module would need an upgrade at deploy to
+install it. In Metabase the dashboard must be **published** for static
+embedding, or the page shows "Embedding is not enabled for this object".
+
 ---
 
 ## 7. Create Workers

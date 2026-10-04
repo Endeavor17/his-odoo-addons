@@ -276,6 +276,27 @@ does not depend on the invoice — the session closing posts it for tickets too.
 - **Delivery needs an outgoing mail server.** Without one the mail waits in the
   queue, and the till's notification only means the ticket was queued.
 
+### The balance screen (19.0.3.12.0)
+
+A **Meal Balance** card sits under the registers on the Point of Sale dashboard.
+**Open** leads to one search box: staff scan the card (the RFID reader types the
+UID and Enter into it), or type a name or a matricule when the card is at home,
+then turn the screen to the student. It shows the plan, the credits **left** in
+large, **used / total** with a bar, the expiry if any, and allowance meals owed.
+
+- **Read-only.** The figures are `get_meal_balance()`, the same sudo read the
+  tills use; `credits_total` and `credits_used` sum the same usable
+  subscriptions as `credits`, so used + left = total always holds.
+- **`search_meal_holders(query)`** says who a query points to: an exact card
+  code first (a hit ends the search), otherwise name or displayed matricule, at
+  most 8, only people carrying a `his.person`. It returns a name and a matricule,
+  nothing else.
+- **Same gate as the till:** both methods start with
+  `_check_meal_balance_reader()` — a till or the meal office, nobody else.
+- **No upgrade needed to appear.** The card opens the screen by its client-action
+  tag (`his_meal_balance`), not by an action record, so it works as soon as the
+  code is deployed.
+
 ---
 
 ## 7. The ledger
