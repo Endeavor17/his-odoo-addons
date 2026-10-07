@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- groups= sur chaque champ : un abonne sans role helpdesk peut ouvrir
+         un ticket qu'il suit ; il ne doit pas buter sur une personne qu'il
+         n'a pas le droit de lire. -->
+    <record id="ticket_view_form_his_person" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.his.person</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="before">
+                <!-- no_create : le helpdesk ne cree jamais de personne. -->
+                <field name="his_person_id" groups="helpdesk_mgmt.group_helpdesk_user_own"
+                       options="{'no_create': True}"/>
+                <field name="his_matricule" groups="helpdesk_mgmt.group_helpdesk_user_own"
+                       invisible="not his_person_id"/>
+                <field name="his_type_personne" groups="helpdesk_mgmt.group_helpdesk_user_own"
+                       invisible="not his_person_id"/>
+                <field name="his_engagement_id" groups="helpdesk_mgmt.group_helpdesk_user_own"
+                       invisible="not his_engagement_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_view_search_his_person" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.his.person</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="his_person_id" groups="helpdesk_mgmt.group_helpdesk_user_own"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

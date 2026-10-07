@@ -36,3 +36,18 @@ class HelpdeskTicket(models.Model):
         # suite dans le formulaire (et, en cascade, le nom et l'email du ticket).
         if self.his_person_id or self.partner_id.his_person_ids:
             self.partner_id = self.his_person_id.partner_id
+
+    # En-tete du ticket : qui est-ce, sans ouvrir sa fiche.
+    his_matricule = fields.Char(related="his_person_id.matricule_affiche", string="Matricule")
+    his_type_personne = fields.Selection(related="his_person_id.type_personne", string="Type de personne")
+    his_engagement_id = fields.Many2one(
+        "his.engagement",
+        string="Engagement en cours",
+        compute="_compute_his_engagement_id",
+    )
+
+    @api.depends("his_person_id")
+    def _compute_his_engagement_id(self):
+        for ticket in self:
+            # _order de his.engagement : date_debut desc, id desc.
+            ticket.his_engagement_id = ticket.his_person_id.engagement_ids[:1]

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Audit S-6 : rouvre les etudiants et candidats que
+         his_person_core.rule_partner_student_candidate_private ferme.
+         Decision de Mohamed (2026-10-07) : tout agent du helpdesk les voit.
+         group_helpdesk_user_own est le premier echelon : tous les agents
+         l'ont, par implication. -->
+    <record id="rule_partner_all_helpdesk" model="ir.rule">
+        <field name="name">Contacts : tous (agents helpdesk)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user_own'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+</odoo>

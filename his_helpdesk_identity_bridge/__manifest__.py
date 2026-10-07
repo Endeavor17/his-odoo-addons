@@ -18,6 +18,10 @@ est un defaut du referentiel, corrige a sa source.
         "helpdesk_mgmt_crm",
         "his_person_core",
     ],
-    "data": [],
+    "data": [
+        "security/ir.model.access.csv",
+        "security/his_helpdesk_identity_bridge_security.xml",
+        "views/helpdesk_ticket_views.xml",
+    ],
     "installable": True,
 }
