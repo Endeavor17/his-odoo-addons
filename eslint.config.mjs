@@ -8,7 +8,7 @@ import globals from 'globals';
 export default [
     js.configs.recommended,
     {
-        ignores: ['web_responsive/**', '**/*.min.js'],
+        ignores: ['web_responsive/**', 'helpdesk_mgmt/**', 'helpdesk_mgmt_crm/**', '**/*.min.js'],
     },
     {
         files: ['**/*.js', '**/*.esm.js'],

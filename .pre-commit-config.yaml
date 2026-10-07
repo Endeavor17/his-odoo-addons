@@ -2,7 +2,7 @@
 # pour qu'un echec se voie AVANT le push — un push sur main deploie en prod.
 # Installer une fois : pip install pre-commit && pre-commit install
 # Le module tiers web_responsive est exclu partout : on ne le maitrise pas.
-exclude: '^web_responsive/'
+exclude: '^(web_responsive|helpdesk_mgmt|helpdesk_mgmt_crm)/'
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit

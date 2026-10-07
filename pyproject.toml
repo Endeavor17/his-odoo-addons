@@ -4,7 +4,7 @@
 target-version = "py311"
 line-length = 120
 # Module tiers (OCA) : il n'est pas juge par notre politique.
-extend-exclude = ["web_responsive"]
+extend-exclude = ["web_responsive", "helpdesk_mgmt", "helpdesk_mgmt_crm"]
 
 [tool.ruff.lint]
 # Regles retenues : erreurs (E,F,W), bugs probables (B), complexite (C90),
