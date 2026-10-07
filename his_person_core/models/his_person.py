@@ -88,6 +88,9 @@ class HisPerson(models.Model):
     _inherits = {"res.partner": "partner_id"}
     _inherit = ["mail.thread"]
     _order = "matricule_institutionnel"
+    # Un agent tape le matricule affiche (sans cle) : ilike sur la forme
+    # longue le contient. Sert a tous les selecteurs de personne du groupe.
+    _rec_names_search = ["name", "matricule_institutionnel"]
 
     # delegate=True est exige par l'ORM en 19.0 (orm/model_classes.py) : sans
     # lui le modele ne se charge pas.
