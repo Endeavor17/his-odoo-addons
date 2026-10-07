@@ -156,3 +156,26 @@ rendering the ticket form and the person form, not by a clean compile.
   otherwise the vendored `fr.po` has no visible effect.
 - **Later specs:** email intake (IMAP polling or Mailgun route) — which also
   unlocks the partner-response and rating add-ons — then mass mailing.
+
+## 9. Addendum (2026-10-07): email intake
+
+Decided by Mohamed after verifying on production that mail reaches Odoo: the
+IMAP server on `test-support@his.edu.dz` receives internal and external mail.
+He is having `catchall@`, `bounce@` and `support@` forwarded into that mailbox;
+until then, the routes below are in place but receive nothing.
+
+- **Address:** OCA's `help@` alias is renamed `support@`. An email to it
+  becomes a ticket with no team (OCA's "tickets without team" list), channel
+  Email.
+- **Person link:** the mail gateway already matches a known contact by its main
+  email. Otherwise the bridge links the person whose `email_personnel` is
+  exactly the sender's, when there is exactly one; zero or several means no
+  link. Never a score, never a creation.
+- **Replies** land on their ticket through `catchall@` (core routing by
+  `In-Reply-To`). The closing email now invites a reply.
+- **Closing email** is also copied to the address the student wrote from when
+  it differs from the contact's, as a raw address: the mail composer would
+  otherwise create a second contact for that person (`find_or_create`).
+- **Not taken:** OCA `helpdesk_ticket_partner_response`. It compares the
+  sender with the contact's main email, so a student writing from a personal
+  address would never move the ticket; agents are notified of replies anyway.

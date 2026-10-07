@@ -50,4 +50,4 @@ class TestCloture(TransactionCase):
         self.assertGreater(Trigger.search_count([("cron_id", "=", cron.id)]), triggers_avant)
         mail = self.env["mail.mail"].search([("model", "=", "helpdesk.ticket"), ("res_id", "=", ticket.id)])
         self.assertTrue(mail)
-        self.assertIn("ne pas répondre", mail.body_html)
+        self.assertIn("répondre à ce message", mail.body_html)

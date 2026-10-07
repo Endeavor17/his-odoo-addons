@@ -18,22 +18,31 @@
             <field name="name">Finance / Caisse</field>
         </record>
 
-        <!-- Version 1 : le personnel ouvre les tickets, souvent pour un
-             etudiant venu au guichet. -->
+        <!-- Le personnel ouvre des tickets pour un etudiant venu au guichet. -->
         <record id="channel_guichet" model="helpdesk.ticket.channel">
             <field name="name">Guichet</field>
         </record>
 
-        <!-- Les reponses partiraient chez Mailgun (MX de his.edu.dz) et
-             n'atteindraient jamais Odoo : le courriel le dit. -->
+        <!-- Adresse publique du helpdesk : support@his.edu.dz (OCA la nomme
+             help). Le courriel devient un ticket sans equipe, a trier. -->
+        <record id="helpdesk_mgmt.mail_alias_lead_info_helpdesk" model="mail.alias">
+            <field name="alias_name">support</field>
+        </record>
+
+        <!-- Les reponses arrivent dans Odoo (catchall@ releve en IMAP) et
+             rejoignent le ticket. Copie a l'adresse d'ou l'etudiant a ecrit
+             quand elle differe de celle de sa fiche : c'est la qu'il lit. -->
         <record id="helpdesk_mgmt.closed_ticket_template" model="mail.template">
+            <!-- Sans cela Odoo ignore partner_to / email_cc et n'ecrit qu'au contact. -->
+            <field name="use_default_to" eval="False"/>
+            <field name="email_cc">{{object.partner_email if object.partner_email and object.partner_email != object.partner_id.email else ''}}</field>
             <field name="subject">Votre demande {{object.number}} est clôturée</field>
             <field name="body_html" type="html">
                 <p>Bonjour <t t-out="object.partner_id.name or object.partner_name or ''"/>,</p>
                 <p>Votre demande <strong><t t-out="object.number"/></strong>
                    (« <t t-out="object.name"/> ») est clôturée.</p>
-                <p>Ce message est envoyé automatiquement : merci de ne pas répondre.
-                   Pour toute question, présentez-vous au guichet.</p>
+                <p>Pour toute question, vous pouvez répondre à ce message :
+                   votre réponse sera ajoutée à votre demande.</p>
             </field>
         </record>
 

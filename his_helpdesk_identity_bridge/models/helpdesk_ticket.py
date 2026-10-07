@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import api, fields, models
+from odoo import api, fields, models, tools
 
 
 class HelpdeskTicket(models.Model):
@@ -70,3 +70,39 @@ class HelpdeskTicket(models.Model):
             res["stage_id"] = (template, {**options, "force_send": False})
             self.env.ref("mail.ir_cron_mail_scheduler_action")._trigger()
         return res
+
+    @api.model
+    def message_new(self, msg, custom_values=None):
+        # Un courriel recu (support@) : canal Email, et la personne quand
+        # l'expediteur n'est pas deja un contact connu.
+        values = dict(custom_values or {})
+        values.setdefault("channel_id", self.env.ref("helpdesk_mgmt.helpdesk_ticket_channel_email").id)
+        if not msg.get("author_id") and "partner_id" not in values:
+            person = self._his_person_from_email(msg.get("email_from") or msg.get("from"))
+            if person:
+                values["partner_id"] = person.partner_id.id
+        return super().message_new(msg, custom_values=values)
+
+    @api.model
+    def _his_person_from_email(self, email):
+        """La personne dont l'email PERSONNEL est exactement celui-ci, ou rien.
+
+        Deterministe : une seule fiche, sinon aucune. Jamais de score ici (le
+        rapprochement probabiliste demande une confirmation humaine), jamais de
+        creation. Le contact connu par son email principal est deja trouve par
+        la passerelle mail elle-meme (author_id).
+        """
+        email = tools.email_normalize(email)
+        if not email:
+            return self.env["his.person"]
+        # sudo : la releve tourne sous l'utilisateur du cron, pas sous un agent.
+        persons = self.env["his.person"].sudo().search([("email_personnel", "=ilike", email)], limit=2)
+        return persons if len(persons) == 1 else self.env["his.person"]
+
+    def _message_track_post_template(self, changes):
+        # Le compositeur transforme email_cc en contacts (find_or_create) : la
+        # copie a l'adresse d'ecriture creerait un second contact pour une
+        # personne du referentiel. Adresse brute, aucun contact cree.
+        return super(
+            HelpdeskTicket, self.with_context(mail_composer_force_partners=False)
+        )._message_track_post_template(changes)
