@@ -22,6 +22,7 @@ est un defaut du referentiel, corrige a sa source.
         "security/ir.model.access.csv",
         "security/his_helpdesk_identity_bridge_security.xml",
         "views/helpdesk_ticket_views.xml",
+        "views/his_person_views.xml",
     ],
     "installable": True,
 }

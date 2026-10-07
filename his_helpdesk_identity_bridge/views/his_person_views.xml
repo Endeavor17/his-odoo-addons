@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_his_person_form_helpdesk" model="ir.ui.view">
+        <field name="name">his.person.form.helpdesk</field>
+        <field name="model">his.person</field>
+        <field name="inherit_id" ref="his_person_core.view_his_person_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box"
+                     groups="helpdesk_mgmt.group_helpdesk_user_own">
+                    <button name="action_his_helpdesk_tickets" type="object"
+                            class="oe_stat_button" icon="fa-life-ring">
+                        <field name="his_helpdesk_ticket_count" widget="statinfo" string="Tickets"/>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
