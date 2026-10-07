@@ -49,3 +49,8 @@ class TestLienPersonne(TransactionCase):
         self._ticket(partner_id=self.fournisseur.id)
         self._ticket(partner_name="Inconnu", partner_email="inconnu@example.com")
         self.assertEqual(self.env["his.person"].search_count([]), avant)
+
+    def test_le_type_de_personne_n_encombre_pas_le_suivi(self):
+        # Un champ related herite du tracking de sa source : le type de la
+        # personne ecrirait dans le fil de chaque ticket a chaque changement.
+        self.assertNotIn("his_type_personne", self.env["helpdesk.ticket"]._track_get_fields())

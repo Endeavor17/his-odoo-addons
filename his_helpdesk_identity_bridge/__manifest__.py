@@ -19,6 +19,7 @@ est un defaut du referentiel, corrige a sa source.
         "his_person_core",
     ],
     "data": [
+        "data/helpdesk_data.xml",
         "security/ir.model.access.csv",
         "security/his_helpdesk_identity_bridge_security.xml",
         "views/helpdesk_ticket_views.xml",

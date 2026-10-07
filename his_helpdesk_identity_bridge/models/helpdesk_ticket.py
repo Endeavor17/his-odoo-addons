@@ -39,7 +39,12 @@ class HelpdeskTicket(models.Model):
 
     # En-tete du ticket : qui est-ce, sans ouvrir sa fiche.
     his_matricule = fields.Char(related="his_person_id.matricule_affiche", string="Matricule")
-    his_type_personne = fields.Selection(related="his_person_id.type_personne", string="Type de personne")
+    # tracking=False : un related herite du suivi de sa source.
+    his_type_personne = fields.Selection(
+        related="his_person_id.type_personne",
+        string="Type de personne",
+        tracking=False,
+    )
     his_engagement_id = fields.Many2one(
         "his.engagement",
         string="Engagement en cours",
@@ -51,3 +56,15 @@ class HelpdeskTicket(models.Model):
         for ticket in self:
             # _order de his.engagement : date_debut desc, id desc.
             ticket.his_engagement_id = ticket.his_person_id.engagement_ids[:1]
+
+    def _track_template(self, changes):
+        # Le courriel de cloture d'OCA passe par le compositeur en mode
+        # mass_mail, qui envoie dans la requete (force_send) : l'agent
+        # attendrait le SMTP. En file, et le cron mail reveille : il ne tourne
+        # que toutes les heures.
+        res = super()._track_template(changes)
+        if "stage_id" in res:
+            template, options = res["stage_id"]
+            res["stage_id"] = (template, {**options, "force_send": False})
+            self.env.ref("mail.ir_cron_mail_scheduler_action")._trigger()
+        return res

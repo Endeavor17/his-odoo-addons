@@ -11,7 +11,7 @@
                      groups="helpdesk_mgmt.group_helpdesk_user_own">
                     <button name="action_his_helpdesk_tickets" type="object"
                             class="oe_stat_button" icon="fa-life-ring">
-                        <field name="his_helpdesk_ticket_count" widget="statinfo" string="Tickets"/>
+                        <field name="helpdesk_ticket_count_string" widget="statinfo" string="Tickets"/>
                     </button>
                 </div>
             </xpath>

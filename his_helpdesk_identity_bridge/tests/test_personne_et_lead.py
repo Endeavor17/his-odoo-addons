@@ -26,7 +26,7 @@ class TestPersonneEtLead(TransactionCase):
     def test_compteur_de_tickets_sur_la_personne(self):
         self._ticket()
         self._ticket()
-        self.assertEqual(self.candidat.his_helpdesk_ticket_count, 2)
+        self.assertEqual(self.candidat.helpdesk_ticket_count, 2)
         action = self.candidat.action_his_helpdesk_tickets()
         self.assertEqual(action["domain"], [("his_person_id", "=", self.candidat.id)])
 
