@@ -18,7 +18,9 @@ class TestAcces(TransactionCase):
                 "email": "karim.djebbar@example.com",
             }
         )
-        cls.env["his.engagement"].create({"person_id": cls.etudiant.id, "etat": "inscrit"})
+        # « prospect » et non « inscrit » : his_admission interdit d'inscrire
+        # sans droits encaisses. L'en-tete ne fait que lire l'etat.
+        cls.env["his.engagement"].create({"person_id": cls.etudiant.id, "etat": "prospect"})
         cls.agent = new_test_user(cls.env, login="agent_hd", groups="helpdesk_mgmt.group_helpdesk_user_own")
         cls.sans_role = new_test_user(cls.env, login="sans_role_hd", groups="base.group_user")
 
@@ -41,7 +43,7 @@ class TestAcces(TransactionCase):
         self.assertEqual(ticket.his_type_personne, "etudiant")
         # L etat, pas l engagement : un his.engagement s affiche sous le nom
         # de sa personne, ce qui ne dit rien a l agent.
-        self.assertEqual(ticket.his_engagement_etat, "inscrit")
+        self.assertEqual(ticket.his_engagement_etat, "prospect")
 
     def test_l_agent_ne_modifie_pas_la_personne(self):
         with self.assertRaises(AccessError):
