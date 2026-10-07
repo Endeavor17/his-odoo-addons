@@ -39,7 +39,9 @@ class TestAcces(TransactionCase):
         self.assertEqual(ticket.partner_id, self.etudiant.partner_id)
         self.assertEqual(ticket.his_matricule, self.etudiant.matricule_affiche)
         self.assertEqual(ticket.his_type_personne, "etudiant")
-        self.assertEqual(ticket.his_engagement_id.etat, "inscrit")
+        # L etat, pas l engagement : un his.engagement s affiche sous le nom
+        # de sa personne, ce qui ne dit rien a l agent.
+        self.assertEqual(ticket.his_engagement_etat, "inscrit")
 
     def test_l_agent_ne_modifie_pas_la_personne(self):
         with self.assertRaises(AccessError):

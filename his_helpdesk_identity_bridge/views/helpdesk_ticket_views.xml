@@ -17,8 +17,8 @@
                        invisible="not his_person_id"/>
                 <field name="his_type_personne" groups="helpdesk_mgmt.group_helpdesk_user_own"
                        invisible="not his_person_id"/>
-                <field name="his_engagement_id" groups="helpdesk_mgmt.group_helpdesk_user_own"
-                       invisible="not his_engagement_id"/>
+                <field name="his_engagement_etat" groups="helpdesk_mgmt.group_helpdesk_user_own"
+                       invisible="not his_engagement_etat"/>
             </field>
         </field>
     </record>

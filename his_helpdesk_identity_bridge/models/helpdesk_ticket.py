@@ -45,17 +45,19 @@ class HelpdeskTicket(models.Model):
         string="Type de personne",
         tracking=False,
     )
-    his_engagement_id = fields.Many2one(
-        "his.engagement",
+    # L'etat et non l'engagement : un his.engagement s'affiche sous le nom de
+    # sa personne, ce qui ne dit rien a l'agent.
+    his_engagement_etat = fields.Selection(
+        selection=lambda self: self.env["his.engagement"]._fields["etat"].selection,
         string="Engagement en cours",
-        compute="_compute_his_engagement_id",
+        compute="_compute_his_engagement_etat",
     )
 
-    @api.depends("his_person_id")
-    def _compute_his_engagement_id(self):
+    @api.depends("his_person_id.engagement_ids.etat")
+    def _compute_his_engagement_etat(self):
         for ticket in self:
             # _order de his.engagement : date_debut desc, id desc.
-            ticket.his_engagement_id = ticket.his_person_id.engagement_ids[:1]
+            ticket.his_engagement_etat = ticket.his_person_id.engagement_ids[:1].etat
 
     def _track_template(self, changes):
         # Le courriel de cloture d'OCA passe par le compositeur en mode
