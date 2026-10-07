@@ -181,15 +181,17 @@ class TestLienPersonne(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.etudiant = cls.env["his.person"].create(
-            {"name": "Amel Saidi", "type_personne": "etudiant", "source_system": "manual",
-             "email": "amel.saidi@example.com"}
+            {
+                "name": "Amel Saidi",
+                "type_personne": "etudiant",
+                "source_system": "manual",
+                "email": "amel.saidi@example.com",
+            }
         )
         cls.fournisseur = cls.env["res.partner"].create({"name": "Papeterie Atlas"})
 
     def _ticket(self, **vals):
-        return self.env["helpdesk.ticket"].create(
-            {"name": "Attestation", "description": "<p>Demande</p>", **vals}
-        )
+        return self.env["helpdesk.ticket"].create({"name": "Attestation", "description": "<p>Demande</p>", **vals})
 
     def test_choisir_la_personne_pose_le_contact(self):
         ticket = self._ticket(his_person_id=self.etudiant.id)
@@ -290,8 +292,12 @@ class TestAcces(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.etudiant = cls.env["his.person"].create(
-            {"name": "Karim Djebbar", "type_personne": "etudiant", "source_system": "manual",
-             "email": "karim.djebbar@example.com"}
+            {
+                "name": "Karim Djebbar",
+                "type_personne": "etudiant",
+                "source_system": "manual",
+                "email": "karim.djebbar@example.com",
+            }
         )
         cls.env["his.engagement"].create({"person_id": cls.etudiant.id, "etat": "inscrit"})
         cls.agent = new_test_user(cls.env, login="agent_hd", groups="helpdesk_mgmt.group_helpdesk_user_own")
@@ -307,8 +313,10 @@ class TestAcces(TransactionCase):
             self.etudiant.partner_id.with_user(self.sans_role).read(["email"])
 
     def test_l_agent_ouvre_un_ticket_et_lit_l_en_tete(self):
-        ticket = self.env["helpdesk.ticket"].with_user(self.agent).create(
-            {"name": "Carte", "description": "<p>x</p>", "his_person_id": self.etudiant.id}
+        ticket = (
+            self.env["helpdesk.ticket"]
+            .with_user(self.agent)
+            .create({"name": "Carte", "description": "<p>x</p>", "his_person_id": self.etudiant.id})
         )
         self.assertEqual(ticket.his_matricule, self.etudiant.matricule_affiche)
         self.assertEqual(ticket.his_type_personne, "etudiant")
@@ -350,19 +358,20 @@ access_his_engagement_helpdesk,his.engagement.helpdesk.lecture,his_person_core.m
 
 Add to `HelpdeskTicket`:
 ```python
-    his_matricule = fields.Char(related="his_person_id.matricule_affiche", string="Matricule")
-    his_type_personne = fields.Selection(related="his_person_id.type_personne", string="Type de personne")
-    his_engagement_id = fields.Many2one(
-        "his.engagement",
-        string="Engagement en cours",
-        compute="_compute_his_engagement_id",
-    )
+his_matricule = fields.Char(related="his_person_id.matricule_affiche", string="Matricule")
+his_type_personne = fields.Selection(related="his_person_id.type_personne", string="Type de personne")
+his_engagement_id = fields.Many2one(
+    "his.engagement",
+    string="Engagement en cours",
+    compute="_compute_his_engagement_id",
+)
 
-    @api.depends("his_person_id")
-    def _compute_his_engagement_id(self):
-        for ticket in self:
-            # _order de his.engagement : date_debut desc, id desc.
-            ticket.his_engagement_id = ticket.his_person_id.engagement_ids[:1]
+
+@api.depends("his_person_id")
+def _compute_his_engagement_id(self):
+    for ticket in self:
+        # _order de his.engagement : date_debut desc, id desc.
+        ticket.his_engagement_id = ticket.his_person_id.engagement_ids[:1]
 ```
 
 `views/helpdesk_ticket_views.xml` — inherit `helpdesk_mgmt.ticket_view_form`, before `partner_id`:
@@ -407,8 +416,12 @@ class TestPersonneEtLead(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.candidat = cls.env["his.person"].create(
-            {"name": "Nadia Ferhat", "type_personne": "candidat", "source_system": "manual",
-             "email": "nadia.ferhat@example.com"}
+            {
+                "name": "Nadia Ferhat",
+                "type_personne": "candidat",
+                "source_system": "manual",
+                "email": "nadia.ferhat@example.com",
+            }
         )
 
     def _ticket(self):
@@ -451,9 +464,7 @@ class HisPerson(models.Model):
 
     def _compute_his_helpdesk_ticket_count(self):
         counts = dict(
-            self.env["helpdesk.ticket"]._read_group(
-                [("his_person_id", "in", self.ids)], ["his_person_id"], ["__count"]
-            )
+            self.env["helpdesk.ticket"]._read_group([("his_person_id", "in", self.ids)], ["his_person_id"], ["__count"])
         )
         for person in self:
             person.his_helpdesk_ticket_count = counts.get(person, 0)
@@ -538,16 +549,22 @@ class TestCloture(TransactionCase):
 
     def test_la_cloture_part_en_file_et_reveille_le_cron(self):
         person = self.env["his.person"].create(
-            {"name": "Rym Bouzid", "type_personne": "etudiant", "source_system": "manual",
-             "email": "rym.bouzid@example.com"}
+            {
+                "name": "Rym Bouzid",
+                "type_personne": "etudiant",
+                "source_system": "manual",
+                "email": "rym.bouzid@example.com",
+            }
         )
         ticket = self.env["helpdesk.ticket"].create(
             {"name": "Attestation", "description": "<p>x</p>", "his_person_id": person.id}
         )
         cron = self.env.ref("mail.ir_cron_mail_scheduler_action")
         MailMail = type(self.env["mail.mail"])
-        with patch.object(MailMail, "send", autospec=True) as send, \
-             patch.object(type(cron), "_trigger", autospec=True) as trigger:
+        with (
+            patch.object(MailMail, "send", autospec=True) as send,
+            patch.object(type(cron), "_trigger", autospec=True) as trigger,
+        ):
             ticket.stage_id = self.env.ref("helpdesk_mgmt.helpdesk_ticket_stage_done")
             self.env.flush_all()
         send.assert_not_called()
