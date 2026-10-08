@@ -14,7 +14,9 @@ concurrency:
 
 env:
   # Modules du depot (web_responsive est tiers OCA, non juge).
-  MODULES: campus_identity_bridge,campus_teacher_management,his_academic_base,his_access_base,his_admission,his_crm_identity_bridge,his_crm_pipeline,his_hr_base,his_mail_async,his_meal_management,his_person_core,his_person_sync_sheets,his_pos_copy_center,his_pos_dashboard,his_pos_numbering,his_pos_partner_scope,his_pos_ui,his_theme,his_web_ui,insite_recruitment,maintenance_university,his_stock_mdm
+  MODULES: campus_identity_bridge,campus_teacher_management,his_academic_base,his_access_base,his_admission,his_crm_identity_bridge,his_crm_pipeline,his_hr_base,his_mail_async,his_meal_management,his_person_core,his_person_sync_sheets,his_pos_copy_center,his_pos_dashboard,his_pos_numbering,his_pos_partner_scope,his_pos_ui,his_theme,his_web_ui,insite_recruitment,maintenance_university,his_stock_mdm,his_helpdesk_identity_bridge
+  # Tiers OCA vendus : installes et testes, jamais lintes (on ne les maitrise pas).
+  VENDORED: helpdesk_mgmt,helpdesk_mgmt_crm
 
 jobs:
   lint:
@@ -103,9 +105,9 @@ jobs:
       # 2. Installer tous les modules avec leurs tests.
       - name: Installer et tester
         run: |
-          TAGS=$(echo "$MODULES" | tr ',' '\n' | sed 's#^#/#' | paste -sd,)
+          TAGS=$(echo "$MODULES,$VENDORED" | tr ',' '\n' | sed 's#^#/#' | paste -sd,)
           $ODOO -d ci --addons-path="$ADDONS" --without-demo=True --stop-after-init \
-            -i "$MODULES" --test-enable --test-tags "$TAGS" --log-level=test 2>&1 | tee test.log
+            -i "$MODULES,$VENDORED" --test-enable --test-tags "$TAGS" --log-level=test 2>&1 | tee test.log
 
       # 3. Un log vert ne suffit pas : on lit la ligne de resultat d'Odoo et on
       #    echoue sur le moindre echec/erreur, ou si trop peu de tests ont

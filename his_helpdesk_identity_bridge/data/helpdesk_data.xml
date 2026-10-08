@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Equipes de depart (decision de Mohamed, 2026-10-07). Les membres
+             sont poses par l'administrateur, pas ici. Les reparations de
+             batiments restent dans maintenance_university. -->
+        <record id="team_informatique" model="helpdesk.ticket.team">
+            <field name="name">Informatique</field>
+        </record>
+        <record id="team_scolarite" model="helpdesk.ticket.team">
+            <field name="name">Scolarité</field>
+        </record>
+        <record id="team_admissions" model="helpdesk.ticket.team">
+            <field name="name">Admissions</field>
+        </record>
+        <record id="team_finance" model="helpdesk.ticket.team">
+            <field name="name">Finance / Caisse</field>
+        </record>
+
+        <!-- Le personnel ouvre des tickets pour un etudiant venu au guichet. -->
+        <record id="channel_guichet" model="helpdesk.ticket.channel">
+            <field name="name">Guichet</field>
+        </record>
+
+        <!-- Adresse publique du helpdesk : support@his.edu.dz (OCA la nomme
+             help). Le courriel devient un ticket sans equipe, a trier. -->
+        <record id="helpdesk_mgmt.mail_alias_lead_info_helpdesk" model="mail.alias">
+            <field name="alias_name">support</field>
+        </record>
+
+        <!-- Les reponses arrivent dans Odoo (catchall@ releve en IMAP) et
+             rejoignent le ticket. Copie a l'adresse d'ou l'etudiant a ecrit
+             quand elle differe de celle de sa fiche : c'est la qu'il lit. -->
+        <record id="helpdesk_mgmt.closed_ticket_template" model="mail.template">
+            <!-- Sans cela Odoo ignore partner_to / email_cc et n'ecrit qu'au contact. -->
+            <field name="use_default_to" eval="False"/>
+            <field name="email_cc">{{object.partner_email if object.partner_email and object.partner_email != object.partner_id.email else ''}}</field>
+            <field name="subject">Votre demande {{object.number}} est clôturée</field>
+            <field name="body_html" type="html">
+                <p>Bonjour <t t-out="object.partner_id.name or object.partner_name or ''"/>,</p>
+                <p>Votre demande <strong><t t-out="object.number"/></strong>
+                   (« <t t-out="object.name"/> ») est clôturée.</p>
+                <p>Pour toute question, vous pouvez répondre à ce message :
+                   votre réponse sera ajoutée à votre demande.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
