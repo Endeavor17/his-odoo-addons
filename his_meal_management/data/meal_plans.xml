@@ -17,11 +17,11 @@
          decision du module et doivent se reappliquer a chaque mise a jour. -->
 
     <record id="pos_categ_repas" model="pos.category">
-        <field name="name">Repas</field>
+        <field name="name">Meals</field>
         <field name="sequence">5</field>
     </record>
     <record id="pos_categ_recharges" model="pos.category">
-        <field name="name">Recharges</field>
+        <field name="name">Top-ups</field>
         <field name="sequence">6</field>
     </record>
 

@@ -178,7 +178,7 @@ class TestAdmission(TransactionCase):
         dossier = self._dossier(bac_moyenne=18.0, note_math=4.0)
         self.assertGreater(dossier.moyenne_ponderee, 11.0)
         self.assertEqual(dossier.eligibilite, "a_verifier")
-        self.assertIn("maths", dossier.eligibilite_motif)
+        self.assertIn("Maths", dossier.eligibilite_motif)
 
     # --- Reinscription -------------------------------------------------------
 
@@ -501,7 +501,7 @@ class TestAdmission(TransactionCase):
             motivation_his="Vocation.",
         )
         self.assertEqual(lead.score_academique, 7)
-        self.assertIn("non applicable", lead.score_detail)
+        self.assertIn("not applicable", lead.score_detail)
 
     def test_une_note_exigee_manquante_ne_rapporte_pas_de_ponderee(self):
         lead = self._lead_score(
@@ -632,7 +632,7 @@ class TestAdmission(TransactionCase):
         self.assertFalse(lead.note_math)
         self.assertFalse(lead.note_physique)
         self.assertEqual(lead.score_academique, 7)
-        self.assertIn("non applicable", lead.score_detail)
+        self.assertIn("not applicable", lead.score_detail)
 
     # --- Le matricule attend l'argent -----------------------------------------
 
@@ -969,6 +969,6 @@ class TestAdmission(TransactionCase):
         equipes = self.env["his.dashboard"]._equipes_admissions()
         files = self.env["his.dashboard"]._admissions_qualite(equipes)
         libelles = [f["label"] for f in files]
-        self.assertIn("Specialites sans tarif", libelles)
-        sans = next(f for f in files if f["label"] == "Specialites sans tarif")
+        self.assertIn("Specialties Without a Fee", libelles)
+        sans = next(f for f in files if f["label"] == "Specialties Without a Fee")
         self.assertGreater(sans["count"], 0)

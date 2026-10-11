@@ -6,18 +6,18 @@ from .his_specialite import CYCLE
 # Filieres du baccalaureat, telles que le classeur les nomme. Selection et non
 # modele : sept valeurs fixees par le systeme educatif national, pas par nous.
 BAC_FILIERE = [
-    ("se", "SE - Sciences experimentales"),
-    ("tm", "TM - Technique mathematique"),
-    ("ma", "MA - Mathematiques"),
-    ("ge", "GE - Gestion et economie"),
-    ("philo", "Philo - Lettres et philosophie"),
-    ("langue", "Langue - Lettres et langues etrangeres"),
-    ("equivalence", "Equivalence - Diplome etranger"),
+    ("se", "SE - Experimental Sciences"),
+    ("tm", "TM - Mathematical Techniques"),
+    ("ma", "MA - Mathematics"),
+    ("ge", "GE - Management and Economics"),
+    ("philo", "Philo - Literature and Philosophy"),
+    ("langue", "Languages - Literature and Foreign Languages"),
+    ("equivalence", "Equivalence - Foreign Diploma"),
 ]
 
 TYPE_INSCRIPTION = [
-    ("nouveau", "Nouvelle inscription"),
-    ("reinscription", "Reinscription"),
+    ("nouveau", "New Enrolment"),
+    ("reinscription", "Re-enrolment"),
 ]
 
 
@@ -36,20 +36,20 @@ class HisDocumentType(models.Model):
     """
 
     _name = "his.document.type"
-    _description = "Type de piece du dossier d'admission"
+    _description = "Admission File Document Type"
     _order = "sequence, name"
 
-    name = fields.Char(string="Piece", required=True, translate=True)
-    name_arabe = fields.Char(string="Piece (arabe)")
+    name = fields.Char(string="Document", required=True, translate=True)
+    name_arabe = fields.Char(string="Document (Arabic)")
     code = fields.Char(string="Code", required=True)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
 
     obligatoire = fields.Boolean(
-        string="Obligatoire",
+        string="Required",
         default=True,
-        help="Une piece obligatoire manquante empeche le passage a l'etat "
-        "« Inscrit ». Une piece facultative est suivie sans bloquer.",
+        help='A missing required document prevents moving to the "Enrolled" state. An '
+        "optional document is tracked without blocking.",
     )
 
     # Trois filtres d'applicabilite, tous optionnels : vide = s'applique a tout.
@@ -57,24 +57,24 @@ class HisDocumentType(models.Model):
     # « au cas ou » serait de la flexibilite morte.
     cycle = fields.Selection(
         CYCLE,
-        string="Cycle concerne",
-        help="Vide : toutes les pieces s'appliquent aux deux cycles.",
+        string="Applicable Cycle",
+        help="Empty: all documents apply to both cycles.",
     )
     type_inscription = fields.Selection(
         TYPE_INSCRIPTION,
-        string="Type d'inscription concerne",
-        help="Vide : s'applique aux nouvelles inscriptions comme aux reinscriptions.",
+        string="Applicable Enrolment Type",
+        help="Empty: applies to new enrolments and re-enrolments alike.",
     )
     bac_filiere = fields.Selection(
         BAC_FILIERE,
-        string="Filiere BAC concernee",
-        help="Vide : s'applique quelle que soit la filiere. Sert au certificat "
-        "d'equivalence, qui ne concerne que les dossiers en equivalence.",
+        string="Applicable Baccalaureate Stream",
+        help="Empty: applies whatever the stream. Used for the equivalence "
+        "certificate, which only concerns equivalence files.",
     )
 
     _code_unique = models.Constraint(
         "unique(code)",
-        "Ce code de piece est deja utilise.",
+        "This document code is already used.",
     )
 
     def _applicable(self, cycle, type_inscription, bac_filiere):

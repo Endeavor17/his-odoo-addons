@@ -22,7 +22,7 @@ une definition fausse indetectable.
 
 from datetime import timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 
 # Au-dela, un dossier pre-admis qui n'a pas paye merite qu'on rappelle.
@@ -37,7 +37,7 @@ class HisDashboard(models.AbstractModel):
     """Sans table : ce modele ne stocke rien, il repond a des questions."""
 
     _name = "his.dashboard"
-    _description = "Indicateurs des cockpits"
+    _description = "Cockpit Indicators"
 
     # ======================= Outils de construction ==========================
 
@@ -171,10 +171,10 @@ class HisDashboard(models.AbstractModel):
             # _read_group rend un recordset pour un Many2one, la valeur brute
             # pour un entier ou une selection, et False pour un groupe vide.
             if hasattr(valeur, "display_name"):
-                nom = valeur.display_name or "Non renseigne"
+                nom = valeur.display_name or _("Not set")
                 critere = valeur.id
             else:
-                nom = str(valeur) if valeur or valeur == 0 else "Non renseigne"
+                nom = str(valeur) if valeur or valeur == 0 else _("Not set")
                 critere = valeur
             segments.append(
                 {
@@ -223,9 +223,9 @@ class HisDashboard(models.AbstractModel):
         tuiles = [
             self._tuile(
                 "candidatures",
-                "Candidatures recues",
+                _("Applications Received"),
                 nb_recues,
-                action=self._action("Candidatures recues", "crm.lead", recues),
+                action=self._action(_("Applications Received"), "crm.lead", recues),
                 precedent=nb_recues_prec,
                 axe="candidatures",
                 date_from=date_from,
@@ -233,10 +233,10 @@ class HisDashboard(models.AbstractModel):
             ),
             self._tuile(
                 "inscriptions",
-                "Inscriptions",
+                _("Enrolments"),
                 nb_gagnees,
                 action=self._action(
-                    "Inscriptions",
+                    _("Enrolments"),
                     "crm.lead",
                     [*recues, ("stage_id.is_won", "=", True)],
                 ),
@@ -249,15 +249,15 @@ class HisDashboard(models.AbstractModel):
             ),
             self._tuile(
                 "conversion",
-                "Taux de conversion",
+                _("Conversion Rate"),
                 round(nb_gagnees / nb_recues * 100, 1) if nb_recues else 0,
                 unite="%",
             ),
             self._tuile(
                 "delai_affectation",
-                "Delai moyen d'affectation",
+                _("Average Assignment Time"),
                 self._moyenne(Lead, recues, "day_open"),
-                unite="j",
+                unite=_("d"),
             ),
         ]
 
@@ -266,10 +266,10 @@ class HisDashboard(models.AbstractModel):
             tuiles.append(
                 self._tuile(
                     "pre_admis_sans_encaissement",
-                    "Pre-admis sans encaissement",
+                    _("Pre-admitted, Not Paid"),
                     Lead.search_count(attente),
                     action=self._action(
-                        "Pre-admis sans encaissement",
+                        _("Pre-admitted, Not Paid"),
                         "crm.lead",
                         attente,
                     ),
@@ -277,7 +277,7 @@ class HisDashboard(models.AbstractModel):
             )
 
         return {
-            "titre": "Cockpit Admissions",
+            "titre": _("Admissions Cockpit"),
             "tiles": tuiles,
             "funnel": self._entonnoir(equipes, date_from, date_to),
             "donuts": self._admissions_donuts(equipes, date_from, date_to),
@@ -309,25 +309,25 @@ class HisDashboard(models.AbstractModel):
 
         return [
             self._donut(
-                "Candidats par score",
+                _("Applicants by Score"),
                 "crm.lead",
                 base,
                 "score_academique",
             ),
             self._donut(
-                "Etat du portefeuille",
+                _("Portfolio Status"),
                 "crm.lead",
                 base,
                 "stage_id",
             ),
             self.with_context(active_test=False)._donut(
-                "Motifs de perte",
+                _("Lost Reasons"),
                 "crm.lead",
                 [*base, ("lost_reason_id", "!=", False)],
                 "lost_reason_id",
             ),
             self._donut(
-                "Acquisition par source",
+                _("Acquisition by Source"),
                 "crm.lead",
                 base,
                 "source_id",
@@ -354,12 +354,12 @@ class HisDashboard(models.AbstractModel):
         base = [("team_id", "in", equipes.ids), ("active", "=", True)]
         files = [
             self._a_traiter(
-                "Sans telephone ni email",
+                _("No Phone or Email"),
                 "crm.lead",
                 [*base, ("phone", "=", False), ("email_from", "=", False)],
             ),
             self._a_traiter(
-                "Sans source d'acquisition",
+                _("No Acquisition Source"),
                 "crm.lead",
                 [*base, ("source_id", "=", False)],
             ),
@@ -370,7 +370,7 @@ class HisDashboard(models.AbstractModel):
             files.insert(
                 1,
                 self._a_traiter(
-                    "Sans specialite visee",
+                    _("No Target Specialty"),
                     "crm.lead",
                     [*base, ("specialite_id", "=", False)],
                 ),
@@ -425,7 +425,7 @@ class HisDashboard(models.AbstractModel):
         if etape_nouveau:
             files.append(
                 self._a_traiter(
-                    "Candidatures non affectees",
+                    _("Unassigned Applications"),
                     "crm.lead",
                     [*base, ("stage_id", "=", etape_nouveau.id), ("user_id", "=", False)],
                 )
@@ -439,7 +439,7 @@ class HisDashboard(models.AbstractModel):
             )
             files.append(
                 self._a_traiter(
-                    "Premier contact en retard",
+                    _("First Contact Overdue"),
                     "crm.lead",
                     [*base, ("stage_id", "=", etape_pris.id), ("date_last_stage_update", "<", limite)],
                 )
@@ -450,7 +450,7 @@ class HisDashboard(models.AbstractModel):
         if "is_rotting" in self.env["crm.lead"]._fields:
             files.append(
                 self._a_traiter(
-                    "Candidatures en sommeil",
+                    _("Dormant Applications"),
                     "crm.lead",
                     [*base, ("is_rotting", "=", True)],
                 )
@@ -461,9 +461,9 @@ class HisDashboard(models.AbstractModel):
         base = [("team_id", "in", equipes.ids)]
         return [
             {
-                "label": "Par conseillere et par etape",
+                "label": _("By Advisor and Stage"),
                 "action": self._action(
-                    "Par conseillere et par etape",
+                    _("By Advisor and Stage"),
                     "crm.lead",
                     base,
                     views=[[False, "pivot"], [False, "list"]],
@@ -471,9 +471,9 @@ class HisDashboard(models.AbstractModel):
                 ),
             },
             {
-                "label": "Candidatures dans le temps",
+                "label": _("Applications Over Time"),
                 "action": self._action(
-                    "Candidatures dans le temps",
+                    _("Applications Over Time"),
                     "crm.lead",
                     base,
                     views=[[False, "graph"], [False, "list"]],
@@ -504,16 +504,16 @@ class HisDashboard(models.AbstractModel):
         tuiles = [
             self._tuile(
                 "demandes",
-                "Demandes recues",
+                _("Requests Received"),
                 Lead.search_count(recues),
-                action=self._action("Demandes recues", "crm.lead", recues),
+                action=self._action(_("Requests Received"), "crm.lead", recues),
                 precedent=Lead.search_count(base + self._entre(prec_from, prec_to)),
             ),
             self._tuile(
                 "publications",
-                "Contenus publies",
+                _("Published Content"),
                 Lead.search_count(publiees),
-                action=self._action("Contenus publies", "crm.lead", publiees),
+                action=self._action(_("Published Content"), "crm.lead", publiees),
                 precedent=Lead.search_count(
                     base + self._entre(prec_from, prec_to) + [("stage_id.is_won", "=", True)],
                 ),
@@ -523,12 +523,12 @@ class HisDashboard(models.AbstractModel):
             ),
             self._tuile(
                 "livrables_retard",
-                "Livrables en retard",
+                _("Late Deliverables"),
                 Livrable.search_count([("en_retard", "=", True)]),
                 action=self._action(
-                    "Livrables en retard",
+                    _("Late Deliverables"),
                     "his.content.deliverable",
-                    [("en_retard", "=", True)],
+                    domain=[("en_retard", "=", True)],
                 ),
             ),
         ]
@@ -543,10 +543,10 @@ class HisDashboard(models.AbstractModel):
             tuiles.append(
                 self._tuile(
                     "attente_approbation",
-                    "En attente d'approbation",
+                    _("Awaiting Approval"),
                     Lead.search_count(attente),
                     action=self._action(
-                        "En attente d'approbation",
+                        _("Awaiting Approval"),
                         "crm.lead",
                         attente,
                     ),
@@ -554,15 +554,15 @@ class HisDashboard(models.AbstractModel):
             )
 
         return {
-            "titre": "Cockpit Production Contenu",
+            "titre": _("Content Production Cockpit"),
             "tiles": tuiles,
             "funnel": [],
             "attention": self._contenu_a_traiter(base),
             "explore": [
                 {
-                    "label": "Charge par personne",
+                    "label": _("Workload per Person"),
                     "action": self._action(
-                        "Charge par personne",
+                        _("Workload per Person"),
                         "his.content.deliverable",
                         [],
                         views=[[False, "pivot"], [False, "list"]],
@@ -570,9 +570,9 @@ class HisDashboard(models.AbstractModel):
                     ),
                 },
                 {
-                    "label": "Debit par marque",
+                    "label": _("Throughput per Brand"),
                     "action": self._action(
-                        "Debit par marque",
+                        _("Throughput per Brand"),
                         "his.content.deliverable",
                         [],
                         views=[[False, "graph"], [False, "list"]],
@@ -585,14 +585,14 @@ class HisDashboard(models.AbstractModel):
     def _contenu_a_traiter(self, base):
         files = [
             self._a_traiter(
-                "Livrables non assignes",
+                _("Unassigned Deliverables"),
                 "his.content.deliverable",
-                [("assignee_id", "=", False), ("statut", "!=", "approuve")],
+                domain=[("assignee_id", "=", False), ("statut", "!=", "approuve")],
             ),
             self._a_traiter(
-                "Livrables en retard",
+                _("Late Deliverables"),
                 "his.content.deliverable",
-                [("en_retard", "=", True)],
+                domain=[("en_retard", "=", True)],
             ),
         ]
         etape_production = self.env.ref(
@@ -603,7 +603,7 @@ class HisDashboard(models.AbstractModel):
             limite = fields.Datetime.now() - timedelta(days=JOURS_CONTENU_BLOQUE)
             files.append(
                 self._a_traiter(
-                    "Demandes bloquees en production",
+                    _("Requests Stuck in Production"),
                     "crm.lead",
                     [*base, ("stage_id", "=", etape_production.id), ("date_last_stage_update", "<", limite)],
                 )
@@ -638,7 +638,7 @@ class HisDashboard(models.AbstractModel):
             "revenu_attendu",
         }
         return {
-            "titre": "Direction",
+            "titre": _("Management"),
             "tiles": [tuile for cockpit in cockpits for tuile in cockpit["tiles"] if tuile["cle"] in retenues],
             "funnel": cockpits[0]["funnel"] if cockpits else [],
             # Ce qui reclame un arbitrage, pas les files de chaque metier :

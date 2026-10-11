@@ -7,7 +7,7 @@ class StockScrap(models.Model):
     _inherit = "stock.scrap"
 
     # stock.scrap n'a aucun champ libre : `origin` est le document source.
-    scrap_note = fields.Char(string="Commentaire")
+    scrap_note = fields.Char(string="Comment")
 
     # --- Separation des taches : Collaborateur propose, Manager valide ------
     #
@@ -21,8 +21,8 @@ class StockScrap(models.Model):
         if not (self.env.su or self.env.user.has_group("stock.group_stock_manager")):
             raise AccessError(
                 _(
-                    "Seul un Manager Stock peut valider une perte. "
-                    "La déclaration reste en brouillon en attendant sa validation."
+                    "Only an Inventory Manager can validate a loss. The declaration stays in "
+                    "draft until it is validated."
                 )
             )
         return super().do_scrap()
@@ -36,6 +36,6 @@ class StockScrap(models.Model):
         autre = self.env.ref("his_stock_mdm.scrap_reason_autre", raise_if_not_found=False)
         for scrap in self:
             if not scrap.scrap_reason_tag_ids:
-                raise ValidationError(_("Un motif de perte est obligatoire pour permettre le reporting par cause."))
+                raise ValidationError(_("A loss reason is required to allow reporting by cause."))
             if autre and autre in scrap.scrap_reason_tag_ids and not scrap.scrap_note:
-                raise ValidationError(_("Le motif « Autre » exige un commentaire décrivant la cause."))
+                raise ValidationError(_('The "Other" reason requires a comment describing the cause.'))

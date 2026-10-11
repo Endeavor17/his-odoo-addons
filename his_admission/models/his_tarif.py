@@ -20,12 +20,12 @@ from odoo.exceptions import ValidationError
 
 class HisTarif(models.Model):
     _name = "his.tarif"
-    _description = "Tarif par specialite"
+    _description = "Fee per Specialty"
     _order = "cycle, specialite_id"
 
     specialite_id = fields.Many2one(
         "his.specialite",
-        string="Specialite",
+        string="Specialty",
         required=True,
         ondelete="cascade",
     )
@@ -38,12 +38,12 @@ class HisTarif(models.Model):
         readonly=True,
     )
     frais_inscription = fields.Float(
-        string="Frais d'inscription",
+        string="Registration Fees",
         digits=(12, 2),
-        help="Les frais non remboursables. C'est leur encaissement qui gagne le lead.",
+        help="The non-refundable fees. Collecting them is what wins the lead.",
     )
     frais_scolarite = fields.Float(
-        string="Frais de scolarite",
+        string="Tuition Fees",
         digits=(12, 2),
     )
     active = fields.Boolean(default=True)
@@ -68,7 +68,7 @@ class HisTarif(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "Un tarif actif existe deja pour « %(spec)s ». Desactivez-le avant d'en creer un nouveau.",
+                        'An active fee already exists for "%(spec)s". Deactivate it before creating a new one.',
                         spec=tarif.specialite_id.display_name,
                     )
                 )

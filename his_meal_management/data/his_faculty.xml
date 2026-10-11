@@ -9,32 +9,32 @@
 
         <record id="faculty_mi" model="his.faculty">
             <field name="code">MI</field>
-            <field name="name">Faculté des Mathématiques &amp; Informatique</field>
+            <field name="name">Faculty of Mathematics &amp; Computer Science</field>
         </record>
 
         <record id="faculty_segc" model="his.faculty">
             <field name="code">SEGC</field>
-            <field name="name">Faculté des Sciences Économiques et des Affaires</field>
+            <field name="name">Faculty of Economics and Business</field>
         </record>
 
         <record id="faculty_dsp" model="his.faculty">
             <field name="code">DSP</field>
-            <field name="name">Faculté de Droit et des Sciences Politiques</field>
+            <field name="name">Faculty of Law and Political Science</field>
         </record>
 
         <record id="faculty_shs" model="his.faculty">
             <field name="code">SHS</field>
-            <field name="name">Faculté des Sciences Sociales et Humaines (Psychologie)</field>
+            <field name="name">Faculty of Social and Human Sciences (Psychology)</field>
         </record>
 
         <record id="faculty_st" model="his.faculty">
             <field name="code">ST</field>
-            <field name="name">Faculté des Sciences et de la Technologie (Électronique)</field>
+            <field name="name">Faculty of Science and Technology (Electronics)</field>
         </record>
 
         <record id="faculty_edu" model="his.faculty">
             <field name="code">EDU</field>
-            <field name="name">Éducation</field>
+            <field name="name">Education</field>
             <field name="name_confirmed" eval="False"/>
         </record>
 

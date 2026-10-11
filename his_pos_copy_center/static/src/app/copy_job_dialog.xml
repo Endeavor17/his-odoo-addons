@@ -46,13 +46,13 @@
                             t-att-class="{ 'his-on': isPicked('color', 'bw') }"
                             t-on-click="() => this.pick('color', 'bw')">
                             <span class="his-ink his-ink-bw"/>
-                            <span>N&amp;B</span>
+                            <span>B&amp;W</span>
                         </button>
                         <button class="btn his-chip his-chip-ink js_copy_color"
                             t-att-class="{ 'his-on': isPicked('color', 'color') }"
                             t-on-click="() => this.pick('color', 'color')">
                             <span class="his-ink his-ink-cmyk"/>
-                            <span>Couleur</span>
+                            <span>Colour</span>
                         </button>
                     </div>
                 </div>
@@ -62,10 +62,10 @@
                     <div class="his-row-options">
                         <button class="btn his-chip js_copy_recto"
                             t-att-class="{ 'his-on': isPicked('sides', 'recto') }"
-                            t-on-click="() => this.pick('sides', 'recto')">Recto</button>
+                            t-on-click="() => this.pick('sides', 'recto')">Single-sided</button>
                         <button class="btn his-chip js_copy_duplex"
                             t-att-class="{ 'his-on': isPicked('sides', 'duplex') }"
-                            t-on-click="() => this.pick('sides', 'duplex')">Recto-verso</button>
+                            t-on-click="() => this.pick('sides', 'duplex')">Double-sided</button>
                     </div>
                 </div>
 

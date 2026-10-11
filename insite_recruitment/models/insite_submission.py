@@ -48,7 +48,7 @@ class InsiteSubmission(models.Model):
     name_ar = fields.Char("Name (Arabic)", compute="_compute_payload_details")
     submitted_email = fields.Char("Submitted Email", compute="_compute_payload_details")
     submitted_phone = fields.Char("Phone", compute="_compute_payload_details")
-    submitted_matricule = fields.Char("Institutional Matricule", compute="_compute_payload_details")
+    submitted_matricule = fields.Char("Institutional Registration Number", compute="_compute_payload_details")
     submitted_motivation = fields.Text("Motivation", compute="_compute_payload_details")
     submitted_availability = fields.Char("Availability", compute="_compute_payload_details")
     submitted_teaching_experience = fields.Text("Teaching Experience", compute="_compute_payload_details")
@@ -75,11 +75,12 @@ class InsiteSubmission(models.Model):
         ondelete="set null",
         index="btree_not_null",
         help="Set once identity matching resolves this submission to a Person — "
-        "either an exact matricule hit, or a human confirming a probable match.",
+        "either an exact registration number hit, or a human confirming a "
+        "probable match.",
     )
     match_method = fields.Selection(
         [
-            ("exact_matricule", "Exact Matricule"),
+            ("exact_matricule", "Exact Registration Number"),
             ("possible_match", "Possible Match (confirmed)"),
             ("new", "New Person"),
         ],

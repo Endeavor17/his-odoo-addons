@@ -13,8 +13,8 @@
                     again from Worker Summary until their first login, when it is erased.
                 </p>
                 <p>
-                    If a name is already in the Personnes referential, the line says so.
-                    Pick that person, so they keep the one matricule they already have
+                    If a name is already in the People register, the line says so.
+                    Pick that person, so they keep the one registration number they already have
                     instead of being registered a second time.
                 </p>
                 <field name="line_ids">
@@ -27,7 +27,7 @@
                                placeholder="Leave empty if not registered yet"/>
                         <field name="confirmed_new" readonly="employee_id"
                                invisible="person_id or not suggested_person_id"/>
-                        <field name="suggestion_message" string="Referential" readonly="1"/>
+                        <field name="suggestion_message" string="Register" readonly="1"/>
                         <field name="date_start_working" readonly="employee_id"/>
                         <field name="password" readonly="employee_id" placeholder="Leave blank to auto-generate"/>
                     </list>

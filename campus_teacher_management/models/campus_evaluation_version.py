@@ -283,10 +283,10 @@ class CampusEvaluationVersion(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Applications"),
             "res_model": "hr.applicant",
             "view_mode": "list,form",
             "domain": [("campus_version_id", "=", self.id)],
+            "name": _("Applications"),
             "context": {"default_campus_version_id": self.id},
         }
 

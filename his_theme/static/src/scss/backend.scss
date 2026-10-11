@@ -29,6 +29,11 @@
     // colour blindness.
     --his-series-1: #0b86b0;
     --his-series-2: #c07d10;
+
+    // The two faces, for module stylesheets that set a font of their own. Same
+    // stacks as primary_variables.scss.
+    --his-font-sans: "Figtree", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+    --his-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
 
 // The hairline above the navbar, straight off the university site. The navbar

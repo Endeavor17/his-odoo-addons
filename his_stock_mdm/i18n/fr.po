@@ -1,0 +1,602 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_stock_mdm
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_05kg
+msgid "0.5KG"
+msgstr "0.5KG"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_15kg
+msgid "1.5KG"
+msgstr "1.5KG"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_18kg
+msgid "1.8KG"
+msgstr "1.8KG"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_100g
+msgid "100G"
+msgstr "100G"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_120g
+msgid "120G"
+msgstr "120G"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_125ml
+msgid "125ML"
+msgstr "125ML"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_130g
+msgid "130G"
+msgstr "130G"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_15kg_bulk
+msgid "15KG"
+msgstr "15KG"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_175cl
+msgid "17.5CL"
+msgstr "17.5CL"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_1l
+msgid "1L"
+msgstr "1L"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_200g
+msgid "200G"
+msgstr "200G"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_20cl
+msgid "20CL"
+msgstr "20CL"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_24cl
+msgid "24CL"
+msgstr "24CL"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_25cl
+msgid "25CL"
+msgstr "25CL"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_25kg
+msgid "25KG"
+msgstr "25KG"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_260g
+msgid "260G"
+msgstr "260G"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_2l
+msgid "2L"
+msgstr "2L"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_30cl
+msgid "30CL"
+msgstr "30CL"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_33cl
+msgid "33CL"
+msgstr "33CL"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_5kg
+msgid "5KG"
+msgstr "5KG"
+
+#. module: his_stock_mdm
+#: model:product.attribute.value,name:his_stock_mdm.format_5l
+msgid "5L"
+msgstr "5L"
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/stock_scrap.py:0
+msgid "A loss reason is required to allow reporting by cause."
+msgstr ""
+"Un motif de perte est obligatoire pour permettre le reporting par cause."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/product_template.py:0
+msgid ""
+"A sales price is required for \"%s\": it is a storable product marked as "
+"sellable."
+msgstr ""
+"Le prix de vente est obligatoire pour « %s » : il s'agit d'un produit "
+"stockable marqué comme vendable."
+
+#. module: his_stock_mdm
+#: model:ir.model.constraint,message:his_stock_mdm.constraint_his_inventaire_annuel_name_company_uniq
+msgid "An annual inventory with this name already exists for this company."
+msgstr "Un inventaire annuel de ce nom existe déjà pour cette société."
+
+#. module: his_stock_mdm
+#: model:ir.actions.act_window,name:his_stock_mdm.his_inventaire_annuel_action
+#: model:ir.ui.menu,name:his_stock_mdm.menu_his_inventaire_annuel
+msgid "Annual Inventories"
+msgstr "Inventaires annuels"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_his_inventaire_annuel
+msgid "Annual Physical Inventory"
+msgstr "Inventaire physique annuel"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,help:his_stock_mdm.field_product_category__default_tracking
+msgid ""
+"Applied automatically to storable products created in this category. A value"
+" entered manually on the product is kept."
+msgstr ""
+"Appliquée automatiquement aux produits stockables créés dans cette "
+"catégorie. Une valeur saisie manuellement sur le produit est conservée."
+
+#. module: his_stock_mdm
+#: model:pos.category,name:his_stock_mdm.pos_categ_biscuits
+msgid "Biscuits & Cakes"
+msgstr "Biscuits & Gâteaux"
+
+#. module: his_stock_mdm
+#: model:stock.scrap.reason.tag,name:his_stock_mdm.scrap_reason_casse
+msgid "Broken/Damaged"
+msgstr "Casse/Endommagé"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields.selection,name:his_stock_mdm.selection__product_category__default_tracking__lot
+msgid "By Lots"
+msgstr "Par lots"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields.selection,name:his_stock_mdm.selection__product_category__default_tracking__none
+msgid "By Quantity"
+msgstr "Par quantité"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields.selection,name:his_stock_mdm.selection__product_category__default_tracking__serial
+msgid "By Serial Number"
+msgstr "Par numéro de série"
+
+#. module: his_stock_mdm
+#: model:stock.picking.type,name:his_stock_mdm.picking_type_reappro_cafeteria
+msgid "Cafeteria Replenishment"
+msgstr "Réappro Cafétéria"
+
+#. module: his_stock_mdm
+#: model:stock.picking.type,name:his_stock_mdm.picking_type_pos_cafeteria
+msgid "Cafeteria Sales"
+msgstr "Ventes Cafétéria"
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/his_inventaire_annuel.py:0
+msgid ""
+"Cannot close \"%(name)s\": %(count)d count(s) are still entered but not "
+"applied to the books. Apply them first (Inventory ▸ Adjustments)."
+msgstr ""
+"Impossible de clôturer « %(name)s » : %(count)d comptage(s) restent saisis "
+"mais non appliqués aux livres. Appliquez-les d'abord (Inventaire ▸ "
+"Ajustements)."
+
+#. module: his_stock_mdm
+#: model:pos.category,name:his_stock_mdm.pos_categ_chocolat
+msgid "Chocolate"
+msgstr "Chocolat"
+
+#. module: his_stock_mdm
+#: model_terms:ir.ui.view,arch_db:his_stock_mdm.his_inventaire_annuel_form_view
+msgid "Close"
+msgstr "Clôturer"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields.selection,name:his_stock_mdm.selection__his_inventaire_annuel__state__cloture
+msgid "Closed"
+msgstr "Clôturé"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__cloture_par_id
+msgid "Closed By"
+msgstr "Clôturé par"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__date_cloture
+msgid "Closing Date"
+msgstr "Date de clôture"
+
+#. module: his_stock_mdm
+#: model_terms:ir.actions.act_window,help:his_stock_mdm.his_inventaire_annuel_action
+msgid ""
+"Closing is blocked while a count is entered without\n"
+"                having been applied to the books (Inventory ▸ Adjustments)."
+msgstr ""
+"La clôture est bloquée tant qu'un comptage reste saisi sans\n"
+"                avoir été appliqué aux livres (Inventaire ▸ Ajustements)."
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_stock_scrap__scrap_note
+msgid "Comment"
+msgstr "Commentaire"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: his_stock_mdm
+#: model:stock.picking.type,name:his_stock_mdm.picking_type_reappro_copy_center
+msgid "Copy Center Replenishment"
+msgstr "Réappro Copy Center"
+
+#. module: his_stock_mdm
+#: model:stock.picking.type,name:his_stock_mdm.picking_type_pos_copy_center
+msgid "Copy Center Sales"
+msgstr "Ventes Copy Center"
+
+#. module: his_stock_mdm
+#: model:stock.route,name:his_stock_mdm.route_reappro_comptoirs
+msgid "Counter Replenishment"
+msgstr "Réappro comptoirs"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_category__default_use_expiration_date
+msgid "Default Expiration Date"
+msgstr "Date de péremption par défaut"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_category__default_tracking
+msgid "Default Tracking"
+msgstr "Traçabilité par défaut"
+
+#. module: his_stock_mdm
+#: model_terms:ir.ui.view,arch_db:his_stock_mdm.his_inventaire_annuel_form_view
+msgid "Differences found, notes for next fiscal year..."
+msgstr "Écarts constatés, remarques pour l'exercice suivant..."
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__display_name
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_attribute__display_name
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_category__display_name
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_product__display_name
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_template__display_name
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_template_attribute_line__display_name
+#: model:ir.model.fields,field_description:his_stock_mdm.field_stock_quant__display_name
+#: model:ir.model.fields,field_description:his_stock_mdm.field_stock_scrap__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_stock_mdm
+#: model:pos.category,name:his_stock_mdm.pos_categ_boissons
+msgid "Drinks"
+msgstr "Boissons"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_attribute__allowed_categ_ids
+msgid "Eligible Categories"
+msgstr "Catégories éligibles"
+
+#. module: his_stock_mdm
+#: model_terms:ir.ui.view,arch_db:his_stock_mdm.product_attribute_view_form_mdm
+msgid "Empty = no category restriction"
+msgstr "Vide = aucune restriction de catégorie"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,help:his_stock_mdm.field_product_category__default_use_expiration_date
+msgid "Enables expiration date tracking on products created in this category."
+msgstr ""
+"Active la gestion des dates de péremption sur les produits créés dans cette "
+"catégorie."
+
+#. module: his_stock_mdm
+#: model:product.attribute,name:his_stock_mdm.attribute_format
+msgid "Format"
+msgstr "Format"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__id
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_attribute__id
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_category__id
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_product__id
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_template__id
+#: model:ir.model.fields,field_description:his_stock_mdm.field_product_template_attribute_line__id
+#: model:ir.model.fields,field_description:his_stock_mdm.field_stock_quant__id
+#: model:ir.model.fields,field_description:his_stock_mdm.field_stock_scrap__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,help:his_stock_mdm.field_product_attribute__allowed_categ_ids
+msgid ""
+"If set, this attribute can only be used on products belonging to these "
+"categories. Leave empty for an unrestricted attribute (as with \"Brand\")."
+msgstr ""
+"Si renseigné, cet attribut ne peut être utilisé que sur des produits "
+"appartenant à ces catégories. Laisser vide pour un attribut sans restriction"
+" (cas de « Marque »)."
+
+#. module: his_stock_mdm
+#: model:ir.model.fields.selection,name:his_stock_mdm.selection__his_inventaire_annuel__state__en_cours
+msgid "In Progress"
+msgstr "En cours"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_stock_mdm
+#: model_terms:ir.ui.view,arch_db:his_stock_mdm.product_category_form_view_mdm
+msgid "MDM Governance"
+msgstr "Gouvernance MDM"
+
+#. module: his_stock_mdm
+#: model:pos.category,name:his_stock_mdm.pos_categ_divers
+msgid "Miscellaneous"
+msgstr "Divers"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/his_inventaire_annuel.py:0
+msgid "New Inventory"
+msgstr "Nouvel inventaire"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__note
+msgid "Note"
+msgstr "Note"
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/stock_quant.py:0
+msgid ""
+"Only an Inventory Manager can apply a count. The difference remains visible,"
+" pending application."
+msgstr ""
+"Seul un Manager Stock peut appliquer un comptage. L'écart reste visible en "
+"attente d'application."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/his_inventaire_annuel.py:0
+msgid "Only an Inventory Manager can close an annual inventory."
+msgstr "Seul un Manager Stock peut clôturer un inventaire annuel."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/stock_scrap.py:0
+msgid ""
+"Only an Inventory Manager can validate a loss. The declaration stays in "
+"draft until it is validated."
+msgstr ""
+"Seul un Manager Stock peut valider une perte. La déclaration reste en "
+"brouillon en attendant sa validation."
+
+#. module: his_stock_mdm
+#: model_terms:ir.actions.act_window,help:his_stock_mdm.his_inventaire_annuel_action
+msgid "Open the annual physical count for the fiscal year"
+msgstr "Ouvrez le comptage physique annuel de l'exercice"
+
+#. module: his_stock_mdm
+#: model:stock.scrap.reason.tag,name:his_stock_mdm.scrap_reason_autre
+msgid "Other"
+msgstr "Autre"
+
+#. module: his_stock_mdm
+#: model:stock.scrap.reason.tag,name:his_stock_mdm.scrap_reason_perime
+msgid "Out of Date/Expired"
+msgstr "Périmé/Expiré"
+
+#. module: his_stock_mdm
+#: model:stock.scrap.reason.tag,name:his_stock_mdm.scrap_reason_preparation
+msgid "Picking Error"
+msgstr "Erreur de préparation"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_product_attribute
+msgid "Product Attribute"
+msgstr "Attribut de produit"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_product_category
+msgid "Product Category"
+msgstr "Catégorie de produits"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_product_template_attribute_line
+msgid "Product Template Attribute Line"
+msgstr "Ligne d'attribut du modèle de produit"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_product_product
+msgid "Product Variant"
+msgstr "Variante de produit"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_stock_quant
+msgid "Quants"
+msgstr "Quantités"
+
+#. module: his_stock_mdm
+#: model_terms:ir.ui.view,arch_db:his_stock_mdm.stock_scrap_form_view_mdm
+msgid "Required when the \"Other\" reason is chosen"
+msgstr "Obligatoire si le motif « Autre » est retenu"
+
+#. module: his_stock_mdm
+#: model:stock.picking.type,name:his_stock_mdm.picking_type_reappro_restaurant
+msgid "Restaurant Replenishment"
+msgstr "Réappro Restaurant"
+
+#. module: his_stock_mdm
+#: model:stock.picking.type,name:his_stock_mdm.picking_type_pos_restaurant
+msgid "Restaurant Sales"
+msgstr "Ventes Restaurant"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_stock_scrap
+msgid "Scrap"
+msgstr "Rebut"
+
+#. module: his_stock_mdm
+#: model:pos.category,name:his_stock_mdm.pos_categ_snacks
+msgid "Snacks"
+msgstr "Snacks"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_inventaire_annuel__state
+msgid "State"
+msgstr "État"
+
+#. module: his_stock_mdm
+#: model:pos.category,name:his_stock_mdm.pos_categ_fournitures
+msgid "Supplies"
+msgstr "Fournitures"
+
+#. module: his_stock_mdm
+#: model:pos.category,name:his_stock_mdm.pos_categ_bonbons
+msgid "Sweets"
+msgstr "Bonbons"
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/stock_scrap.py:0
+msgid "The \"Other\" reason requires a comment describing the cause."
+msgstr "Le motif « Autre » exige un commentaire décrivant la cause."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/product_template_attribute_line.py:0
+msgid ""
+"The attribute \"%(attr)s\" is not allowed on the category \"%(categ)s\".\n"
+"Eligible categories: %(allowed)s.\n"
+"Outside these categories, a physical variation must be carried by a separate product."
+msgstr ""
+"L'attribut « %(attr)s » n'est pas autorisé sur la catégorie « %(categ)s ».\n"
+"Catégories éligibles : %(allowed)s.\n"
+"En dehors de ces catégories, une variation physique doit être portée par une fiche produit distincte."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/product_template.py:0
+msgid ""
+"The category \"%(categ)s\" is an intermediate node. A product must belong to a leaf category (one without subcategories).\n"
+"Available subcategories: %(children)s."
+msgstr ""
+"La catégorie « %(categ)s » est un nœud intermédiaire. Un produit doit être rattaché à une catégorie terminale (sans sous-catégorie).\n"
+"Sous-catégories disponibles : %(children)s."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/product_product.py:0
+msgid ""
+"The internal reference \"%s\" already exists on another product. It must be "
+"unique across the whole catalogue."
+msgstr ""
+"La référence interne « %s » existe déjà sur un autre produit. Elle doit être"
+" unique sur l'ensemble du catalogue."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/product_product.py:0
+msgid ""
+"The internal reference \"%s\" follows a legacy naming convention (CAF-, COP-, RES-, NET-, SAN-).\n"
+"New references are opaque and sequential (INV-NNNNNN): they never encode the category, the type or an attribute. Leave the field empty to have a reference assigned automatically.\n"
+"Existing products keep their original reference."
+msgstr ""
+"La référence interne « %s » reprend une convention de nommage historique (CAF-, COP-, RES-, NET-, SAN-).\n"
+"Les nouvelles références sont opaques et séquentielles (INV-NNNNNN) : elles n'encodent jamais la catégorie, le type ou un attribut. Laissez le champ vide pour qu'une référence soit attribuée automatiquement.\n"
+"Les fiches existantes conservent leur référence d'origine."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/product_template.py:0
+msgid "The internal reference is required for \"%s\"."
+msgstr "La référence interne est obligatoire pour « %s »."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/his_inventaire_annuel.py:0
+msgid "The inventory \"%s\" is closed: it can no longer be modified."
+msgstr "L'inventaire « %s » est clôturé : il ne peut plus être modifié."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/his_inventaire_annuel.py:0
+msgid "The inventory \"%s\" is closed: it cannot be deleted."
+msgstr "L'inventaire « %s » est clôturé : il ne peut pas être supprimé."
+
+#. module: his_stock_mdm
+#: model:stock.scrap.reason.tag,name:his_stock_mdm.scrap_reason_vol
+msgid "Theft/Unexplained Shortage"
+msgstr "Vol/Manquant inexpliqué"
+
+#. module: his_stock_mdm
+#: model:product.attribute,name:his_stock_mdm.attribute_variante
+msgid "Variant"
+msgstr "Variante"
+
+#. module: his_stock_mdm
+#: model:stock.rule,name:his_stock_mdm.rule_reappro_cafeteria
+msgid "WH/Stock → Cafeteria"
+msgstr "WH/Stock → Cafétéria"
+
+#. module: his_stock_mdm
+#: model:stock.rule,name:his_stock_mdm.rule_reappro_copy_center
+msgid "WH/Stock → Copy Center"
+msgstr "WH/Stock → Copy Center"
+
+#. module: his_stock_mdm
+#: model:stock.rule,name:his_stock_mdm.rule_reappro_restaurant
+msgid "WH/Stock → Restaurant"
+msgstr "WH/Stock → Restaurant"

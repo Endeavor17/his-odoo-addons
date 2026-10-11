@@ -7,17 +7,17 @@ class HisPerson(models.Model):
 
     rang_academique = fields.Selection(
         [
-            ("PROF", "Professeur"),
-            ("MCA", "Maître de Conférences A"),
-            ("MCB", "Maître de Conférences B"),
-            ("MAA", "Maître Assistant A"),
-            ("MAB", "Maître Assistant B"),
+            ("PROF", "Professor"),
+            ("MCA", "Associate Professor A"),
+            ("MCB", "Associate Professor B"),
+            ("MAA", "Assistant Lecturer A"),
+            ("MAB", "Assistant Lecturer B"),
         ],
-        string="Rang académique",
+        string="Academic Rank",
         help="Teachers only.",
     )
     specialite = fields.Char(
-        string="Spécialité",
+        string="Specialty",
         help="Declarative free text, as it exists in the HIS referential.",
     )
     faculty_ids = fields.Many2many(
@@ -25,7 +25,7 @@ class HisPerson(models.Model):
         "his_faculty_person_rel",
         "person_id",
         "faculty_id",
-        string="Facultés",
+        string="Faculties",
         help="A person may legitimately belong to more than one faculty.",
     )
 

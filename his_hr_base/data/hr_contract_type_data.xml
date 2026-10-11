@@ -19,28 +19,28 @@
              hors de ces cas est requalifie en CDI. -->
 
         <record id="contract_type_dz_cdi" model="hr.contract.type">
-            <field name="name">CDI — Contrat à Durée Indéterminée</field>
+            <field name="name">CDI — Permanent Contract</field>
             <field name="code">CDI</field>
             <field name="country_id" ref="base.dz"/>
             <field name="sequence">1</field>
         </record>
 
         <record id="contract_type_dz_cdd" model="hr.contract.type">
-            <field name="name">CDD — Contrat à Durée Déterminée</field>
+            <field name="name">CDD — Fixed-Term Contract</field>
             <field name="code">CDD</field>
             <field name="country_id" ref="base.dz"/>
             <field name="sequence">2</field>
         </record>
 
         <record id="contract_type_dz_temps_partiel" model="hr.contract.type">
-            <field name="name">Contrat à temps partiel</field>
+            <field name="name">Part-Time Contract</field>
             <field name="code">CTP</field>
             <field name="country_id" ref="base.dz"/>
             <field name="sequence">3</field>
         </record>
 
         <record id="contract_type_dz_apprentissage" model="hr.contract.type">
-            <field name="name">Contrat d'apprentissage</field>
+            <field name="name">Apprenticeship Contract</field>
             <field name="code">APP</field>
             <field name="country_id" ref="base.dz"/>
             <field name="sequence">4</field>

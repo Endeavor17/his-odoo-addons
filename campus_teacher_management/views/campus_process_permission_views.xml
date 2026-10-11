@@ -59,8 +59,8 @@
         <field name="context">{'search_default_group_by_process': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Grant a user access to a Campus+ process</p>
-            <p>For each Campus+ Recruitment process (Dashboard, Candidatures, 1er Interview,
-               2ème Interview, Course Breakdown, Contrat, Shooting), pick which users can
+            <p>For each Campus+ Recruitment process (Dashboard, Applications, 1st Interview,
+               2nd Interview, Course Breakdown, Contract, Shooting), pick which users can
                View, Execute and Validate it. Validate needs Execute, Execute needs View —
                ticking one turns the others on automatically. InSite's own processes have
                their own separate "Process Permissions — InSite" menu.</p>

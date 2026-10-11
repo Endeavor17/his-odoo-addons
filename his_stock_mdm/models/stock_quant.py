@@ -18,6 +18,6 @@ class StockQuant(models.Model):
     def action_apply_inventory(self, date=None):
         if not (self.env.su or self.env.user.has_group("stock.group_stock_manager")):
             raise AccessError(
-                _("Seul un Manager Stock peut appliquer un comptage. L'écart reste visible en attente d'application.")
+                _("Only an Inventory Manager can apply a count. The difference remains visible, pending application.")
             )
         return super().action_apply_inventory(date=date)

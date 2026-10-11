@@ -2,7 +2,7 @@
 from odoo import api, fields, models
 
 CYCLE = [
-    ("licence", "Licence"),
+    ("licence", "Bachelor"),
     ("master", "Master"),
 ]
 
@@ -16,26 +16,26 @@ class HisSpecialite(models.Model):
     """
 
     _name = "his.specialite"
-    _description = "Specialite"
+    _description = "Specialty"
     _order = "domaine_id, sequence, name"
 
-    name = fields.Char(string="Specialite", required=True, translate=True)
-    name_arabe = fields.Char(string="Specialite (arabe)")
+    name = fields.Char(string="Specialty", required=True, translate=True)
+    name_arabe = fields.Char(string="Specialty (Arabic)")
     code = fields.Char(string="Code", required=True)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
     domaine_id = fields.Many2one(
         "his.domaine",
-        string="Domaine",
+        string="Field of Study",
         required=True,
         ondelete="restrict",
-        help="Porte le bareme d'eligibilite applique aux dossiers de cette specialite.",
+        help="Carries the eligibility scale applied to files in this specialty.",
     )
     cycle = fields.Selection(CYCLE, string="Cycle", required=True, default="licence")
 
     _code_unique = models.Constraint(
         "unique(code)",
-        "Ce code de specialite est deja utilise.",
+        "This specialty code is already used.",
     )
 
     @api.depends("name", "name_arabe")

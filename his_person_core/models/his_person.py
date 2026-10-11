@@ -69,7 +69,7 @@ def normalize_text(value):
 
 class HisPerson(models.Model):
     _name = "his.person"
-    _description = "Personne (Groupe HIS-HTC-IRA)"
+    _description = "Person (HIS-HTC-IRA Group)"
     # Heritage par delegation : chaque personne porte un vrai res.partner.
     #
     # Pourquoi pas un modele autonome : la carte RFID, le portefeuille repas et
@@ -115,7 +115,7 @@ class HisPerson(models.Model):
     # jamais reemis. Le rendre editable, meme par un administrateur, casserait
     # l'identifiant sur lequel s'appuieront la carte RFID et le portefeuille.
     matricule_institutionnel = fields.Char(
-        string="Matricule institutionnel",
+        string="Institutional Registration Number",
         copy=False,
         readonly=True,
         index=True,
@@ -134,7 +134,7 @@ class HisPerson(models.Model):
     # store=False : un champ calcule stocke de plus serait une seconde copie
     # d'un identifiant a vie, a tenir en phase. Le calcul est une troncature.
     matricule_affiche = fields.Char(
-        string="Matricule",
+        string="Registration Number",
         compute="_compute_matricule_affiche",
         search="_search_matricule_affiche",
     )
@@ -147,8 +147,8 @@ class HisPerson(models.Model):
     # 19.0). L'adresse institutionnelle est l'adresse officielle — celle que
     # liront le portail, les documents et le POS — elle occupe donc `email`.
     # L'adresse personnelle reste une donnee propre au referentiel.
-    nom_arabe = fields.Char(string="Nom (arabe)", tracking=True)
-    email_personnel = fields.Char(string="Email personnel")
+    nom_arabe = fields.Char(string="Name (Arabic)", tracking=True)
+    email_personnel = fields.Char(string="Personal Email")
 
     # Numero de carte physique (RFID / badge). Saisissable a la main comme
     # importe : les cartes arrivent tantot de l'export d'admission, tantot du
@@ -162,17 +162,15 @@ class HisPerson(models.Model):
     # etat, dates de validite) des que le portefeuille repas arrive. C'est le
     # chantier RFID/portefeuille, pas celui-ci.
     numero_carte = fields.Char(
-        string="Badge RFID",
+        string="RFID Badge",
         copy=False,
         index=True,
         tracking=True,
-        help="Numero du badge RFID, tel que le lecteur le restitue. C'est ce "
-        "champ que la caisse interroge pour retrouver la personne. Un "
-        "badge n'appartient qu'a une personne.\n\n"
-        "A ne pas confondre avec le « Badge ID » natif de la fiche "
-        "employe (hr.employee.barcode) : celui-la identifie le personnel "
-        "aupres du terminal de pointage et connecte un caissier a la "
-        "caisse. Ce n'est pas le badge repas.",
+        help="RFID badge number, as the reader returns it. This is the field the till "
+        "looks up to find the person. A badge belongs to one person only.\n\nNot "
+        'to be confused with the native "Badge ID" on the employee record '
+        "(hr.employee.barcode): that one identifies staff at the time clock and "
+        "logs a cashier into the till. It is not the meal badge.",
     )
 
     # Selection et non un jeu de booleens : la liste des types s'allongera
@@ -182,12 +180,12 @@ class HisPerson(models.Model):
     # fiche et le meme matricule.
     type_personne = fields.Selection(
         selection=[
-            ("employe", "Employe"),
-            ("enseignant", "Enseignant"),
-            ("etudiant", "Etudiant"),
-            ("candidat", "Candidat"),
+            ("employe", "Employee"),
+            ("enseignant", "Teacher"),
+            ("etudiant", "Student"),
+            ("candidat", "Applicant"),
         ],
-        string="Type de personne",
+        string="Person Type",
         required=True,
         tracking=True,
     )
@@ -196,51 +194,51 @@ class HisPerson(models.Model):
 
     source_system = fields.Selection(
         selection=[
-            ("odoo_hr", "Odoo RH"),
+            ("odoo_hr", "Odoo HR"),
             ("google_sheets", "Google Sheets"),
             ("uniflow", "Uniflow"),
-            ("manual", "Saisie manuelle"),
+            ("manual", "Manual Entry"),
         ],
-        string="Systeme source",
+        string="Source System",
         required=True,
         tracking=True,
     )
     external_ref = fields.Char(
-        string="Reference source",
-        help="Identifiant de la fiche dans son systeme source (ligne de la feuille, "
-        "cle Uniflow...). Sert a remonter a l'origine de la donnee.",
+        string="Source Reference",
+        help="Identifier of the record in its source system (sheet row, Uniflow "
+        "key...). Used to trace the data back to its origin.",
     )
 
     engagement_ids = fields.One2many(
         "his.engagement",
         "person_id",
         string="Engagements",
-        help="Parcours dates de cette personne. L'identite ne change pas d'un "
-        "parcours a l'autre : une candidature refusee puis representee "
-        "donne deux engagements, jamais deux fiches.",
+        help="Dated paths of this person. The identity does not change from one path "
+        "to the next: an application rejected then resubmitted gives two "
+        "engagements, never two records.",
     )
 
     match_method = fields.Selection(
         selection=[
-            ("deterministic", "Deterministe"),
-            ("probabilistic", "Probabiliste (confirme)"),
+            ("deterministic", "Deterministic"),
+            ("probabilistic", "Probabilistic (Confirmed)"),
             ("new", "Creation"),
         ],
-        string="Methode de rapprochement",
+        string="Matching Method",
         readonly=True,
         tracking=True,
     )
     matched_by = fields.Many2one(
         "res.users",
-        string="Rapprochement confirme par",
+        string="Match Confirmed By",
         readonly=True,
         tracking=True,
     )
-    matched_on = fields.Datetime(string="Date de confirmation", readonly=True, tracking=True)
+    matched_on = fields.Datetime(string="Confirmation Date", readonly=True, tracking=True)
 
     _matricule_institutionnel_unique = models.Constraint(
         "unique(matricule_institutionnel)",
-        "Ce matricule institutionnel est deja attribue a une autre personne.",
+        "This institutional registration number is already assigned to another person.",
     )
     # Un partenaire, une personne. hr.employee.work_contact_id peut etre
     # partage entre plusieurs employes (res.partner.employee_ids est un
@@ -249,13 +247,13 @@ class HisPerson(models.Model):
     # partenaire et l'ancrage d'identite cesserait d'etre un-par-humain.
     _partner_id_unique = models.Constraint(
         "unique(partner_id)",
-        "Ce contact porte deja une fiche personne.",
+        "This contact already carries a person record.",
     )
     # Une carte, une personne. Sans cela deux fiches pourraient porter le meme
     # numero et la caisse ne saurait pas qui debiter.
     _numero_carte_unique = models.Constraint(
         "unique(numero_carte)",
-        "Ce badge RFID est deja attribue a une autre personne.",
+        "This RFID badge is already assigned to another person.",
     )
 
     @api.depends("matricule_institutionnel")
@@ -308,7 +306,7 @@ class HisPerson(models.Model):
             )
             if not base:
                 raise ValidationError(
-                    _("Sequence %s introuvable : impossible d'emettre un matricule.", MATRICULE_SEQUENCE_CODE)
+                    _("Sequence %s not found: cannot issue a registration number.", MATRICULE_SEQUENCE_CODE)
                 )
             person.sudo().matricule_institutionnel = "%s-%s" % (
                 base,
@@ -354,7 +352,7 @@ class HisPerson(models.Model):
                 # creation que poser une fiche sans matricule ou avec un
                 # matricule fabrique ailleurs.
                 raise ValidationError(
-                    _("Sequence %s introuvable : impossible d'emettre un matricule.", MATRICULE_SEQUENCE_CODE)
+                    _("Sequence %s not found: cannot issue a registration number.", MATRICULE_SEQUENCE_CODE)
                 )
             vals["matricule_institutionnel"] = "%s-%s" % (
                 base,
@@ -383,7 +381,7 @@ class HisPerson(models.Model):
                     and vals["matricule_institutionnel"] != person.matricule_institutionnel
                 ):
                     raise ValidationError(
-                        _("Le matricule institutionnel de %s ne peut pas etre modifie.", person.display_name)
+                        _("The institutional registration number of %s cannot be changed.", person.display_name)
                     )
         return super().write(vals)
 
@@ -465,14 +463,12 @@ class HisPerson(models.Model):
                     "person": existing,
                     "method": "deterministic",
                     "score": 1.0,
-                    "conflict": (
-                        "Le matricule %s existe deja et appartient a une personne de type "
-                        "« %s », incompatible avec cette source. Ligne rejetee : a arbitrer "
-                        "manuellement, aucune fusion automatique."
-                        % (
-                            matricule,
-                            existing.type_personne,
-                        )
+                    "conflict": _(
+                        "Registration number %(matricule)s already exists and belongs to a "
+                        'person of type "%(type)s", which is incompatible with this source. Row '
+                        "rejected: to be resolved by hand, no automatic merge.",
+                        matricule=matricule,
+                        type=existing.type_personne,
                     ),
                 }
             return {"person": existing, "method": "deterministic", "score": 1.0, "conflict": False}
@@ -552,5 +548,5 @@ class HisPerson(models.Model):
                 }
             )
             person.message_post(
-                body=_("Rapprochement probabiliste confirme par %s.", self.env.user.display_name),
+                body=_("Probabilistic match confirmed by %s.", self.env.user.display_name),
             )

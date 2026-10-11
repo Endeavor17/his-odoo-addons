@@ -70,7 +70,7 @@
 // Hours are figures, not prose: the mono face keeps 03h 24m from shifting
 // width as the minutes tick over.
 .o_mu_workday_figure {
-    font-family: var(--bs-font-monospace, ui-monospace, monospace);
+    font-family: var(--font-monospace, monospace);
     font-weight: 600;
 }
 

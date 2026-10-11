@@ -5,13 +5,13 @@
         <field name="name">his.person.list</field>
         <field name="model">his.person</field>
         <field name="arch" type="xml">
-            <list string="Personnes">
+            <list string="People">
                 <field name="matricule_affiche"/>
                 <field name="name"/>
                 <field name="nom_arabe" optional="show"/>
                 <field name="type_personne"/>
-                <field name="email" string="Email institutionnel" optional="show"/>
-                <field name="phone" string="Telephone" optional="hide"/>
+                <field name="email" string="Institutional Email" optional="show"/>
+                <field name="phone" string="Phone" optional="hide"/>
                 <field name="numero_carte" optional="show"/>
                 <field name="source_system" optional="hide"/>
                 <field name="match_method" optional="hide"/>
@@ -23,28 +23,28 @@
         <field name="name">his.person.form</field>
         <field name="model">his.person</field>
         <field name="arch" type="xml">
-            <form string="Personne">
+            <form string="Person">
                 <sheet>
                     <div class="oe_title">
-                        <label for="name" string="Nom (latin)"/>
-                        <h1><field name="name" placeholder="Nom (latin)"/></h1>
+                        <label for="name" string="Name (Latin)"/>
+                        <h1><field name="name" placeholder="Name (Latin)"/></h1>
                         <h3><field name="matricule_affiche"/></h3>
                     </div>
                     <group>
-                        <group string="Identite">
+                        <group string="Identity">
                             <field name="nom_arabe"/>
                             <field name="type_personne"/>
                             <field name="active" widget="boolean_toggle"/>
                         </group>
                         <group string="Contact">
-                            <field name="email" string="Email institutionnel"/>
+                            <field name="email" string="Institutional Email"/>
                             <field name="email_personnel"/>
-                            <field name="phone" string="Telephone"/>
+                            <field name="phone" string="Phone"/>
                         </group>
-                        <group string="Carte">
+                        <group string="Card">
                             <field name="numero_carte"/>
                         </group>
-                        <group string="Provenance">
+                        <group string="Origin">
                             <!-- invisible tant qu'il est vide : partner_id est
                                  required, mais il n'est renseigne que par la
                                  delegation au moment du create. Affiche et
@@ -56,7 +56,7 @@
                             <field name="source_system"/>
                             <field name="external_ref"/>
                         </group>
-                        <group string="Rapprochement">
+                        <group string="Matching">
                             <field name="match_method"/>
                             <field name="matched_by"/>
                             <field name="matched_on"/>
@@ -83,27 +83,27 @@
         <field name="name">his.person.search</field>
         <field name="model">his.person</field>
         <field name="arch" type="xml">
-            <search string="Personnes">
+            <search string="People">
                 <field name="matricule_affiche"/>
                 <field name="name"/>
                 <field name="nom_arabe"/>
-                <field name="email" string="Email institutionnel"/>
+                <field name="email" string="Institutional Email"/>
                 <field name="numero_carte"/>
-                <filter name="filter_employe" string="Employes" domain="[('type_personne','=','employe')]"/>
-                <filter name="filter_enseignant" string="Enseignants" domain="[('type_personne','=','enseignant')]"/>
-                <filter name="filter_etudiant" string="Etudiants" domain="[('type_personne','=','etudiant')]"/>
-                <filter name="filter_candidat" string="Candidats" domain="[('type_personne','=','candidat')]"/>
+                <filter name="filter_employe" string="Employees" domain="[('type_personne','=','employe')]"/>
+                <filter name="filter_enseignant" string="Teachers" domain="[('type_personne','=','enseignant')]"/>
+                <filter name="filter_etudiant" string="Students" domain="[('type_personne','=','etudiant')]"/>
+                <filter name="filter_candidat" string="Applicants" domain="[('type_personne','=','candidat')]"/>
                 <separator/>
-                <filter name="filter_inactive" string="Archives" domain="[('active','=',False)]"/>
+                <filter name="filter_inactive" string="Archived" domain="[('active','=',False)]"/>
                 <separator/>
                 <filter name="group_type" string="Type" context="{'group_by': 'type_personne'}"/>
-                <filter name="group_source" string="Systeme source" context="{'group_by': 'source_system'}"/>
+                <filter name="group_source" string="Source System" context="{'group_by': 'source_system'}"/>
             </search>
         </field>
     </record>
 
     <record id="action_his_person" model="ir.actions.act_window">
-        <field name="name">Personnes</field>
+        <field name="name">People</field>
         <field name="res_model">his.person</field>
         <field name="view_mode">list,form</field>
     </record>
@@ -116,8 +116,8 @@
          his_person_core ne depend pas de hr et ne peut donc pas nommer les
          groupes RH ici. C'est his_hr_base qui ouvre ce menu a hr.group_hr_user,
          puisque c'est lui qui fait le lien entre un employe et sa personne. -->
-    <menuitem id="menu_his_person_root" name="Identite" sequence="85"
+    <menuitem id="menu_his_person_root" name="Identity" sequence="85"
               groups="his_person_core.group_his_person_manager"/>
-    <menuitem id="menu_his_person" name="Personnes" parent="menu_his_person_root" action="action_his_person" sequence="10"/>
+    <menuitem id="menu_his_person" name="People" parent="menu_his_person_root" action="action_his_person" sequence="10"/>
 
 </odoo>

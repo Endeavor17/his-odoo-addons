@@ -5,7 +5,7 @@
         <field name="name">his.tarif.list</field>
         <field name="model">his.tarif</field>
         <field name="arch" type="xml">
-            <list string="Tarifs" editable="bottom">
+            <list string="Fees" editable="bottom">
                 <field name="specialite_id"/>
                 <field name="cycle"/>
                 <field name="frais_inscription"/>
@@ -16,20 +16,20 @@
     </record>
 
     <record id="action_his_tarif" model="ir.actions.act_window">
-        <field name="name">Tarifs</field>
+        <field name="name">Fees</field>
         <field name="res_model">his.tarif</field>
         <field name="view_mode">list</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun tarif enregistre.</p>
-            <p>Tant que cette grille est vide, le cockpit n'affiche AUCUN chiffre
-               d'affaires. C'est voulu : un montant invente se cite en reunion.</p>
-            <p>Un seul tarif actif par specialite. Pour changer de bareme,
-               desactivez l'ancien plutot que de le modifier — l'historique
-               reste lisible.</p>
+            <p class="o_view_nocontent_smiling_face">No fee recorded.</p>
+            <p>While this grid is empty, the cockpit shows NO revenue
+               figure. This is deliberate: an invented amount gets quoted in meetings.</p>
+            <p>Only one active fee per specialty. To change the scale,
+               deactivate the old one rather than editing it — the history
+               stays readable.</p>
         </field>
     </record>
 
-    <menuitem id="menu_his_tarif" name="Tarifs"
+    <menuitem id="menu_his_tarif" name="Fees"
               parent="menu_admission_config"
               action="action_his_tarif" sequence="40"/>
 

@@ -27,9 +27,9 @@ class ResUsers(models.Model):
         "his_user_group_poste_rel",
         "user_id",
         "group_id",
-        string="Roles issus du poste",
-        help="Technique : ce que l'attribution automatique a pose. Sert a "
-        "distinguer un role du poste d'une derogation individuelle.",
+        string="Roles From Position",
+        help="Technical: what the automatic assignment set. Used to tell a position "
+        "role apart from an individual exception.",
     )
 
     def _his_reconcilier_roles(self, groupes_du_poste):

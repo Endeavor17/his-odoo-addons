@@ -8,25 +8,25 @@
              restriction ni validation n'est posee sur ce motif : la pratique
              est connue et assumee, ce n'est pas a ce module de la policer. -->
         <record id="lost_reason_hors_quota" model="crm.lost.reason">
-            <field name="name">Hors quota commercial</field>
+            <field name="name">Outside sales quota</field>
         </record>
 
         <record id="lost_reason_dossier_non_retenu" model="crm.lost.reason">
-            <field name="name">Dossier non retenu</field>
+            <field name="name">File not accepted</field>
         </record>
 
         <record id="lost_reason_dossier_incomplet" model="crm.lost.reason">
-            <field name="name">Dossier incomplet / non eligible</field>
+            <field name="name">Incomplete file / not eligible</field>
         </record>
 
         <record id="lost_reason_paiement_non_confirme" model="crm.lost.reason">
-            <field name="name">Paiement non confirme</field>
+            <field name="name">Payment not confirmed</field>
         </record>
 
         <!-- Production Contenu : un refus d'approbation n'est pas une perte
              seche, c'est un renvoi en production. -->
         <record id="lost_reason_retour_production" model="crm.lost.reason">
-            <field name="name">Retour production necessaire</field>
+            <field name="name">Back to production needed</field>
             <field name="sequence">70</field>
         </record>
 
@@ -52,32 +52,32 @@
              qui rend la cloture assez rapide pour ne pas etre sautee. -->
 
         <record id="lost_reason_sans_reponse" model="crm.lost.reason">
-            <field name="name">Sans reponse</field>
+            <field name="name">No Answer</field>
             <field name="sequence">10</field>
         </record>
 
         <record id="lost_reason_fantome" model="crm.lost.reason">
-            <field name="name">Candidature fantome</field>
+            <field name="name">Ghost application</field>
             <field name="sequence">20</field>
         </record>
 
         <record id="lost_reason_profil_inadapte" model="crm.lost.reason">
-            <field name="name">Profil non adapte</field>
+            <field name="name">Profile not suitable</field>
             <field name="sequence">30</field>
         </record>
 
         <record id="lost_reason_trop_cher" model="crm.lost.reason">
-            <field name="name">Frais trop eleves</field>
+            <field name="name">Fees too high</field>
             <field name="sequence">40</field>
         </record>
 
         <record id="lost_reason_numero_errone" model="crm.lost.reason">
-            <field name="name">Numero errone</field>
+            <field name="name">Wrong number</field>
             <field name="sequence">45</field>
         </record>
 
         <record id="lost_reason_bac_ancien" model="crm.lost.reason">
-            <field name="name">BAC trop ancien</field>
+            <field name="name">Baccalaureate too old</field>
             <field name="sequence">48</field>
         </record>
 
@@ -88,7 +88,7 @@
              qu'il ne se distingue pas d'un vrai. Choisir « Autre » oblige a
              preciser — voir _check_perte_motivee. -->
         <record id="lost_reason_autre" model="crm.lost.reason">
-            <field name="name">Autre - a preciser</field>
+            <field name="name">Other - please specify</field>
             <field name="sequence">99</field>
         </record>
 

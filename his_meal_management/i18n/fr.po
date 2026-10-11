@@ -1,0 +1,1595 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_meal_management
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/pos_store.js:0
+msgid ""
+"%(name)s has %(credits)s credit(s) left and %(meal)s costs %(cost)s. The two"
+" allowance meals are already used. Sell the meal at its normal price, or "
+"sell a new plan at the student centre."
+msgstr ""
+"%(name)s n'a plus que %(credits)s crédit(s) et %(meal)s coûte %(cost)s. Les "
+"deux repas d'avance sont déjà utilisés. Vendez le repas à son prix normal, "
+"ou vendez un nouveau forfait au centre étudiant."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/res_partner.py:0
+msgid "%(person)s has no meal credits available."
+msgstr "%(person)s n'a aucun crédit repas disponible."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/pos_order.py:0
+msgid ""
+"%(plan)s must be sold at its price, %(price)s. Meal credits are not granted "
+"on a discounted or zero-priced plan."
+msgstr ""
+"%(plan)s doit être vendu à son prix, %(price)s. Les crédits repas ne sont "
+"pas accordés sur un forfait remisé ou à prix nul."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/meal_card.py:0
+msgid "%s already holds an active card. Block, lose or replace it first."
+msgstr ""
+"%s possède déjà une carte active. Bloquez-la, déclarez-la perdue ou "
+"remplacez-la d'abord."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/product_template.py:0
+msgid ""
+"%s cannot be a meal plan and a meal at once: it either grants credits or "
+"costs them."
+msgstr ""
+"%s ne peut pas être à la fois un forfait et un repas : soit il accorde des "
+"crédits, soit il en coûte."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/product_template.py:0
+msgid ""
+"%s cannot have a negative validity. Use zero for credits that never expire."
+msgstr ""
+"%s ne peut pas avoir une validité négative. Mettez zéro pour des crédits qui"
+" n'expirent jamais."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/meal_card.py:0
+msgid ""
+"%s has no person record, so no card can be issued.\n"
+"\n"
+"A meal card belongs to a registered person. Ask for the person to be created in the People register first — by HR for an employee, or through the student import."
+msgstr ""
+"%s n'a pas de fiche personne : aucune carte ne peut être émise.\n"
+"\n"
+"Une carte repas appartient à une personne enregistrée. Faites d'abord créer la personne dans le référentiel Personnes — par les RH pour un employé, ou via l'import des étudiants."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/meal_subscription.py:0
+msgid ""
+"%s has no person record, so no meal credits can be held.\n"
+"\n"
+"Sell the plan to a registered person, or have them registered in the People register first."
+msgstr ""
+"%s n'a pas de fiche personne : aucun crédit repas ne peut être détenu.\n"
+"\n"
+"Vendez le forfait à une personne enregistrée, ou faites-la d'abord enregistrer dans le référentiel Personnes."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/res_partner.py:0
+msgid "%s is not a meal plan."
+msgstr "%s n'est pas un forfait repas."
+
+#. module: his_meal_management
+#: model:ir.actions.report,print_report_name:his_meal_management.action_report_meal_card
+msgid "'Card - %s' % object.code"
+msgstr "'Carte - %s' % object.code"
+
+#. module: his_meal_management
+#: model:product.template,description_sale:his_meal_management.product_plan_300_monthly
+msgid "20 paid meals + 5 free = 25 meals at 300 DA. 12.5 credits, no expiry."
+msgstr ""
+"20 repas payés + 5 offerts = 25 repas à 300 DA. 12,5 crédits, sans "
+"expiration."
+
+#. module: his_meal_management
+#: model:product.template,description_sale:his_meal_management.product_plan_monthly
+msgid "20 paid meals + 5 free = 25 meals at 600 DA. 25 credits, no expiry."
+msgstr ""
+"20 repas payés + 5 offerts = 25 repas à 600 DA. 25 crédits, sans expiration."
+
+#. module: his_meal_management
+#: model:product.template,description_sale:his_meal_management.product_plan_300_weekly
+msgid "5 paid meals + 1 free = 6 meals at 300 DA. 3 credits, no expiry."
+msgstr ""
+"5 repas payés + 1 offert = 6 repas à 300 DA. 3 crédits, sans expiration."
+
+#. module: his_meal_management
+#: model:product.template,description_sale:his_meal_management.product_plan_weekly
+msgid "5 paid meals + 1 free = 6 meals at 600 DA. 6 credits, no expiry."
+msgstr ""
+"5 repas payés + 1 offert = 6 repas à 600 DA. 6 crédits, sans expiration."
+
+#. module: his_meal_management
+#: model:product.template,description_sale:his_meal_management.product_plan_300_semester
+msgid "60 paid meals + 20 free = 80 meals at 300 DA. 40 credits, no expiry."
+msgstr ""
+"60 repas payés + 20 offerts = 80 repas à 300 DA. 40 crédits, sans "
+"expiration."
+
+#. module: his_meal_management
+#: model:product.template,description_sale:his_meal_management.product_plan_semester
+msgid "60 paid meals + 20 free = 80 meals at 600 DA. 80 credits, no expiry."
+msgstr ""
+"60 repas payés + 20 offerts = 80 repas à 600 DA. 80 crédits, sans "
+"expiration."
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_form
+msgid "<span class=\"o_stat_text\">Print Card</span>"
+msgstr "<span class=\"o_stat_text\">Imprimer la carte</span>"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.report_meal_card
+msgid ""
+"<span style=\"font-size: 5.5pt; font-weight: bold; letter-spacing: 1.2pt; "
+"color: #ffffff;\">HIS UNIVERSITY</span>"
+msgstr ""
+"<span style=\"font-size: 5.5pt; font-weight: bold; letter-spacing: 1.2pt; "
+"color: #ffffff;\">UNIVERSITÉ HIS</span>"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.report_meal_card
+msgid ""
+"<span style=\"font-size: 5.5pt; font-weight: bold; letter-spacing: 1pt; "
+"color: #dfa22a;\">MEAL CARD</span>"
+msgstr ""
+"<span style=\"font-size: 5.5pt; font-weight: bold; letter-spacing: 1pt; "
+"color: #dfa22a;\">CARTE REPAS</span>"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.report_meal_card
+msgid ""
+"<span style=\"font-size: 5.5pt; font-weight: bold; line-height: 1.4; color: "
+"#ffffff;\">0770 54 71 99<br/>contact@his.edu.dz</span>"
+msgstr ""
+"<span style=\"font-size: 5.5pt; font-weight: bold; line-height: 1.4; color: "
+"#ffffff;\">0770 54 71 99<br/>contact@his.edu.dz</span>"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.report_meal_card
+msgid ""
+"<span style=\"font-size: 5.5pt; line-height: 1.4; color: #cfe6ee;\">Route "
+"114 Bordj El-Bahri, Bordj El Kiffan, 16031, Algiers</span>"
+msgstr ""
+"<span style=\"font-size: 5.5pt; line-height: 1.4; color: #cfe6ee;\">Route "
+"114 Bordj El-Bahri, Bordj El Kiffan, 16031, Alger</span>"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.report_meal_card
+msgid ""
+"<span style=\"font-size: 5pt; letter-spacing: 1pt; color: #7b929b;\">CARD "
+"NUMBER</span><br/>"
+msgstr ""
+"<span style=\"font-size: 5pt; letter-spacing: 1pt; color: #7b929b;\">NUMÉRO "
+"DE CARTE</span><br/>"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.report_meal_card
+msgid ""
+"<span style=\"font-size: 5pt; letter-spacing: 1pt; color: #9fcede;\">CARD "
+"NUMBER</span><br/>"
+msgstr ""
+"<span style=\"font-size: 5pt; letter-spacing: 1pt; color: #9fcede;\">NUMÉRO "
+"DE CARTE</span><br/>"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.report_meal_card
+msgid ""
+"<span style=\"font-size: 6pt; font-weight: bold; letter-spacing: 1.1pt; "
+"color: #dfa22a;\">MEAL CARD</span>"
+msgstr ""
+"<span style=\"font-size: 6pt; font-weight: bold; letter-spacing: 1.1pt; "
+"color: #dfa22a;\">CARTE REPAS</span>"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.report_meal_card
+msgid ""
+"<span style=\"font-size: 6pt; line-height: 1.5; color: #4a636d;\">\n"
+"                                                    This card carries no credits. It identifies the person only —\n"
+"                                                    a lost card costs nothing to replace.\n"
+"                                                </span><br/>\n"
+"                                                <span style=\"font-size: 6pt; line-height: 1.5; color: #7b929b;\">\n"
+"                                                    Found it? Please return it to the Student Centre.\n"
+"                                                </span>"
+msgstr ""
+"<span style=\"font-size: 6pt; line-height: 1.5; color: #4a636d;\">\n"
+"                                                    Cette carte ne porte aucun crédit. Elle identifie seulement la personne —\n"
+"                                                    une carte perdue se remplace sans frais.\n"
+"                                                </span><br/>\n"
+"                                                <span style=\"font-size: 6pt; line-height: 1.5; color: #7b929b;\">\n"
+"                                                    Vous l'avez trouvée ? Merci de la rapporter au centre étudiant.\n"
+"                                                </span>"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.report_meal_card
+msgid ""
+"<span style=\"font-size: 9pt; font-weight: bold; letter-spacing: 1.2pt;\">HIS UNIVERSITY</span><br/>\n"
+"                                                <span style=\"font-size: 5pt; letter-spacing: 1pt; color: #9fcede;\">EST. 2019</span>"
+msgstr ""
+"<span style=\"font-size: 9pt; font-weight: bold; letter-spacing: 1.2pt;\">UNIVERSITÉ HIS</span><br/>\n"
+"                                                <span style=\"font-size: 5pt; letter-spacing: 1pt; color: #9fcede;\">FONDÉE EN 2019</span>"
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_meal_card
+msgid ""
+"A card only identifies the person. Blocking or replacing one never\n"
+"               touches their meal credits."
+msgstr ""
+"Une carte ne fait qu'identifier la personne. La bloquer ou la remplacer\n"
+"               ne touche jamais à ses crédits repas."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/product_template.py:0
+msgid "A meal cannot cost a negative number of credits."
+msgstr "Un repas ne peut pas coûter un nombre négatif de crédits."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/product_template.py:0
+msgid "A meal plan cannot grant a negative number of credits."
+msgstr "Un forfait repas ne peut pas accorder un nombre négatif de crédits."
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_meal_plan
+msgid ""
+"A plan is an ordinary product that happens to carry meal credits\n"
+"               and a validity. Selling it at the point of sale grants the credits."
+msgstr ""
+"Un forfait est un produit ordinaire qui porte des crédits repas\n"
+"               et une validité. Le vendre en caisse accorde les crédits."
+
+#. module: his_meal_management
+#: model:ir.model.constraint,message:his_meal_management.constraint_his_meal_subscription_dates_ordered
+msgid "A subscription cannot end before it starts."
+msgstr "Un abonnement ne peut pas se terminer avant de commencer."
+
+#. module: his_meal_management
+#: model:ir.model.constraint,message:his_meal_management.constraint_his_meal_subscription_credits_within_bounds
+msgid ""
+"A subscription cannot use fewer than zero or more credits than it was sold."
+msgstr ""
+"Un abonnement ne peut pas consommer moins de zéro crédit, ni plus que ce qui"
+" a été vendu."
+
+#. module: his_meal_management
+#: model:ir.model.constraint,message:his_meal_management.constraint_his_meal_subscription_credits_total_positive
+msgid "A subscription must carry at least one credit."
+msgstr "Un abonnement doit porter au moins un crédit."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/wizard/meal_adjust_wizard.py:0
+msgid "A validity cannot be negative. Use zero for credits that never expire."
+msgstr ""
+"Une validité ne peut pas être négative. Mettez zéro pour des crédits qui "
+"n'expirent jamais."
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_card__state__active
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_subscription__state__active
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_search
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_search
+msgid "Active"
+msgstr "Active"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_his_person_form_meal
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_partner_form_meal
+msgid "Active Card"
+msgstr "Carte active"
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_transaction__type__allowance
+msgid "Allowance Meal"
+msgstr "Repas d'avance"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__meal_allowance_left
+#: model:ir.model.fields,field_description:his_meal_management.field_res_partner__meal_allowance_left
+#: model:ir.model.fields,field_description:his_meal_management.field_res_users__meal_allowance_left
+msgid "Allowance Meals Left"
+msgstr "Repas d'avance restants"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "Allowance meal"
+msgstr "Repas d'avance"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/receipt_screen.xml:0
+msgid "Allowance meals to repay"
+msgstr "Repas d'avance à rembourser"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_adjust_wizard_form
+msgid "Apply"
+msgstr "Appliquer"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_his_person_form_meal
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_partner_form_meal
+msgid "Balance"
+msgstr "Solde"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__balance_after
+msgid "Balance After"
+msgstr "Solde après"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_form
+msgid "Block"
+msgstr "Bloquer"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_form
+msgid ""
+"Block this card? The person keeps every credit; only this piece of plastic "
+"stops working."
+msgstr ""
+"Bloquer cette carte ? La personne garde tous ses crédits ; seul ce morceau "
+"de plastique cesse de fonctionner."
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_card__state__blocked
+msgid "Blocked"
+msgstr "Bloquée"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_search
+msgid "Blocked or Lost"
+msgstr "Bloquée ou perdue"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_adjust_wizard_form
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_form
+msgid ""
+"Cancel this subscription? Its remaining credits stop being usable "
+"immediately."
+msgstr ""
+"Annuler cet abonnement ? Ses crédits restants deviennent immédiatement "
+"inutilisables."
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_subscription__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__card_id
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_his_person_form_meal
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_his_person_list_meal
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_form
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_partner_form_meal
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_partner_list_meal
+msgid "Card"
+msgstr "Carte"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__meal_card_code
+#: model:ir.model.fields,field_description:his_meal_management.field_res_partner__meal_card_code
+#: model:ir.model.fields,field_description:his_meal_management.field_res_users__meal_card_code
+msgid "Card Code"
+msgstr "Code de la carte"
+
+#. module: his_meal_management
+#: model:ir.actions.act_window,name:his_meal_management.action_his_person
+msgid "Card Holders"
+msgstr "Titulaires de carte"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.report_meal_card
+msgid "Card QR code"
+msgstr "QR code de la carte"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_his_person_search_meal
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_partner_search_meal
+msgid "Card number"
+msgstr "Numéro de carte"
+
+#. module: his_meal_management
+#: model:ir.ui.menu,name:his_meal_management.menu_meal_cards
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_his_person_form_meal
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_partner_form_meal
+msgid "Cards"
+msgstr "Cartes"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_form
+msgid ""
+"Click in the field above and tap the card on the reader. It sends\n"
+"                        the card's own 10-digit number, which cannot be chosen or typed\n"
+"                        from memory."
+msgstr ""
+"Cliquez dans le champ ci-dessus et passez la carte sur le lecteur. Il envoie\n"
+"                        le numéro à 10 chiffres propre à la carte, qui ne peut être ni choisi ni tapé\n"
+"                        de mémoire."
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__code
+msgid "Code"
+msgstr "Code"
+
+#. module: his_meal_management
+#: model:ir.ui.menu,name:his_meal_management.menu_meal_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: his_meal_management
+#: model:ir.model,name:his_meal_management.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: his_meal_management
+#: model:ir.actions.act_window,name:his_meal_management.action_meal_adjust_wizard
+#: model:ir.ui.menu,name:his_meal_management.menu_meal_adjust
+msgid "Correct Credits"
+msgstr "Corriger les crédits"
+
+#. module: his_meal_management
+#: model:ir.model,name:his_meal_management.model_his_meal_adjust_wizard
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_adjust_wizard_form
+msgid "Correct Meal Credits"
+msgstr "Corriger les crédits repas"
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_transaction__type__adjust
+msgid "Correction"
+msgstr "Correction"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_search
+msgid "Corrections"
+msgstr "Corrections"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__create_uid
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__create_uid
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__create_uid
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__create_date
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__create_date
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__create_date
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__credits
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__credits_remaining
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__credits
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_his_person_list_meal
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_form
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_partner_list_meal
+msgid "Credits"
+msgstr "Crédits"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__current_credits
+msgid "Credits Now"
+msgstr "Crédits actuels"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__credits_remaining
+msgid "Credits Remaining"
+msgstr "Crédits restants"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__credits_total
+msgid "Credits Total"
+msgstr "Total des crédits"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__credits_used
+msgid "Credits Used"
+msgstr "Crédits utilisés"
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_person__meal_allowance_debt
+#: model:ir.model.fields,help:his_meal_management.field_res_partner__meal_allowance_debt
+#: model:ir.model.fields,help:his_meal_management.field_res_users__meal_allowance_debt
+msgid "Credits eaten on an empty card. Taken off the next top-up."
+msgstr ""
+"Crédits consommés sur une carte vide. Déduits de la prochaine recharge."
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_product_product__meal_credits
+#: model:ir.model.fields,help:his_meal_management.field_product_template__meal_credits
+msgid ""
+"Credits given to the student when this product is sold. Any product with "
+"credits above zero is a meal plan."
+msgstr ""
+"Crédits accordés à l'étudiant à la vente de ce produit. Tout produit avec "
+"des crédits supérieurs à zéro est un forfait repas."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "Credits left"
+msgstr "Crédits restants"
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_product_product__meal_credit_cost
+#: model:ir.model.fields,help:his_meal_management.field_product_template__meal_credit_cost
+msgid ""
+"Credits taken from the student when this product is served at zero price. "
+"Any product with a cost above zero is a meal. The 300 DA meal costs 0.5, the"
+" 600 DA meal costs 1."
+msgstr ""
+"Crédits retirés à l'étudiant quand ce produit est servi à prix nul. Tout "
+"produit avec un coût supérieur à zéro est un repas. Le repas à 300 DA coûte "
+"0,5, celui à 600 DA coûte 1."
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__meal_active_plan
+#: model:ir.model.fields,field_description:his_meal_management.field_res_partner__meal_active_plan
+#: model:ir.model.fields,field_description:his_meal_management.field_res_users__meal_active_plan
+msgid "Current Plan"
+msgstr "Forfait actuel"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__date
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_search
+msgid "Date"
+msgstr "Date"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__date_end
+msgid "Date End"
+msgstr "Date de fin"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__date_start
+msgid "Date Start"
+msgstr "Date de début"
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_meal_plan
+msgid "Define a meal plan"
+msgstr "Définir un forfait repas"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__display_name
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__display_name
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__display_name
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__display_name
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__display_name
+#: model:ir.model.fields,field_description:his_meal_management.field_pos_order__display_name
+#: model:ir.model.fields,field_description:his_meal_management.field_pos_order_line__display_name
+#: model:ir.model.fields,field_description:his_meal_management.field_product_product__display_name
+#: model:ir.model.fields,field_description:his_meal_management.field_product_template__display_name
+#: model:ir.model.fields,field_description:his_meal_management.field_res_partner__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_meal_management
+#: model:his.faculty,name:his_meal_management.faculty_edu
+msgid "Education"
+msgstr "Éducation"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "Empty card"
+msgstr "Carte vide"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/wizard/meal_adjust_wizard.py:0
+msgid "Enter a number of credits to grant or take back."
+msgstr "Saisissez un nombre de crédits à accorder ou à reprendre."
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_meal_transaction
+msgid ""
+"Every credit granted and every meal served lands here, with the\n"
+"               student, card, plan, operator and the balance it left behind."
+msgstr ""
+"Chaque crédit accordé et chaque repas servi arrive ici, avec\n"
+"               l'étudiant, la carte, le forfait, l'opérateur et le solde restant."
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_subscription__state__exhausted
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_search
+msgid "Exhausted"
+msgstr "Épuisé"
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_subscription__state__expired
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_search
+msgid "Expired"
+msgstr "Expiré"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_search
+msgid "Expiring this week"
+msgstr "Expire cette semaine"
+
+#. module: his_meal_management
+#: model:ir.actions.act_window,name:his_meal_management.action_his_faculty
+#: model:ir.ui.menu,name:his_meal_management.menu_his_faculty
+msgid "Faculties"
+msgstr "Facultés"
+
+#. module: his_meal_management
+#: model:his.faculty,name:his_meal_management.faculty_segc
+msgid "Faculty of Economics and Business"
+msgstr "Faculté des Sciences Économiques et des Affaires"
+
+#. module: his_meal_management
+#: model:his.faculty,name:his_meal_management.faculty_dsp
+msgid "Faculty of Law and Political Science"
+msgstr "Faculté de Droit et des Sciences Politiques"
+
+#. module: his_meal_management
+#: model:his.faculty,name:his_meal_management.faculty_mi
+msgid "Faculty of Mathematics & Computer Science"
+msgstr "Faculté des Mathématiques & Informatique"
+
+#. module: his_meal_management
+#: model:his.faculty,name:his_meal_management.faculty_st
+msgid "Faculty of Science and Technology (Electronics)"
+msgstr "Faculté des Sciences et de la Technologie (Électronique)"
+
+#. module: his_meal_management
+#: model:his.faculty,name:his_meal_management.faculty_shs
+msgid "Faculty of Social and Human Sciences (Psychology)"
+msgstr "Faculté des Sciences Sociales et Humaines (Psychologie)"
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_meal_card__code
+msgid ""
+"For an RFID card this is the 10-digit UID the reader sends, e.g. 0007197786 "
+"— tap the card into this field rather than typing it, so the leading zeros "
+"cannot be lost. Printed cards use a HIS- code instead; both are matched by "
+"their own barcode rule."
+msgstr ""
+"Pour une carte RFID, c'est l'UID à 10 chiffres envoyé par le lecteur, par "
+"ex. 0007197786 — passez la carte dans ce champ plutôt que de le taper, pour "
+"ne pas perdre les zéros initiaux. Les cartes imprimées utilisent un code "
+"HIS- ; chacun est reconnu par sa propre règle de code-barres."
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_form
+msgid "History"
+msgstr "Historique"
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_product_product__meal_validity_days
+#: model:ir.model.fields,help:his_meal_management.field_product_template__meal_validity_days
+msgid ""
+"How long the credits stay usable, counted from the day of purchase. Zero "
+"means they never expire."
+msgstr ""
+"Durée d'utilisation des crédits, comptée à partir du jour de l'achat. Zéro "
+"signifie qu'ils n'expirent jamais."
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__id
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__id
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__id
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__id
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__id
+#: model:ir.model.fields,field_description:his_meal_management.field_pos_order__id
+#: model:ir.model.fields,field_description:his_meal_management.field_pos_order_line__id
+#: model:ir.model.fields,field_description:his_meal_management.field_product_product__id
+#: model:ir.model.fields,field_description:his_meal_management.field_product_template__id
+#: model:ir.model.fields,field_description:his_meal_management.field_res_partner__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_meal_management
+#: model:res.groups,comment:his_meal_management.group_meal_officer
+msgid ""
+"IT centre staff. Issues and replaces cards, manages plans\n"
+"            and subscriptions, and posts corrections. Still cannot edit or delete a\n"
+"            ledger line."
+msgstr ""
+"Personnel du centre informatique. Émet et remplace les cartes, gère les forfaits\n"
+"            et les abonnements, et passe les corrections. Ne peut toujours pas modifier ni supprimer\n"
+"            une ligne du registre."
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_meal_card
+msgid "Issue a first card"
+msgstr "Émettre une première carte"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_form
+msgid "Issue a new card for this person? The balance moves with them."
+msgstr "Émettre une nouvelle carte pour cette personne ? Le solde la suit."
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__write_uid
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__write_uid
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__write_uid
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__write_date
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__write_date
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__write_date
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_meal_subscription__date_end
+msgid "Leave empty for credits that never expire."
+msgstr "Laisser vide pour des crédits qui n'expirent jamais."
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_card__state__lost
+msgid "Lost"
+msgstr "Perdue"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "Meal"
+msgstr "Repas"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_meal_300
+msgid "Meal 300 (credits or cash)"
+msgstr "Repas 300 (crédits ou espèces)"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_daily_meal
+msgid "Meal 600 (credits or cash)"
+msgstr "Repas 600 (crédits ou espèces)"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_his_person_form_meal
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_partner_form_meal
+msgid "Meal Account"
+msgstr "Compte repas"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "Meal Balance"
+msgstr "Solde repas"
+
+#. module: his_meal_management
+#: model:ir.model,name:his_meal_management.model_his_meal_card
+msgid "Meal Card"
+msgstr "Carte repas"
+
+#. module: his_meal_management
+#: model:ir.actions.act_window,name:his_meal_management.action_meal_card
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__meal_card_ids
+#: model:ir.model.fields,field_description:his_meal_management.field_res_partner__meal_card_ids
+#: model:ir.model.fields,field_description:his_meal_management.field_res_users__meal_card_ids
+msgid "Meal Cards"
+msgstr "Cartes repas"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_product_product__meal_credit_cost
+#: model:ir.model.fields,field_description:his_meal_management.field_product_template__meal_credit_cost
+msgid "Meal Credit Cost"
+msgstr "Coût en crédits repas"
+
+#. module: his_meal_management
+#: model:ir.model,name:his_meal_management.model_his_meal_transaction
+msgid "Meal Credit Transaction"
+msgstr "Mouvement de crédits repas"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__meal_credits_remaining
+#: model:ir.model.fields,field_description:his_meal_management.field_res_partner__meal_credits_remaining
+#: model:ir.model.fields,field_description:his_meal_management.field_res_users__meal_credits_remaining
+msgid "Meal Credits"
+msgstr "Crédits repas"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_product_product__meal_credits
+#: model:ir.model.fields,field_description:his_meal_management.field_product_template__meal_credits
+msgid "Meal Credits Granted"
+msgstr "Crédits repas accordés"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_his_person_form_meal
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_partner_form_meal
+msgid "Meal History"
+msgstr "Historique des repas"
+
+#. module: his_meal_management
+#: model:ir.actions.act_window,name:his_meal_management.action_meal_transaction
+#: model:ir.ui.menu,name:his_meal_management.menu_meal_ledger
+msgid "Meal Ledger"
+msgstr "Registre des repas"
+
+#. module: his_meal_management
+#: model:ir.module.category,name:his_meal_management.module_category_meal
+#: model:res.groups.privilege,name:his_meal_management.res_groups_privilege_meal
+msgid "Meal Management"
+msgstr "Gestion des repas"
+
+#. module: his_meal_management
+#: model:res.groups,name:his_meal_management.group_meal_officer
+msgid "Meal Officer"
+msgstr "Responsable repas"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__product_id
+msgid "Meal Plan"
+msgstr "Forfait repas"
+
+#. module: his_meal_management
+#: model:ir.actions.act_window,name:his_meal_management.action_meal_plan
+#: model:ir.ui.menu,name:his_meal_management.menu_meal_plans
+msgid "Meal Plans"
+msgstr "Forfaits repas"
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_transaction__type__consume
+msgid "Meal Served"
+msgstr "Repas servi"
+
+#. module: his_meal_management
+#: model:ir.model,name:his_meal_management.model_his_meal_subscription
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__meal_subscription_ids
+#: model:ir.model.fields,field_description:his_meal_management.field_res_partner__meal_subscription_ids
+#: model:ir.model.fields,field_description:his_meal_management.field_res_users__meal_subscription_ids
+msgid "Meal Subscription"
+msgstr "Abonnement repas"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__meal_transaction_ids
+#: model:ir.model.fields,field_description:his_meal_management.field_res_partner__meal_transaction_ids
+#: model:ir.model.fields,field_description:his_meal_management.field_res_users__meal_transaction_ids
+msgid "Meal Transaction"
+msgstr "Mouvement repas"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/meal_subscription.py:0
+msgid ""
+"Meal credits change only through a sale, a meal or the Correct Credits "
+"wizard, which log them."
+msgstr ""
+"Les crédits repas ne changent que par une vente, un repas ou l'assistant "
+"Corriger les crédits, qui les journalisent."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/receipt_screen.xml:0
+msgid "Meal credits left"
+msgstr "Crédits repas restants"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_plan_300_monthly
+msgid "Meal subscription 300 - 25 meals (monthly)"
+msgstr "Abonnement repas 300 - 25 repas (mensuel)"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_plan_300_weekly
+msgid "Meal subscription 300 - 6 meals (weekly)"
+msgstr "Abonnement repas 300 - 6 repas (hebdomadaire)"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_plan_300_semester
+msgid "Meal subscription 300 - 80 meals (semester)"
+msgstr "Abonnement repas 300 - 80 repas (semestre)"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_plan_monthly
+msgid "Meal subscription 600 - 25 meals (monthly)"
+msgstr "Abonnement repas 600 - 25 repas (mensuel)"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_plan_weekly
+msgid "Meal subscription 600 - 6 meals (weekly)"
+msgstr "Abonnement repas 600 - 6 repas (hebdomadaire)"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_plan_semester
+msgid "Meal subscription 600 - 80 meals (semester)"
+msgstr "Abonnement repas 600 - 80 repas (semestre)"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/meal_transaction.py:0
+msgid "Meal transactions are a permanent record and cannot be deleted."
+msgstr ""
+"Les mouvements repas sont un registre permanent et ne peuvent pas être "
+"supprimés."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/meal_transaction.py:0
+msgid ""
+"Meal transactions are a permanent record and cannot be edited. Post a "
+"correction instead."
+msgstr ""
+"Les mouvements repas sont un registre permanent et ne peuvent pas être "
+"modifiés. Passez plutôt une correction."
+
+#. module: his_meal_management
+#: model:ir.actions.server,name:his_meal_management.cron_expire_subscriptions_ir_actions_server
+msgid "Meal: expire finished subscriptions"
+msgstr "Repas : expirer les abonnements terminés"
+
+#. module: his_meal_management
+#: model:ir.ui.menu,name:his_meal_management.menu_meal_root
+#: model:pos.category,name:his_meal_management.pos_categ_repas
+msgid "Meals"
+msgstr "Repas"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_search
+msgid "Meals Served"
+msgstr "Repas servis"
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_person__meal_allowance_left
+#: model:ir.model.fields,help:his_meal_management.field_res_partner__meal_allowance_left
+#: model:ir.model.fields,help:his_meal_management.field_res_users__meal_allowance_left
+msgid ""
+"Meals this person may still take on an empty card. Reset by the next top-up,"
+" which also settles what is owed."
+msgstr ""
+"Repas que cette personne peut encore prendre sur une carte vide. Remis à "
+"zéro par la prochaine recharge, qui règle aussi ce qui est dû."
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_his_faculty_list
+msgid "Name confirmed"
+msgstr "Nom confirmé"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_list
+msgid "Net"
+msgstr "Net"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "No active meal plan."
+msgstr "Aucun forfait repas actif."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/pos_store.js:0
+msgid "No student"
+msgstr "Aucun étudiant"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "No student found for \""
+msgstr "Aucun étudiant trouvé pour « "
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_meal_subscription
+msgid "No subscriptions yet"
+msgstr "Aucun abonnement pour l'instant"
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_his_person
+msgid "Nobody holds a card yet"
+msgstr "Personne n'a encore de carte"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/pos_store.js:0
+msgid "Not enough meal credits"
+msgstr "Crédits repas insuffisants"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__note
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_form
+msgid "Note"
+msgstr "Note"
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_meal_transaction
+msgid "Nothing recorded yet"
+msgstr "Rien d'enregistré pour l'instant"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/res_partner.py:0
+msgid "Only a till or the meal office can read a meal balance."
+msgstr "Seuls une caisse ou le bureau des repas peuvent lire un solde repas."
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_meal_adjust_wizard__validity_days
+msgid "Only used when granting credits. Zero means they never expire."
+msgstr ""
+"Utilisé uniquement pour accorder des crédits. Zéro signifie qu'ils "
+"n'expirent jamais."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "Open"
+msgstr "Ouvrir"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__user_id
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_list
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_search
+msgid "Operator"
+msgstr "Opérateur"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__meal_allowance_debt
+#: model:ir.model.fields,field_description:his_meal_management.field_res_partner__meal_allowance_debt
+#: model:ir.model.fields,field_description:his_meal_management.field_res_users__meal_allowance_debt
+msgid "Owed From Allowance"
+msgstr "Dû au titre de l'avance"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "Owes"
+msgstr "Doit"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__pos_order_id
+msgid "POS Order"
+msgstr "Commande de caisse"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__session_id
+msgid "POS Session"
+msgstr "Session de caisse"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/pos_store.js:0
+msgid "Paid with %(credits)s meal credit(s) per meal, value %(value)s"
+msgstr "Payé avec %(credits)s crédit(s) repas par repas, valeur %(value)s"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/pos_order.py:0
+msgid "Paid with %(credits)s meal credit(s), value %(value)s"
+msgstr "Payé avec %(credits)s crédit(s) repas, valeur %(value)s"
+
+#. module: his_meal_management
+#: model:ir.ui.menu,name:his_meal_management.menu_meal_people
+msgid "People"
+msgstr "Personnes"
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_his_person
+msgid ""
+"People appear here once they have been given a card. The people\n"
+"               themselves are created in the People register — by HR for an\n"
+"               employee, or through the student import — then a card is tapped on\n"
+"               the Cards screen."
+msgstr ""
+"Les personnes apparaissent ici une fois qu'une carte leur a été remise. Les personnes\n"
+"               elles-mêmes sont créées dans le référentiel Personnes — par les RH pour un\n"
+"               employé, ou via l'import des étudiants — puis une carte est passée sur\n"
+"               l'écran Cartes."
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__partner_id
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__partner_id
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__partner_id
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__partner_id
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_search
+msgid "Person"
+msgstr "Personne"
+
+#. module: his_meal_management
+#: model:ir.model,name:his_meal_management.model_his_person
+msgid "Person (HIS-HTC-IRA Group)"
+msgstr "Personne (Groupe HIS-HTC-IRA)"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_search
+msgid "Plan"
+msgstr "Forfait"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__product_id
+msgid "Plan / Meal"
+msgstr "Forfait / Repas"
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_transaction__type__purchase
+msgid "Plan Purchase"
+msgstr "Achat de forfait"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_search
+msgid "Plan Purchases"
+msgstr "Achats de forfaits"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "Plan:"
+msgstr "Forfait :"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__config_id
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_search
+msgid "Point of Sale"
+msgstr "Point de vente"
+
+#. module: his_meal_management
+#: model:ir.model,name:his_meal_management.model_pos_order_line
+msgid "Point of Sale Order Lines"
+msgstr "Lignes de commande du point de vente"
+
+#. module: his_meal_management
+#: model:ir.model,name:his_meal_management.model_pos_order
+msgid "Point of Sale Orders"
+msgstr "Commandes du point de vente"
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_meal_adjust_wizard__credits
+msgid ""
+"Positive to grant credits, negative to take them back. Half credits are "
+"allowed: a 300 DA meal is worth 0.5."
+msgstr ""
+"Positif pour accorder des crédits, négatif pour les reprendre. Les demi-"
+"crédits sont permis : un repas à 300 DA vaut 0,5."
+
+#. module: his_meal_management
+#: model:ir.model,name:his_meal_management.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: his_meal_management
+#: model:ir.model,name:his_meal_management.model_product_product
+msgid "Product Variant"
+msgstr "Variante de produit"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__pos_order_id
+msgid "Purchase Order"
+msgstr "Bon de commande"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_person__numero_carte
+msgid "RFID Badge"
+msgstr "Badge RFID"
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_person__numero_carte
+msgid ""
+"RFID badge number, as the reader returns it. This is the field the till looks up to find the person. A badge belongs to one person only.\n"
+"\n"
+"Not to be confused with the native \"Badge ID\" on the employee record (hr.employee.barcode): that one identifies staff at the time clock and logs a cashier into the till. It is not the meal badge."
+msgstr ""
+"Numéro du badge RFID, tel que le lecteur le restitue. C'est ce champ que la caisse interroge pour retrouver la personne. Un badge n'appartient qu'à une personne.\n"
+"\n"
+"À ne pas confondre avec l'« Identifiant du badge » natif de la fiche employé (hr.employee.barcode) : celui-là identifie le personnel auprès du terminal de pointage et connecte un caissier à la caisse. Ce n'est pas le badge repas."
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_form
+msgid "Re-activate"
+msgstr "Réactiver"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_meal_adjust_wizard__reason
+msgid "Recorded on the ledger line."
+msgstr "Enregistré sur la ligne du registre."
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_list
+msgid "Remaining"
+msgstr "Restant"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/res_partner.py:0
+msgid "Repaid %(credits)s credit(s) eaten on an empty card"
+msgstr "Remboursement de %(credits)s crédit(s) consommé(s) sur une carte vide"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_form
+msgid "Replace"
+msgstr "Remplacer"
+
+#. module: his_meal_management
+#: model:ir.model.fields.selection,name:his_meal_management.selection__his_meal_card__state__replaced
+msgid "Replaced"
+msgstr "Remplacée"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__replaced_card_id
+msgid "Replaces"
+msgstr "Remplace"
+
+#. module: his_meal_management
+#: model:res.groups,name:his_meal_management.group_meal_cashier
+msgid "Restaurant Cashier"
+msgstr "Caissier restaurant"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "Scan a card, or type a name or a registration number"
+msgstr "Scannez une carte, ou tapez un nom ou un matricule"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "Scan a student card to see the plan and the credits used and left."
+msgstr ""
+"Scannez une carte étudiant pour voir le forfait et les crédits utilisés et "
+"restants."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/pos_order.py:0
+msgid ""
+"Scan the student's card before validating: this order carries a meal plan or"
+" a student meal but has no student on it."
+msgstr ""
+"Scannez la carte de l'étudiant avant de valider : cette commande porte un "
+"forfait ou un repas étudiant mais aucun étudiant."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/pos_store.js:0
+msgid ""
+"Scan the student's card first, or pick the student from the customer list."
+msgstr ""
+"Scannez d'abord la carte de l'étudiant, ou choisissez l'étudiant dans la "
+"liste des clients."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "Serve"
+msgstr "Servir"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "Serve meal"
+msgstr "Servir un repas"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/res_partner.py:0
+msgid "Served on an empty card"
+msgstr "Servi sur une carte vide"
+
+#. module: his_meal_management
+#: model:res.groups,comment:his_meal_management.group_meal_cashier
+msgid ""
+"Serves meals. Can look up a student and their balance,\n"
+"            but cannot create, edit or delete cards, subscriptions or ledger lines.\n"
+"            Credits move only through the point of sale, on the server."
+msgstr ""
+"Sert les repas. Peut consulter un étudiant et son solde,\n"
+"            mais ne peut ni créer, ni modifier, ni supprimer cartes, abonnements ou lignes du registre.\n"
+"            Les crédits ne bougent que par la caisse, côté serveur."
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_meal_transaction__credits
+msgid ""
+"Signed: +25 for a purchase, -1 for a 600 DA meal, -0.5 for a 300 DA one."
+msgstr ""
+"Signé : +25 pour un achat, -1 pour un repas à 600 DA, -0,5 pour un repas à "
+"300 DA."
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_his_faculty
+msgid ""
+"Six codes were observed in the HIS data. A person may belong to more\n"
+"               than one, which is why the link is many-to-many."
+msgstr ""
+"Six codes ont été relevés dans les données HIS. Une personne peut appartenir à plus\n"
+"               d'une faculté, d'où le lien plusieurs-à-plusieurs."
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_card__state
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__state
+msgid "State"
+msgstr "État"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_search
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_form
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_search
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_search
+msgid "Student"
+msgstr "Étudiant"
+
+#. module: his_meal_management
+#: model:ir.actions.report,name:his_meal_management.action_report_meal_card
+msgid "Student Meal Card"
+msgstr "Carte repas étudiant"
+
+#. module: his_meal_management
+#: model:ir.module.category,description:his_meal_management.module_category_meal
+msgid "Student meal cards, plans and credits."
+msgstr "Cartes repas, forfaits et crédits des étudiants."
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__subscription_id
+msgid "Subscription"
+msgstr "Abonnement"
+
+#. module: his_meal_management
+#: model:ir.actions.act_window,name:his_meal_management.action_meal_subscription
+#: model:ir.ui.menu,name:his_meal_management.menu_meal_subscriptions
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_partner_form_meal
+msgid "Subscriptions"
+msgstr "Abonnements"
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_meal_subscription
+msgid ""
+"Subscriptions appear here when a student buys a plan at the point of sale."
+msgstr ""
+"Les abonnements apparaissent ici quand un étudiant achète un forfait en "
+"caisse."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "Takes"
+msgstr "Prend"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_form
+msgid "Tap the card here — e.g. 0007197786"
+msgstr "Passez la carte ici — par ex. 0007197786"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/meal_card.py:0
+msgid "Tap the new card"
+msgstr "Passez la nouvelle carte"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_card_form
+msgid ""
+"The card carries this code and nothing else. Credits and history\n"
+"                        live in Odoo, which is why a lost card costs the person nothing."
+msgstr ""
+"La carte porte ce code et rien d'autre. Les crédits et l'historique\n"
+"                        vivent dans Odoo : c'est pourquoi une carte perdue ne coûte rien à la personne."
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_person__meal_card_code
+#: model:ir.model.fields,help:his_meal_management.field_res_partner__meal_card_code
+#: model:ir.model.fields,help:his_meal_management.field_res_users__meal_card_code
+msgid "The code on the person's active card."
+msgstr "Le code de la carte active de la personne."
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_adjust_wizard_form
+msgid ""
+"The correction is written to the ledger under your name. It cannot\n"
+"                    be undone, only corrected again."
+msgstr ""
+"La correction est inscrite au registre sous votre nom. Elle ne peut pas\n"
+"                    être annulée, seulement corrigée à nouveau."
+
+#. module: his_meal_management
+#: model_terms:ir.actions.act_window,help:his_meal_management.action_his_faculty
+msgid "The faculty register"
+msgstr "Le référentiel des facultés"
+
+#. module: his_meal_management
+#: model:ir.model.fields,help:his_meal_management.field_his_meal_transaction__balance_after
+msgid "The student's total usable credits right after this line."
+msgstr "Total des crédits utilisables de l'étudiant juste après cette ligne."
+
+#. module: his_meal_management
+#: model:ir.model.constraint,message:his_meal_management.constraint_his_meal_card_code_unique
+msgid "This card code is already in use."
+msgstr "Ce code de carte est déjà utilisé."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "This card is empty"
+msgstr "Cette carte est vide"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_form
+msgid ""
+"This is a permanent record. It cannot be edited or deleted -\n"
+"                        post a correction instead."
+msgstr ""
+"Ceci est un registre permanent. Il ne peut être ni modifié ni supprimé -\n"
+"                        passez plutôt une correction."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/receipt_screen.js:0
+msgid "Ticket sent to %s"
+msgstr "Ticket envoyé à %s"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_search
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: his_meal_management
+#: model:pos.category,name:his_meal_management.pos_categ_recharges
+msgid "Top-ups"
+msgstr "Recharges"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "Total:"
+msgstr "Total :"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_subscription__transaction_ids
+msgid "Transaction"
+msgstr "Mouvement"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_transaction__type
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_search
+msgid "Type"
+msgstr "Type"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "Used:"
+msgstr "Utilisés :"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_his_meal_adjust_wizard__validity_days
+msgid "Valid For (days)"
+msgstr "Valable (jours)"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "Valid until"
+msgstr "Valable jusqu'au"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_subscription_form
+msgid "Validity"
+msgstr "Validité"
+
+#. module: his_meal_management
+#: model:ir.model.fields,field_description:his_meal_management.field_product_product__meal_validity_days
+#: model:ir.model.fields,field_description:his_meal_management.field_product_template__meal_validity_days
+msgid "Validity (days)"
+msgstr "Validité (jours)"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_transaction_form
+msgid "Where"
+msgstr "Lieu"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "after this meal"
+msgstr "après ce repas"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "allowance meal(s) left before the card is refused."
+msgstr "repas d'avance restant(s) avant que la carte soit refusée."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/backend/meal_balance.xml:0
+msgid "credit(s) for meals served on allowance."
+msgstr "crédit(s) pour des repas servis en avance."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "credit(s) from this wallet."
+msgstr "crédit(s) de ce portefeuille."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "credit(s) the card does not have."
+msgstr "crédit(s) que la carte n'a pas."
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "credit(s) will be owed, taken off the next top-up"
+msgstr "crédit(s) seront dus, déduits de la prochaine recharge"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "credits left ·"
+msgstr "crédits restants ·"
+
+#. module: his_meal_management
+#: model_terms:ir.ui.view,arch_db:his_meal_management.view_meal_adjust_wizard_form
+msgid "e.g. refund for a meal that was never served"
+msgstr "ex. remboursement d'un repas jamais servi"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "no expiry"
+msgstr "sans expiration"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "of"
+msgstr "sur"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/res_partner.py:0
+msgid "partner_id"
+msgstr "partner_id"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
+msgid "until"
+msgstr "jusqu'au"

@@ -32,7 +32,7 @@
              dossiers. -->
 
         <record id="domaine_mi" model="his.domaine">
-            <field name="name">Informatique</field>
+            <field name="name">Computer Science</field>
             <field name="name_arabe">إعلام آلي</field>
             <field name="code">MI</field>
             <field name="sequence">10</field>
@@ -45,7 +45,7 @@
         </record>
 
         <record id="domaine_st" model="his.domaine">
-            <field name="name">Sciences et Technologies</field>
+            <field name="name">Science and Technology</field>
             <field name="name_arabe">علوم و تكنولوجيا</field>
             <field name="code">ST</field>
             <field name="sequence">20</field>
@@ -59,7 +59,7 @@
 
         <!-- TODO Endeavor (A7) : bareme suppose, a confirmer. -->
         <record id="domaine_segc" model="his.domaine">
-            <field name="name">Sciences economiques</field>
+            <field name="name">Economics</field>
             <field name="name_arabe">علوم اقتصادية</field>
             <field name="code">SEGC</field>
             <field name="sequence">30</field>
@@ -73,7 +73,7 @@
 
         <!-- TODO Endeavor (A7) : bareme suppose, a confirmer. -->
         <record id="domaine_com" model="his.domaine">
-            <field name="name">Sciences commerciales</field>
+            <field name="name">Commercial Sciences</field>
             <field name="name_arabe">علوم تجارية</field>
             <field name="code">COM</field>
             <field name="sequence">40</field>
@@ -88,7 +88,7 @@
         <!-- TODO Endeavor (A7) : bareme suppose. Les maths ne pesent
              vraisemblablement pas sur un cursus de psychologie clinique. -->
         <record id="domaine_ss" model="his.domaine">
-            <field name="name">Sciences sociales</field>
+            <field name="name">Social Sciences</field>
             <field name="name_arabe">علوم اجتماعية</field>
             <field name="code">SS</field>
             <field name="sequence">50</field>
@@ -102,7 +102,7 @@
 
         <!-- TODO Endeavor (A7) : bareme suppose. -->
         <record id="domaine_dr" model="his.domaine">
-            <field name="name">Droit</field>
+            <field name="name">Law</field>
             <field name="name_arabe">حقوق</field>
             <field name="code">DR</field>
             <field name="sequence">60</field>

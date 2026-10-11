@@ -50,11 +50,10 @@ class MaintenanceUniversityWorkerCreate(models.TransientModel):
             if not person and line.suggested_person_id and not line.confirmed_new:
                 raise UserError(
                     _(
-                        "%(name)s looks like someone already in the referential: "
-                        "%(match)s (%(matricule)s).\n\n"
-                        "Pick that person in the Existing Person column to give them "
-                        "this maintenance role, or tick New Person if this really is "
-                        "a different human who happens to share the name.",
+                        "%(name)s looks like someone already in the register: %(match)s "
+                        "(%(matricule)s).\n\nPick that person in the Existing Person column to "
+                        "give them this maintenance role, or tick New Person if this really is a "
+                        "different human who happens to share the name.",
                         name=line.name,
                         match=line.suggested_person_id.display_name,
                         matricule=line.suggested_person_id.matricule_affiche
@@ -70,9 +69,9 @@ class MaintenanceUniversityWorkerCreate(models.TransientModel):
                 if not person.active:
                     raise UserError(
                         _(
-                            "%(person)s is archived. Restore that person in the "
-                            "Personnes referential first, or pick another one — an "
-                            "employee cannot hang off a record that was put aside.",
+                            "%(person)s is archived. Restore that person in the People register "
+                            "first, or pick another one — an employee cannot hang off a record that "
+                            "was put aside.",
                             person=person.display_name,
                         )
                     )
@@ -179,8 +178,8 @@ class MaintenanceUniversityWorkerCreateLine(models.TransientModel):
     person_id = fields.Many2one(
         "his.person",
         string="Existing Person",
-        help="The person in the referential who is taking this role. Leave "
-        "empty only for someone genuinely not registered yet.",
+        help="The person in the register who is taking this role. Leave empty only "
+        "for someone genuinely not registered yet.",
     )
     suggested_person_id = fields.Many2one(
         "his.person",

@@ -1,0 +1,166 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_access_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/hr_job.py:0
+msgid "%(n)s account(s) updated."
+msgstr "%(n)s compte(s) mis à jour."
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/hr_job.py:0
+msgid ""
+"A position cannot grant an administration role (%(roles)s). These accesses "
+"are still assigned by hand by an administrator, in Settings ▸ Users."
+msgstr ""
+"Un poste ne peut pas accorder de rôle d'administration (%(roles)s). Ces "
+"accès restent attribués à la main par un administrateur, dans Réglages ▸ "
+"Utilisateurs."
+
+#. module: his_access_base
+#: model:ir.actions.act_window,name:his_access_base.action_revue_acces
+#: model:ir.ui.menu,name:his_access_base.menu_revue_acces
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
+msgid "Access Review"
+msgstr "Revue des accès"
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_hr_job_form_roles
+msgid "Apply to Holders"
+msgstr "Appliquer aux titulaires"
+
+#. module: his_access_base
+#: model:ir.actions.server,name:his_access_base.ir_cron_reconcilier_roles_ir_actions_server
+msgid "Core: gaps between roles and positions"
+msgstr "Socle : écarts entre rôles et postes"
+
+#. module: his_access_base
+#: model:ir.module.category,description:his_access_base.module_category_his_access
+msgid "Cross-cutting access, shared by every department."
+msgstr "Accès transverses, communs à tous les métiers."
+
+#. module: his_access_base
+#: model:res.groups.privilege,name:his_access_base.res_groups_privilege_annuaire
+msgid "Directory"
+msgstr "Annuaire"
+
+#. module: his_access_base
+#: model:res.groups,name:his_access_base.group_annuaire
+msgid "Directory Viewer"
+msgstr "Consultation annuaire"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:his_access_base.field_hr_job__display_name
+#: model:ir.model.fields,field_description:his_access_base.field_res_users__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_access_base
+#: model:ir.model,name:his_access_base.model_hr_employee
+msgid "Employee"
+msgstr "Employé"
+
+#. module: his_access_base
+#: model:ir.module.category,name:his_access_base.module_category_his_access
+msgid "HIS Group Core"
+msgstr "Socle Groupe HIS"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_hr_employee__id
+#: model:ir.model.fields,field_description:his_access_base.field_hr_job__id
+#: model:ir.model.fields,field_description:his_access_base.field_res_users__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_access_base
+#: model:ir.model,name:his_access_base.model_hr_job
+msgid "Job Position"
+msgstr "Poste"
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/hr_job.py:0
+msgid ""
+"No account to update: the employees in this position have no Odoo user."
+msgstr ""
+"Aucun compte à mettre à jour : les employés de ce poste n'ont pas "
+"d'utilisateur Odoo."
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_hr_job_form_roles
+msgid "Odoo Roles"
+msgstr "Rôles Odoo"
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
+msgid "Of Which From the Position"
+msgstr "Dont issus du poste"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_hr_job__group_ids
+msgid "Position Odoo Roles"
+msgstr "Rôles Odoo du poste"
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
+msgid "Roles"
+msgstr "Rôles"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_res_users__role_ids_du_poste
+msgid "Roles From Position"
+msgstr "Rôles issus du poste"
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_hr_job__group_ids
+msgid ""
+"Roles granted automatically to whoever holds this position. Roles set by "
+"hand on a user are never touched by this list."
+msgstr ""
+"Rôles accordés automatiquement à qui occupe ce poste. Les rôles posés à la "
+"main sur un utilisateur ne sont jamais touchés par cette liste."
+
+#. module: his_access_base
+#: model:res.groups,comment:his_access_base.group_annuaire
+msgid ""
+"See the employee directory and the address book. Opens no business access."
+msgstr ""
+"Voir l'annuaire des employés et le carnet de contacts. N'ouvre aucun accès "
+"métier."
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_res_users__role_ids_du_poste
+msgid ""
+"Technical: what the automatic assignment set. Used to tell a position role "
+"apart from an individual exception."
+msgstr ""
+"Technique : ce que l'attribution automatique a posé. Sert à distinguer un "
+"rôle du poste d'une dérogation individuelle."
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_hr_job_form_roles
+msgid ""
+"The roles of this position will be reapplied to everyone who holds it. Roles"
+" set by hand are not touched."
+msgstr ""
+"Les rôles de ce poste seront réappliqués à tous ceux qui l'occupent. Les "
+"rôles posés à la main ne sont pas touchés."
+
+#. module: his_access_base
+#: model:ir.model,name:his_access_base.model_res_users
+msgid "User"
+msgstr "Utilisateur"

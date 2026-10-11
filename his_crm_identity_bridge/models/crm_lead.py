@@ -30,22 +30,21 @@ class CrmLead(models.Model):
 
     his_person_id = fields.Many2one(
         "his.person",
-        string="Fiche personne",
+        string="Person Record",
         readonly=True,
         copy=False,
         index=True,
-        help="Fiche du referentiel Identite rattachee a ce lead. Creee ou rapprochee au premier contact.",
+        help="Identity register record linked to this lead. Created or matched at first contact.",
     )
     his_person_candidate_id = fields.Many2one(
         "his.person",
-        string="Fiche proposee",
+        string="Suggested Record",
         readonly=True,
         copy=False,
-        help="Meilleure correspondance trouvee dans le referentiel. Tant "
-        "qu'elle n'est pas confirmee par un humain, RIEN n'est rattache.",
+        help="Best match found in the register. Until a human confirms it, NOTHING is linked.",
     )
     his_person_match_score = fields.Float(
-        string="Score de rapprochement",
+        string="Match Score",
         digits=(3, 2),
         readonly=True,
         copy=False,
@@ -138,9 +137,8 @@ class CrmLead(models.Model):
                 )
                 lead._his_signaler(
                     _(
-                        "Correspondance probable (%(score)d%%) avec « %(fiche)s » : "
-                        "a confirmer ou refuser depuis le lead. Aucune fiche n'a ete "
-                        "rattachee.",
+                        'Probable match (%(score)d%%) with "%(fiche)s": confirm or reject it '
+                        "from the lead. No record has been linked.",
                         score=round(match["score"] * 100),
                         fiche=match["person"].display_name,
                     )
@@ -193,7 +191,7 @@ class CrmLead(models.Model):
         person = self.env["his.person"].sudo().create(vals)
         person.message_post(
             body=_(
-                "Fiche creee depuis le lead CRM « %(lead)s » au premier contact.",
+                'Record created from the CRM lead "%(lead)s" at first contact.',
                 lead=self.display_name,
             )
         )
@@ -225,7 +223,7 @@ class CrmLead(models.Model):
         if destinataire:
             self.activity_schedule(
                 "mail.mail_activity_data_todo",
-                summary="Rapprochement Identite a arbitrer",
+                summary=_("Identity match to review"),
                 note=message,
                 user_id=destinataire.id,
             )
@@ -254,7 +252,7 @@ class CrmLead(models.Model):
             lead._his_assurer_engagement()
             lead.message_post(
                 body=_(
-                    "Rapprochement (%(score)d%%) confirme par %(user)s.",
+                    "Match (%(score)d%%) confirmed by %(user)s.",
                     score=round(lead.his_person_match_score * 100),
                     user=self.env.user.display_name,
                 )
@@ -270,7 +268,7 @@ class CrmLead(models.Model):
             lead._his_assurer_engagement()
             lead.message_post(
                 body=_(
-                    "Rapprochement refuse par %(user)s : fiche distincte creee.",
+                    "Match rejected by %(user)s: separate record created.",
                     user=self.env.user.display_name,
                 )
             )

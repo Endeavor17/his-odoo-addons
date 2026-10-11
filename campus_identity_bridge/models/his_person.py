@@ -9,11 +9,12 @@ class HisPerson(models.Model):
     # et sans defaut, les fiches nees de Campus+ basculent en saisie manuelle a
     # la desinstallation ; leur origine reste lisible dans external_ref.
     source_system = fields.Selection(
+        string="Source System",
         selection_add=[("campus_plus", "Campus+")],
         ondelete={"campus_plus": lambda recs: recs.write({"source_system": "manual"})},
     )
     campus_applicant_ids = fields.One2many(
         "hr.applicant",
         "his_person_id",
-        string="Candidatures Campus+",
+        string="Campus+ Applications",
     )

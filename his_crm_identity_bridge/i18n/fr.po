@@ -1,0 +1,146 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_crm_identity_bridge
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_crm_identity_bridge
+#: model_terms:ir.ui.view,arch_db:his_crm_identity_bridge.view_crm_lead_form_identity
+msgid ""
+"An existing record looks like this candidate\n"
+"                            ("
+msgstr ""
+"Une fiche existante ressemble à ce candidat\n"
+"                            ("
+
+#. module: his_crm_identity_bridge
+#: model:ir.model.fields,help:his_crm_identity_bridge.field_crm_lead__his_person_candidate_id
+msgid ""
+"Best match found in the register. Until a human confirms it, NOTHING is "
+"linked."
+msgstr ""
+"Meilleure correspondance trouvée dans le référentiel. Tant qu'elle n'est pas"
+" confirmée par un humain, RIEN n'est rattaché."
+
+#. module: his_crm_identity_bridge
+#: model_terms:ir.ui.view,arch_db:his_crm_identity_bridge.view_crm_lead_form_identity
+msgid "Create a separate record"
+msgstr "Créer une fiche distincte"
+
+#. module: his_crm_identity_bridge
+#: model:ir.model.fields,field_description:his_crm_identity_bridge.field_crm_lead__display_name
+#: model:ir.model.fields,field_description:his_crm_identity_bridge.field_his_person__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_crm_identity_bridge
+#: model:ir.model.fields,field_description:his_crm_identity_bridge.field_crm_lead__id
+#: model:ir.model.fields,field_description:his_crm_identity_bridge.field_his_person__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_crm_identity_bridge
+#: model_terms:ir.ui.view,arch_db:his_crm_identity_bridge.view_crm_lead_form_identity
+msgid "Identity Register"
+msgstr "Référentiel Identité"
+
+#. module: his_crm_identity_bridge
+#. odoo-python
+#: code:addons/his_crm_identity_bridge/models/crm_lead.py:0
+msgid "Identity match to review"
+msgstr "Rapprochement d'identité à arbitrer"
+
+#. module: his_crm_identity_bridge
+#: model:ir.model.fields,help:his_crm_identity_bridge.field_crm_lead__his_person_id
+msgid ""
+"Identity register record linked to this lead. Created or matched at first "
+"contact."
+msgstr ""
+"Fiche du référentiel Identité rattachée à ce lead. Créée ou rapprochée au "
+"premier contact."
+
+#. module: his_crm_identity_bridge
+#: model_terms:ir.ui.view,arch_db:his_crm_identity_bridge.view_crm_lead_form_identity
+msgid "It is the same person"
+msgstr "C'est la même personne"
+
+#. module: his_crm_identity_bridge
+#: model:ir.model,name:his_crm_identity_bridge.model_crm_lead
+msgid "Lead"
+msgstr "Piste"
+
+#. module: his_crm_identity_bridge
+#. odoo-python
+#: code:addons/his_crm_identity_bridge/models/crm_lead.py:0
+msgid "Match (%(score)d%%) confirmed by %(user)s."
+msgstr "Rapprochement (%(score)d%%) confirmé par %(user)s."
+
+#. module: his_crm_identity_bridge
+#: model:ir.model.fields,field_description:his_crm_identity_bridge.field_crm_lead__his_person_match_score
+msgid "Match Score"
+msgstr "Score de rapprochement"
+
+#. module: his_crm_identity_bridge
+#. odoo-python
+#: code:addons/his_crm_identity_bridge/models/crm_lead.py:0
+msgid "Match rejected by %(user)s: separate record created."
+msgstr "Rapprochement refusé par %(user)s : fiche distincte créée."
+
+#. module: his_crm_identity_bridge
+#: model:ir.model.fields.selection,name:his_crm_identity_bridge.selection__his_person__source_system__odoo_crm
+msgid "Odoo CRM"
+msgstr "Odoo CRM"
+
+#. module: his_crm_identity_bridge
+#: model:ir.model,name:his_crm_identity_bridge.model_his_person
+msgid "Person (HIS-HTC-IRA Group)"
+msgstr "Personne (Groupe HIS-HTC-IRA)"
+
+#. module: his_crm_identity_bridge
+#: model:ir.model.fields,field_description:his_crm_identity_bridge.field_crm_lead__his_person_id
+msgid "Person Record"
+msgstr "Fiche personne"
+
+#. module: his_crm_identity_bridge
+#. odoo-python
+#: code:addons/his_crm_identity_bridge/models/crm_lead.py:0
+msgid ""
+"Probable match (%(score)d%%) with \"%(fiche)s\": confirm or reject it from "
+"the lead. No record has been linked."
+msgstr ""
+"Correspondance probable (%(score)d%%) avec « %(fiche)s » : à confirmer ou "
+"refuser depuis le lead. Aucune fiche n'a été rattachée."
+
+#. module: his_crm_identity_bridge
+#. odoo-python
+#: code:addons/his_crm_identity_bridge/models/crm_lead.py:0
+msgid "Record created from the CRM lead \"%(lead)s\" at first contact."
+msgstr "Fiche créée depuis le lead CRM « %(lead)s » au premier contact."
+
+#. module: his_crm_identity_bridge
+#: model:ir.model.fields,field_description:his_crm_identity_bridge.field_his_person__source_system
+msgid "Source System"
+msgstr "Système source"
+
+#. module: his_crm_identity_bridge
+#: model:ir.model.fields,field_description:his_crm_identity_bridge.field_crm_lead__his_person_candidate_id
+msgid "Suggested Record"
+msgstr "Fiche proposée"
+
+#. module: his_crm_identity_bridge
+#: model_terms:ir.ui.view,arch_db:his_crm_identity_bridge.view_crm_lead_form_identity
+msgid ""
+"similarity). No record is linked until\n"
+"                            you decide."
+msgstr ""
+"de similarité). Aucune fiche n'a été rattachée tant que\n"
+"                            vous n'avez pas tranché."

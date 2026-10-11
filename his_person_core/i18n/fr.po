@@ -1,0 +1,1089 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_person_core
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_person_core
+#: model:ir.model,name:his_person_core.model_his_engagement
+msgid "A person's engagement with the institution"
+msgstr "Engagement d'une personne auprès de l'institution"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__message_needaction
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__active_lang_count
+msgid "Active Lang Count"
+msgstr "Nombre de langues actives"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Décoration d'exception d'activité"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône du type d'activité"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__type
+msgid "Address Type"
+msgstr "Type d'adresse"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__type_address_label
+msgid "Address Type Description"
+msgstr "Description du type d'adresse"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__lang
+msgid ""
+"All the emails and documents sent to this contact will be translated in this"
+" language."
+msgstr ""
+"Tous les courriels et documents envoyés à ce contact seront traduits dans "
+"cette langue."
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__type_personne__candidat
+msgid "Applicant"
+msgstr "Candidat"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_search
+msgid "Applicants"
+msgstr "Candidats"
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_engagement__etat__candidat_soumis
+msgid "Application Submitted"
+msgstr "Candidature soumise"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_engagement_search
+msgid "Applications Submitted"
+msgstr "Candidatures soumises"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_search
+msgid "Archived"
+msgstr "Archivées"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__message_attachment_count
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__avatar_1920
+msgid "Avatar"
+msgstr "Avatar"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__avatar_1024
+msgid "Avatar 1024"
+msgstr "Avatar 1024"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__avatar_128
+msgid "Avatar 128"
+msgstr "Avatar 128"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__avatar_256
+msgid "Avatar 256"
+msgstr "Avatar 256"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__avatar_512
+msgid "Avatar 512"
+msgstr "Avatar 512"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__bank_ids
+msgid "Banks"
+msgstr "Banques"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__barcode
+msgid "Barcode"
+msgstr "Code-barres"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__is_blacklisted
+msgid "Blacklist"
+msgstr "Liste noire"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__message_bounce
+msgid "Bounce"
+msgstr "Rebond"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_form
+msgid "Card"
+msgstr "Carte"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__channel_member_ids
+msgid "Channel Member"
+msgstr "Membre du canal"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__channel_ids
+msgid "Channels"
+msgstr "Canaux"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__is_company
+msgid "Check if the contact is a company, otherwise it is a person"
+msgstr "Cochez si le contact est une société, sinon c'est une personne"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__city
+msgid "City"
+msgstr "Ville"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__color
+msgid "Color Index"
+msgstr "Indice de couleur"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__commercial_partner_id
+msgid "Commercial Entity"
+msgstr "Entité commerciale"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__company_registry
+msgid "Company ID"
+msgstr "Identifiant de la société"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__company_registry_label
+msgid "Company ID Label"
+msgstr "Libellé de l'identifiant de société"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__company_name
+msgid "Company Name"
+msgstr "Nom de la société"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__commercial_company_name
+msgid "Company Name Entity"
+msgstr "Entité du nom de la société"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__company_registry_placeholder
+msgid "Company Registry Placeholder"
+msgstr "Exemple de registre de commerce"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__company_type
+msgid "Company Type"
+msgstr "Type de société"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__contact_address
+msgid "Complete Address"
+msgstr "Adresse complète"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__complete_name
+msgid "Complete Name"
+msgstr "Nom complet"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__matched_on
+msgid "Confirmation Date"
+msgstr "Date de confirmation"
+
+#. module: his_person_core
+#: model:ir.model,name:his_person_core.model_res_partner
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__child_ids
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__partner_id
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_form
+msgid "Contact"
+msgstr "Contact"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__message_bounce
+msgid "Counter of the number of bounced emails for this contact"
+msgstr "Nombre de courriels rejetés pour ce contact"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__country_id
+msgid "Country"
+msgstr "Pays"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__country_code
+msgid "Country Code"
+msgstr "Code du pays"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__create_uid
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__create_date
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__match_method__new
+msgid "Creation"
+msgstr "Création"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__engagement_ids
+msgid ""
+"Dated paths of this person. The identity does not change from one path to "
+"the next: an application rejected then resubmitted gives two engagements, "
+"never two records."
+msgstr ""
+"Parcours datés de cette personne. L'identité ne change pas d'un parcours à "
+"l'autre : une candidature refusée puis représentée donne deux engagements, "
+"jamais deux fiches."
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__match_method__deterministic
+msgid "Deterministic"
+msgstr "Déterministe"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__display_name
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__display_name
+#: model:ir.model.fields,field_description:his_person_core.field_res_partner__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__partner_share
+msgid ""
+"Either customer (not a user), either shared user. Indicated the current "
+"partner is a customer without access or with a limited access created for "
+"sharing data."
+msgstr ""
+"Soit un client (pas un utilisateur), soit un utilisateur partagé. Indique "
+"que le partenaire est un client sans accès ou avec un accès limité créé pour"
+" partager des données."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__email
+msgid "Email"
+msgstr "Email"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__employee
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__type_personne__employe
+msgid "Employee"
+msgstr "Employé"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_search
+msgid "Employees"
+msgstr "Employés"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_engagement_form
+msgid "Engagement"
+msgstr "Engagement"
+
+#. module: his_person_core
+#: model:ir.actions.act_window,name:his_person_core.action_his_engagement
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__engagement_ids
+#: model:ir.ui.menu,name:his_person_core.menu_his_engagement
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_engagement_list
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_engagement_search
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_form
+msgid "Engagements"
+msgstr "Engagements"
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_engagement__etat__inscrit
+msgid "Enrolled"
+msgstr "Inscrit"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_engagement_search
+msgid "Enrolled Students"
+msgstr "Inscrits"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__message_follower_ids
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__message_partner_ids
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome, par ex. fa-tasks"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__email_formatted
+msgid "Format email address \"Name <email@domain>\""
+msgstr "Adresse courriel au format « Nom <email@domaine> »"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__email_formatted
+msgid "Formatted Email"
+msgstr "Courriel formaté"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__partner_latitude
+msgid "Geo Latitude"
+msgstr "Latitude"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__partner_longitude
+msgid "Geo Longitude"
+msgstr "Longitude"
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__source_system__google_sheets
+msgid "Google Sheets"
+msgstr "Google Sheets"
+
+#. module: his_person_core
+#: model:ir.module.category,name:his_person_core.module_category_his_person
+#: model:res.groups.privilege,name:his_person_core.res_groups_privilege_his_person
+msgid "Group Identity"
+msgstr "Identité Groupe"
+
+#. module: his_person_core
+#: model:res.partner.category,name:his_person_core.categ_partner_identite
+msgid "HIS — Institutional Identity"
+msgstr "HIS — Identité institutionnelle"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__has_message
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__id
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__id
+#: model:ir.model.fields,field_description:his_person_core.field_res_partner__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__im_status
+msgid "IM Status"
+msgstr "Statut de messagerie"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône signalant une activité en exception."
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__external_ref
+msgid ""
+"Identifier of the record in its source system (sheet row, Uniflow key...). "
+"Used to trace the data back to its origin."
+msgstr ""
+"Identifiant de la fiche dans son système source (ligne de la feuille, clé "
+"Uniflow...). Sert à remonter à l'origine de la donnée."
+
+#. module: his_person_core
+#: model:ir.ui.menu,name:his_person_core.menu_his_person_root
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_form
+msgid "Identity"
+msgstr "Identité"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_engagement__message_needaction
+#: model:ir.model.fields,help:his_person_core.field_his_person__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_engagement__message_has_error
+#: model:ir.model.fields,help:his_person_core.field_his_person__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__is_blacklisted
+msgid ""
+"If the email address is on the blacklist, the contact won't receive mass "
+"mailing anymore, from any list"
+msgstr ""
+"Si l'adresse courriel est sur la liste noire, le contact ne recevra plus "
+"aucun envoi de masse, quelle que soit la liste"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__image_1920
+msgid "Image"
+msgstr "Image"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__image_1024
+msgid "Image 1024"
+msgstr "Image 1024"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__image_128
+msgid "Image 128"
+msgstr "Image 128"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__image_256
+msgid "Image 256"
+msgstr "Image 256"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__image_512
+msgid "Image 512"
+msgstr "Image 512"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__industry_id
+msgid "Industry"
+msgstr "Secteur d'activité"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__contact_address_inline
+msgid "Inlined Complete Address"
+msgstr "Adresse complète sur une ligne"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_form
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_list
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_search
+msgid "Institutional Email"
+msgstr "Email institutionnel"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__matricule_institutionnel
+msgid "Institutional Registration Number"
+msgstr "Matricule institutionnel"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__message_is_follower
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__is_in_call
+msgid "Is In Call"
+msgstr "Est en appel"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__is_public
+msgid "Is Public"
+msgstr "Est public"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__is_company
+msgid "Is a Company"
+msgstr "Est une société"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__function
+msgid "Job Position"
+msgstr "Poste"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__lang
+msgid "Language"
+msgstr "Langue"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__write_uid
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__write_date
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__main_user_id
+msgid "Main User"
+msgstr "Utilisateur principal"
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__source_system__manual
+msgid "Manual Entry"
+msgstr "Saisie manuelle"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__matched_by
+msgid "Match Confirmed By"
+msgstr "Rapprochement confirmé par"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_form
+msgid "Matching"
+msgstr "Rapprochement"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__match_method
+msgid "Matching Method"
+msgstr "Méthode de rapprochement"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__message_has_error
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__message_ids
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__nom_arabe
+msgid "Name (Arabic)"
+msgstr "Nom (arabe)"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_form
+msgid "Name (Latin)"
+msgstr "Nom (latin)"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__email_normalized
+msgid "Normalized Email"
+msgstr "Courriel normalisé"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__notes
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__comment
+msgid "Notes"
+msgstr "Notes"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_engagement_form
+msgid "Notes..."
+msgstr "Notes..."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__message_needaction_counter
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__message_has_error_counter
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_engagement__message_needaction_counter
+#: model:ir.model.fields,help:his_person_core.field_his_person__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_engagement__message_has_error_counter
+#: model:ir.model.fields,help:his_person_core.field_his_person__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages en erreur d'envoi"
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__source_system__odoo_hr
+msgid "Odoo HR"
+msgstr "Odoo RH"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__offline_since
+msgid "Offline since"
+msgstr "Hors ligne depuis"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_form
+msgid "Origin"
+msgstr "Provenance"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__parent_name
+msgid "Parent name"
+msgstr "Nom du parent"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__same_company_registry_partner_id
+msgid "Partner with same Company Registry"
+msgstr "Partenaire avec le même registre de commerce"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__same_vat_partner_id
+msgid "Partner with same Tax ID"
+msgstr "Partenaire avec le même numéro fiscal"
+
+#. module: his_person_core
+#: model:ir.actions.act_window,name:his_person_core.action_his_person
+#: model:ir.ui.menu,name:his_person_core.menu_his_person
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_list
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_search
+msgid "People"
+msgstr "Personnes"
+
+#. module: his_person_core
+#: model:res.groups,name:his_person_core.group_his_person_manager
+msgid "People Manager"
+msgstr "Gestionnaire des personnes"
+
+#. module: his_person_core
+#: model:ir.module.category,description:his_person_core.module_category_his_person
+msgid "People register and institutional registration number."
+msgstr "Référentiel des personnes et matricule institutionnel."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__person_id
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_form
+msgid "Person"
+msgstr "Personne"
+
+#. module: his_person_core
+#: model:ir.model,name:his_person_core.model_his_person
+msgid "Person (HIS-HTC-IRA Group)"
+msgstr "Personne (Groupe HIS-HTC-IRA)"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__his_person_ids
+#: model:ir.model.fields,field_description:his_person_core.field_res_partner__his_person_ids
+#: model:ir.model.fields,field_description:his_person_core.field_res_users__his_person_ids
+msgid "Person Record"
+msgstr "Fiche personne"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__type_personne
+msgid "Person Type"
+msgstr "Type de personne"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__email_personnel
+msgid "Personal Email"
+msgstr "Email personnel"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__phone
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_form
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_list
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__match_method__probabilistic
+msgid "Probabilistic (Confirmed)"
+msgstr "Probabiliste (confirmé)"
+
+#. module: his_person_core
+#. odoo-python
+#: code:addons/his_person_core/models/his_person.py:0
+msgid "Probabilistic match confirmed by %s."
+msgstr "Rapprochement probabiliste confirmé par %s."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__properties
+msgid "Properties"
+msgstr "Propriétés"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__properties_base_definition_id
+msgid "Properties Base Definition"
+msgstr "Définition de base des propriétés"
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_engagement__etat__prospect
+msgid "Prospect"
+msgstr "Prospect"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_engagement_search
+msgid "Prospects"
+msgstr "Prospects"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__numero_carte
+msgid "RFID Badge"
+msgstr "Badge RFID"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__numero_carte
+msgid ""
+"RFID badge number, as the reader returns it. This is the field the till looks up to find the person. A badge belongs to one person only.\n"
+"\n"
+"Not to be confused with the native \"Badge ID\" on the employee record (hr.employee.barcode): that one identifies staff at the time clock and logs a cashier into the till. It is not the meal badge."
+msgstr ""
+"Numéro du badge RFID, tel que le lecteur le restitue. C'est ce champ que la caisse interroge pour retrouver la personne. Un badge n'appartient qu'à une personne.\n"
+"\n"
+"À ne pas confondre avec l'« Identifiant du badge » natif de la fiche employé (hr.employee.barcode) : celui-là identifie le personnel auprès du terminal de pointage et connecte un caissier à la caisse. Ce n'est pas le badge repas."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__ref
+msgid "Reference"
+msgstr "Référence"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__matricule_affiche
+msgid "Registration Number"
+msgstr "Matricule"
+
+#. module: his_person_core
+#. odoo-python
+#: code:addons/his_person_core/models/his_person.py:0
+msgid ""
+"Registration number %(matricule)s already exists and belongs to a person of "
+"type \"%(type)s\", which is incompatible with this source. Row rejected: to "
+"be resolved by hand, no automatic merge."
+msgstr ""
+"Le matricule %(matricule)s existe déjà et appartient à une personne de type "
+"« %(type)s », incompatible avec cette source. Ligne rejetée : à arbitrer "
+"manuellement, aucune fusion automatique."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__parent_id
+msgid "Related Company"
+msgstr "Société liée"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__rtc_session_ids
+msgid "Rtc Session"
+msgstr "Session RTC"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__user_id
+msgid "Salesperson"
+msgstr "Vendeur"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__self
+msgid "Self"
+msgstr "Soi-même"
+
+#. module: his_person_core
+#. odoo-python
+#: code:addons/his_person_core/models/his_person.py:0
+msgid "Sequence %s not found: cannot issue a registration number."
+msgstr "Séquence %s introuvable : impossible d'émettre un matricule."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__partner_share
+msgid "Share Partner"
+msgstr "Partenaire partagé"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__signup_type
+msgid "Signup Token Type"
+msgstr "Type de jeton d'inscription"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__external_ref
+msgid "Source Reference"
+msgstr "Référence source"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__source_system
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_search
+msgid "Source System"
+msgstr "Système source"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__date_debut
+msgid "Start Date"
+msgstr "Date de début"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__state_id
+msgid "State"
+msgstr "Région"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__application_statistics
+msgid "Stats"
+msgstr "Statistiques"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_engagement__etat
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_engagement_search
+msgid "Status"
+msgstr "État"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut selon les activités\n"
+"En retard : l'échéance est déjà passée\n"
+"Aujourd'hui : l'activité est prévue aujourd'hui\n"
+"Planifiée : activités à venir."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__street
+msgid "Street"
+msgstr "Rue"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__street2
+msgid "Street2"
+msgstr "Rue 2"
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__type_personne__etudiant
+msgid "Student"
+msgstr "Étudiant"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_search
+msgid "Students"
+msgstr "Étudiants"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__category_id
+msgid "Tags"
+msgstr "Étiquettes"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__vat
+msgid "Tax ID"
+msgstr "Numéro fiscal"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__vat_label
+msgid "Tax ID Label"
+msgstr "Libellé du numéro fiscal"
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__type_personne__enseignant
+msgid "Teacher"
+msgstr "Enseignant"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_search
+msgid "Teachers"
+msgstr "Enseignants"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__country_code
+msgid ""
+"The ISO country code in two chars. \n"
+"You can use this field for quick search."
+msgstr ""
+"Le code ISO du pays en deux caractères.\n"
+"Vous pouvez utiliser ce champ pour une recherche rapide."
+
+#. module: his_person_core
+#. odoo-python
+#: code:addons/his_person_core/models/his_person.py:0
+msgid "The institutional registration number of %s cannot be changed."
+msgstr "Le matricule institutionnel de %s ne peut pas être modifié."
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__user_id
+msgid "The internal user in charge of this contact."
+msgstr "L'utilisateur interne responsable de ce contact."
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__company_registry
+msgid ""
+"The registry number of the company. Use it if it is different from the Tax "
+"ID. It must be unique across all partners of a same country"
+msgstr ""
+"Le numéro de registre de commerce de la société. À utiliser s'il diffère du "
+"numéro fiscal. Il doit être unique parmi tous les partenaires d'un même pays"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__main_user_id
+msgid ""
+"There can be several users related to the same partner. When a single user "
+"is needed, this field attempts to find the most appropriate one."
+msgstr ""
+"Plusieurs utilisateurs peuvent être liés au même partenaire. Quand un seul "
+"est nécessaire, ce champ cherche le plus approprié."
+
+#. module: his_person_core
+#: model:ir.model.constraint,message:his_person_core.constraint_his_person_numero_carte_unique
+msgid "This RFID badge is already assigned to another person."
+msgstr "Ce badge RFID est déjà attribué à une autre personne."
+
+#. module: his_person_core
+#: model:ir.model.constraint,message:his_person_core.constraint_his_person_partner_id_unique
+msgid "This contact already carries a person record."
+msgstr "Ce contact porte déjà une fiche personne."
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__email_normalized
+msgid ""
+"This field is used to search on email address as the primary email field can"
+" contain more than strictly an email address."
+msgstr ""
+"Ce champ sert à rechercher sur l'adresse courriel, car le champ courriel "
+"principal peut contenir plus qu'une simple adresse."
+
+#. module: his_person_core
+#: model:ir.model.constraint,message:his_person_core.constraint_his_person_matricule_institutionnel_unique
+msgid ""
+"This institutional registration number is already assigned to another "
+"person."
+msgstr "Ce matricule institutionnel est déjà attribué à une autre personne."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__tz
+msgid "Timezone"
+msgstr "Fuseau horaire"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__tz_offset
+msgid "Timezone offset"
+msgstr "Décalage horaire"
+
+#. module: his_person_core
+#: model_terms:ir.ui.view,arch_db:his_person_core.view_his_person_search
+msgid "Type"
+msgstr "Type"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité en exception sur l'enregistrement."
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_person__source_system__uniflow
+msgid "Uniflow"
+msgstr "Uniflow"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__barcode
+msgid "Use a barcode to identify this contact."
+msgstr "Utilisez un code-barres pour identifier ce contact."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__user_ids
+msgid "Users"
+msgstr "Utilisateurs"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__website
+msgid "Website Link"
+msgstr "Lien du site web"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__tz
+msgid ""
+"When printing documents and exporting/importing data, time values are computed according to this timezone.\n"
+"If the timezone is not set, UTC (Coordinated Universal Time) is used.\n"
+"Anywhere else, time values are computed according to the time offset of your web client."
+msgstr ""
+"Lors de l'impression de documents et de l'export/import de données, les heures sont calculées selon ce fuseau horaire.\n"
+"Si aucun fuseau n'est défini, UTC (temps universel coordonné) est utilisé.\n"
+"Partout ailleurs, les heures sont calculées selon le décalage horaire de votre navigateur."
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__employee
+msgid "Whether this contact is an Employee."
+msgstr "Indique si ce contact est un employé."
+
+#. module: his_person_core
+#: model:ir.model.fields.selection,name:his_person_core.selection__his_engagement__etat__abandonne
+msgid "Withdrawn"
+msgstr "Abandonné"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__vat
+msgid "You can use '/' to indicate that the customer has no Tax ID."
+msgstr ""
+"Vous pouvez saisir « / » pour indiquer que le client n'a pas de numéro "
+"fiscal."
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__zip
+msgid "Zip"
+msgstr "Code postal"

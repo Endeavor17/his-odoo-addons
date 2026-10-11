@@ -54,7 +54,7 @@
              C'est la piece qui rend l'exigence « magasins multiples » reelle. -->
 
         <record id="picking_type_pos_cafeteria" model="stock.picking.type">
-            <field name="name">Ventes Cafétéria</field>
+            <field name="name">Cafeteria Sales</field>
             <field name="code">outgoing</field>
             <field name="sequence_code">CAFOUT</field>
             <field name="warehouse_id" ref="stock.warehouse0"/>
@@ -62,7 +62,7 @@
             <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
         </record>
         <record id="picking_type_pos_restaurant" model="stock.picking.type">
-            <field name="name">Ventes Restaurant</field>
+            <field name="name">Restaurant Sales</field>
             <field name="code">outgoing</field>
             <field name="sequence_code">RESOUT</field>
             <field name="warehouse_id" ref="stock.warehouse0"/>
@@ -70,7 +70,7 @@
             <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
         </record>
         <record id="picking_type_pos_copy_center" model="stock.picking.type">
-            <field name="name">Ventes Copy Center</field>
+            <field name="name">Copy Center Sales</field>
             <field name="code">outgoing</field>
             <field name="sequence_code">COPOUT</field>
             <field name="warehouse_id" ref="stock.warehouse0"/>
@@ -93,7 +93,7 @@
              ce que chacun attend, et le reporting se ventile. -->
 
         <record id="picking_type_reappro_cafeteria" model="stock.picking.type">
-            <field name="name">Réappro Cafétéria</field>
+            <field name="name">Cafeteria Replenishment</field>
             <field name="code">internal</field>
             <field name="sequence_code">CAFIN</field>
             <field name="warehouse_id" ref="stock.warehouse0"/>
@@ -102,7 +102,7 @@
             <field name="default_location_dest_id" ref="loc_cafeteria"/>
         </record>
         <record id="picking_type_reappro_restaurant" model="stock.picking.type">
-            <field name="name">Réappro Restaurant</field>
+            <field name="name">Restaurant Replenishment</field>
             <field name="code">internal</field>
             <field name="sequence_code">RESIN</field>
             <field name="warehouse_id" ref="stock.warehouse0"/>
@@ -111,7 +111,7 @@
             <field name="default_location_dest_id" ref="loc_restaurant"/>
         </record>
         <record id="picking_type_reappro_copy_center" model="stock.picking.type">
-            <field name="name">Réappro Copy Center</field>
+            <field name="name">Copy Center Replenishment</field>
             <field name="code">internal</field>
             <field name="sequence_code">COPIN</field>
             <field name="warehouse_id" ref="stock.warehouse0"/>

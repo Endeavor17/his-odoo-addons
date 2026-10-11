@@ -60,7 +60,7 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No module sheets yet</p>
             <p>Created automatically once a Need reaches Module Assignment. The teacher
-               prepares the content; Pédagogie/the module owner validates it, then it
+               prepares the content; Academics/the module owner validates it, then it
                publishes to students.</p>
         </field>
     </record>

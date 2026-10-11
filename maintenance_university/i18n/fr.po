@@ -1,0 +1,1836 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* maintenance_university
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/wizard/maintenance_university_worker_create.py:0
+msgid ""
+"%(name)s looks like someone already in the register: %(match)s (%(matricule)s).\n"
+"\n"
+"Pick that person in the Existing Person column to give them this maintenance role, or tick New Person if this really is a different human who happens to share the name."
+msgstr ""
+"%(name)s ressemble à une personne déjà présente dans le référentiel : %(match)s (%(matricule)s).\n"
+"\n"
+"Choisissez cette personne dans la colonne Personne existante pour lui donner ce rôle de maintenance, ou cochez Nouvelle personne s'il s'agit vraiment d'un homonyme."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/wizard/maintenance_university_worker_create.py:0
+msgid ""
+"%(person)s already has an employee record (%(employee)s). Give them the "
+"Worker group from Settings, Users instead of creating a second one."
+msgstr ""
+"%(person)s a déjà une fiche employé (%(employee)s). Donnez-lui le groupe "
+"Ouvrier depuis Réglages, Utilisateurs au lieu d'en créer une seconde."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/wizard/maintenance_university_worker_create.py:0
+msgid ""
+"%(person)s is archived. Restore that person in the People register first, or"
+" pick another one — an employee cannot hang off a record that was put aside."
+msgstr ""
+"%(person)s est archivé(e). Restaurez d'abord cette personne dans le "
+"référentiel Personnes, ou choisissez-en une autre — un employé ne peut pas "
+"dépendre d'une fiche mise de côté."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid ""
+"<i class=\"fa fa-clock-o me-1\" title=\"Scheduled for\" role=\"img\" aria-"
+"label=\"Scheduled for\"/>"
+msgstr ""
+"<i class=\"fa fa-clock-o me-1\" title=\"Prévu pour\" role=\"img\" aria-"
+"label=\"Prévu pour\"/>"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "A closed request can no longer be assigned."
+msgstr "Une demande clôturée ne peut plus être assignée."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid ""
+"A finding cannot use the Inspection category: converting it would create "
+"another inspection instead of a repair request."
+msgstr ""
+"Un constat ne peut pas utiliser la catégorie Inspection : le convertir "
+"créerait une autre inspection au lieu d'une demande de réparation."
+
+#. module: maintenance_university
+#: model:ir.model.constraint,message:maintenance_university.constraint_maintenance_university_workday_dates_ordered
+msgid "A work day cannot end before it starts."
+msgstr "Une journée de travail ne peut pas se terminer avant de commencer."
+
+#. module: maintenance_university
+#: model:ir.model.constraint,message:maintenance_university.constraint_maintenance_university_workday_employee_day_unique
+msgid "A worker already has a work day recorded for that date."
+msgstr "Cet ouvrier a déjà une journée de travail enregistrée à cette date."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/wizard/maintenance_university_worker_create.py:0
+msgid "Add at least one worker before creating."
+msgstr "Ajoutez au moins un ouvrier avant de créer."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid ""
+"Add each worker's name and the login you want them to use, then click\n"
+"                    Create Workers. Type a password yourself, or leave it blank to generate\n"
+"                    one — either way, copy it out before closing this window, or look it up\n"
+"                    again from Worker Summary until their first login, when it is erased."
+msgstr ""
+"Saisissez le nom de chaque ouvrier et l'identifiant qu'il utilisera, puis cliquez sur\n"
+"                    Créer les ouvriers. Tapez un mot de passe vous-même, ou laissez vide pour en générer\n"
+"                    un — dans les deux cas, recopiez-le avant de fermer cette fenêtre, ou retrouvez-le\n"
+"                    depuis Synthèse ouvriers jusqu'à sa première connexion, où il est effacé."
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_building
+msgid "Add your first building"
+msgstr "Ajoutez votre premier bâtiment"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_category
+msgid "Add your first category"
+msgstr "Ajoutez votre première catégorie"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+msgid "Additional notes..."
+msgstr "Notes complémentaires..."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/wizard/maintenance_university_worker_create.py:0
+msgid "Already registered as %(matricule)s — pick them, or tick New Person."
+msgstr ""
+"Déjà enregistré(e) sous %(matricule)s — choisissez cette personne, ou cochez"
+" Nouvelle personne."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Assign"
+msgstr "Assigner"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__assigned
+#: model:maintenance.stage,name:maintenance_university.maintenance_stage_assigned
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Assigned"
+msgstr "Assignée"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__date_assigned
+msgid "Assigned On"
+msgstr "Assignée le"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__employee_ids
+msgid "Assigned Workers"
+msgstr "Ouvriers assignés"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid ""
+"At least one worker must be assigned before the request leaves the New "
+"state."
+msgstr ""
+"Au moins un ouvrier doit être assigné avant que la demande quitte l'état "
+"Nouvelle."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.js:0
+msgid "Back to work"
+msgstr "Reprendre le travail"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_workday_segment__kind__pause
+msgid "Break"
+msgstr "Pause"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__paused_hours
+msgid "Break Hours"
+msgstr "Heures de pause"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+msgid "Breaks"
+msgstr "Pauses"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_workday_paused_hours
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_list
+msgid "Breaks Today"
+msgstr "Pauses aujourd'hui"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__building_id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__building_id
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_building_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Building"
+msgstr "Bâtiment"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__name
+msgid "Building Name"
+msgstr "Nom du bâtiment"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_building
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_building
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_building_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_building_search
+msgid "Buildings"
+msgstr "Bâtiments"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Cancel this request? This cannot be undone."
+msgstr "Annuler cette demande ? C'est irréversible."
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__cancelled
+#: model:maintenance.stage,name:maintenance_university.maintenance_stage_cancelled
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Cancelled"
+msgstr "Annulée"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_category
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_category
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_search
+msgid "Categories"
+msgstr "Catégories"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__category_id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__category_id
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__name
+msgid "Category Name"
+msgstr "Nom de la catégorie"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__code
+msgid "Code"
+msgstr "Code"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid "Complete"
+msgstr "Terminer"
+
+#. module: maintenance_university
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_configuration
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Convert to Request"
+msgstr "Convertir en demande"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__state__converted
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Converted"
+msgstr "Converti"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_worker_create
+#: model:ir.model,name:maintenance_university.model_maintenance_university_worker_create
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_worker_create
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid "Create Workers"
+msgstr "Créer les ouvriers"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_worker_create_line
+msgid "Create Workers - Line"
+msgstr "Créer les ouvriers - Ligne"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_request
+msgid "Create a maintenance request"
+msgstr "Créez une demande de maintenance"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__critical
+msgid "Critical"
+msgstr "Critique"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Critical/High Findings"
+msgstr "Constats critiques/élevés"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_findings_critical_this_month
+msgid "Critical/High Findings This Month"
+msgstr "Constats critiques/élevés ce mois-ci"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/metabase/metabase_dashboard.xml:0
+#: model:ir.actions.client,name:maintenance_university.action_maintenance_university_metabase
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_metabase
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__date
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_search
+msgid "Day"
+msgstr "Jour"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.js:0
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+msgid "Day finished"
+msgstr "Journée terminée"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Department Reports"
+msgstr "Signalements des services"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Describe the problem..."
+msgstr "Décrivez le problème..."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+msgid "Describe what was found..."
+msgstr "Décrivez ce qui a été constaté..."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__description
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__description
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__description
+msgid "Description"
+msgstr "Description"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_dashboard__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_res_users__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__done
+#: model:maintenance.stage,name:maintenance_university.maintenance_stage_done
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Done"
+msgstr "Terminée"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__state__draft
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__duration
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__duration
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__duration
+msgid "Duration (hours)"
+msgstr "Durée (heures)"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_request__duration
+msgid "Duration in hours."
+msgstr "Durée en heures."
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_hr_employee
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__employee_id
+msgid "Employee"
+msgstr "Employé"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_workday__date_end
+msgid "Empty while the day is still running."
+msgstr "Vide tant que la journée est en cours."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__date_end
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__date_end
+msgid "End"
+msgstr "Fin"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+msgid "End day"
+msgstr "Terminer la journée"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__date_end
+msgid "Ended At"
+msgstr "Terminé à"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__person_id
+msgid "Existing Person"
+msgstr "Personne existante"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_form
+msgid "Fill this in to close a day the worker left running."
+msgstr ""
+"Renseignez ce champ pour clôturer une journée que l'ouvrier a laissée "
+"ouverte."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "Finding"
+msgstr "Constat"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+msgid "Finding / Report"
+msgstr "Constat / Signalement"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "Finding follow-up"
+msgstr "Suivi du constat"
+
+#. module: maintenance_university
+#. odoo-javascript
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__finding_ids
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Findings"
+msgstr "Constats"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_finding
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_finding
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Findings & Reports"
+msgstr "Constats & signalements"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__finding_count
+msgid "Findings Count"
+msgstr "Nombre de constats"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Findings Logged"
+msgstr "Constats enregistrés"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_findings_logged_this_month
+msgid "Findings Logged This Month"
+msgstr "Constats enregistrés ce mois-ci"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_finding
+msgid ""
+"Findings come from inspection tours; department reports come from staff\n"
+"                flagging a problem directly. Convert either into a new maintenance request."
+msgstr ""
+"Les constats viennent des tournées d'inspection ; les signalements des services viennent du personnel\n"
+"                qui remonte directement un problème. Convertissez l'un ou l'autre en nouvelle demande de maintenance."
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__hr_employee__maintenance_workday_state__done
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_workday__state__done
+msgid "Finished"
+msgstr "Terminé"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__date_end
+msgid "Finished On"
+msgstr "Terminé le"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__found_date
+msgid "Found On"
+msgstr "Constaté le"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__created_request_id
+msgid "Generated Request"
+msgstr "Demande générée"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__priority__2
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__high
+msgid "High"
+msgstr "Élevée"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Hours"
+msgstr "Heures"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Hours Logged"
+msgstr "Heures saisies"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Hours Present"
+msgstr "Heures de présence"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_hours_this_month
+msgid "Hours This Month"
+msgstr "Heures ce mois-ci"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Hours Worked"
+msgstr "Heures travaillées"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Hours bars share one scale, 0–"
+msgstr "Les barres d'heures partagent une même échelle, 0–"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Hours logged"
+msgstr "Heures saisies"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Hours present"
+msgstr "Heures de présence"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "How did the tour go? Anything the leader should know..."
+msgstr ""
+"Comment s'est passée la tournée ? Ce que le responsable doit savoir..."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_dashboard__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__id
+#: model:ir.model.fields,field_description:maintenance_university.field_res_users__id
+msgid "ID"
+msgstr "ID"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid ""
+"If a name is already in the People register, the line says so.\n"
+"                    Pick that person, so they keep the one registration number they already have\n"
+"                    instead of being registered a second time."
+msgstr ""
+"Si un nom figure déjà dans le référentiel Personnes, la ligne le signale.\n"
+"                    Choisissez cette personne : elle garde son unique matricule\n"
+"                    au lieu d'être enregistrée une seconde fois."
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__message_has_error
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__in_progress
+#: model:maintenance.stage,name:maintenance_university.maintenance_stage_in_progress
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "In Progress"
+msgstr "En cours"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_search
+msgid "Inspection Categories"
+msgstr "Catégories d'inspection"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_finding
+msgid "Inspection Finding"
+msgstr "Constat d'inspection"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Inspection Findings"
+msgstr "Constats d'inspection"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__inspection_report
+msgid "Inspection Report"
+msgstr "Rapport d'inspection"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__request_id
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Inspection Request"
+msgstr "Demande d'inspection"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Inspection report"
+msgstr "Rapport d'inspection"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid "Inspection tour"
+msgstr "Tournée d'inspection"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__is_inspection
+msgid "Is Inspection"
+msgstr "Est une inspection"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__is_inspection
+msgid "Is Inspection Category"
+msgstr "Est la catégorie Inspection"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__is_manager
+msgid "Is Manager"
+msgstr "Est responsable"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__kind
+msgid "Kind"
+msgstr "Nature"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_building__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid "Leave blank to auto-generate"
+msgstr "Laisser vide pour générer automatiquement"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid "Leave empty if not registered yet"
+msgstr "Laisser vide si pas encore enregistré"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_request
+msgid ""
+"Log a problem in a university building, assign it to a worker and\n"
+"                track the time spent on it."
+msgstr ""
+"Enregistrez un problème dans un bâtiment de l'université, assignez-le à un ouvrier et\n"
+"                suivez le temps passé."
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Logged"
+msgstr "Saisi"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__login
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__login
+msgid "Login"
+msgstr "Identifiant"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Login Info"
+msgstr "Informations de connexion"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__priority__0
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__low
+msgid "Low"
+msgstr "Faible"
+
+#. module: maintenance_university
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_root
+msgid "Maintenance"
+msgstr "Maintenance"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_category
+msgid "Maintenance Category"
+msgstr "Catégorie de maintenance"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+#: model:ir.model,name:maintenance_university.model_maintenance_request
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Maintenance Request"
+msgstr "Demande de maintenance"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_request_time
+msgid "Maintenance Request Time Log"
+msgstr "Temps passé sur la demande de maintenance"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_request
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_request_ids
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Maintenance Requests"
+msgstr "Demandes de maintenance"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_workday
+msgid "Maintenance Work Day"
+msgstr "Journée de travail maintenance"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_workday_segment
+msgid "Maintenance Work Day Segment"
+msgstr "Segment de journée de travail maintenance"
+
+#. module: maintenance_university
+#: model:res.groups,name:maintenance_university.group_maintenance_manager
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_list
+msgid "Manager"
+msgstr "Responsable"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_category
+msgid ""
+"Mark one \"Inspection\" to use it for inspection tours instead of repair "
+"requests."
+msgstr ""
+"Marquez-en une « Inspection » pour l'utiliser lors des tournées d'inspection"
+" plutôt que pour des demandes de réparation."
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__medium
+msgid "Medium"
+msgstr "Moyenne"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model:ir.actions.client,name:maintenance_university.action_maintenance_university_dashboard
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_dashboard
+msgid "Monthly Recap"
+msgstr "Récapitulatif mensuel"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_dashboard
+msgid "Monthly Recap Dashboard Data"
+msgstr "Données du récapitulatif mensuel"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_list
+msgid "My Reports"
+msgstr "Mes signalements"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "My Requests"
+msgstr "Mes demandes"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_request_my_work
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_my_work
+msgid "My Work"
+msgstr "Mon travail"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__new
+#: model:maintenance.stage,name:maintenance_university.maintenance_stage_new
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "New"
+msgstr "Nouvelle"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__confirmed_new
+msgid "New Person"
+msgstr "Nouvelle personne"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Next month"
+msgstr "Mois suivant"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_hr_employee_maintenance_summary
+msgid "No employees yet"
+msgstr "Aucun employé pour l'instant"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_finding
+msgid "No findings or reports yet"
+msgstr "Aucun constat ni signalement pour l'instant"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_report
+msgid "No reports yet"
+msgstr "Aucun signalement pour l'instant"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "No requests this month"
+msgstr "Aucune demande ce mois-ci"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_workday
+msgid "No work days recorded yet"
+msgstr "Aucune journée de travail enregistrée pour l'instant"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "No workers yet"
+msgstr "Aucun ouvrier pour l'instant"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__priority__1
+msgid "Normal"
+msgstr "Normale"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+#: model:ir.model.fields.selection,name:maintenance_university.selection__hr_employee__maintenance_workday_state__not_started
+msgid "Not started"
+msgstr "Pas commencé"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__notes
+msgid "Notes"
+msgstr "Notes"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_request_my_work
+msgid "Nothing assigned to you yet"
+msgstr "Rien ne vous est encore assigné"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages en erreur d'envoi"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_workday__state__paused
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_search
+msgid "On Break"
+msgstr "En pause"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+#: model:ir.model.fields.selection,name:maintenance_university.selection__hr_employee__maintenance_workday_state__paused
+msgid "On break"
+msgstr "En pause"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_request_my_work
+msgid ""
+"Once a manager assigns you a request, it shows up here as a card you can\n"
+"                start, pause, resume and complete."
+msgstr ""
+"Dès qu'un responsable vous assigne une demande, elle apparaît ici sous forme de carte que vous pouvez\n"
+"                démarrer, mettre en pause, reprendre et terminer."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid ""
+"Only a draft finding or report can be deleted once it's been submitted."
+msgstr ""
+"Seul un constat ou signalement en brouillon peut être supprimé une fois "
+"soumis."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a manager can assign a maintenance request."
+msgstr "Seul un responsable peut assigner une demande de maintenance."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "Only a manager can convert a finding into a maintenance request."
+msgstr ""
+"Seul un responsable peut convertir un constat en demande de maintenance."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a manager can create a maintenance request."
+msgstr "Seul un responsable peut créer une demande de maintenance."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/wizard/maintenance_university_worker_create.py:0
+msgid "Only a manager can create workers."
+msgstr "Seul un responsable peut créer des ouvriers."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a manager can delete a maintenance request."
+msgstr "Seul un responsable peut supprimer une demande de maintenance."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_dashboard.py:0
+msgid "Only a manager can view the maintenance dashboard."
+msgstr "Seul un responsable peut voir le tableau de bord de maintenance."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_dashboard.py:0
+msgid "Only a manager can view the monthly recap."
+msgstr "Seul un responsable peut voir le récapitulatif mensuel."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_workday.py:0
+msgid "Only a paused day can be resumed."
+msgstr "Seule une journée en pause peut être reprise."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a paused request can be resumed."
+msgstr "Seule une demande en pause peut être reprise."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a request in progress can be paused."
+msgstr "Seule une demande en cours peut être mise en pause."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only a request in progress or paused can be completed."
+msgstr "Seule une demande en cours ou en pause peut être terminée."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_workday.py:0
+msgid "Only a running day can be paused."
+msgstr "Seule une journée en cours peut être mise en pause."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only an assigned request can be started."
+msgstr "Seule une demande assignée peut être démarrée."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid ""
+"Only an assigned worker can start, pause, resume or complete this request."
+msgstr ""
+"Seul un ouvrier assigné peut démarrer, mettre en pause, reprendre ou "
+"terminer cette demande."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Only inspection requests take a report."
+msgstr "Seules les demandes d'inspection reçoivent un rapport."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_category.py:0
+msgid "Only one active category can be marked as the Inspection category."
+msgstr ""
+"Une seule catégorie active peut être marquée comme catégorie Inspection."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "Only the person who logged this can submit it."
+msgstr "Seule la personne qui l'a saisi peut le soumettre."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__origin_finding_id
+msgid "Originating Finding"
+msgstr "Constat d'origine"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__password
+msgid "Password"
+msgstr "Mot de passe"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid "Pause"
+msgstr "Pause"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__paused
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Paused"
+msgstr "En pause"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__image_ids
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_form
+msgid "Photos"
+msgstr "Photos"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__suggested_person_id
+msgid "Possible Match"
+msgstr "Correspondance possible"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Present"
+msgstr "Présent"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+msgid "Press the button when you start your day."
+msgstr "Appuyez sur le bouton quand vous commencez votre journée."
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Previous month"
+msgstr "Mois précédent"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__priority
+msgid "Priority"
+msgstr "Priorité"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_worker_create_form
+msgid "Register"
+msgstr "Référentiel"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Report"
+msgstr "Rapport"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_report
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_report
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_form
+msgid "Report a Problem"
+msgstr "Signaler un problème"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__employee_id
+msgid "Reported By"
+msgstr "Signalé par"
+
+#. module: maintenance_university
+#: model:res.groups,name:maintenance_university.group_maintenance_reporter
+msgid "Reporter"
+msgstr "Déclarant"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__request_id
+msgid "Request"
+msgstr "Demande"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__request_date
+msgid "Request Date"
+msgstr "Date de la demande"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__maintenance_ids
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_request
+msgid "Requests"
+msgstr "Demandes"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Requests Completed"
+msgstr "Demandes terminées"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_building
+msgid "Requests and findings are always logged against one of these."
+msgstr "Les demandes et les constats sont toujours rattachés à l'un d'eux."
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Requests by building"
+msgstr "Demandes par bâtiment"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Requests by category"
+msgstr "Demandes par catégorie"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_category__is_inspection
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_request__is_inspection
+msgid ""
+"Requests using this category show the Findings tab and enable the inspection"
+" workflow."
+msgstr ""
+"Les demandes de cette catégorie affichent l'onglet Constats et activent le "
+"circuit d'inspection."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid "Resume"
+msgstr "Reprendre"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__scheduled_date
+msgid "Scheduled For"
+msgstr "Prévu pour"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__segment_ids
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_form
+msgid "Segments"
+msgstr "Segments"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Select at least one worker before assigning the request."
+msgstr "Sélectionnez au moins un ouvrier avant d'assigner la demande."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Send Report to Leader"
+msgstr "Envoyer le rapport au responsable"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__severity
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Severity"
+msgstr "Gravité"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_report
+msgid ""
+"Spotted a problem? Log it here — a maintenance manager will review it\n"
+"                and turn it into a work request."
+msgstr ""
+"Vous avez repéré un problème ? Signalez-le ici — un responsable maintenance l'examinera\n"
+"                et en fera une demande d'intervention."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__stage_id
+msgid "Stage"
+msgstr "Étape"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__date_start
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__date_start
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+msgid "Start"
+msgstr "Démarrer"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__date_start_working
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__date_start_working
+msgid "Start Date"
+msgstr "Date de début"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.js:0
+msgid "Start working"
+msgstr "Commencer le travail"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_list
+msgid "Started"
+msgstr "Démarré"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_workday_started_at
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__date_start
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Started At"
+msgstr "Démarré à"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__date_start
+msgid "Started On"
+msgstr "Démarré le"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+msgid "Started at"
+msgstr "Démarré à"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__state
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__state
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__state
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_search
+msgid "Still Running"
+msgstr "Toujours en cours"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Submit"
+msgstr "Soumettre"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__state__submitted
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
+msgid "Submitted"
+msgstr "Soumis"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__suggestion_message
+msgid "Suggestion Message"
+msgstr "Message de suggestion"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.js:0
+msgid "Take a break"
+msgstr "Prendre une pause"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Tasks Completed"
+msgstr "Tâches terminées"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_requests_done_this_month
+msgid "Tasks Done This Month"
+msgstr "Tâches terminées ce mois-ci"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__maintenance_team_id
+msgid "Team"
+msgstr "Équipe"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__initial_password
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Temporary Password"
+msgstr "Mot de passe temporaire"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/metabase/metabase_dashboard.js:0
+msgid "The dashboard could not be loaded."
+msgstr "Le tableau de bord n'a pas pu être chargé."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_dashboard.py:0
+msgid ""
+"The maintenance dashboard is not configured: set the his_metabase.site_url, "
+"his_metabase.secret_key and maintenance_university.metabase_dashboard_id "
+"system parameters."
+msgstr ""
+"Le tableau de bord de maintenance n'est pas configuré : renseignez les "
+"paramètres système his_metabase.site_url, his_metabase.secret_key et "
+"maintenance_university.metabase_dashboard_id."
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_worker_create_line__person_id
+msgid ""
+"The person in the register who is taking this role. Leave empty only for "
+"someone genuinely not registered yet."
+msgstr ""
+"La personne du référentiel qui prend ce rôle. Ne laisser vide que pour "
+"quelqu'un réellement pas encore enregistré."
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "This Month"
+msgstr "Ce mois-ci"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_workday.py:0
+msgid "This day is already finished."
+msgstr "Cette journée est déjà terminée."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "This finding has already been converted."
+msgstr "Ce constat a déjà été converti."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "This has already been submitted and can no longer be edited."
+msgstr "Ceci a déjà été soumis et ne peut plus être modifié."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "This has already been submitted."
+msgstr "Ceci a déjà été soumis."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_finding.py:0
+msgid "This hasn't been submitted yet."
+msgstr "Ceci n'a pas encore été soumis."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "This request is already closed."
+msgstr "Cette demande est déjà clôturée."
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_worker_create_line__confirmed_new
+msgid ""
+"Tick to confirm this is not the person suggested — a different human who "
+"happens to share the name."
+msgstr ""
+"Cochez pour confirmer qu'il ne s'agit pas de la personne suggérée — un "
+"homonyme."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__time_log_ids
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+msgid "Time Log"
+msgstr "Temps passé"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_workday__worked_hours
+msgid "Time actually worked, breaks excluded."
+msgstr "Temps réellement travaillé, pauses exclues."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_workday_state
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_search
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_form
+msgid "Total"
+msgstr "Total"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_list
+msgid "Total Breaks"
+msgstr "Total des pauses"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_list
+msgid "Total Duration"
+msgstr "Durée totale"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_list
+msgid "Total Worked"
+msgstr "Total travaillé"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_building
+msgid "University Building"
+msgstr "Bâtiment universitaire"
+
+#. module: maintenance_university
+#: model:ir.module.category,name:maintenance_university.module_category_maintenance_university
+#: model:maintenance.team,name:maintenance_university.maintenance_team_university
+#: model:res.groups.privilege,name:maintenance_university.res_groups_privilege_maintenance_university
+msgid "University Maintenance"
+msgstr "Maintenance universitaire"
+
+#. module: maintenance_university
+#: model:res.groups.privilege,name:maintenance_university.res_groups_privilege_maintenance_university_reporter
+msgid "University Maintenance Reporter"
+msgstr "Déclarant maintenance universitaire"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__priority__3
+msgid "Urgent"
+msgstr "Urgente"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_hr_employee__login
+msgid "Used to log into the system"
+msgstr "Sert à se connecter au système"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_res_users
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_finding__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des échanges sur le site web"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_request__scheduled_date
+msgid "When the worker is expected to do this."
+msgstr "Quand l'ouvrier doit s'en occuper."
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_hr_employee__date_start_working
+msgid ""
+"When this employee starts working — determines the year in their "
+"institutional ID."
+msgstr ""
+"Date de prise de poste de cet employé — elle détermine l'année de son "
+"matricule institutionnel."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__wizard_id
+msgid "Wizard"
+msgstr "Assistant"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_workday.py:0
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__workday_id
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_form
+msgid "Work Day"
+msgstr "Journée de travail"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_workday
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_workday_ids
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_workday
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_search
+msgid "Work Days"
+msgstr "Journées de travail"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Worked"
+msgstr "Travaillé"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__worked_hours
+msgid "Worked Hours"
+msgstr "Heures travaillées"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_workday_worked_hours
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_list
+msgid "Worked Today"
+msgstr "Travaillé aujourd'hui"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__employee_id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__employee_id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__employee_id
+#: model:res.groups,name:maintenance_university.group_maintenance_worker
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_search
+msgid "Worker"
+msgstr "Ouvrier"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_hr_employee_maintenance_summary
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_worker_summary
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_list
+msgid "Worker Summary"
+msgstr "Synthèse ouvriers"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "Worker comparison"
+msgstr "Comparaison des ouvriers"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__line_ids
+msgid "Workers"
+msgstr "Ouvriers"
+
+#. module: maintenance_university
+#: model_terms:ir.actions.act_window,help:maintenance_university.action_maintenance_university_workday
+msgid ""
+"Workers clock in from the button at the top of My Work. Days show up here\n"
+"                as they happen, and a day someone forgot to close can be corrected by\n"
+"                filling in its end time."
+msgstr ""
+"Les ouvriers pointent avec le bouton en haut de Mon travail. Les journées apparaissent ici\n"
+"                au fil de l'eau, et une journée oubliée ouverte se corrige en\n"
+"                renseignant son heure de fin."
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+#: model:ir.model.fields.selection,name:maintenance_university.selection__hr_employee__maintenance_workday_state__working
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_workday__state__working
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_workday_segment__kind__work
+msgid "Working"
+msgstr "Au travail"
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "Write something before sending the report."
+msgstr "Écrivez quelque chose avant d'envoyer le rapport."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_workday.py:0
+msgid "You already started your day at %s."
+msgstr "Vous avez déjà commencé votre journée à %s."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_workday.py:0
+msgid "You can only clock your own work day."
+msgstr "Vous ne pouvez pointer que votre propre journée de travail."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid "You can only operate on your own assigned requests."
+msgstr "Vous ne pouvez agir que sur les demandes qui vous sont assignées."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_request.py:0
+msgid ""
+"You can only update your own progress on this request, not its details."
+msgstr ""
+"Vous ne pouvez mettre à jour que votre avancement sur cette demande, pas ses"
+" détails."
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+msgid ""
+"Your account is not linked to an employee record, so your work day\n"
+"                    cannot be clocked. Ask a maintenance manager to set one up."
+msgstr ""
+"Votre compte n'est lié à aucune fiche employé : votre journée de travail\n"
+"                    ne peut pas être pointée. Demandez à un responsable maintenance d'en créer une."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_workday.py:0
+msgid ""
+"Your user account is not linked to an employee record, so no work day can be"
+" recorded. Ask a maintenance manager to set one up."
+msgstr ""
+"Votre compte utilisateur n'est lié à aucune fiche employé : aucune journée "
+"de travail ne peut être enregistrée. Demandez à un responsable maintenance "
+"d'en créer une."
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "across"
+msgstr "sur"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "booked against requests"
+msgstr "imputées aux demandes"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "buildings"
+msgstr "bâtiments"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "completed"
+msgstr "terminées"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "critical or high"
+msgstr "critiques ou élevés"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "h travel and idle"
+msgstr "h de déplacement et d'attente"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "h. Counts are exact."
+msgstr "h. Les comptes sont exacts."
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "more booked than clocked"
+msgstr "de plus imputées que pointées"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "requests completed"
+msgstr "demandes terminées"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+msgid "workers ·"
+msgstr "ouvriers ·"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+msgid "· Breaks"
+msgstr "· Pauses"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+msgid "· Worked"
+msgstr "· Travaillé"

@@ -29,7 +29,7 @@
              rien a personne, ce qui est le defaut sur. -->
 
         <record id="crm_team_ventes" model="crm.team">
-            <field name="name">Ventes / Admissions</field>
+            <field name="name">Sales / Admissions</field>
             <field name="sequence">1</field>
             <!-- TODO Endeavor : user_id = le responsable des admissions. C'est
                  lui, et lui seul, qui recevra les relances SLA de premier
@@ -37,7 +37,7 @@
         </record>
 
         <record id="crm_team_orientation" model="crm.team">
-            <field name="name">Cellule d'Orientation</field>
+            <field name="name">Guidance Unit</field>
             <field name="sequence">2</field>
             <!-- Unite organisationnelle distincte des Ventes. Elle possede
                  l'evaluation psychologique et peut prononcer un refus. Ce refus
@@ -47,7 +47,7 @@
         </record>
 
         <record id="crm_team_contenu" model="crm.team">
-            <field name="name">Production Contenu</field>
+            <field name="name">Content Production</field>
             <field name="sequence">3</field>
             <!-- TODO Endeavor : un priorisateur, un copywriter, un ou deux
                  designers, un video, un approbateur final. -->

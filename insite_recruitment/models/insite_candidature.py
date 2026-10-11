@@ -44,11 +44,13 @@ class InsiteCandidature(models.Model):
     # the identity data, just a convenience so the candidature form doesn't
     # need a click-through to show who this is. Never stored, never edited
     # here: editing identity happens on his.person itself.
-    person_matricule = fields.Char(related="person_id.matricule_institutionnel", readonly=True)
-    person_email = fields.Char(related="person_id.email_personnel", readonly=True)
+    person_matricule = fields.Char(
+        string="Institutional Registration Number", related="person_id.matricule_institutionnel", readonly=True
+    )
+    person_email = fields.Char(string="Personal Email", related="person_id.email_personnel", readonly=True)
     person_phone = fields.Char(related="person_id.phone", readonly=True)
-    person_academic_rank = fields.Selection(related="person_id.rang_academique", readonly=True)
-    person_specialty = fields.Char(related="person_id.specialite", readonly=True)
+    person_academic_rank = fields.Selection(string="Academic Rank", related="person_id.rang_academique", readonly=True)
+    person_specialty = fields.Char(string="Specialty", related="person_id.specialite", readonly=True)
 
     state = fields.Selection(
         [
@@ -83,8 +85,9 @@ class InsiteCandidature(models.Model):
         ondelete="set null",
         index="btree_not_null",
         copy=False,
-        help="Set by Schedule Meeting — the real, Pédagogie-scheduled meeting. "
-        "Reschedule Meeting edits this same record; a second one is never created.",
+        help="Set by Schedule Meeting — the real, Academics-scheduled meeting. "
+        "Reschedule Meeting edits this same record; a second one is never "
+        "created.",
     )
 
     raw_submission_ids = fields.One2many("insite.submission", "candidature_id", "Raw Submissions")
@@ -151,7 +154,7 @@ class InsiteCandidature(models.Model):
             scored.append((score, candidature.id, candidature, reasons))
         scored.sort(key=lambda row: (-row[0], row[1]))
         for position, (score, _id, candidature, reasons) in enumerate(scored, start=1):
-            explanation = "; ".join(reasons) + f"; Total score: {score}."
+            explanation = "; ".join([*reasons, _("Total score: %s.", score)])
             candidature.write({"insite_rank": position, "rank_explanation": explanation})
         return True
 

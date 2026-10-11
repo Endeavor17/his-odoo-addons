@@ -6,7 +6,7 @@
             <div class="mx-auto" style="max-width: 760px;">
                 <form t-on-submit.prevent="lookup">
                     <input t-ref="search" t-model="state.query" class="form-control form-control-lg"
-                           autocomplete="off" placeholder="Scan a card, or type a name or a matricule"/>
+                           autocomplete="off" placeholder="Scan a card, or type a name or a registration number"/>
                 </form>
 
                 <p t-if="state.notFound" class="mt-3 fs-5 text-danger">

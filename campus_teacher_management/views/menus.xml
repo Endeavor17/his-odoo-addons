@@ -30,19 +30,19 @@
               sequence="10"/>
 
     <menuitem id="menu_campus_candidatures"
-              name="Candidatures"
+              name="Applications"
               parent="menu_campus_root"
               action="action_campus_applications"
               sequence="20"/>
 
     <menuitem id="menu_campus_phase_interview1"
-              name="1er Interview"
+              name="1st Interview"
               parent="menu_campus_root"
               action="action_campus_phase_interview1"
               sequence="30"/>
 
     <menuitem id="menu_campus_phase_interview2"
-              name="2ème Interview"
+              name="2nd Interview"
               parent="menu_campus_root"
               action="action_campus_phase_interview2"
               sequence="40"/>
@@ -54,7 +54,7 @@
               sequence="50"/>
 
     <menuitem id="menu_campus_phase_contract"
-              name="Contrat"
+              name="Contract"
               parent="menu_campus_root"
               action="action_campus_phase_contract"
               sequence="60"/>

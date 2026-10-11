@@ -12,32 +12,32 @@ class HisAdmissionDocument(models.Model):
     """
 
     _name = "his.admission.document"
-    _description = "Piece du dossier d'admission"
+    _description = "Admission File Document"
     _order = "engagement_id, sequence, id"
 
     engagement_id = fields.Many2one(
         "his.engagement",
-        string="Dossier",
+        string="File",
         required=True,
         ondelete="cascade",
         index=True,
     )
     type_id = fields.Many2one(
         "his.document.type",
-        string="Piece",
+        string="Document",
         required=True,
         ondelete="restrict",
     )
     sequence = fields.Integer(related="type_id.sequence", store=True)
     obligatoire = fields.Boolean(related="type_id.obligatoire", store=True, readonly=True)
 
-    fourni = fields.Boolean(string="Fournie")
-    date_fourniture = fields.Date(string="Date de reception")
-    note = fields.Char(string="Remarque")
+    fourni = fields.Boolean(string="Provided")
+    date_fourniture = fields.Date(string="Date Received")
+    note = fields.Char(string="Remark")
 
     _type_unique_par_dossier = models.Constraint(
         "unique(engagement_id, type_id)",
-        "Cette piece figure deja sur ce dossier.",
+        "This document is already on this file.",
     )
 
     @api.onchange("fourni")

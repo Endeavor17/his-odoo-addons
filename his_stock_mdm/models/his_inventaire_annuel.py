@@ -5,29 +5,29 @@ from odoo.exceptions import AccessError, ValidationError
 
 class HisInventaireAnnuel(models.Model):
     _name = "his.inventaire.annuel"
-    _description = "Inventaire physique annuel"
+    _description = "Annual Physical Inventory"
     _order = "name desc"
 
     _name_company_uniq = models.Constraint(
         "unique(name, company_id)",
-        "Un inventaire annuel de ce nom existe déjà pour cette société.",
+        "An annual inventory with this name already exists for this company.",
     )
 
     # Pas d'etat 'brouillon' : sans lien stocke entre stock.quant et une
     # campagne, une ouverture separee de la creation n'apporterait rien.
     # create_uid/create_date natifs repondent deja a "ouvert par, quand".
-    name = fields.Char(required=True, default="Nouvel inventaire")
+    name = fields.Char(required=True, default=lambda self: self.env._("New Inventory"))
     company_id = fields.Many2one("res.company", required=True, default=lambda self: self.env.company)
-    state = fields.Selection([("en_cours", "En cours"), ("cloture", "Clôturé")], default="en_cours", required=True)
-    date_cloture = fields.Date(readonly=True)
-    cloture_par_id = fields.Many2one("res.users", string="Clôturé par", readonly=True)
+    state = fields.Selection([("en_cours", "In Progress"), ("cloture", "Closed")], default="en_cours", required=True)
+    date_cloture = fields.Date(string="Closing Date", readonly=True)
+    cloture_par_id = fields.Many2one("res.users", string="Closed By", readonly=True)
     note = fields.Text()
 
     # --- Cloture : reservee au Manager, verrouillee une fois faite ----------
 
     def action_cloturer(self):
         if not (self.env.su or self.env.user.has_group("stock.group_stock_manager")):
-            raise AccessError(_("Seul un Manager Stock peut clôturer un inventaire annuel."))
+            raise AccessError(_("Only an Inventory Manager can close an annual inventory."))
         self.write(
             {
                 "state": "cloture",
@@ -56,9 +56,8 @@ class HisInventaireAnnuel(models.Model):
             if pending:
                 raise ValidationError(
                     _(
-                        "Impossible de clôturer « %(name)s » : %(count)d comptage(s) restent "
-                        "saisis mais non appliqués aux livres. Appliquez-les "
-                        "d'abord (Inventaire ▸ Ajustements).",
+                        'Cannot close "%(name)s": %(count)d count(s) are still entered but not '
+                        "applied to the books. Apply them first (Inventory ▸ Adjustments).",
                         name=inventaire.name,
                         count=pending,
                     )
@@ -70,9 +69,7 @@ class HisInventaireAnnuel(models.Model):
         if not self.env.su:
             for inventaire in self:
                 if inventaire.state == "cloture":
-                    raise AccessError(
-                        _("L'inventaire « %s » est clôturé : il ne peut plus être modifié.", inventaire.name)
-                    )
+                    raise AccessError(_('The inventory "%s" is closed: it can no longer be modified.', inventaire.name))
         return super().write(vals)
 
     @api.ondelete(at_uninstall=False)
@@ -80,6 +77,4 @@ class HisInventaireAnnuel(models.Model):
         if not self.env.su:
             for inventaire in self:
                 if inventaire.state == "cloture":
-                    raise AccessError(
-                        _("L'inventaire « %s » est clôturé : il ne peut pas être supprimé.", inventaire.name)
-                    )
+                    raise AccessError(_('The inventory "%s" is closed: it cannot be deleted.', inventaire.name))

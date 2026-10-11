@@ -20,8 +20,8 @@ class CampusCriterionScale(models.Model):
         "Answer Code",
         required=True,
         help="Stable code sent by the form, e.g. 'prof' or 'oui'. Matched "
-        "case-insensitively. This is what the payload is looked up by — never "
-        "the translated label, so renaming the label cannot change a score.",
+        "case-insensitively. This is what the payload is looked up by first; the "
+        "label in any installed language and the aliases are matched after it.",
     )
     name = fields.Char("Label", required=True, translate=True)
     aliases = fields.Char(
@@ -42,7 +42,12 @@ class CampusCriterionScale(models.Model):
     def _match_keys(self):
         """Every string that should resolve to this line, lower-cased."""
         self.ensure_one()
-        keys = {(self.key or "").strip().lower(), (self.name or "").strip().lower()}
+        keys = {(self.key or "").strip().lower()}
+        # The label in every installed language, not only the current user's:
+        # a payload carries the text the candidate saw, whatever language the
+        # recruiter who re-scores it happens to use.
+        for code, _name in self.env["res.lang"].get_installed():
+            keys.add((self.with_context(lang=code).name or "").strip().lower())
         for alias in (self.aliases or "").split(","):
             alias = alias.strip().lower()
             if alias:

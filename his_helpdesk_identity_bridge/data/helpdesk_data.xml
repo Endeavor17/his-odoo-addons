@@ -6,21 +6,21 @@
              sont poses par l'administrateur, pas ici. Les reparations de
              batiments restent dans maintenance_university. -->
         <record id="team_informatique" model="helpdesk.ticket.team">
-            <field name="name">Informatique</field>
+            <field name="name">IT</field>
         </record>
         <record id="team_scolarite" model="helpdesk.ticket.team">
-            <field name="name">Scolarité</field>
+            <field name="name">Registrar</field>
         </record>
         <record id="team_admissions" model="helpdesk.ticket.team">
             <field name="name">Admissions</field>
         </record>
         <record id="team_finance" model="helpdesk.ticket.team">
-            <field name="name">Finance / Caisse</field>
+            <field name="name">Finance / Cashier</field>
         </record>
 
         <!-- Le personnel ouvre des tickets pour un etudiant venu au guichet. -->
         <record id="channel_guichet" model="helpdesk.ticket.channel">
-            <field name="name">Guichet</field>
+            <field name="name">Front Desk</field>
         </record>
 
         <!-- Adresse publique du helpdesk : support@his.edu.dz (OCA la nomme

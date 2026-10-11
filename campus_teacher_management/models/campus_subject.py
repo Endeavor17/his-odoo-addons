@@ -33,7 +33,7 @@ class CampusSubject(models.Model):
         string="Level",
         index=True,
     )
-    track = fields.Char("Track / Speciality", translate=True)
+    track = fields.Char("Track / Specialty", translate=True)
     language = fields.Selection(
         [
             ("AR", "Arabic"),

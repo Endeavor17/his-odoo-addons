@@ -1,0 +1,234 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_pos_copy_center
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+msgid ""
+"%s carries no price, so it cannot be sold. Set its price before using it."
+msgstr ""
+"%s n'a pas de prix et ne peut donc pas être vendu. Renseignez son prix avant"
+" de l'utiliser."
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_format__a3
+msgid "A3"
+msgstr "A3"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_format__a4
+msgid "A4"
+msgstr "A4"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Add another document"
+msgstr "Ajouter un autre document"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Add to order"
+msgstr "Ajouter à la commande"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_color__bw
+msgid "B&W"
+msgstr "N&B"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_color__color
+msgid "Colour"
+msgstr "Couleur"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Copies"
+msgstr "Copies"
+
+#. module: his_pos_copy_center
+#: model_terms:ir.ui.view,arch_db:his_pos_copy_center.view_product_template_form_copy
+msgid "Copy Center"
+msgstr "Copy Center"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_center_visible
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_center_visible
+msgid "Copy Center Visible"
+msgstr "Visible au Copy Center"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_color
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_color
+msgid "Copy Colour"
+msgstr "Couleur de copie"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_format
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_format
+msgid "Copy Format"
+msgstr "Format de copie"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_service
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_service
+msgid "Copy Service"
+msgstr "Service de copie"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_sides
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_sides
+msgid "Copy Sides"
+msgstr "Faces de copie"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/control_buttons.xml:0
+msgid "Copy job"
+msgstr "Travail de copie"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__display_name
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_sides__duplex
+msgid "Double-sided"
+msgstr "Recto-verso"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Format"
+msgstr "Format"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__id
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,help:his_pos_copy_center.field_product_product__copy_service
+#: model:ir.model.fields,help:his_pos_copy_center.field_product_template__copy_service
+msgid ""
+"Marks this product as a copy service the Copy Center job builder can offer. "
+"Leave empty for every other product."
+msgstr ""
+"Marque ce produit comme un service de copie que le Copy Center peut "
+"proposer. Laisser vide pour tous les autres produits."
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+msgid "No price"
+msgstr "Pas de prix"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+msgid ""
+"No product is configured for %(format)s / %(color)s / %(sides)s.\n"
+"\n"
+"Tell the Copy Center manager: this is a gap in the catalogue, not a mistake at the till."
+msgstr ""
+"Aucun produit n'est configuré pour %(format)s / %(color)s / %(sides)s.\n"
+"\n"
+"Prévenez le responsable du Copy Center : c'est un manque dans le catalogue, pas une erreur de caisse."
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+msgid "No such copy"
+msgstr "Copie introuvable"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Not in the catalogue"
+msgstr "Absent du catalogue"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Nothing is configured for this combination yet."
+msgstr "Rien n'est encore configuré pour cette combinaison."
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_service__photocopie
+msgid "Photocopy"
+msgstr "Photocopie"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_service__impression
+msgid "Print"
+msgstr "Impression"
+
+#. module: his_pos_copy_center
+#: model:ir.model,name:his_pos_copy_center.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: his_pos_copy_center
+#: model:ir.model,name:his_pos_copy_center.model_product_product
+msgid "Product Variant"
+msgstr "Variante de produit"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Service"
+msgstr "Service"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Sides"
+msgstr "Faces"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_sides__recto
+msgid "Single-sided"
+msgstr "Recto"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Total"
+msgstr "Total"

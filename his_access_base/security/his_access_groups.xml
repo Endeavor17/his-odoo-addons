@@ -3,13 +3,13 @@
     <data noupdate="0">
 
         <record id="module_category_his_access" model="ir.module.category">
-            <field name="name">Socle Groupe HIS</field>
-            <field name="description">Acces transverses, communs a tous les metiers.</field>
+            <field name="name">HIS Group Core</field>
+            <field name="description">Cross-cutting access, shared by every department.</field>
             <field name="sequence">5</field>
         </record>
 
         <record id="res_groups_privilege_annuaire" model="res.groups.privilege">
-            <field name="name">Annuaire</field>
+            <field name="name">Directory</field>
             <field name="category_id" ref="module_category_his_access"/>
             <field name="sequence">10</field>
         </record>
@@ -22,10 +22,10 @@
              Ce groupe rend cet acces explicite. Il ne donne AUCUN droit metier :
              il rouvre seulement deux portes que le socle referme. -->
         <record id="group_annuaire" model="res.groups">
-            <field name="name">Consultation annuaire</field>
+            <field name="name">Directory Viewer</field>
             <field name="sequence">10</field>
             <field name="privilege_id" ref="res_groups_privilege_annuaire"/>
-            <field name="comment">Voir l'annuaire des employes et le carnet de contacts. N'ouvre aucun acces metier.</field>
+            <field name="comment">See the employee directory and the address book. Opens no business access.</field>
         </record>
 
         <!-- Audit S-6 : rouvre les etudiants et candidats que

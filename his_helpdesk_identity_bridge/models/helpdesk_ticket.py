@@ -10,7 +10,7 @@ class HelpdeskTicket(models.Model):
     # pose le contact quand l'agent choisit la personne.
     his_person_id = fields.Many2one(
         "his.person",
-        string="Personne",
+        string="Person",
         compute="_compute_his_person_id",
         inverse="_inverse_his_person_id",
         store=True,
@@ -38,18 +38,18 @@ class HelpdeskTicket(models.Model):
             self.partner_id = self.his_person_id.partner_id
 
     # En-tete du ticket : qui est-ce, sans ouvrir sa fiche.
-    his_matricule = fields.Char(related="his_person_id.matricule_affiche", string="Matricule")
+    his_matricule = fields.Char(related="his_person_id.matricule_affiche", string="Registration Number")
     # tracking=False : un related herite du suivi de sa source.
     his_type_personne = fields.Selection(
         related="his_person_id.type_personne",
-        string="Type de personne",
+        string="Person Type",
         tracking=False,
     )
     # L'etat et non l'engagement : un his.engagement s'affiche sous le nom de
     # sa personne, ce qui ne dit rien a l'agent.
     his_engagement_etat = fields.Selection(
         selection=lambda self: self.env["his.engagement"]._fields["etat"].selection,
-        string="Engagement en cours",
+        string="Current Engagement",
         compute="_compute_his_engagement_etat",
     )
 

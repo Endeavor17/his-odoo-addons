@@ -46,8 +46,8 @@ class ProductProduct(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "La référence interne « %s » existe déjà sur un autre produit. "
-                        "Elle doit être unique sur l'ensemble du catalogue.",
+                        'The internal reference "%s" already exists on another product. It must '
+                        "be unique across the whole catalogue.",
                         product.default_code,
                     )
                 )
@@ -67,13 +67,11 @@ class ProductProduct(models.Model):
             if product.default_code and LEGACY_SEMANTIC_PREFIX.match(product.default_code):
                 raise ValidationError(
                     _(
-                        "La référence interne « %s » reprend une convention de nommage "
-                        "historique (CAF-, COP-, RES-, NET-, SAN-).\n"
-                        "Les nouvelles références sont opaques et séquentielles "
-                        "(INV-NNNNNN) : elles n'encodent jamais la catégorie, le type "
-                        "ou un attribut. Laissez le champ vide pour qu'une référence "
-                        "soit attribuée automatiquement.\n"
-                        "Les fiches existantes conservent leur référence d'origine.",
+                        'The internal reference "%s" follows a legacy naming convention (CAF-, '
+                        "COP-, RES-, NET-, SAN-).\nNew references are opaque and sequential "
+                        "(INV-NNNNNN): they never encode the category, the type or an attribute. "
+                        "Leave the field empty to have a reference assigned automatically.\n"
+                        "Existing products keep their original reference.",
                         product.default_code,
                     )
                 )

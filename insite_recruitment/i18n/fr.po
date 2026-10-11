@@ -1,0 +1,2197 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* insite_recruitment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid "%(candidature)s is at status '%(state)s' and cannot be selected."
+msgstr ""
+"%(candidature)s est au statut « %(state)s » et ne peut pas être "
+"sélectionnée."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_module_sheet.py:0
+msgid "%(engagement)s — %(state)s"
+msgstr "%(engagement)s — %(state)s"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid "%(module)s (%(period)s)"
+msgstr "%(module)s (%(period)s)"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid ""
+"%(person)s has not been classified as Internal or External yet. Set this on "
+"the Person record before creating a Candidature for them."
+msgstr ""
+"%(person)s n'a pas encore été classé(e) Interne ou Externe. Renseignez-le "
+"sur la fiche personne avant de lui créer une candidature."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/academic_engagement.py:0
+msgid "%(person)s — %(module)s (%(period)s)"
+msgstr "%(person)s — %(module)s (%(period)s)"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+#: code:addons/insite_recruitment/models/insite_contract.py:0
+msgid "%(person)s — %(state)s"
+msgstr "%(person)s — %(state)s"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_contract.py:0
+msgid "%s cannot be rejected from its current status."
+msgstr "%s ne peut pas être rejeté depuis son statut actuel."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_module_sheet.py:0
+msgid "%s cannot be submitted from its current status."
+msgstr "%s ne peut pas être soumis depuis son statut actuel."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "%s has not been contacted yet."
+msgstr "%s n'a pas encore été contacté(e)."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_contract.py:0
+msgid "%s has not been sent yet."
+msgstr "%s n'a pas encore été envoyé."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid "%s is not a candidature for this Need."
+msgstr "%s n'est pas une candidature pour ce besoin."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "%s is not a prospect, so it cannot be contacted."
+msgstr "%s n'est pas un prospect et ne peut donc pas être contacté(e)."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_module_sheet.py:0
+msgid "%s is not awaiting review."
+msgstr "%s n'est pas en attente de revue."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "%s is not linked to a Recruitment Need yet."
+msgstr "%s n'est pas encore rattaché(e) à un besoin de recrutement."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_contract.py:0
+msgid "%s must be accepted by the candidate before it can be signed."
+msgstr "%s doit être accepté par le candidat avant de pouvoir être signé."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/wizard/insite_identity_match_wizard.py:0
+msgid ""
+"%s resembles an existing person in the identity register. Confirm or reject "
+"that match on the Campus+ application first."
+msgstr ""
+"%s ressemble à une personne existante du référentiel Identité. Confirmez ou "
+"refusez d'abord cette correspondance sur la candidature Campus+."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__reminder_sent
+msgid "48h Reminder Sent"
+msgstr "Relance 48 h envoyée"
+
+#. module: insite_recruitment
+#: model:mail.template,body_html:insite_recruitment.mail_template_insite_reminder
+msgid ""
+"<div style=\"font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;\">\n"
+"    <p>\n"
+"        <t t-out=\"object.person_id.display_name or ''\">Candidate</t> was contacted on\n"
+"        <t t-out=\"object.contacted_date or ''\"/> and has not responded within 48 hours.\n"
+"    </p>\n"
+"    <p>\n"
+"        This is a reminder only — the system will <strong>not</strong> automatically\n"
+"        move to the next candidate. Decide whether to wait longer or select another\n"
+"        candidate for this Need.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div style=\"font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;\">\n"
+"    <p>\n"
+"        <t t-out=\"object.person_id.display_name or ''\">Le candidat</t> a été contacté(e) le\n"
+"        <t t-out=\"object.contacted_date or ''\"/> et n'a pas répondu dans les 48 heures.\n"
+"    </p>\n"
+"    <p>\n"
+"        Ceci n'est qu'un rappel — le système ne passera <strong>pas</strong> automatiquement\n"
+"        au candidat suivant. Décidez s'il faut attendre encore ou sélectionner un autre\n"
+"        candidat pour ce besoin.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+
+#. module: insite_recruitment
+#: model:mail.template,body_html:insite_recruitment.mail_template_insite_invitation
+msgid ""
+"<div style=\"font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;\">\n"
+"    <p>Dear <t t-out=\"object.person_id.display_name or ''\">Teacher</t>,</p>\n"
+"    <p>\n"
+"        You are invited to apply to the <strong>InSite</strong> teaching programme.\n"
+"        Please reply to this email to confirm your interest.\n"
+"    </p>\n"
+"    <p>Best regards.</p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div style=\"font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;\">\n"
+"    <p>Bonjour <t t-out=\"object.person_id.display_name or ''\">Enseignant</t>,</p>\n"
+"    <p>\n"
+"        Vous êtes invité(e) à candidater au programme d'enseignement <strong>InSite</strong>.\n"
+"        Merci de répondre à ce courriel pour confirmer votre intérêt.\n"
+"    </p>\n"
+"    <p>Cordialement.</p>\n"
+"</div>\n"
+"            "
+
+#. module: insite_recruitment
+#: model:mail.template,body_html:insite_recruitment.mail_template_insite_confirmation
+msgid ""
+"<div style=\"font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;\">\n"
+"    <p>Dear <t t-out=\"object.person_id.display_name or ''\">Teacher</t>,</p>\n"
+"    <p>Thank you for accepting the InSite teaching programme. Here are your meeting details:</p>\n"
+"    <p><strong>Date:</strong> <t t-out=\"format_datetime(dt=object.meeting_event_id.start, tz='UTC', dt_format='EEEE, d MMMM y')\">a date</t></p>\n"
+"    <p><strong>Time:</strong> <t t-out=\"format_time(time=object.meeting_event_id.start, tz='UTC')\">a time</t> to <t t-out=\"format_time(time=object.meeting_event_id.stop, tz='UTC')\">a time</t></p>\n"
+"    <p><strong>Location / Link:</strong> <t t-out=\"object.meeting_event_id.location or ''\">a location</t></p>\n"
+"    <p>Best regards.</p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div style=\"font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;\">\n"
+"    <p>Bonjour <t t-out=\"object.person_id.display_name or ''\">Enseignant</t>,</p>\n"
+"    <p>Merci d'avoir accepté le programme d'enseignement InSite. Voici les détails de votre rendez-vous :</p>\n"
+"    <p><strong>Date :</strong> <t t-out=\"format_datetime(dt=object.meeting_event_id.start, tz='UTC', dt_format='EEEE d MMMM y')\">une date</t></p>\n"
+"    <p><strong>Heure :</strong> de <t t-out=\"format_time(time=object.meeting_event_id.start, tz='UTC')\">une heure</t> à <t t-out=\"format_time(time=object.meeting_event_id.stop, tz='UTC')\">une heure</t></p>\n"
+"    <p><strong>Lieu / lien :</strong> <t t-out=\"object.meeting_event_id.location or ''\">un lieu</t></p>\n"
+"    <p>Cordialement.</p>\n"
+"</div>\n"
+"            "
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_form
+msgid ""
+"<span class=\"o_stat_text\">InSite</span>\n"
+"                                <span class=\"o_stat_text\">Candidature</span>"
+msgstr ""
+"<span class=\"o_stat_text\">InSite</span>\n"
+"                                <span class=\"o_stat_text\">Candidature</span>"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_need
+msgid ""
+"A Need represents a vacant teaching position or a decreed hourly volume\n"
+"               requiring a teacher. Internal teachers are always searched first."
+msgstr ""
+"Un besoin représente un poste d'enseignement vacant ou un volume horaire arrêté\n"
+"               qui nécessite un enseignant. Les enseignants internes sont toujours recherchés en premier."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+#: code:addons/insite_recruitment/wizard/insite_meeting_schedule_wizard.py:0
+msgid ""
+"A meeting is already scheduled for %s. Use 'Reschedule Meeting' to change "
+"it."
+msgstr ""
+"Un rendez-vous est déjà prévu pour %s. Utilisez « Replanifier le rendez-vous"
+" » pour le modifier."
+
+#. module: insite_recruitment
+#: model:ir.model,name:insite_recruitment.model_academic_engagement
+msgid "Academic Engagement"
+msgstr "Engagement académique"
+
+#. module: insite_recruitment
+#: model:ir.model,name:insite_recruitment.model_academic_period
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__academic_period_id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__academic_period_id
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_search
+msgid "Academic Period"
+msgstr "Période académique"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__person_academic_rank
+msgid "Academic Rank"
+msgstr "Rang académique"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_candidature__state__accepted
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_contract__state__accepted
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__accepted
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_search
+msgid "Accepted"
+msgstr "Accepté"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__message_needaction
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__message_needaction
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__message_needaction
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__message_needaction
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_form
+msgid "Activate"
+msgstr "Activer"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_period__active
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__academic_engagement__state__active
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_search
+msgid "Active"
+msgstr "Actif"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Décoration d'exception d'activité"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône du type d'activité"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_module_sheet.py:0
+msgid "Add review notes before requesting a modification."
+msgstr "Ajoutez des notes de revue avant de demander une modification."
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Assign Module"
+msgstr "Affecter le module"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_contract.py:0
+msgid "Attach the signed contract document before marking it signed."
+msgstr "Joignez le contrat signé avant de le marquer comme signé."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__message_attachment_count
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__message_attachment_count
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__message_attachment_count
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__message_attachment_count
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__availability
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__submitted_availability
+msgid "Availability"
+msgstr "Disponibilité"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__awaiting_response
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_search
+msgid "Awaiting Response"
+msgstr "En attente de réponse"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__academic_engagement__process__campus
+msgid "Campus+"
+msgstr "Campus+"
+
+#. module: insite_recruitment
+#: model:ir.model,name:insite_recruitment.model_campus_process
+msgid "Campus+ Recruitment Process"
+msgstr "Processus de recrutement Campus+"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_identity_match_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_meeting_schedule_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__academic_engagement__state__cancelled
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_list
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_search
+msgid "Candidate"
+msgstr "Candidat"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_form
+msgid "Candidate Accepted"
+msgstr "Candidat accepté"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__candidate_name
+msgid "Candidate Name"
+msgstr "Nom du candidat"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_form
+msgid "Candidate Rejected"
+msgstr "Candidat refusé"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__candidate_selected
+msgid "Candidate Selected"
+msgstr "Candidat sélectionné"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid ""
+"Candidate contacted. The phone call itself is manual — the system only "
+"records the outcome."
+msgstr ""
+"Candidat contacté. L'appel téléphonique lui-même est manuel — le système "
+"n'enregistre que le résultat."
+
+#. module: insite_recruitment
+#: model:ir.actions.act_window,name:insite_recruitment.insite_action_candidature
+#: model:ir.ui.menu,name:insite_recruitment.insite_menu_candidature
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Candidates"
+msgstr "Candidats"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_candidature
+msgid ""
+"Candidates appear here once selected against a Recruitment Need — internal\n"
+"               teachers directly, external candidates once a submission is matched to a Person."
+msgstr ""
+"Les candidats apparaissent ici une fois sélectionnés pour un besoin de recrutement — les enseignants\n"
+"               internes directement, les candidats externes une fois leur dépôt rapproché d'une personne."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__candidature_id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_meeting_schedule_wizard__candidature_id
+msgid "Candidature"
+msgstr "Candidature"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__candidature_ids
+msgid "Candidatures"
+msgstr "Candidatures"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__chapters
+msgid "Chapters"
+msgstr "Chapitres"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__closed
+msgid "Closed"
+msgstr "Clôturé"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_campus_process__code
+msgid "Code"
+msgstr "Code"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_form
+msgid "Complete"
+msgstr "Terminer"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__academic_engagement__state__completed
+msgid "Completed"
+msgstr "Terminé"
+
+#. module: insite_recruitment
+#: model:ir.ui.menu,name:insite_recruitment.insite_menu_configuration
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_meeting_schedule_wizard_view_form
+msgid "Confirm"
+msgstr "Confirmer"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid ""
+"Confirm no internal teacher was found before ranking external candidates."
+msgstr ""
+"Confirmez qu'aucun enseignant interne n'a été trouvé avant de classer les "
+"candidats externes."
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__academic_engagement__state__confirmed
+msgid "Confirmed"
+msgstr "Confirmé"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Contact Candidate"
+msgstr "Contacter le candidat"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_candidature__state__contacted
+msgid "Contacted"
+msgstr "Contacté"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__contacted_date
+msgid "Contacted On"
+msgstr "Contacté le"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid ""
+"Contacted on %s with no response yet. Decide whether to wait or select "
+"another candidate — nothing advances automatically."
+msgstr ""
+"Contacté(e) le %s, toujours sans réponse. Décidez s'il faut attendre ou "
+"sélectionner un autre candidat — rien n'avance automatiquement."
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__contract
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Contract"
+msgstr "Contrat"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__contract_date
+msgid "Contract Date"
+msgstr "Date du contrat"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__latest_contract_state
+msgid "Contract Status"
+msgstr "Statut du contrat"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_contract.py:0
+msgid "Contract rejected."
+msgstr "Contrat refusé."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_contract.py:0
+msgid "Contract signed."
+msgstr "Contrat signé."
+
+#. module: insite_recruitment
+#: model:ir.actions.act_window,name:insite_recruitment.insite_action_contract
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__contract_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__contract_ids
+#: model:ir.ui.menu,name:insite_recruitment.insite_menu_contract
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Contracts"
+msgstr "Contrats"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__clos
+msgid "Course Learning Outcomes (CLOs)"
+msgstr "Acquis d'apprentissage du cours (AAC)"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_module_sheet
+msgid ""
+"Created automatically once a Need reaches Module Assignment. The teacher\n"
+"               prepares the content; Academics/the module owner validates it, then it\n"
+"               publishes to students."
+msgstr ""
+"Créée automatiquement dès qu'un besoin atteint l'affectation du module. L'enseignant\n"
+"               prépare le contenu ; la Pédagogie/le responsable du module le valide, puis il est\n"
+"               publié aux étudiants."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__create_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_period__create_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__create_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__create_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__create_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_meeting_schedule_wizard__create_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__create_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__create_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__create_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_period__create_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__create_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__create_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__create_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_meeting_schedule_wizard__create_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__create_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__create_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_contract
+msgid ""
+"Created once a candidate accepts, before any Engagement exists — Module\n"
+"               Assignment happens after signature and integration."
+msgstr ""
+"Créé dès qu'un candidat accepte, avant tout engagement — l'affectation du\n"
+"               module a lieu après la signature et l'intégration."
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_engagement
+msgid ""
+"Created once a candidature is accepted and assigned to a Module for an "
+"Academic Period."
+msgstr ""
+"Créé dès qu'une candidature est acceptée et affectée à un module pour une "
+"période académique."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__person_specialty
+msgid "Declarative free text, as it exists in the HIS referential."
+msgstr "Texte libre déclaratif, tel qu'il existe dans le référentiel HIS."
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_candidature__state__declined
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_search
+msgid "Declined"
+msgstr "Décliné"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__source
+msgid ""
+"Derived from person_id.is_internal_teacher — never manually set. A "
+"Candidature cannot be created for an unclassified Person in the first place "
+"(see _check_person_classified)."
+msgstr ""
+"Déduit de person_id.is_internal_teacher — jamais saisi à la main. Une "
+"candidature ne peut de toute façon pas être créée pour une personne non "
+"classée (voir _check_person_classified)."
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_identity_match_wizard_view_form
+msgid "Details to match on"
+msgstr "Éléments de rapprochement"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__display_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_period__display_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_campus_process__display_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_his_person__display_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__display_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__display_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__display_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_meeting_schedule_wizard__display_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__display_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__display_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__document
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__document
+msgid "Document"
+msgstr "Document"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__academic_engagement__state__draft
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_contract__state__draft
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_module_sheet__state__draft
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_search
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_search
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_submission__state__duplicate
+msgid "Duplicate"
+msgstr "Doublon"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__email
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__email
+msgid "Email"
+msgstr "Email"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_period__date_end
+msgid "End Date"
+msgstr "Date de fin"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__engagement_id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__engagement_id
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Engagement"
+msgstr "Engagement"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__latest_engagement_state
+msgid "Engagement Status"
+msgstr "Statut de l'engagement"
+
+#. module: insite_recruitment
+#: model:ir.actions.act_window,name:insite_recruitment.insite_action_engagement
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__engagement_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__engagement_ids
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_list
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Engagements"
+msgstr "Engagements"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__error_message
+msgid "Error"
+msgstr "Erreur"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__error_code
+msgid "Error Code"
+msgstr "Code d'erreur"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_review
+msgid ""
+"Every InSite submission arrives here first. Process it to run identity matching;\n"
+"               anything short of an exact match needs a human decision before it becomes a candidature."
+msgstr ""
+"Chaque dépôt InSite arrive d'abord ici. Traitez-le pour lancer le rapprochement d'identité ;\n"
+"               tout ce qui n'est pas une correspondance exacte demande une décision humaine avant de devenir une candidature."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_recruitment_need__candidature_ids
+msgid "Every candidate ever tried against this Need, internal or external."
+msgstr "Tous les candidats essayés pour ce besoin, internes ou externes."
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_submission__match_method__exact_matricule
+msgid "Exact Registration Number"
+msgstr "Matricule exact"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "Experience with this exact module: %(answer)s (+%(points)s)"
+msgstr "Expérience de ce module précis : %(answer)s (+%(points)s)"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_his_person__is_internal_teacher
+msgid ""
+"Explicit classification — blank means not yet classified. Never inferred "
+"from history. An InSite Candidature cannot be created for a Person left "
+"unclassified."
+msgstr ""
+"Classement explicite — vide signifie pas encore classé. Jamais déduit de "
+"l'historique. Une candidature InSite ne peut pas être créée pour une "
+"personne non classée."
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_search
+msgid "External"
+msgstr "Externe"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_candidature__source__external
+msgid "External Candidate"
+msgstr "Candidat externe"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__external_ref
+msgid "External Reference"
+msgstr "Référence externe"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__his_person__is_internal_teacher__external
+msgid "External Teacher"
+msgstr "Enseignant externe"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_campus_process__family
+msgid "Family"
+msgstr "Famille"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__filename
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__filename
+msgid "Filename"
+msgstr "Nom du fichier"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__first_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__first_name
+msgid "First Name"
+msgstr "Prénom"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__message_follower_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__message_follower_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__message_follower_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__message_follower_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__message_partner_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__message_partner_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__message_partner_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__message_partner_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome, par ex. fa-tasks"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_process_permission
+msgid ""
+"For each InSite Recruitment process (Solicitations, Candidatures, Reviews,\n"
+"               Evaluations, Selections, Engagements, Contracts), pick which users can\n"
+"               View, Execute and Validate it. Validate needs Execute, Execute needs View —\n"
+"               ticking one turns the others on automatically. Campus+'s own processes have\n"
+"               their own separate \"Process Permissions — Campus+\" menu."
+msgstr ""
+"Pour chaque processus de recrutement InSite (Sollicitations, Candidatures, Revues,\n"
+"               Évaluations, Sélections, Engagements, Contrats), choisissez quels utilisateurs peuvent\n"
+"               le voir, l'exécuter et le valider. Valider exige Exécuter, Exécuter exige Voir —\n"
+"               cocher l'un active automatiquement les autres. Les processus de Campus+ ont\n"
+"               leur propre menu « Droits par processus — Campus+ »."
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_process_permission
+msgid "Grant a user access to an InSite process"
+msgstr "Donnez à un utilisateur l'accès à un processus InSite"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__has_message
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__has_message
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__has_message
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__has_message
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__priority__high
+msgid "High"
+msgstr "Élevée"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__hourly_volume
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__hourly_volume
+msgid "Hourly Volume"
+msgstr "Volume horaire"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_submission__match_method
+msgid "How ``person_id`` was resolved, for identity-matching traceability."
+msgstr ""
+"Comment ``person_id`` a été résolu, pour la traçabilité du rapprochement "
+"d'identité."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__id
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_period__id
+#: model:ir.model.fields,field_description:insite_recruitment.field_campus_process__id
+#: model:ir.model.fields,field_description:insite_recruitment.field_his_person__id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_meeting_schedule_wizard__id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__id
+msgid "ID"
+msgstr "ID"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône signalant une activité en exception."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_submission__external_ref
+msgid ""
+"Idempotency key: a retry carrying a reference already seen returns the "
+"original record instead of creating a duplicate."
+msgstr ""
+"Clé d'idempotence : une nouvelle tentative portant une référence déjà vue "
+"renvoie l'enregistrement d'origine au lieu de créer un doublon."
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Identity / Person"
+msgstr "Identité / Personne"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_submission.py:0
+#: code:addons/insite_recruitment/wizard/insite_identity_match_wizard.py:0
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_identity_match_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_form
+msgid "Identity Matching"
+msgstr "Rapprochement d'identité"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_academic_engagement__message_needaction
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__message_needaction
+#: model:ir.model.fields,help:insite_recruitment.field_insite_contract__message_needaction
+#: model:ir.model.fields,help:insite_recruitment.field_insite_module_sheet__message_needaction
+#: model:ir.model.fields,help:insite_recruitment.field_insite_recruitment_need__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_academic_engagement__message_has_error
+#: model:ir.model.fields,help:insite_recruitment.field_academic_engagement__message_has_sms_error
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__message_has_error
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__message_has_sms_error
+#: model:ir.model.fields,help:insite_recruitment.field_insite_contract__message_has_error
+#: model:ir.model.fields,help:insite_recruitment.field_insite_contract__message_has_sms_error
+#: model:ir.model.fields,help:insite_recruitment.field_insite_module_sheet__message_has_error
+#: model:ir.model.fields,help:insite_recruitment.field_insite_module_sheet__message_has_sms_error
+#: model:ir.model.fields,help:insite_recruitment.field_insite_recruitment_need__message_has_error
+#: model:ir.model.fields,help:insite_recruitment.field_insite_recruitment_need__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__academic_engagement__process__insite
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__campus_process__family__insite
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.view_his_person_form_insite
+msgid "InSite"
+msgstr "InSite"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "InSite Answers"
+msgstr "Réponses InSite"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "InSite Candidate"
+msgstr "Candidat InSite"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_list
+msgid "InSite Candidates"
+msgstr "Candidats InSite"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_submission.py:0
+#: model:ir.model,name:insite_recruitment.model_insite_candidature
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__insite_candidature_id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__candidature_id
+msgid "InSite Candidature"
+msgstr "Candidature InSite"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_his_person__insite_candidature_count
+msgid "InSite Candidature Count"
+msgstr "Nombre de candidatures InSite"
+
+#. module: insite_recruitment
+#: model:campus.process,name:insite_recruitment.process_insite_candidatures
+#: model:ir.model.fields,field_description:insite_recruitment.field_his_person__insite_candidature_ids
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__campus_process__code__insite_candidatures
+msgid "InSite Candidatures"
+msgstr "Candidatures InSite"
+
+#. module: insite_recruitment
+#: model:ir.model,name:insite_recruitment.model_insite_contract
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_form
+msgid "InSite Contract"
+msgstr "Contrat InSite"
+
+#. module: insite_recruitment
+#: model:campus.process,name:insite_recruitment.process_insite_contracts
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__campus_process__code__insite_contracts
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_list
+msgid "InSite Contracts"
+msgstr "Contrats InSite"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_his_person__insite_engagement_count
+msgid "InSite Engagement Count"
+msgstr "Nombre d'engagements InSite"
+
+#. module: insite_recruitment
+#: model:campus.process,name:insite_recruitment.process_insite_engagements
+#: model:ir.model.fields,field_description:insite_recruitment.field_his_person__insite_engagement_ids
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__campus_process__code__insite_engagements
+msgid "InSite Engagements"
+msgstr "Engagements InSite"
+
+#. module: insite_recruitment
+#: model:ir.model,name:insite_recruitment.model_insite_identity_match_wizard
+msgid "InSite Identity Matching"
+msgstr "Rapprochement d'identité InSite"
+
+#. module: insite_recruitment
+#: model:ir.model,name:insite_recruitment.model_insite_meeting_schedule_wizard
+msgid "InSite Meeting Scheduling"
+msgstr "Planification des rendez-vous InSite"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/wizard/insite_meeting_schedule_wizard.py:0
+msgid "InSite Meeting — %(person)s (%(need)s)"
+msgstr "Rendez-vous InSite — %(person)s (%(need)s)"
+
+#. module: insite_recruitment
+#: model:campus.process,name:insite_recruitment.process_insite_module_preparation
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__campus_process__code__insite_module_preparation
+msgid "InSite Module Preparation"
+msgstr "Préparation de module InSite"
+
+#. module: insite_recruitment
+#: model:ir.model,name:insite_recruitment.model_insite_module_sheet
+msgid "InSite Module Sheet"
+msgstr "Fiche module InSite"
+
+#. module: insite_recruitment
+#: model:ir.model,name:insite_recruitment.model_insite_submission
+msgid "InSite Raw Submission"
+msgstr "Dépôt brut InSite"
+
+#. module: insite_recruitment
+#: model:ir.ui.menu,name:insite_recruitment.insite_menu_root
+msgid "InSite Recruitment"
+msgstr "Recrutement InSite"
+
+#. module: insite_recruitment
+#: model:ir.model,name:insite_recruitment.model_insite_recruitment_need
+msgid "InSite Recruitment Need"
+msgstr "Besoin de recrutement InSite"
+
+#. module: insite_recruitment
+#: model:campus.process,name:insite_recruitment.process_insite_needs
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__campus_process__code__insite_needs
+msgid "InSite Recruitment Needs"
+msgstr "Besoins de recrutement InSite"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_form
+msgid "InSite Review"
+msgstr "Revue InSite"
+
+#. module: insite_recruitment
+#: model:campus.process,name:insite_recruitment.process_insite_reviews
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__campus_process__code__insite_reviews
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_list
+msgid "InSite Reviews"
+msgstr "Revues InSite"
+
+#. module: insite_recruitment
+#: model:mail.template,name:insite_recruitment.mail_template_insite_reminder
+msgid "InSite · 48h Reminder (internal)"
+msgstr "InSite · Relance 48 h (interne)"
+
+#. module: insite_recruitment
+#: model:mail.template,name:insite_recruitment.mail_template_insite_confirmation
+msgid "InSite · Acceptance Confirmation"
+msgstr "InSite · Confirmation d'acceptation"
+
+#. module: insite_recruitment
+#: model:mail.template,name:insite_recruitment.mail_template_insite_invitation
+msgid "InSite · Contact Candidate"
+msgstr "InSite · Contacter le candidat"
+
+#. module: insite_recruitment
+#: model:mail.template,subject:insite_recruitment.mail_template_insite_reminder
+msgid "InSite — No response after 48h: {{ object.person_id.display_name }}"
+msgstr ""
+"InSite — Pas de réponse après 48 h : {{ object.person_id.display_name }}"
+
+#. module: insite_recruitment
+#: model:mail.template,subject:insite_recruitment.mail_template_insite_invitation
+msgid "InSite — You are invited to apply"
+msgstr "InSite — Vous êtes invité(e) à candidater"
+
+#. module: insite_recruitment
+#: model:mail.template,subject:insite_recruitment.mail_template_insite_confirmation
+msgid "InSite — Your meeting details"
+msgstr "InSite — Les détails de votre rendez-vous"
+
+#. module: insite_recruitment
+#: model:ir.actions.server,name:insite_recruitment.ir_cron_insite_reminder_ir_actions_server
+msgid "InSite: 48h candidate reminder"
+msgstr "InSite : relance candidat à 48 h"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "InSite: no response after 48h — %s"
+msgstr "InSite : pas de réponse après 48 h — %s"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__person_matricule
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__matricule
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__submitted_matricule
+msgid "Institutional Registration Number"
+msgstr "Matricule institutionnel"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__integration
+msgid "Integration"
+msgstr "Intégration"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__integration_pending
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__integration_pending
+msgid "Integration Pending"
+msgstr "Intégration en attente"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid "Integration is not pending for this Need."
+msgstr "Aucune intégration n'est en attente pour ce besoin."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid "Integration must be completed before assigning a module."
+msgstr "L'intégration doit être terminée avant d'affecter un module."
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_search
+msgid "Internal"
+msgstr "Interne"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_his_person__is_internal_teacher
+msgid "Internal / External"
+msgstr "Interne / Externe"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__internal_teacher_id
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__his_person__is_internal_teacher__internal
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_candidature__source__internal
+msgid "Internal Teacher"
+msgstr "Enseignant interne"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__message_is_follower
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__message_is_follower
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__message_is_follower
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__message_is_follower
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__last_name
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__last_name
+msgid "Last Name"
+msgstr "Nom"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__write_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_period__write_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__write_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__write_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__write_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_meeting_schedule_wizard__write_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__write_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__write_uid
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__write_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_period__write_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__write_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__write_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__write_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_meeting_schedule_wizard__write_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__write_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__write_date
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_meeting_schedule_wizard__location
+msgid "Location / Meeting Link"
+msgstr "Lieu / lien du rendez-vous"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__priority__low
+msgid "Low"
+msgstr "Faible"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Mark Accepted"
+msgstr "Marquer accepté"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Mark Declined"
+msgstr "Marquer décliné"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Mark Integration Done"
+msgstr "Marquer l'intégration faite"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Mark Meeting Completed"
+msgstr "Marquer le rendez-vous terminé"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Mark Publication Done"
+msgstr "Marquer la publication faite"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_form
+msgid "Mark Signed"
+msgstr "Marquer signé"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Mark this candidate as accepted?"
+msgstr "Marquer ce candidat comme accepté ?"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Mark this candidate as declined?"
+msgstr "Marquer ce candidat comme ayant décliné ?"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_form
+msgid ""
+"Mark this contract as signed? The signature itself is performed by the "
+"human, not the system."
+msgstr ""
+"Marquer ce contrat comme signé ? La signature elle-même est faite par une "
+"personne, pas par le système."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__match_method
+msgid "Match Method"
+msgstr "Méthode de rapprochement"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__person_id
+msgid "Matched Person"
+msgstr "Personne rapprochée"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__meeting_event_id
+msgid "Meeting"
+msgstr "Rendez-vous"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__meeting_completed
+msgid "Meeting Completed"
+msgstr "Rendez-vous terminé"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_meeting_schedule_wizard__meeting_end
+msgid "Meeting End"
+msgstr "Fin du rendez-vous"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__meeting_scheduled
+msgid "Meeting Scheduled"
+msgstr "Rendez-vous planifié"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_meeting_schedule_wizard__meeting_start
+msgid "Meeting Start"
+msgstr "Début du rendez-vous"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/wizard/insite_meeting_schedule_wizard.py:0
+msgid "Meeting rescheduled to %(start)s – %(end)s."
+msgstr "Rendez-vous replanifié du %(start)s au %(end)s."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/wizard/insite_meeting_schedule_wizard.py:0
+msgid "Meeting scheduled for %(start)s – %(end)s. Acceptance email sent."
+msgstr ""
+"Rendez-vous planifié du %(start)s au %(end)s. Courriel d'acceptation envoyé."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__message_has_error
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__message_has_error
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__message_has_error
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__message_has_error
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__message_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__message_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__message_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__message_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_module_sheet__state__modification_requested
+msgid "Modification Requested"
+msgstr "Modification demandée"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_module_sheet.py:0
+msgid "Modification requested: %s"
+msgstr "Modification demandée : %s"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__module_id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__module_id
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_search
+msgid "Module"
+msgstr "Module"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__module_assigned
+msgid "Module Assigned"
+msgstr "Module affecté"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__module_preparation
+msgid "Module Preparation"
+msgstr "Préparation du module"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_module_sheet_view_form
+msgid "Module Sheet"
+msgstr "Fiche module"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__module_sheet_ids
+msgid "Module Sheets"
+msgstr "Fiches module"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_module_sheet.py:0
+msgid "Module sheet submitted for review."
+msgstr "Fiche module soumise pour revue."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_module_sheet.py:0
+msgid "Module sheet validated."
+msgstr "Fiche module validée."
+
+#. module: insite_recruitment
+#: model:ir.actions.act_window,name:insite_recruitment.insite_action_module_sheet
+#: model:ir.ui.menu,name:insite_recruitment.insite_menu_module_sheet
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_module_sheet_view_list
+msgid "Modules"
+msgstr "Modules"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__motivation
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__submitted_motivation
+msgid "Motivation"
+msgstr "Motivation"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_period__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__name_ar
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__name_ar
+msgid "Name (Arabic)"
+msgstr "Nom (arabe)"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__need
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_search
+msgid "Need"
+msgstr "Besoin"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_search
+msgid "Needs Attention"
+msgstr "À traiter"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_submission__state__needs_matching
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_search
+msgid "Needs Matching"
+msgstr "Rapprochement à faire"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_submission__match_method__new
+msgid "New Person"
+msgstr "Nouvelle personne"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement d'agenda de la prochaine activité"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "No"
+msgstr "Non"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_candidature
+msgid "No InSite candidates yet"
+msgstr "Aucun candidat InSite pour l'instant"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_contract
+msgid "No InSite contracts yet"
+msgstr "Aucun contrat InSite pour l'instant"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_engagement
+msgid "No InSite engagements yet"
+msgstr "Aucun engagement InSite pour l'instant"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_identity_match_wizard_view_form
+msgid "No Match — Create New Person"
+msgstr "Aucune correspondance — créer une nouvelle personne"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "No Suitable Internal Teacher"
+msgstr "Aucun enseignant interne adapté"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid "No meeting is scheduled for this Need yet."
+msgstr "Aucun rendez-vous n'est encore planifié pour ce besoin."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+#: code:addons/insite_recruitment/wizard/insite_meeting_schedule_wizard.py:0
+msgid "No meeting is scheduled yet for %s — use 'Schedule Meeting' first."
+msgstr ""
+"Aucun rendez-vous n'est encore planifié pour %s — utilisez d'abord « "
+"Planifier un rendez-vous »."
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_module_sheet
+msgid "No module sheets yet"
+msgstr "Aucune fiche module pour l'instant"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_need
+msgid "No recruitment needs yet"
+msgstr "Aucun besoin de recrutement pour l'instant"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__priority__normal
+msgid "Normal"
+msgstr "Normale"
+
+#. module: insite_recruitment
+#: model_terms:ir.actions.act_window,help:insite_recruitment.insite_action_review
+msgid "Nothing waiting on a review"
+msgstr "Rien n'attend de revue"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__message_needaction_counter
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__message_needaction_counter
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__message_needaction_counter
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__message_needaction_counter
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__message_has_error_counter
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__message_has_error_counter
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__message_has_error_counter
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__message_has_error_counter
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_academic_engagement__message_needaction_counter
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__message_needaction_counter
+#: model:ir.model.fields,help:insite_recruitment.field_insite_contract__message_needaction_counter
+#: model:ir.model.fields,help:insite_recruitment.field_insite_module_sheet__message_needaction_counter
+#: model:ir.model.fields,help:insite_recruitment.field_insite_recruitment_need__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_academic_engagement__message_has_error_counter
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__message_has_error_counter
+#: model:ir.model.fields,help:insite_recruitment.field_insite_contract__message_has_error_counter
+#: model:ir.model.fields,help:insite_recruitment.field_insite_module_sheet__message_has_error_counter
+#: model:ir.model.fields,help:insite_recruitment.field_insite_recruitment_need__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages en erreur d'envoi"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_search
+msgid "Open"
+msgstr "Ouvert"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__origin
+msgid "Origin"
+msgstr "Origine"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Overview"
+msgstr "Vue d'ensemble"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__payload
+msgid "Payload"
+msgstr "Contenu reçu"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__payload_preview
+msgid "Payload (readable)"
+msgstr "Contenu reçu (lisible)"
+
+#. module: insite_recruitment
+#: model:ir.ui.menu,name:insite_recruitment.insite_menu_person
+msgid "People"
+msgstr "Personnes"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/wizard/insite_identity_match_wizard.py:0
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__person_id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__person_id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__person_id
+msgid "Person"
+msgstr "Personne"
+
+#. module: insite_recruitment
+#: model:ir.model,name:insite_recruitment.model_his_person
+msgid "Person (HIS-HTC-IRA Group)"
+msgstr "Personne (Groupe HIS-HTC-IRA)"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__person_email
+msgid "Personal Email"
+msgstr "Email personnel"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__person_phone
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__phone
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__submitted_phone
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/wizard/insite_identity_match_wizard.py:0
+msgid "Pick an existing Campus+ applicant before confirming."
+msgstr "Choisissez un candidat Campus+ existant avant de confirmer."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/wizard/insite_identity_match_wizard.py:0
+msgid "Pick an existing Person before confirming."
+msgstr "Choisissez une personne existante avant de confirmer."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__plan
+msgid "Plan"
+msgstr "Plan"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__possible_applicant_ids
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_identity_match_wizard_view_form
+msgid "Possible Campus+ Applicants"
+msgstr "Candidats Campus+ possibles"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__possible_person_ids
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_identity_match_wizard_view_form
+msgid "Possible Existing People"
+msgstr "Personnes existantes possibles"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_submission__match_method__possible_match
+msgid "Possible Match (confirmed)"
+msgstr "Correspondance possible (confirmée)"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_form
+msgid "Prepare"
+msgstr "Préparer"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Prepare Contract"
+msgstr "Préparer le contrat"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_contract__state__prepared
+msgid "Prepared"
+msgstr "Préparé"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "Prior institution history: %(answer)s (+%(points)s)"
+msgstr "Historique avec l'établissement : %(answer)s (+%(points)s)"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__priority
+msgid "Priority"
+msgstr "Priorité"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__process
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_form
+msgid "Process"
+msgstr "Traiter"
+
+#. module: insite_recruitment
+#: model:ir.actions.act_window,name:insite_recruitment.insite_action_process_permission
+#: model:ir.ui.menu,name:insite_recruitment.insite_menu_process_permissions
+msgid "Process Permissions — InSite"
+msgstr "Droits par processus — InSite"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_submission__state__processed
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_search
+msgid "Processed"
+msgstr "Traité"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_candidature__state__prospect
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_search
+msgid "Prospect"
+msgstr "Prospect"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__publication
+msgid "Publication"
+msgstr "Publication"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__publication_pending
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__publication_pending
+msgid "Publication Pending"
+msgstr "Publication en attente"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid "Publication is not pending for this Need."
+msgstr "Aucune publication n'est en attente pour ce besoin."
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_module_sheet__state__published
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__published
+msgid "Published"
+msgstr "Publié"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__insite_rank
+msgid "Rank"
+msgstr "Rang"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__rank_explanation
+msgid "Rank Explanation"
+msgstr "Explication du rang"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Rank External Candidates"
+msgstr "Classer les candidats externes"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Ranking Explanation"
+msgstr "Explication du classement"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__submission_id
+msgid "Raw Submission"
+msgstr "Dépôt brut"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__raw_submission_ids
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Raw Submissions"
+msgstr "Dépôts bruts"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid ""
+"Read from the shared Person — edit identity on the Person record itself,\n"
+"                                not here."
+msgstr ""
+"Lu depuis la personne partagée — modifiez l'identité sur la fiche personne elle-même,\n"
+"                                pas ici."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__reason
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Reason for Recruitment"
+msgstr "Motif du recrutement"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_submission__state__received
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_list
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_search
+msgid "Received"
+msgstr "Reçu"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_form
+msgid "Recruitment Answers"
+msgstr "Réponses de recrutement"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__need_id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__need_id
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__need_id
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Recruitment Need"
+msgstr "Besoin de recrutement"
+
+#. module: insite_recruitment
+#: model:ir.actions.act_window,name:insite_recruitment.insite_action_need
+#: model:ir.ui.menu,name:insite_recruitment.insite_menu_need
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_list
+msgid "Recruitment Needs"
+msgstr "Besoins de recrutement"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__reference
+msgid "Reference"
+msgstr "Référence"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_form
+msgid "Reject this contract? Recruitment stops here for this candidate."
+msgstr "Refuser ce contrat ? Le recrutement s'arrête ici pour ce candidat."
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_contract__state__rejected
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_submission__state__rejected
+msgid "Rejected"
+msgstr "Refusé"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_module_sheet_view_form
+msgid "Request Modification"
+msgstr "Demander une modification"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__specialty
+msgid "Required Specialty"
+msgstr "Spécialité requise"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Reschedule Meeting"
+msgstr "Replanifier le rendez-vous"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_form
+msgid "Resolve Identity Match"
+msgstr "Trancher le rapprochement d'identité"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "Response recorded: %s."
+msgstr "Réponse enregistrée : %s."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__review_notes
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_module_sheet_view_form
+msgid "Review Notes"
+msgstr "Notes de revue"
+
+#. module: insite_recruitment
+#: model:ir.actions.act_window,name:insite_recruitment.insite_action_review
+#: model:ir.ui.menu,name:insite_recruitment.insite_menu_review
+msgid "Reviews"
+msgstr "Revues"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_meeting_schedule_wizard_view_form
+msgid "Room, address, or video call link"
+msgstr "Salle, adresse ou lien de visioconférence"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__message_has_sms_error
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__message_has_sms_error
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__message_has_sms_error
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__message_has_sms_error
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_meeting_schedule_wizard_view_form
+msgid "Schedule Meeting"
+msgstr "Planifier un rendez-vous"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_identity_match_wizard_view_form
+msgid "Search"
+msgstr "Rechercher"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Search Internal Teachers"
+msgstr "Rechercher des enseignants internes"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid "Search internal teachers first."
+msgstr "Recherchez d'abord des enseignants internes."
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__searching_external
+msgid "Searching External Candidates"
+msgstr "Recherche de candidats externes"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__searching_internal
+msgid "Searching Internal Teachers"
+msgstr "Recherche d'enseignants internes"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_list
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_form
+msgid "Select"
+msgstr "Sélectionner"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Select Candidate"
+msgstr "Sélectionner le candidat"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid "Select a candidate before contacting them."
+msgstr "Sélectionnez un candidat avant de le contacter."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__selected_candidature_id
+msgid "Selected Candidature"
+msgstr "Candidature sélectionnée"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_form
+msgid "Send"
+msgstr "Envoyer"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_contract__state__sent
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_search
+msgid "Sent"
+msgstr "Envoyé"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_form
+msgid "Set automatically once the Person is classified Internal/External"
+msgstr ""
+"Renseigné automatiquement dès que la personne est classée Interne/Externe"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__meeting_event_id
+msgid ""
+"Set by Schedule Meeting — the real, Academics-scheduled meeting. Reschedule "
+"Meeting edits this same record; a second one is never created."
+msgstr ""
+"Renseigné par Planifier un rendez-vous — le vrai rendez-vous planifié par la"
+" Pédagogie. Replanifier le rendez-vous modifie ce même enregistrement ; un "
+"second n'est jamais créé."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_contract__engagement_id
+msgid ""
+"Set once Module Assignment happens, after signature — a contract exists "
+"before any Engagement does in this pipeline."
+msgstr ""
+"Renseigné à l'affectation du module, après la signature — dans ce circuit, "
+"le contrat existe avant tout engagement."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_recruitment_need__internal_teacher_id
+msgid "Set once an internal teacher is selected for this Need."
+msgstr ""
+"Renseigné dès qu'un enseignant interne est sélectionné pour ce besoin."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_submission__person_id
+msgid ""
+"Set once identity matching resolves this submission to a Person — either an "
+"exact registration number hit, or a human confirming a probable match."
+msgstr ""
+"Renseigné dès que le rapprochement d'identité relie ce dépôt à une personne "
+"— soit par matricule exact, soit par une personne qui confirme une "
+"correspondance probable."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__signature_date
+msgid "Signature Date"
+msgstr "Date de signature"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_contract__state__signed
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__signed
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_search
+msgid "Signed"
+msgstr "Signé"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__source
+msgid "Source"
+msgstr "Source"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__source_ip
+msgid "Source IP"
+msgstr "IP source"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__person_specialty
+msgid "Specialty"
+msgstr "Spécialité"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "Specialty match: %(answer)s (+%(points)s)"
+msgstr "Correspondance de spécialité : %(answer)s (+%(points)s)"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_period__date_start
+msgid "Start Date"
+msgstr "Date de début"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__state
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__state
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__state
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__state
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__state
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__state
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_academic_engagement_view_search
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_candidature_view_search
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_contract_view_search
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_need_view_search
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut selon les activités\n"
+"En retard : l'échéance est déjà passée\n"
+"Aujourd'hui : l'activité est prévue aujourd'hui\n"
+"Planifiée : activités à venir."
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_form
+msgid ""
+"Submission metadata, kept for traceability. The original raw payload\n"
+"                                itself is preserved in the database for reprocessing but is not\n"
+"                                displayed here."
+msgstr ""
+"Métadonnées du dépôt, conservées pour la traçabilité. Le contenu brut d'origine\n"
+"                                est conservé en base pour un éventuel retraitement mais n'est pas\n"
+"                                affiché ici."
+
+#. module: insite_recruitment
+#: model:ir.model.constraint,message:insite_recruitment.constraint_insite_submission_reference_uniq
+msgid "Submission references must be unique."
+msgstr "Les références de dépôt doivent être uniques."
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_module_sheet_view_form
+msgid "Submit"
+msgstr "Soumettre"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_module_sheet__state__submitted
+msgid "Submitted"
+msgstr "Soumis"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__submitted_email
+msgid "Submitted Email"
+msgstr "Email déposé"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_candidature__state__superseded
+msgid "Superseded"
+msgstr "Remplacé"
+
+#. module: insite_recruitment
+#: model:ir.ui.menu,name:insite_recruitment.insite_menu_engagement
+msgid "Teacher Integration"
+msgstr "Intégration de l'enseignant"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__person_academic_rank
+msgid "Teachers only."
+msgstr "Enseignants uniquement."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__teaching_experience
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__submitted_teaching_experience
+msgid "Teaching Experience"
+msgstr "Expérience d'enseignement"
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "Teaching experience provided: %(answer)s (+%(points)s)"
+msgstr "Expérience d'enseignement indiquée : %(answer)s (+%(points)s)"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_submission_view_form
+msgid "Technical Details"
+msgstr "Détails techniques"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_academic_engagement__need_id
+msgid ""
+"The Need this assignment fulfills. hourly_volume is read from here "
+"(need_id.hourly_volume) rather than duplicated on this model."
+msgstr ""
+"Le besoin que cette affectation satisfait. hourly_volume est lu ici "
+"(need_id.hourly_volume) plutôt que dupliqué sur ce modèle."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/wizard/insite_meeting_schedule_wizard.py:0
+msgid "The meeting end time must be after its start time."
+msgstr ""
+"L'heure de fin du rendez-vous doit être postérieure à son heure de début."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_recruitment_need.py:0
+msgid ""
+"The meeting with the candidate must be completed before starting the "
+"contract."
+msgstr ""
+"Le rendez-vous avec le candidat doit être terminé avant de démarrer le "
+"contrat."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_submission__payload
+msgid "The request body as received. Never edited."
+msgstr "Le corps de la requête tel que reçu. Jamais modifié."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/academic_period.py:0
+msgid "The start date must be before the end date."
+msgstr "La date de début doit précéder la date de fin."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "Total score: %s."
+msgstr "Note totale : %s."
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__track
+msgid "Track"
+msgstr "Piste"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité en exception sur l'enregistrement."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "Unknown response: %s"
+msgstr "Réponse inconnue : %s"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__selected_applicant_id
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_identity_match_wizard_view_form
+msgid "Use This Campus+ Applicant"
+msgstr "Utiliser ce candidat Campus+"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_identity_match_wizard__selected_person_id
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_identity_match_wizard_view_form
+msgid "Use This Person"
+msgstr "Utiliser cette personne"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_submission__user_agent
+msgid "User Agent"
+msgstr "Navigateur (User Agent)"
+
+#. module: insite_recruitment
+#: model_terms:ir.ui.view,arch_db:insite_recruitment.insite_module_sheet_view_form
+msgid "Validate"
+msgstr "Valider"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_module_sheet__state__validated
+msgid "Validated"
+msgstr "Validé"
+
+#. module: insite_recruitment
+#: model:ir.model.fields.selection,name:insite_recruitment.selection__insite_recruitment_need__state__validation
+msgid "Validation"
+msgstr "Validation"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,field_description:insite_recruitment.field_academic_engagement__website_message_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_candidature__website_message_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_contract__website_message_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_module_sheet__website_message_ids
+#: model:ir.model.fields,field_description:insite_recruitment.field_insite_recruitment_need__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_academic_engagement__website_message_ids
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__website_message_ids
+#: model:ir.model.fields,help:insite_recruitment.field_insite_contract__website_message_ids
+#: model:ir.model.fields,help:insite_recruitment.field_insite_module_sheet__website_message_ids
+#: model:ir.model.fields,help:insite_recruitment.field_insite_recruitment_need__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des échanges sur le site web"
+
+#. module: insite_recruitment
+#: model:ir.model.fields,help:insite_recruitment.field_insite_candidature__need_id
+msgid ""
+"Which Need this candidature is being considered for. Nullable: a submission-"
+"created candidature may not have one yet if the public payload didn't "
+"specify it — a human links it from here."
+msgstr ""
+"Le besoin pour lequel cette candidature est étudiée. Peut être vide : une "
+"candidature issue d'un dépôt peut ne pas en avoir si le formulaire public ne"
+" l'a pas précisé — une personne la rattache ici."
+
+#. module: insite_recruitment
+#. odoo-python
+#: code:addons/insite_recruitment/models/insite_candidature.py:0
+msgid "Yes"
+msgstr "Oui"

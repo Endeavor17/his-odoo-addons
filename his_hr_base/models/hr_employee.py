@@ -8,7 +8,7 @@ class HrEmployee(models.Model):
 
     person_id = fields.Many2one(
         "his.person",
-        string="Fiche personne",
+        string="Person Record",
         # restrict : supprimer une fiche personne encore rattachee a un employe
         # detacherait un matricule deja distribue de son porteur.
         ondelete="restrict",
@@ -31,7 +31,7 @@ class HrEmployee(models.Model):
     # (hr_employee_public.py) : le matricule est imprime sur le badge, tout
     # utilisateur interne peut le lire, comme le nom ou le poste.
     matricule_institutionnel = fields.Char(
-        string="Matricule institutionnel",
+        string="Institutional Registration Number",
         related="person_id.matricule_institutionnel",
         store=True,
         readonly=True,
@@ -41,7 +41,7 @@ class HrEmployee(models.Model):
     # La valeur complete reste dans matricule_institutionnel, pour la carte
     # RFID et la caisse. Cf. his_person_core pour le raisonnement.
     matricule_affiche = fields.Char(
-        string="Matricule",
+        string="Registration Number",
         related="person_id.matricule_affiche",
         readonly=True,
     )
@@ -66,9 +66,9 @@ class HrEmployee(models.Model):
         related="person_id.numero_carte",
         store=True,
         readonly=False,
-        help="Badge RFID de la personne. Meme carte physique pour le pointage, "
-        "l'acces aux locaux et les repas. Se saisit sur la fiche personne "
-        "ou ici, indifféremment.",
+        help="The person's RFID badge. The same physical card for clocking in, "
+        "building access and meals. It can be entered on the person record or "
+        "here, either way.",
     )
 
     @api.model_create_multi
@@ -105,9 +105,9 @@ class HrEmployee(models.Model):
             if others:
                 raise ValidationError(
                     _(
-                        "Le contact « %(contact)s » sert deja %(count)s autre(s) employe(s) "
-                        "(%(names)s). Un matricule identifie une seule personne : rattachez "
-                        "d'abord chaque employe a son propre contact.",
+                        'The contact "%(contact)s" already serves %(count)s other employee(s) '
+                        "(%(names)s). A registration number identifies a single person: first "
+                        "link each employee to their own contact.",
                         contact=partner.display_name,
                         count=len(others),
                         names=", ".join(others.mapped("name")),
@@ -124,8 +124,9 @@ class HrEmployee(models.Model):
             if existing:
                 raise ValidationError(
                     _(
-                        "Le contact « %(contact)s » porte deja la fiche personne %(matricule)s. "
-                        "Deux fiches sur un meme contact rendraient le matricule ambigu.",
+                        'The contact "%(contact)s" already carries the person record '
+                        "%(matricule)s. Two records on the same contact would make the "
+                        "registration number ambiguous.",
                         contact=partner.display_name,
                         matricule=existing.matricule_institutionnel,
                     )

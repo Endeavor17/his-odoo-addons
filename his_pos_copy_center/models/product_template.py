@@ -31,8 +31,8 @@ class ProductTemplate(models.Model):
 
     copy_service = fields.Selection(
         [
-            ("photocopie", "Photocopie"),
-            ("impression", "Impression"),
+            ("photocopie", "Photocopy"),
+            ("impression", "Print"),
         ],
         string="Copy Service",
         help="Marks this product as a copy service the Copy Center job builder "
@@ -43,11 +43,11 @@ class ProductTemplate(models.Model):
         string="Copy Format",
     )
     copy_color = fields.Selection(
-        [("bw", "N&B"), ("color", "Couleur")],
+        [("bw", "B&W"), ("color", "Colour")],
         string="Copy Colour",
     )
     copy_sides = fields.Selection(
-        [("recto", "Recto"), ("duplex", "Recto-verso")],
+        [("recto", "Single-sided"), ("duplex", "Double-sided")],
         string="Copy Sides",
     )
     copy_center_visible = fields.Boolean(compute="_compute_copy_center_visible")

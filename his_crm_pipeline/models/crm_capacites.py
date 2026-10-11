@@ -97,9 +97,9 @@ class CrmLead(models.Model):
         if sortie and not peut_approuver:
             self._his_refus(
                 _(
-                    "Approuver, publier ou refuser une demande de contenu demande le "
-                    "role « Approbation ». Votre role vous permet de faire avancer "
-                    "votre livrable, pas de clore la demande."
+                    "Approving, publishing or rejecting a content request requires the "
+                    '"Approval" role. Your role lets you move your deliverable forward, not '
+                    "close the request."
                 )
             )
 
@@ -108,7 +108,7 @@ class CrmLead(models.Model):
         #    dans his.content.deliverable.write(), aupres de l'enregistrement
         #    qu'il concerne.
         if not peut_prioriser and "stage_id" in vals and not sortie:
-            self._his_refus(_("Faire avancer une demande demande le role « Priorisation »."))
+            self._his_refus(_('Moving a request forward requires the "Prioritisation" role.'))
 
     # --- Admissions ----------------------------------------------------------
 
@@ -136,7 +136,7 @@ class CrmLead(models.Model):
             and etape_psy
             and self.stage_id != etape_psy
         ):
-            self._his_refus(_("La Cellule d'Orientation n'intervient que sur un candidat en evaluation psychologique."))
+            self._his_refus(_("The Guidance Unit only acts on an applicant in psychological assessment."))
 
         # 2. Le Marketing capture et score. La prise en charge appartient aux
         #    Ventes : c'est la passation, elle doit rester un geste des Ventes.
@@ -153,9 +153,8 @@ class CrmLead(models.Model):
         ):
             self._his_refus(
                 _(
-                    "Le role « Acquisition » capture et score les candidatures. Faire "
-                    "avancer un lead au-dela de « Nouveau (score) » appartient aux "
-                    "conseilleres."
+                    'The "Acquisition" role captures and scores applications. Moving a lead '
+                    'beyond "New (scored)" belongs to the advisors.'
                 )
             )
 
@@ -165,9 +164,8 @@ class CrmLead(models.Model):
         if "user_id" in vals and not user.has_group("his_crm_pipeline.group_admissions_responsable"):
             self._his_refus(
                 _(
-                    "Affecter un lead a une conseillere appartient au responsable "
-                    "d'equipe. La file est triee par score : s'y servir soi-meme "
-                    "viderait ce tri de son sens."
+                    "Assigning a lead to an advisor belongs to the team lead. The queue is "
+                    "sorted by score: helping yourself from it would defeat that order."
                 )
             )
 

@@ -15,21 +15,21 @@
         <!-- ============ Parcours candidat (Ventes / Admissions) ============ -->
 
         <record id="stage_vente_nouveau" model="crm.stage">
-            <field name="name">Nouveau (score)</field>
+            <field name="name">New (scored)</field>
             <field name="sequence">10</field>
             <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
             <field name="requirements">Lead capte par le Marketing, score academique renseigne.</field>
         </record>
 
         <record id="stage_vente_pris_en_charge" model="crm.stage">
-            <field name="name">Pris en charge</field>
+            <field name="name">Taken On</field>
             <field name="sequence">20</field>
             <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
             <field name="requirements">Lead affecte a un conseiller par le responsable, depuis la file triee par score decroissant. L'affectation est un geste manuel : aucun round-robin.</field>
         </record>
 
         <record id="stage_vente_contact_etabli" model="crm.stage">
-            <field name="name">Contact etabli</field>
+            <field name="name">Contact Made</field>
             <field name="sequence">30</field>
             <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
             <field name="requirements">Le conseiller a effectivement parle au candidat. Etape declencheuse de la creation de la fiche personne (his_crm_identity_bridge).</field>
@@ -41,7 +41,7 @@
              sequence qui les place, et le conseiller qui choisit. -->
 
         <record id="stage_vente_accompagnement" model="crm.stage">
-            <field name="name">Accompagnement decision</field>
+            <field name="name">Decision Support</field>
             <field name="sequence">40</field>
             <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
             <field name="fold" eval="True"/>
@@ -49,7 +49,7 @@
         </record>
 
         <record id="stage_vente_evaluation_psy" model="crm.stage">
-            <field name="name">Evaluation psychologique</field>
+            <field name="name">Psychological Assessment</field>
             <field name="sequence">50</field>
             <!-- Seule etape partagee entre deux equipes : la Cellule
                  d'Orientation la possede, les Ventes doivent la voir pour
@@ -60,7 +60,7 @@
         </record>
 
         <record id="stage_vente_dossier" model="crm.stage">
-            <field name="name">Dossier et pre-admission</field>
+            <field name="name">File and Pre-admission</field>
             <field name="sequence">60</field>
             <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
             <field name="requirements">Evaluation du dossier par les Ventes. Atteignable depuis « Contact etabli », « Accompagnement decision » ou une evaluation psychologique favorable.</field>
@@ -72,7 +72,7 @@
              ses propres victoires : le pipeline afficherait des intentions, pas
              de l'argent. Le gagne est a l'etape 80. -->
         <record id="stage_vente_pre_admis" model="crm.stage">
-            <field name="name">Pre-admis</field>
+            <field name="name">Pre-admitted</field>
             <field name="sequence">70</field>
             <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
             <field name="is_won" eval="False"/>
@@ -86,7 +86,7 @@
              commerciale devient donc la consequence d'un fait enregistre par
              une AUTRE equipe. -->
         <record id="stage_vente_frais_payes" model="crm.stage">
-            <field name="name">Frais d'inscription payes</field>
+            <field name="name">Registration Fees Paid</field>
             <field name="sequence">80</field>
             <field name="team_ids" eval="[(4, ref('crm_team_ventes'))]"/>
             <field name="is_won" eval="True"/>
@@ -96,14 +96,14 @@
         <!-- ==================== Production Contenu ==================== -->
 
         <record id="stage_contenu_demande" model="crm.stage">
-            <field name="name">Demande / Idee</field>
+            <field name="name">Request / Idea</field>
             <field name="sequence">110</field>
             <field name="team_ids" eval="[(4, ref('crm_team_contenu'))]"/>
             <field name="requirements">Intake. N'importe quel departement peut deposer une demande ou une idee.</field>
         </record>
 
         <record id="stage_contenu_priorisation" model="crm.stage">
-            <field name="name">Priorisation</field>
+            <field name="name">Prioritisation</field>
             <field name="sequence">120</field>
             <field name="team_ids" eval="[(4, ref('crm_team_contenu'))]"/>
             <field name="requirements">Le strategiste trie et priorise, puis affecte les livrables demandes.</field>
@@ -117,14 +117,14 @@
         </record>
 
         <record id="stage_contenu_approbation" model="crm.stage">
-            <field name="name">Approbation</field>
+            <field name="name">Approval</field>
             <field name="sequence">140</field>
             <field name="team_ids" eval="[(4, ref('crm_team_contenu'))]"/>
             <field name="requirements">Validation finale par le directeur. Inaccessible tant qu'un livrable demande n'est pas approuve : la contrainte est serveur, pas seulement dans la vue.</field>
         </record>
 
         <record id="stage_contenu_publication" model="crm.stage">
-            <field name="name">Planification et publication</field>
+            <field name="name">Scheduling and Publishing</field>
             <field name="sequence">150</field>
             <field name="team_ids" eval="[(4, ref('crm_team_contenu'))]"/>
             <field name="is_won" eval="True"/>

@@ -59,7 +59,7 @@ def _partner_vals(employee):
             len(partner.sudo().employee_ids),
             employee.id,
         )
-    return {"name": employee.name or "Employe %s" % employee.id}
+    return {"name": employee.name or "Employee %s" % employee.id}
 
 
 def _advance_sequence_past_existing(env):

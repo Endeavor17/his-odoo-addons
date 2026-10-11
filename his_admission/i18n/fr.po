@@ -1,0 +1,1673 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_admission
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/crm_lead.py:0
+msgid ""
+"\"%(lead)s\" cannot be won: the registration fees have not been collected.\n"
+"\n"
+"The lead will get there by itself when the front desk records the payment. A pre-admitted applicant who does not pay is lost with the reason \"Payment not confirmed\"."
+msgstr ""
+"« %(lead)s » ne peut pas être gagné : les frais d'inscription ne sont pas encaissés.\n"
+"\n"
+"Le lead y passera de lui-même quand le guichet enregistrera l'encaissement. Un candidat pré-admis qui ne paie pas se perd avec le motif « Paiement non confirmé »."
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+msgid ""
+"\"%(personne)s\" cannot move to \"Enrolled\" — %(griefs)s.\n"
+"\n"
+"An incomplete file stays in \"Admitted\" or \"Administrative Hold\"."
+msgstr ""
+"« %(personne)s » ne peut pas passer à « Inscrit » — %(griefs)s.\n"
+"\n"
+"Un dossier incomplet reste en « Admis » ou en « Blocage administratif »."
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+msgid "%(droit)s: payment recorded by %(user)s."
+msgstr "%(droit)s : encaissement enregistré par %(user)s."
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_admission_document__obligatoire
+#: model:ir.model.fields,help:his_admission.field_his_document_type__obligatoire
+msgid ""
+"A missing required document prevents moving to the \"Enrolled\" state. An "
+"optional document is tracked without blocking."
+msgstr ""
+"Une pièce obligatoire manquante empêche le passage à l'état « Inscrit ». Une"
+" pièce facultative est suivie sans bloquer."
+
+#. module: his_admission
+#: model:ir.model,name:his_admission.model_his_engagement
+msgid "A person's engagement with the institution"
+msgstr "Engagement d'une personne auprès de l'institution"
+
+#. module: his_admission
+#: model:ir.model,name:his_admission.model_his_domaine
+msgid "Academic Field"
+msgstr "Domaine d'études"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Academic Record"
+msgstr "Dossier académique"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__score_academique
+msgid "Academic Score"
+msgstr "Score académique"
+
+#. module: his_admission
+#: model:ir.ui.menu,name:his_admission.menu_admission_pedagogie
+msgid "Academics"
+msgstr "Pédagogie"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__lettre_acceptation
+msgid "Acceptance Letter Issued"
+msgstr "Lettre d'acceptation émise"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Acceptance Letters Not Issued"
+msgstr "Lettres d'acceptation non émises"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__active
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__active
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__active
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__utm_contenu
+msgid "Ad (UTM content)"
+msgstr "Annonce (UTM content)"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__etat__blocage_administratif
+msgid "Administrative Hold"
+msgstr "Blocage administratif"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_search_admission
+msgid "Administrative Holds"
+msgstr "Blocages administratifs"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_dossier_administratif
+msgid "Administrative Papers"
+msgstr "Papiers administratifs"
+
+#. module: his_admission
+#: model:ir.ui.menu,name:his_admission.menu_admission_root
+#: model:res.groups.privilege,name:his_admission.res_groups_privilege_his_admission
+msgid "Admission"
+msgstr "Admission"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/crm_lead.py:0
+msgid "Admission File"
+msgstr "Dossier d'admission"
+
+#. module: his_admission
+#: model:ir.model,name:his_admission.model_his_admission_document
+msgid "Admission File Document"
+msgstr "Pièce du dossier d'admission"
+
+#. module: his_admission
+#: model:ir.model,name:his_admission.model_his_document_type
+msgid "Admission File Document Type"
+msgstr "Type de pièce du dossier d'admission"
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_his_engagement_admission
+msgid "Admission Files"
+msgstr "Dossiers d'admission"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__etat__admis
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_search_admission
+msgid "Admitted"
+msgstr "Admis"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__conseiller_id
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_search_admission
+msgid "Advisor"
+msgstr "Conseillère"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_tarif.py:0
+msgid ""
+"An active fee already exists for \"%(spec)s\". Deactivate it before creating"
+" a new one."
+msgstr ""
+"Un tarif actif existe déjà pour « %(spec)s ». Désactivez-le avant d'en créer"
+" un nouveau."
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_admission_pipeline
+msgid ""
+"An application appears here as soon as the advisor has made\n"
+"               first contact. The file itself opens at pre-admission, and\n"
+"               the institutional registration number is only issued when the\n"
+"               registration fees are collected."
+msgstr ""
+"Une candidature apparaît ici dès que la conseillère a établi le\n"
+"               premier contact. Le dossier, lui, s'ouvre à la pré-admission, et\n"
+"               le matricule institutionnel n'est émis qu'à l'encaissement des\n"
+"               frais d'inscription."
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__bac_filiere
+msgid "Applicable Baccalaureate Stream"
+msgstr "Filière BAC concernée"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__cycle
+msgid "Applicable Cycle"
+msgstr "Cycle concerné"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__type_inscription
+msgid "Applicable Enrolment Type"
+msgstr "Type d'inscription concerné"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__langue_etude__arabe
+msgid "Arabic"
+msgstr "Arabe"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Baccalaureate"
+msgstr "Baccalauréat"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/crm_lead.py:0
+msgid "Baccalaureate %(note).2f: %(pts)s pts"
+msgstr "BAC %(note).2f : %(pts)s pts"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__bac_moyenne
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__bac_moyenne
+msgid "Baccalaureate Average"
+msgstr "Moyenne du BAC"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__bac_numero
+msgid "Baccalaureate Number"
+msgstr "Numéro du BAC"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__bac_session
+msgid "Baccalaureate Session"
+msgstr "Session du BAC"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__bac_filiere
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__bac_filiere
+msgid "Baccalaureate Stream"
+msgstr "Filière du BAC"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_releve_bac
+msgid "Baccalaureate Transcript"
+msgstr "Relevé de notes du BAC"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__coef_bac
+msgid "Baccalaureate Weight"
+msgstr "Coefficient BAC"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__bac_annee
+msgid "Baccalaureate Year"
+msgstr "Année du BAC"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+msgid "Baccalaureate average %(valeur).2f below the minimum %(mini).2f."
+msgstr "Moyenne BAC %(valeur).2f inférieure au minimum %(mini).2f."
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/crm_lead.py:0
+msgid "Baccalaureate average not entered."
+msgstr "Moyenne du BAC non renseignée."
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__cycle__licence
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__cycle__licence
+#: model:ir.model.fields.selection,name:his_admission.selection__his_specialite__cycle__licence
+msgid "Bachelor"
+msgstr "Licence"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_attestation_licence
+msgid "Bachelor's Certificate"
+msgstr "Attestation de licence"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "By Cycle and Specialty"
+msgstr "Par cycle et spécialité"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__carte_date_remise
+msgid "Card Handover Date"
+msgstr "Date de remise de la carte"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__carte_recue_it
+msgid "Card Received from IT"
+msgstr "Carte reçue de l'IT"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Cards Received from IT, Not Handed Over"
+msgstr "Cartes reçues de l'IT, non remises"
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_crm_lead__domaine_id
+#: model:ir.model.fields,help:his_admission.field_his_engagement__domaine_id
+#: model:ir.model.fields,help:his_admission.field_his_specialite__domaine_id
+msgid "Carries the eligibility scale applied to files in this specialty."
+msgstr ""
+"Porte le barème d'éligibilité appliqué aux dossiers de cette spécialité."
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__score_client
+msgid "Client Score (Unverified)"
+msgstr "Score client (non vérifié)"
+
+#. module: his_admission
+#: model:ir.model,name:his_admission.model_his_dashboard
+msgid "Cockpit Indicators"
+msgstr "Indicateurs des cockpits"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__code
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__code
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__code
+msgid "Code"
+msgstr "Code"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_finance
+msgid "Collect Qualifying Programme"
+msgstr "Encaisser programme qualifiant"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_finance
+msgid "Collect Registration"
+msgstr "Encaisser inscription"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_finance
+msgid "Collect Tuition"
+msgstr "Encaisser scolarité"
+
+#. module: his_admission
+#: model:his.domaine,name:his_admission.domaine_com
+msgid "Commercial Sciences"
+msgstr "Sciences commerciales"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_com_ecommerce
+msgid "Commercial Sciences - E-commerce"
+msgstr "Sciences commerciales - Commerce électronique"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_com_marketing_master
+msgid "Commercial Sciences - Master in Digital Marketing"
+msgstr "Sciences commerciales - Master marketing digital"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__documents_complets
+msgid "Complete File"
+msgstr "Dossier complet"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Complete Files"
+msgstr "Dossiers complets"
+
+#. module: his_admission
+#: model:his.domaine,name:his_admission.domaine_mi
+msgid "Computer Science"
+msgstr "Informatique"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_info_systemes
+msgid "Computer Science - Information Systems"
+msgstr "Informatique - Systèmes d'information"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_info_cyber_master
+msgid "Computer Science - Master in Cybersecurity"
+msgstr "Informatique - Master cybersécurité"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_info_donnees_master
+msgid "Computer Science - Master in Data Engineering and Web Technology"
+msgstr "Informatique - Master ingénierie des données et technologie web"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_info_securite
+msgid "Computer Science - Systems Security"
+msgstr "Informatique - Sécurité des systèmes"
+
+#. module: his_admission
+#: model:ir.ui.menu,name:his_admission.menu_admission_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__date_consentement
+msgid "Consent Date"
+msgstr "Date du consentement"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__create_uid
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__create_uid
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__create_uid
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__create_uid
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__create_date
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__create_date
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__create_date
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__create_date
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__cycle
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__cycle
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__cycle
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_search_admission
+msgid "Cycle"
+msgstr "Cycle"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__date_fourniture
+msgid "Date Received"
+msgstr "Date de réception"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__date_naissance
+msgid "Date of Birth"
+msgstr "Date de naissance"
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_crm_lead__specialite_id
+msgid ""
+"Determines which marks count in the score: the specialty's field of study "
+"already says which ones it uses."
+msgstr ""
+"Détermine quelles notes comptent dans le score : le domaine de la spécialité"
+" dit déjà lesquelles il utilise."
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__display_name
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__display_name
+#: model:ir.model.fields,field_description:his_admission.field_his_dashboard__display_name
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__display_name
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__display_name
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__display_name
+#: model:ir.model.fields,field_description:his_admission.field_his_person__display_name
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__display_name
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__type_id
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__name
+msgid "Document"
+msgstr "Pièce"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__name_arabe
+msgid "Document (Arabic)"
+msgstr "Pièce (arabe)"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Documents"
+msgstr "Pièces"
+
+#. module: his_admission
+#: model:his.domaine,name:his_admission.domaine_segc
+msgid "Economics"
+msgstr "Sciences économiques"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_eco_entreprises
+msgid "Economics - Business Economics and Management"
+msgstr "Sciences économiques - Économie et gestion des entreprises"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_eco_mba_master
+msgid "Economics - Master in Business Administration"
+msgstr "Sciences économiques - Master administration des affaires"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__eligibilite
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Eligibility"
+msgstr "Éligibilité"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__seuil_eligibilite
+msgid "Eligibility Threshold"
+msgstr "Seuil d'éligibilité"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_search_admission
+msgid "Eligibility to Check"
+msgstr "Éligibilité à vérifier"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__eligibilite__eligible
+msgid "Eligible"
+msgstr "Éligible"
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_domaine__min_math
+msgid "Eliminatory floor on the maths mark. Zero = no floor."
+msgstr "Plancher éliminatoire sur la note de maths. Zéro = pas de plancher."
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_domaine__min_bac
+msgid "Eliminatory floor, independent of the weighted average."
+msgstr "Plancher éliminatoire, indépendant de la moyenne pondérée."
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_document_type__cycle
+msgid "Empty: all documents apply to both cycles."
+msgstr "Vide : toutes les pièces s'appliquent aux deux cycles."
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_document_type__type_inscription
+msgid "Empty: applies to new enrolments and re-enrolments alike."
+msgstr ""
+"Vide : s'applique aux nouvelles inscriptions comme aux réinscriptions."
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_document_type__bac_filiere
+msgid ""
+"Empty: applies whatever the stream. Used for the equivalence certificate, "
+"which only concerns equivalence files."
+msgstr ""
+"Vide : s'applique quelle que soit la filière. Sert au certificat "
+"d'équivalence, qui ne concerne que les dossiers en équivalence."
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__langue_etude__anglais
+msgid "English"
+msgstr "Anglais"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Enrolment"
+msgstr "Inscription"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__date_inscription
+msgid "Enrolment Date"
+msgstr "Date d'inscription"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__type_inscription
+msgid "Enrolment Type"
+msgstr "Type d'inscription"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__bac_filiere__equivalence
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__bac_filiere__equivalence
+msgid "Equivalence - Foreign Diploma"
+msgstr "Équivalence - Diplôme étranger"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_equivalence
+msgid "Equivalence Certificate"
+msgstr "Certificat d'équivalence"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Expected Revenue"
+msgstr "Revenu attendu"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__pere_email
+msgid "Father's Email"
+msgstr "Email du père"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__pere_nom
+msgid "Father's Name"
+msgstr "Nom du père"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__pere_profession
+msgid "Father's Occupation"
+msgstr "Profession du père"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__pere_telephone
+msgid "Father's Phone"
+msgstr "Téléphone du père"
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_engagement_finance
+#: model:ir.ui.menu,name:his_admission.menu_admission_finance
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_finance
+msgid "Fee Tracking"
+msgstr "Suivi des droits"
+
+#. module: his_admission
+#: model:ir.model,name:his_admission.model_his_tarif
+msgid "Fee per Specialty"
+msgstr "Tarif par spécialité"
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_his_tarif
+#: model:ir.ui.menu,name:his_admission.menu_his_tarif
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_tarif_list
+msgid "Fees"
+msgstr "Tarifs"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Fees Collected"
+msgstr "Droits encaissés"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_person__genre__female
+msgid "Female"
+msgstr "Féminin"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__domaine_id
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__name
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__domaine_id
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__domaine_id
+msgid "Field of Study"
+msgstr "Domaine"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__name_arabe
+msgid "Field of Study (Arabic)"
+msgstr "Domaine (arabe)"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_domaine_list
+msgid "Fields of Study"
+msgstr "Domaines"
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_his_domaine
+#: model:ir.ui.menu,name:his_admission.menu_admission_config_domaine
+msgid "Fields of Study and Scales"
+msgstr "Domaines et barèmes"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__engagement_id
+msgid "File"
+msgstr "Dossier"
+
+#. module: his_admission
+#: model:res.groups,name:his_admission.group_his_finance
+msgid "File - Front Desk"
+msgstr "Dossier - Guichet"
+
+#. module: his_admission
+#: model:res.groups,name:his_admission.group_his_admission
+msgid "File - Processing"
+msgstr "Dossier - Instruction"
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_his_document_type
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__document_ids
+#: model:ir.ui.menu,name:his_admission.menu_admission_config_document
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_document_type_list
+msgid "File Documents"
+msgstr "Pièces du dossier"
+
+#. module: his_admission
+#: model:ir.ui.menu,name:his_admission.menu_admission_dossiers
+msgid "Files"
+msgstr "Dossiers"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Files Cockpit"
+msgstr "Cockpit Dossiers"
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_his_engagement_admission
+msgid ""
+"Files are born in the CRM: at the first sales contact for the\n"
+"               journey, at pre-admission for processing the file."
+msgstr ""
+"Les dossiers naissent du CRM : au premier contact commercial pour le\n"
+"               parcours, à la pré-admission pour l'instruction du dossier."
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__inscription_definitive
+msgid "Final Enrolment"
+msgstr "Inscription définitive"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__lettre_definitive
+msgid "Final Letter Issued"
+msgstr "Lettre définitive émise"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Finance"
+msgstr "Finance"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__langue_etude__francais
+msgid "French"
+msgstr "Français"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__bac_filiere__ge
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__bac_filiere__ge
+msgid "GE - Management and Economics"
+msgstr "GE - Gestion et économie"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__genre
+msgid "Gender"
+msgstr "Genre"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__tuteur_adresse
+msgid "Guardian's Address"
+msgstr "Adresse du tuteur"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__tuteur_email
+msgid "Guardian's Email"
+msgstr "Email du tuteur"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__tuteur_nom
+msgid "Guardian's Full Name"
+msgstr "Nom complet du tuteur"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__tuteur_telephone
+msgid "Guardian's Phone"
+msgstr "Téléphone du tuteur"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__etat_sante
+msgid "Health Status"
+msgstr "État de santé"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__adresse_residence
+msgid "Home Address"
+msgstr "Adresse de résidence"
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_crm_lead__score_detail
+msgid ""
+"How the points were obtained. The score orders the assignment queue: it must"
+" be explainable to the advisor who receives the lead."
+msgstr ""
+"Comment les points ont été obtenus. Le score ordonne la file d'affectation :"
+" il doit pouvoir s'expliquer à la conseillère qui reçoit le lead."
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__id
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__id
+#: model:ir.model.fields,field_description:his_admission.field_his_dashboard__id
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__id
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__id
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__id
+#: model:ir.model.fields,field_description:his_admission.field_his_person__id
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__id
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_piece_identite
+msgid "ID Document"
+msgstr "Pièce d'identité"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__date_expiration_identite
+msgid "ID Document Expiry"
+msgstr "Expiration de la pièce d'identité"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_photo
+msgid "ID Photo"
+msgstr "Photo d'identité"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_search_admission
+msgid "Incomplete File"
+msgstr "Dossier incomplet"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Incomplete Files"
+msgstr "Dossiers incomplets"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__type_lycee__libre
+msgid "Independent"
+msgstr "Libre"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__inscription_initiale
+msgid "Initial Enrolment"
+msgstr "Inscription initiale"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__type_lycee
+msgid "Institution Type"
+msgstr "Type d'établissement"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+msgid "Institutional registration number assigned: %(matricule)s."
+msgstr "Matricule institutionnel attribué : %(matricule)s."
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__niveau__l1
+msgid "L1"
+msgstr "L1"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__niveau__l2
+msgid "L2"
+msgstr "L2"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__niveau__l3
+msgid "L3"
+msgstr "L3"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__langue_etude
+msgid "Language of Study"
+msgstr "Langue d'étude"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__bac_filiere__langue
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__bac_filiere__langue
+msgid "Languages - Literature and Foreign Languages"
+msgstr "Langue - Lettres et langues étrangères"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__write_uid
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__write_uid
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__write_uid
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__write_uid
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__write_date
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__write_date
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__write_date
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__write_date
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_admission
+#: model:his.domaine,name:his_admission.domaine_dr
+msgid "Law"
+msgstr "Droit"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_droit_affaires_master
+msgid "Law - Master in Business Law"
+msgstr "Droit - Master droit des affaires"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_droit_public
+msgid "Law - Public Law"
+msgstr "Droit - Droit public"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__consentement_18_07
+msgid "Law 18-07 Consent"
+msgstr "Consentement Loi 18-07"
+
+#. module: his_admission
+#: model:ir.model,name:his_admission.model_crm_lead
+msgid "Lead"
+msgstr "Piste"
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_his_document_type
+msgid ""
+"Leaving a criterion empty means \"whatever the value\". The\n"
+"               equivalence certificate, for example, only carries the Baccalaureate stream\n"
+"               \"Equivalence\": it will only appear on the files concerned."
+msgstr ""
+"Laisser un critère vide signifie « quelle que soit la valeur ». Le\n"
+"               certificat d'équivalence, par exemple, ne porte que la filière BAC\n"
+"               « Équivalence » : il n'apparaîtra que sur les dossiers concernés."
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__niveau
+msgid "Level"
+msgstr "Niveau"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__niveau__m1
+msgid "M1"
+msgstr "M1"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__niveau__m2
+msgid "M2"
+msgstr "M2"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__bac_filiere__ma
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__bac_filiere__ma
+msgid "MA - Mathematics"
+msgstr "MA - Mathématiques"
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_domaine__code
+msgid "MI, ST, SEGC..."
+msgstr "MI, ST, SEGC..."
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_person__genre__male
+msgid "Male"
+msgstr "Masculin"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__cycle__master
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__cycle__master
+#: model:ir.model.fields.selection,name:his_admission.selection__his_specialite__cycle__master
+msgid "Master"
+msgstr "Master"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__note_math
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__note_math
+msgid "Maths Mark"
+msgstr "Note de maths"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__note_math_utilisee
+msgid "Maths Mark Used"
+msgstr "Note de maths utilisée"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__coef_math
+msgid "Maths Weight"
+msgstr "Coefficient maths"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+msgid "Maths mark %(valeur).2f below the minimum %(mini).2f."
+msgstr "Note de maths %(valeur).2f inférieure au minimum %(mini).2f."
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_certificat_medical
+msgid "Medical Certificate"
+msgstr "Certificat médical"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Milestones"
+msgstr "Jalons"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__min_bac
+msgid "Minimum Baccalaureate Average"
+msgstr "Moyenne BAC minimale"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__min_math
+msgid "Minimum Maths Mark"
+msgstr "Note de maths minimale"
+
+#. module: his_admission
+#: model:ir.ui.menu,name:his_admission.menu_admission_mesrs
+msgid "Ministry"
+msgstr "Ministère"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__documents_manquants
+msgid "Missing Documents"
+msgstr "Pièces manquantes"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Missing required documents:"
+msgstr "Pièces obligatoires manquantes :"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__mere_prenom
+msgid "Mother's First Name"
+msgstr "Prénom de la mère"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__mere_profession
+msgid "Mother's Occupation"
+msgstr "Profession de la mère"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__mere_nom
+msgid "Mother's Surname"
+msgstr "Nom de la mère"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__commune_naissance
+msgid "Municipality of Birth"
+msgstr "Commune de naissance"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__numero_identite
+msgid "National ID Number"
+msgstr "Numéro d'identité nationale"
+
+#. module: his_admission
+#: model:ir.ui.menu,name:his_admission.menu_admission_service_national
+msgid "National Service"
+msgstr "Service national"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__type_inscription__nouveau
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__type_inscription__nouveau
+msgid "New Enrolment"
+msgstr "Nouvelle inscription"
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_his_engagement_admission
+msgid "No admission file."
+msgstr "Aucun dossier d'admission."
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_admission_pipeline
+msgid "No application to process."
+msgstr "Aucune candidature à instruire."
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_his_document_type
+msgid "No document configured."
+msgstr "Aucune pièce configurée."
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_his_tarif
+msgid "No fee recorded."
+msgstr "Aucun tarif enregistré."
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_his_domaine
+msgid "No field of study."
+msgstr "Aucun domaine."
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Notes"
+msgstr "Notes"
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_person__numero_identite
+msgid "Number of the national ID document."
+msgstr "Numéro de la pièce d'identité nationale."
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_engagement__numero_etudiant
+msgid ""
+"Number used today by Admission. Distinct from the institutional registration"
+" number carried by the person record."
+msgstr ""
+"Numéro utilisé aujourd'hui par l'Admission. Distinct du matricule "
+"institutionnel porté par la fiche personne."
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_his_tarif
+msgid ""
+"Only one active fee per specialty. To change the scale,\n"
+"               deactivate the old one rather than editing it — the history\n"
+"               stays readable."
+msgstr ""
+"Un seul tarif actif par spécialité. Pour changer de barème,\n"
+"               désactivez l'ancien plutôt que de le modifier — l'historique\n"
+"               reste lisible."
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Open Applications With a Fee"
+msgstr "Candidatures ouvertes chiffrables"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Open Files"
+msgstr "Dossiers ouverts"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_crm_lead_form_admission
+msgid "Open the Admission File"
+msgstr "Ouvrir le dossier d'admission"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__lead_id
+msgid "Original Lead"
+msgstr "Lead d'origine"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__programme_qualifiant__eco
+msgid "PREP ECO"
+msgstr "PREP ECO"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__programme_qualifiant__elc
+msgid "PREP ELC"
+msgstr "PREP ELC"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__programme_qualifiant__inf
+msgid "PREP INF"
+msgstr "PREP INF"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid ""
+"Paid or not paid only: the amounts stay in the cash\n"
+"                            tool. Recording the registration fees marks the\n"
+"                            original lead as won — it is the only action that wins it."
+msgstr ""
+"Payé ou non payé seulement : les montants restent dans l'outil\n"
+"                            de caisse. Enregistrer les frais d'inscription fait passer le\n"
+"                            lead d'origine en gagné — c'est le seul geste qui le gagne."
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_person_parents
+#: model:ir.ui.menu,name:his_admission.menu_admission_parents
+#: model_terms:ir.ui.view,arch_db:his_admission.view_person_list_parents
+msgid "Parents and Guardians"
+msgstr "Parents et tuteurs"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Payments"
+msgstr "Encaissements"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Payments This Period"
+msgstr "Encaissements de la période"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_carte
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_finance
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_mesrs
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_pedagogie
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_service_national
+msgid "Person"
+msgstr "Personne"
+
+#. module: his_admission
+#: model:ir.model,name:his_admission.model_his_person
+msgid "Person (HIS-HTC-IRA Group)"
+msgstr "Personne (Groupe HIS-HTC-IRA)"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__bac_filiere__philo
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__bac_filiere__philo
+msgid "Philo - Literature and Philosophy"
+msgstr "Philo - Lettres et philosophie"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__note_physique
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__note_physique
+msgid "Physics Mark"
+msgstr "Note de physique"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__note_physique_utilisee
+msgid "Physics Mark Used"
+msgstr "Note de physique utilisée"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__coef_physique
+msgid "Physics Weight"
+msgstr "Coefficient physique"
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_admission_pipeline
+#: model:ir.ui.menu,name:his_admission.menu_admission_pipeline
+msgid "Pipeline"
+msgstr "Pipeline"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/crm_lead.py:0
+msgid "Pre-admission granted on the lead \"%(lead)s\". File sent to Admission."
+msgstr ""
+"Pré-admission prononcée sur le lead « %(lead)s ». Dossier transmis à "
+"l'Admission."
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__type_lycee__prive
+msgid "Private"
+msgstr "Privée"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__fourni
+msgid "Provided"
+msgstr "Fournie"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__type_lycee__public
+msgid "Public"
+msgstr "Publique"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__programme_qualifiant
+msgid "Qualifying Programme"
+msgstr "Programme qualifiant"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_contrat_prog_qualifiant
+msgid "Qualifying Programme Contract"
+msgstr "Contrat du programme qualifiant"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+msgid "Qualifying Programme Fees"
+msgstr "Droits du programme qualifiant"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__droits_prog_qualifiant_payes
+msgid "Qualifying Programme Fees Paid"
+msgstr "Droits programme qualifiant payés"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__type_inscription__reinscription
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__type_inscription__reinscription
+msgid "Re-enrolment"
+msgstr "Réinscription"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_search_admission
+msgid "Re-enrolments"
+msgstr "Réinscriptions"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__eligibilite_motif
+msgid "Reason"
+msgstr "Motif"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Record Payment"
+msgstr "Enregistrer l'encaissement"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Refresh Expected Documents"
+msgstr "Actualiser les pièces attendues"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__frais_inscription
+msgid "Registration Fees"
+msgstr "Frais d'inscription"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__frais_inscription_payes
+msgid "Registration Fees Paid"
+msgstr "Frais d'inscription payés"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__tuteur_relation
+msgid "Relationship to Student"
+msgstr "Lien avec l'étudiant"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__note
+msgid "Remark"
+msgstr "Remarque"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Remarks on this file..."
+msgstr "Remarques sur ce dossier..."
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__obligatoire
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__obligatoire
+msgid "Required"
+msgstr "Obligatoire"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__bac_filiere__se
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__bac_filiere__se
+msgid "SE - Experimental Sciences"
+msgstr "SE - Sciences expérimentales"
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_engagement__conseiller_id
+msgid ""
+"Sales advisor who brought in this applicant. Taken from the lead at pre-"
+"admission."
+msgstr ""
+"Conseillère Ventes qui a amené ce candidat. Reprise du lead à la pré-"
+"admission."
+
+#. module: his_admission
+#: model:his.domaine,name:his_admission.domaine_st
+msgid "Science and Technology"
+msgstr "Sciences et Technologies"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_st_electronique
+msgid "Science and Technology - Electronics"
+msgstr "Sciences et Technologies - Électronique"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__score_detail
+msgid "Score Breakdown"
+msgstr "Détail du score"
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_crm_lead__score_client
+msgid ""
+"Score computed in the applicant's browser, so they can change it. Kept for "
+"comparison with the academic score, never to order the assignment queue."
+msgstr ""
+"Score calculé dans le navigateur du candidat, donc modifiable par lui. "
+"Conservé pour comparaison avec le score académique, jamais pour ordonner la "
+"file d'affectation."
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_crm_lead__score_academique
+msgid ""
+"Score set by Marketing at capture: academic profile and motivation. It "
+"orders the queue of leads to assign."
+msgstr ""
+"Score posé par le Marketing à la capture : profil académique et motivation. "
+"C'est lui qui ordonne la file des leads à affecter."
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_engagement_pedagogie
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_pedagogie
+msgid "Sent to Academics"
+msgstr "Transmission Pédagogie"
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_engagement_mesrs
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_mesrs
+msgid "Sent to Ministry"
+msgstr "Transmission Ministère"
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_engagement_service_national
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_service_national
+msgid "Sent to National Service"
+msgstr "Transmission Service national"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_admission_document__sequence
+#: model:ir.model.fields,field_description:his_admission.field_his_document_type__sequence
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__sequence
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_contrat
+msgid "Signed Admission Contract"
+msgstr "Contrat d'admission signé"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_reglement_interieur
+msgid "Signed Internal Rules"
+msgstr "Règlement intérieur signé"
+
+#. module: his_admission
+#: model:his.domaine,name:his_admission.domaine_ss
+msgid "Social Sciences"
+msgstr "Sciences sociales"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_ss_psycho
+msgid "Social Sciences - Clinical Psychology"
+msgstr "Sciences sociales - Psychologie clinique"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_ss_psycho_master
+msgid "Social Sciences - Master in Clinical Psychology"
+msgstr "Sciences sociales - Master psychologie clinique"
+
+#. module: his_admission
+#: model:his.specialite,name:his_admission.spec_educ_orientation_master
+msgid ""
+"Social Sciences - Master in Educational Sciences, Orientation and Guidance"
+msgstr ""
+"Sciences sociales - Master sciences de l'éducation, orientation et guidance"
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_his_specialite
+#: model:ir.model.fields,field_description:his_admission.field_his_domaine__specialite_ids
+#: model:ir.ui.menu,name:his_admission.menu_admission_config_specialite
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_specialite_list
+msgid "Specialties"
+msgstr "Spécialités"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_dashboard.py:0
+msgid "Specialties Without a Fee"
+msgstr "Spécialités sans tarif"
+
+#. module: his_admission
+#: model:ir.model,name:his_admission.model_his_specialite
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__specialite_id
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__name
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__specialite_id
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_search_admission
+msgid "Specialty"
+msgstr "Spécialité"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_specialite__name_arabe
+msgid "Specialty (Arabic)"
+msgstr "Spécialité (arabe)"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__etat
+msgid "Status"
+msgstr "État"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Student Card"
+msgstr "Carte étudiant"
+
+#. module: his_admission
+#: model:ir.actions.act_window,name:his_admission.action_engagement_carte
+#: model:ir.ui.menu,name:his_admission.menu_admission_carte
+#: model_terms:ir.ui.view,arch_db:his_admission.view_engagement_list_carte
+msgid "Student Cards"
+msgstr "Cartes étudiant"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__carte_etudiant_informe
+msgid "Student Informed"
+msgstr "Étudiant informé"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__numero_etudiant
+msgid "Student Number"
+msgstr "Numéro d'étudiant"
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid "Studies"
+msgstr "Cursus"
+
+#. module: his_admission
+#: model:ir.ui.menu,name:his_admission.menu_admission_transmissions
+msgid "Submissions"
+msgstr "Transmissions"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_document_type__bac_filiere__tm
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__bac_filiere__tm
+msgid "TM - Mathematical Techniques"
+msgstr "TM - Technique mathématique"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__specialite_id
+msgid "Target Specialty"
+msgstr "Spécialité visée"
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_crm_lead__utm_contenu
+msgid ""
+"The ad creative, as the campaign names it. Tells two ads of the same "
+"campaign apart."
+msgstr ""
+"Le créatif publicitaire, tel que la campagne le nomme. Distingue deux "
+"annonces d'une même campagne."
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_domaine.py:0
+msgid ""
+"The field of study \"%s\" must carry at least one non-zero weight, otherwise"
+" the weighted average cannot be computed."
+msgstr ""
+"Le domaine « %s » doit porter au moins un coefficient non nul, sinon la "
+"moyenne pondérée n'est pas calculable."
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_his_domaine
+msgid ""
+"The field of study carries the eligibility scale: how much the\n"
+"               Baccalaureate average, the maths mark and the physics mark weigh, and below which threshold a file\n"
+"               goes to manual review."
+msgstr ""
+"Le domaine porte le barème d'éligibilité : combien pèsent la moyenne du\n"
+"               BAC, la note de maths et celle de physique, et sous quel seuil un dossier\n"
+"               part en vérification."
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_tarif__frais_inscription
+msgid "The non-refundable fees. Collecting them is what wins the lead."
+msgstr ""
+"Les frais non remboursables. C'est leur encaissement qui gagne le lead."
+
+#. module: his_admission
+#: model_terms:ir.ui.view,arch_db:his_admission.view_his_engagement_form_admission
+msgid ""
+"The student card is entered once the file is\n"
+"                            <b>Enrolled</b>. The \"Student Cards\" screen only lists\n"
+"                            enrolled students."
+msgstr ""
+"La carte étudiant se renseigne une fois le dossier\n"
+"                            <b>Inscrit</b>. L'écran « Cartes étudiant » ne liste\n"
+"                            que les inscrits."
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_admission_pipeline
+msgid ""
+"This board belongs to Sales. Moving a card here\n"
+"               moves it for everyone."
+msgstr ""
+"Ce tableau est celui des Ventes. Déplacer une carte ici la\n"
+"               déplace pour tout le monde."
+
+#. module: his_admission
+#: model:ir.model.constraint,message:his_admission.constraint_his_document_type_code_unique
+msgid "This document code is already used."
+msgstr "Ce code de pièce est déjà utilisé."
+
+#. module: his_admission
+#: model:ir.model.constraint,message:his_admission.constraint_his_admission_document_type_unique_par_dossier
+msgid "This document is already on this file."
+msgstr "Cette pièce figure déjà sur ce dossier."
+
+#. module: his_admission
+#: model:ir.model.constraint,message:his_admission.constraint_his_domaine_code_unique
+msgid "This field-of-study code is already used."
+msgstr "Ce code de domaine est déjà utilisé."
+
+#. module: his_admission
+#: model:ir.model.constraint,message:his_admission.constraint_his_specialite_code_unique
+msgid "This specialty code is already used."
+msgstr "Ce code de spécialité est déjà utilisé."
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__eligibilite__a_verifier
+msgid "To Check"
+msgstr "À vérifier"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_transfert
+msgid "Transfer File"
+msgstr "Dossier de transfert"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+#: model:ir.model.fields,field_description:his_admission.field_his_tarif__frais_scolarite
+msgid "Tuition Fees"
+msgstr "Frais de scolarité"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__frais_scolarite_payes
+msgid "Tuition Fees Paid"
+msgstr "Frais de scolarité payés"
+
+#. module: his_admission
+#: model:his.document.type,name:his_admission.doc_releve_universitaire
+msgid "University Transcript"
+msgstr "Relevé de notes universitaire"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_engagement__moyenne_ponderee
+msgid "Weighted Average"
+msgstr "Moyenne pondérée"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+msgid "Weighted average %(valeur).2f below the threshold %(seuil).2f."
+msgstr "Moyenne pondérée %(valeur).2f sous le seuil %(seuil).2f."
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_domaine__seuil_eligibilite
+msgid "Weighted average below which the file goes to manual review."
+msgstr ""
+"Moyenne pondérée en dessous de laquelle le dossier part en vérification "
+"manuelle."
+
+#. module: his_admission
+#: model_terms:ir.actions.act_window,help:his_admission.action_his_tarif
+msgid ""
+"While this grid is empty, the cockpit shows NO revenue\n"
+"               figure. This is deliberate: an invented amount gets quoted in meetings."
+msgstr ""
+"Tant que cette grille est vide, le cockpit n'affiche AUCUN chiffre\n"
+"               d'affaires. C'est voulu : un montant inventé se cite en réunion."
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__motivation_his
+#: model_terms:ir.ui.view,arch_db:his_admission.view_crm_lead_form_admission
+msgid "Why HIS?"
+msgstr "Pourquoi HIS ?"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__motivation_majeure
+#: model_terms:ir.ui.view,arch_db:his_admission.view_crm_lead_form_admission
+msgid "Why this specialty?"
+msgstr "Pourquoi cette spécialité ?"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_crm_lead__wilaya
+msgid "Wilaya"
+msgstr "Wilaya"
+
+#. module: his_admission
+#: model:ir.model.fields,field_description:his_admission.field_his_person__wilaya_naissance
+msgid "Wilaya of Birth"
+msgstr "Wilaya de naissance"
+
+#. module: his_admission
+#: model:ir.model.fields.selection,name:his_admission.selection__his_engagement__programme_qualifiant__aucun
+msgid "Without Qualifying Programme"
+msgstr "Sans programme qualifiant"
+
+#. module: his_admission
+#: model:ir.model.fields,help:his_admission.field_his_engagement__bac_session
+msgid "Year, e.g. 2025."
+msgstr "Année, ex. 2025."
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+msgid "fees not collected: %s"
+msgstr "droits non encaissés : %s"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/his_engagement.py:0
+msgid "missing documents: %s"
+msgstr "pièces manquantes : %s"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/crm_lead.py:0
+msgid "motivation: %(pts)s pt"
+msgstr "motivation : %(pts)s pt"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/crm_lead.py:0
+msgid "weighted %(note).2f: %(pts)s pts"
+msgstr "pondérée %(note).2f : %(pts)s pts"
+
+#. module: his_admission
+#. odoo-python
+#: code:addons/his_admission/models/crm_lead.py:0
+msgid "weighted average not applicable: 0 pt"
+msgstr "moyenne pondérée non applicable : 0 pt"

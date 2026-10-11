@@ -5,17 +5,17 @@
         <field name="name">his.person.import.form</field>
         <field name="model">his.person.import</field>
         <field name="arch" type="xml">
-            <form string="Importer l'export Google Sheets">
+            <form string="Import the Google Sheets Export">
                 <field name="state" invisible="1"/>
 
                 <div invisible="state != 'upload'">
                     <p>
-                        Deposez l'export Sales/Admission (CSV ou XLSX). L'import est a
-                        <b>sens unique</b> : rien n'est jamais reecrit dans le fichier source.
+                        Drop the Sales/Admission export (CSV or XLSX). The import is
+                        <b>one-way</b>: nothing is ever written back to the source file.
                     </p>
                     <p>
-                        Aucune fiche n'est fusionnee automatiquement. Une correspondance
-                        probable est <b>proposee</b> : c'est vous qui confirmez ou refusez.
+                        No record is merged automatically. A probable match
+                        is <b>suggested</b>: you confirm or reject it.
                     </p>
                     <group>
                         <field name="file" filename="filename"/>
@@ -45,37 +45,37 @@
                                    decoration-warning="outcome == 'flagged'"
                                    decoration-success="outcome in ('created', 'updated', 'confirmed', 'rejected')"/>
                             <field name="score" optional="show"/>
-                            <field name="candidate_person_id" string="Fiche proposee"/>
-                            <field name="person_id" string="Fiche resultante"/>
+                            <field name="candidate_person_id" string="Suggested Record"/>
+                            <field name="person_id" string="Resulting Record"/>
                             <field name="message"/>
                             <button name="action_confirm_match" type="object" icon="fa-check"
-                                    title="Confirmer : c'est la meme personne"
+                                    title="Confirm: it is the same person"
                                     invisible="outcome != 'flagged'"/>
                             <button name="action_reject_match" type="object" icon="fa-times"
-                                    title="Refuser : creer une fiche distincte"
+                                    title="Reject: create a separate record"
                                     invisible="outcome != 'flagged'"/>
                         </list>
                     </field>
                 </div>
 
                 <footer>
-                    <button name="action_import" type="object" string="Importer"
+                    <button name="action_import" type="object" string="Run Import"
                             class="btn-primary" invisible="state != 'upload'"/>
-                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_his_person_import" model="ir.actions.act_window">
-        <field name="name">Importer des personnes (Google Sheets)</field>
+        <field name="name">Import People (Google Sheets)</field>
         <field name="res_model">his.person.import</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
 
     <menuitem id="menu_his_person_import"
-              name="Importer (Google Sheets)"
+              name="Import (Google Sheets)"
               parent="his_person_core.menu_his_person_root"
               action="action_his_person_import"
               sequence="20"/>

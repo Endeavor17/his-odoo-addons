@@ -170,7 +170,7 @@ adm = [
         True,
         aicha,
         "0770110003",
-        "Site web",
+        "Website",
         1,
     ),
     (
@@ -207,7 +207,7 @@ perdues = [
     ("Karim Saidi", "stage_vente_pris_en_charge", "lost_reason_sans_reponse", 4, "Facebook Ads"),
     ("Imane Toubal", "stage_vente_nouveau", "lost_reason_fantome", 3, "Instagram"),
     ("Bilal Ferhani", "stage_vente_contact_etabli", "lost_reason_trop_cher", 1, "Facebook Ads"),
-    ("Sara Mansouri", "stage_vente_contact_etabli", "lost_reason_profil_inadapte", 2, "Site web"),
+    ("Sara Mansouri", "stage_vente_contact_etabli", "lost_reason_profil_inadapte", 2, "Website"),
     ("Omar Belhadj", "stage_vente_pris_en_charge", "lost_reason_numero_errone", 5, None),
 ]
 for i, (nom, etape, motif, tent, src) in enumerate(perdues):

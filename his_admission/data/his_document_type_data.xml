@@ -31,7 +31,7 @@
         <!-- === Pieces exigees de tous === -->
 
         <record id="doc_piece_identite" model="his.document.type">
-            <field name="name">Piece d'identite</field>
+            <field name="name">ID Document</field>
             <field name="name_arabe">بطاقة التعريف</field>
             <field name="code">CNI</field>
             <field name="sequence">10</field>
@@ -39,7 +39,7 @@
         </record>
 
         <record id="doc_photo" model="his.document.type">
-            <field name="name">Photo d'identite</field>
+            <field name="name">ID Photo</field>
             <field name="name_arabe">صورة</field>
             <field name="code">PHOTO</field>
             <field name="sequence">20</field>
@@ -47,7 +47,7 @@
         </record>
 
         <record id="doc_certificat_medical" model="his.document.type">
-            <field name="name">Certificat medical</field>
+            <field name="name">Medical Certificate</field>
             <field name="name_arabe">شهادة طبية</field>
             <field name="code">MED</field>
             <field name="sequence">30</field>
@@ -55,7 +55,7 @@
         </record>
 
         <record id="doc_dossier_administratif" model="his.document.type">
-            <field name="name">Papiers administratifs</field>
+            <field name="name">Administrative Papers</field>
             <field name="name_arabe">اوراق الادارية</field>
             <field name="code">ADMIN</field>
             <field name="sequence">40</field>
@@ -63,7 +63,7 @@
         </record>
 
         <record id="doc_reglement_interieur" model="his.document.type">
-            <field name="name">Reglement interieur signe</field>
+            <field name="name">Signed Internal Rules</field>
             <field name="name_arabe">نظام الداخلي</field>
             <field name="code">RI</field>
             <field name="sequence">50</field>
@@ -71,7 +71,7 @@
         </record>
 
         <record id="doc_contrat" model="his.document.type">
-            <field name="name">Contrat d'admission signe</field>
+            <field name="name">Signed Admission Contract</field>
             <field name="name_arabe">العقد</field>
             <field name="code">CONTRAT</field>
             <field name="sequence">60</field>
@@ -87,7 +87,7 @@
              pas. Une piece par filiere, chacune obligatoire dans son cas. -->
 
         <record id="doc_releve_bac" model="his.document.type">
-            <field name="name">Releve de notes du BAC</field>
+            <field name="name">Baccalaureate Transcript</field>
             <field name="name_arabe">كشف نقاط البكالوريا</field>
             <field name="code">BAC</field>
             <field name="sequence">70</field>
@@ -95,7 +95,7 @@
         </record>
 
         <record id="doc_equivalence" model="his.document.type">
-            <field name="name">Certificat d'equivalence</field>
+            <field name="name">Equivalence Certificate</field>
             <field name="name_arabe">شهادة المعادلة</field>
             <field name="code">EQUIV</field>
             <field name="sequence">80</field>
@@ -106,7 +106,7 @@
         <!-- === Cycle Master === -->
 
         <record id="doc_releve_universitaire" model="his.document.type">
-            <field name="name">Releve de notes universitaire</field>
+            <field name="name">University Transcript</field>
             <field name="name_arabe">كشف نقاط الجامعي</field>
             <field name="code">RELEVE-UNIV</field>
             <field name="sequence">90</field>
@@ -115,7 +115,7 @@
         </record>
 
         <record id="doc_attestation_licence" model="his.document.type">
-            <field name="name">Attestation de licence</field>
+            <field name="name">Bachelor's Certificate</field>
             <field name="name_arabe">شهادة اليسانس</field>
             <field name="code">LIC</field>
             <field name="sequence">100</field>
@@ -126,7 +126,7 @@
         <!-- === Cas particuliers, suivis sans bloquer === -->
 
         <record id="doc_transfert" model="his.document.type">
-            <field name="name">Dossier de transfert</field>
+            <field name="name">Transfer File</field>
             <field name="name_arabe">تحويل</field>
             <field name="code">TRANSFERT</field>
             <field name="sequence">110</field>
@@ -134,7 +134,7 @@
         </record>
 
         <record id="doc_contrat_prog_qualifiant" model="his.document.type">
-            <field name="name">Contrat du programme qualifiant</field>
+            <field name="name">Qualifying Programme Contract</field>
             <field name="name_arabe">عقد برنامج التاهيلي</field>
             <field name="code">CONTRAT-PREP</field>
             <field name="sequence">120</field>

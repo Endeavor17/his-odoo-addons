@@ -38,7 +38,7 @@
                      devenu employe). Laisser vide a la creation suffit dans
                      tous les autres cas : la fiche est creee automatiquement. -->
                 <field name="person_id" groups="hr.group_hr_user"/>
-                <field name="barcode" string="Badge RFID"/>
+                <field name="barcode" string="RFID Badge"/>
             </xpath>
         </field>
     </record>

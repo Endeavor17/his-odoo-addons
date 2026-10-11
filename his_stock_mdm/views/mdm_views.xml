@@ -9,7 +9,7 @@
         <field name="inherit_id" ref="product.product_category_form_view"/>
         <field name="arch" type="xml">
             <group name="first" position="after">
-                <group name="mdm" string="Gouvernance MDM">
+                <group name="mdm" string="MDM Governance">
                     <field name="default_tracking"
                            groups="stock.group_production_lot"/>
                     <field name="default_use_expiration_date"
@@ -27,7 +27,7 @@
         <field name="arch" type="xml">
             <field name="display_type" position="after">
                 <field name="allowed_categ_ids" widget="many2many_tags"
-                       placeholder="Vide = aucune restriction de catégorie"/>
+                       placeholder="Empty = no category restriction"/>
             </field>
         </field>
     </record>
@@ -39,7 +39,7 @@
         <field name="arch" type="xml">
             <field name="scrap_reason_tag_ids" position="after">
                 <field name="scrap_note" readonly="state == 'done'"
-                       placeholder="Obligatoire si le motif « Autre » est retenu"/>
+                       placeholder="Required when the &quot;Other&quot; reason is chosen"/>
             </field>
         </field>
     </record>

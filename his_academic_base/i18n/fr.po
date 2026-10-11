@@ -1,0 +1,179 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_academic_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_academic_base
+#: model:ir.model.fields,help:his_academic_base.field_his_person__faculty_ids
+msgid "A person may legitimately belong to more than one faculty."
+msgstr "Une personne peut légitimement appartenir à plusieurs facultés."
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_person__rang_academique
+msgid "Academic Rank"
+msgstr "Rang académique"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: his_academic_base
+#: model_terms:ir.ui.view,arch_db:his_academic_base.view_his_person_form_academic
+msgid "Affiliation"
+msgstr "Rattachement"
+
+#. module: his_academic_base
+#. odoo-python
+#: code:addons/his_academic_base/models/his_person.py:0
+msgid ""
+"An academic rank only applies to a teacher. %(person)s is recorded as "
+"%(kind)s."
+msgstr ""
+"Un rang académique ne s'applique qu'à un enseignant. %(person)s est "
+"enregistré(e) comme %(kind)s."
+
+#. module: his_academic_base
+#: model:ir.model.fields.selection,name:his_academic_base.selection__his_person__rang_academique__maa
+msgid "Assistant Lecturer A"
+msgstr "Maître Assistant A"
+
+#. module: his_academic_base
+#: model:ir.model.fields.selection,name:his_academic_base.selection__his_person__rang_academique__mab
+msgid "Assistant Lecturer B"
+msgstr "Maître Assistant B"
+
+#. module: his_academic_base
+#: model:ir.model.fields.selection,name:his_academic_base.selection__his_person__rang_academique__mca
+msgid "Associate Professor A"
+msgstr "Maître de Conférences A"
+
+#. module: his_academic_base
+#: model:ir.model.fields.selection,name:his_academic_base.selection__his_person__rang_academique__mcb
+msgid "Associate Professor B"
+msgstr "Maître de Conférences B"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__code
+msgid "Code"
+msgstr "Code"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_academic_base
+#: model:ir.model.fields,help:his_academic_base.field_his_person__specialite
+msgid "Declarative free text, as it exists in the HIS referential."
+msgstr "Texte libre déclaratif, tel qu'il existe dans le référentiel HIS."
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__display_name
+#: model:ir.model.fields,field_description:his_academic_base.field_his_person__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_person__faculty_ids
+msgid "Faculties"
+msgstr "Facultés"
+
+#. module: his_academic_base
+#: model:ir.model,name:his_academic_base.model_his_faculty
+msgid "HIS Faculty"
+msgstr "Faculté HIS"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__id
+#: model:ir.model.fields,field_description:his_academic_base.field_his_person__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__name_confirmed
+msgid "Name Confirmed"
+msgstr "Nom confirmé"
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_faculty__person_ids
+msgid "People"
+msgstr "Personnes"
+
+#. module: his_academic_base
+#: model:ir.model,name:his_academic_base.model_his_person
+msgid "Person (HIS-HTC-IRA Group)"
+msgstr "Personne (Groupe HIS-HTC-IRA)"
+
+#. module: his_academic_base
+#: model:ir.model.fields.selection,name:his_academic_base.selection__his_person__rang_academique__prof
+msgid "Professor"
+msgstr "Professeur"
+
+#. module: his_academic_base
+#: model:ir.model.fields,help:his_academic_base.field_his_faculty__code
+msgid "Short code as it appears in the HIS data, e.g. MI."
+msgstr "Code court tel qu'il apparaît dans les données HIS, par ex. MI."
+
+#. module: his_academic_base
+#: model:ir.model.fields,field_description:his_academic_base.field_his_person__specialite
+msgid "Specialty"
+msgstr "Spécialité"
+
+#. module: his_academic_base
+#: model_terms:ir.ui.view,arch_db:his_academic_base.view_his_person_form_academic
+msgid "Teacher"
+msgstr "Enseignant"
+
+#. module: his_academic_base
+#: model:ir.model.fields,help:his_academic_base.field_his_person__rang_academique
+msgid "Teachers only."
+msgstr "Enseignants uniquement."
+
+#. module: his_academic_base
+#: model:ir.model.constraint,message:his_academic_base.constraint_his_faculty_code_unique
+msgid "This faculty code already exists."
+msgstr "Ce code de faculté existe déjà."
+
+#. module: his_academic_base
+#: model:ir.model.fields,help:his_academic_base.field_his_faculty__name_confirmed
+msgid ""
+"Unticked when the full name is not yet confirmed by a received catalogue."
+msgstr ""
+"Décoché tant que le nom complet n'est pas confirmé par un catalogue reçu."
+
+#. module: his_academic_base
+#. odoo-python
+#: code:addons/his_academic_base/models/his_person.py:0
+msgid "nothing in particular"
+msgstr "rien de particulier"

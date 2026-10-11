@@ -17,4 +17,4 @@ class HrEmployeePublic(models.Model):
 
     _inherit = "hr.employee.public"
 
-    matricule_institutionnel = fields.Char(string="Matricule institutionnel", readonly=True)
+    matricule_institutionnel = fields.Char(string="Institutional Registration Number", readonly=True)

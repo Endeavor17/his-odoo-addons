@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="his_crm_pipeline.view_crm_lead_form_his"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='his_admissions']" position="inside">
-                <group string="Referentiel Identite">
+                <group string="Identity Register">
                     <field name="his_person_id"/>
 
                     <!-- Le bloc n'apparait que sur un rapprochement en attente.
@@ -16,16 +16,16 @@
                     <div colspan="2" class="alert alert-warning" role="status"
                          invisible="not his_person_candidate_id">
                         <p>
-                            Une fiche existante ressemble a ce candidat
+                            An existing record looks like this candidate
                             (<field name="his_person_match_score" widget="percentage" readonly="1" class="oe_inline"/>
-                            de similarite). Aucune fiche n'a ete rattachee tant que
-                            vous n'avez pas tranche.
+                            similarity). No record is linked until
+                            you decide.
                         </p>
                         <field name="his_person_candidate_id" readonly="1"/>
                         <button name="action_confirm_person_match" type="object"
-                                string="C'est la meme personne" class="btn-primary"/>
+                                string="It is the same person" class="btn-primary"/>
                         <button name="action_reject_person_match" type="object"
-                                string="Creer une fiche distincte" class="btn-secondary"/>
+                                string="Create a separate record" class="btn-secondary"/>
                     </div>
                 </group>
             </xpath>

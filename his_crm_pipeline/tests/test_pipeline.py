@@ -131,11 +131,11 @@ class TestPipeline(TransactionCase):
                 ],
             }
         )
-        self.assertEqual(lead.livrables_resume, "1/2 approuves")
+        self.assertEqual(lead.livrables_resume, "1/2 approved")
 
         design = lead.deliverable_ids.filtered(lambda d: d.type_id == self.type_design)
         design.statut = "approuve"
-        self.assertEqual(lead.livrables_resume, "2/2 approuves")
+        self.assertEqual(lead.livrables_resume, "2/2 approved")
 
         # Le retard vient de la ligne, pas d'un second calcul. L'echeance est
         # portee par la demande (date_echeance est related sur
@@ -143,7 +143,7 @@ class TestPipeline(TransactionCase):
         design.statut = "en_cours"
         lead.date_deadline = fields.Date.today() - timedelta(days=1)
         self.assertTrue(design.en_retard)
-        self.assertEqual(lead.livrables_resume, "1/2 approuves - en retard")
+        self.assertEqual(lead.livrables_resume, "1/2 approved - late")
 
     def test_une_demande_sans_livrable_n_a_pas_de_resume(self):
         """« 0/0 » dirait qu'on a mesure ; il n'y a rien a mesurer."""
@@ -423,7 +423,7 @@ class TestPipeline(TransactionCase):
             [
                 ("res_model", "=", "crm.lead"),
                 ("res_id", "=", lead.id),
-                ("summary", "=", "Relance SLA - premier contact en retard (>4h)"),
+                ("summary", "=", "First-contact SLA reminder - late (>4h)"),
             ]
         )
 
@@ -732,9 +732,9 @@ class TestPipeline(TransactionCase):
         coute assez cher pour etre sautee."""
         motifs = self.env["crm.lost.reason"].search([])
         noms = motifs.mapped("name")
-        self.assertEqual(noms[0], "Sans reponse")
-        self.assertEqual(noms[1], "Candidature fantome")
-        self.assertEqual(noms[-1], "Autre - a preciser")
+        self.assertEqual(noms[0], "No Answer")
+        self.assertEqual(noms[1], "Ghost application")
+        self.assertEqual(noms[-1], "Other - please specify")
 
     # --- Une perte doit dire quelque chose -----------------------------------
 

@@ -81,10 +81,9 @@ class HisMealCard(models.Model):
             if not card.partner_id.sudo().his_person_ids:
                 raise ValidationError(
                     _(
-                        "%s has no person record, so no card can be issued.\n\n"
-                        "A meal card belongs to a registered person. Ask for the person "
-                        "to be created in the Personnes referential first — by HR for an "
-                        "employee, or through the student import.",
+                        "%s has no person record, so no card can be issued.\n\nA meal card belongs "
+                        "to a registered person. Ask for the person to be created in the People "
+                        "register first — by HR for an employee, or through the student import.",
                         card.partner_id.display_name,
                     )
                 )

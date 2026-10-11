@@ -10,26 +10,26 @@
         <field name="name">res.users.revue.acces</field>
         <field name="model">res.users</field>
         <field name="arch" type="xml">
-            <list string="Revue des acces" create="false">
+            <list string="Access Review" create="false">
                 <field name="login"/>
                 <field name="name"/>
                 <field name="group_ids" widget="many2many_tags" string="Roles"/>
                 <field name="role_ids_du_poste" widget="many2many_tags"
-                       string="Dont issus du poste"/>
+                       string="Of Which From the Position"/>
                 <field name="active"/>
             </list>
         </field>
     </record>
 
     <record id="action_revue_acces" model="ir.actions.act_window">
-        <field name="name">Revue des acces</field>
+        <field name="name">Access Review</field>
         <field name="res_model">res.users</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_users_revue_list"/>
         <field name="context">{'active_test': False}</field>
     </record>
 
-    <menuitem id="menu_revue_acces" name="Revue des acces"
+    <menuitem id="menu_revue_acces" name="Access Review"
               parent="base.menu_users" action="action_revue_acces"
               sequence="50" groups="base.group_system"/>
 
