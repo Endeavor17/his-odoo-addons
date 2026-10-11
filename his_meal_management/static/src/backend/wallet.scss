@@ -15,7 +15,9 @@
         font-size: 1.75rem;
         font-weight: 600;
         line-height: 1.2;
-        color: var(--his-teal, #0d6e8c);
+        // Navy, not teal: the balance is text, and his_web_ui's teal (#00acc0)
+        // is only 2.7:1 on white.
+        color: var(--his-navy-700, #003874);
     }
 
     // The card number is read off a card and typed into a search box, so it is

@@ -9,11 +9,13 @@
 // be in scope, but a stylesheet that fails to compile takes the entire backend
 // down with it, so this file stays to plain values only.
 
-// The petrol teal of the site's header and footer. $o-brand-odoo (the main
-// navbar) and $o-brand-primary (buttons, links, focus rings, checkboxes) both
-// default to $o-community-color, so this single line re-skins the client.
-$o-community-color: #0d6e8c;
-$o-enterprise-color: #0d6e8c;
+// The navy of the university seal, the same value as his_web_ui's
+// --his-navy-700. $o-brand-odoo (the main navbar) and $o-brand-primary (buttons,
+// links, focus rings, checkboxes) both default to $o-community-color, so this
+// single line re-skins the client. It was the site's petrol teal; next to
+// his_web_ui's navy bar that gave the backend two blues.
+$o-community-color: #003874;
+$o-enterprise-color: #003874;
 
 // Semantic colours pulled onto the palette rather than left on Bootstrap's.
 // $o-warning is not decoration: the workday banner reads --warning for its
