@@ -114,7 +114,7 @@ class CampusCourseBreakdown(models.Model):
             # against a stale/older line being approved after a newer
             # resubmission already moved the candidate on.
             if line.applicant_id.campus_cb_state == "approved":
-                line.applicant_id.message_post(body=_("Moved to the Contrat stage."))
+                line.applicant_id.message_post(body=_("Moved to the Contract stage."))
                 line.applicant_id._campus_advance_stage("campus_teacher_management.stage_contract")
         return True
 

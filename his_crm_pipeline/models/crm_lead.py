@@ -12,10 +12,13 @@ SLA_PREMIER_CONTACT_HEURES = 4
 JOURS_AVANT_RAPPEL = 1
 # Au-dela, le candidat n'a jamais repondu : c'est une candidature fantome.
 TENTATIVES_AVANT_FANTOME = 3
-# Le resume qui identifie le rappel pose par la boucle d'appel. Une constante
-# et non une chaine recopiee : elle sert a POSER l'activite et a la RETROUVER,
-# et deux copies qui divergent donneraient une activite par tentative.
-RESUME_RAPPEL = "Rappeler le candidat"
+# Les resumes qui identifient le rappel de la boucle d'appel et la relance
+# SLA. Ils servent a POSER l'activite et a la RETROUVER : on la pose dans la
+# langue de celui qui la lit, et on la retrouve sous toutes ses formes (chaque
+# langue installee, plus le libelle francais des activites posees avant que
+# l'interface suive la langue de l'utilisateur).
+RESUME_RAPPEL_HISTORIQUE = "Rappeler le candidat"
+RESUME_SLA_HISTORIQUE = "Relance SLA - premier contact en retard (>4h)"
 
 
 class CrmLead(models.Model):
@@ -29,22 +32,22 @@ class CrmLead(models.Model):
     # candidat. Les confondre reviendrait a ecraser le tri de la file
     # d'attente avec un jugement qui n'existe pas encore au moment du tri.
     score_academique = fields.Integer(
-        string="Score academique",
-        help="Score pose par le Marketing a la capture : profil academique et "
-        "motivation. C'est lui qui ordonne la file des leads a affecter.",
+        string="Academic Score",
+        help="Score set by Marketing at capture: academic profile and motivation. It "
+        "orders the queue of leads to assign.",
     )
     motivation_notes = fields.Text(
-        string="Notes de motivation",
-        help="Texte libre recueilli au moment du scoring.",
+        string="Motivation Notes",
+        help="Free text collected at scoring time.",
     )
     score_opportunite = fields.Integer(
-        string="Score d'opportunite",
-        help="Evaluation des Ventes apres contact direct : engagement, "
-        "adequation au programme, potentiel de conversion. Distinct du "
-        "score academique, qui lui precede tout echange.",
+        string="Opportunity Score",
+        help="Sales assessment after direct contact: commitment, fit with the "
+        "programme, conversion potential. Distinct from the academic score, "
+        "which comes before any exchange.",
     )
-    visite_campus_effectuee = fields.Boolean(string="Visite du campus effectuee")
-    date_visite_campus = fields.Datetime(string="Date de visite du campus")
+    visite_campus_effectuee = fields.Boolean(string="Campus Visit Done")
+    date_visite_campus = fields.Datetime(string="Campus Visit Date")
 
     # --- Joindre le candidat ------------------------------------------------
 
@@ -53,12 +56,12 @@ class CrmLead(models.Model):
     # versions du meme numero finissent toujours par diverger. Le cout est nul,
     # le calcul est une expression reguliere sur une chaine deja en memoire.
     telephone_e164 = fields.Char(
-        string="Telephone (E.164)",
+        string="Phone (E.164)",
         compute="_compute_telephone_e164",
-        help="Le numero au format international, seule forme que WhatsApp accepte.",
+        help="The number in international format, the only form WhatsApp accepts.",
     )
     whatsapp_url = fields.Char(
-        string="Lien WhatsApp",
+        string="WhatsApp Link",
         compute="_compute_telephone_e164",
     )
 
@@ -68,14 +71,14 @@ class CrmLead(models.Model):
     # en un fait porte par la fiche. Sans lui, la conseillere qui reprend un
     # lead ne sait pas si personne n'a essaye ou si six personnes ont echoue.
     tentatives_appel = fields.Integer(
-        string="Tentatives d'appel",
+        string="Call Attempts",
         default=0,
         copy=False,
         readonly=True,
-        help="Nombre d'appels restes sans reponse. Remis a zero par aucun geste : c'est un historique, pas un etat.",
+        help="Number of calls left unanswered. Nothing resets it: it is a history, not a state.",
     )
     derniere_tentative = fields.Datetime(
-        string="Derniere tentative",
+        string="Last Attempt",
         copy=False,
         readonly=True,
     )
@@ -84,9 +87,9 @@ class CrmLead(models.Model):
     # « Autre » : voir _check_perte_motivee. Alimente par l'assistant natif,
     # dont la note de cloture n'atterrissait nulle part (voir crm_lead_lost.py).
     perte_precision = fields.Char(
-        string="Precision sur la perte",
+        string="Loss Details",
         copy=False,
-        help="Obligatoire avec le motif « Autre - a preciser ».",
+        help='Required with the reason "Other - please specify".',
     )
 
     @api.depends("phone", "country_id")
@@ -135,12 +138,12 @@ class CrmLead(models.Model):
 
     departement_demandeur = fields.Selection(
         selection=[
-            ("sales", "Ventes / Admissions"),
-            ("hr", "Ressources humaines"),
-            ("pedagogie", "Pedagogie"),
+            ("sales", "Sales / Admissions"),
+            ("hr", "Human Resources"),
+            ("pedagogie", "Academics"),
             ("marketing", "Marketing"),
         ],
-        string="Departement demandeur",
+        string="Requesting Department",
     )
 
     # Une ligne par livrable, plutot que des sous-etapes : une meme demande peut
@@ -154,23 +157,23 @@ class CrmLead(models.Model):
     deliverable_ids = fields.One2many(
         "his.content.deliverable",
         "lead_id",
-        string="Livrables",
+        string="Deliverables",
     )
 
     livrables_resume = fields.Char(
-        string="Avancement des livrables",
+        string="Deliverables Progress",
         compute="_compute_livrables_resume",
-        help="Resume d'une ligne, pour la carte du tableau kanban.",
+        help="One-line summary, for the kanban card.",
     )
 
     demandeur_id = fields.Many2one(
         "res.users",
-        string="Demandeur",
+        string="Requester",
         copy=False,
         index=True,
-        help="Qui a depose la demande. Distinct du commercial, qui change de "
-        "main a la priorisation — c'est ce champ, et non user_id, qui "
-        "determine ce qu'un demandeur voit de ses propres demandes.",
+        help="Who filed the request. Distinct from the salesperson, who changes hands "
+        "at prioritisation — this field, not user_id, determines what a "
+        "requester sees of their own requests.",
     )
     marque = fields.Selection(
         selection=[
@@ -178,7 +181,7 @@ class CrmLead(models.Model):
             ("htc", "HTC"),
             ("ira", "IRA"),
         ],
-        string="Marque",
+        string="Brand",
     )
 
     @api.depends("deliverable_ids.statut", "deliverable_ids.en_retard")
@@ -208,9 +211,9 @@ class CrmLead(models.Model):
                 lead.livrables_resume = False
                 continue
             approuves = len(livrables.filtered(lambda d: d.statut == "approuve"))
-            resume = "%s/%s approuves" % (approuves, len(livrables))
+            resume = _("%(approuves)s/%(total)s approved", approuves=approuves, total=len(livrables))
             if any(livrables.mapped("en_retard")):
-                resume += " - en retard"
+                resume = _("%s - late", resume)
             lead.livrables_resume = resume
 
     # --- La boucle d'appel ---------------------------------------------------
@@ -239,7 +242,7 @@ class CrmLead(models.Model):
             )
             lead.message_post(
                 body=_(
-                    "Appel sans reponse (tentative n° %(n)s).",
+                    "Unanswered call (attempt no. %(n)s).",
                     n=lead.tentatives_appel,
                 )
             )
@@ -263,9 +266,22 @@ class CrmLead(models.Model):
         self.activity_schedule(
             "mail.mail_activity_data_call",
             date_deadline=echeance,
-            summary=RESUME_RAPPEL,
+            summary=self._his_resume_rappel(self.user_id or self.env.user),
             user_id=self.user_id.id or self.env.uid,
         )
+
+    def _his_resume_rappel(self, user):
+        return self.with_context(lang=user.lang or "en_US").env._("Call the applicant back")
+
+    def _his_resume_sla(self, user):
+        return self.with_context(lang=user.lang or "en_US").env._("First-contact SLA reminder - late (>4h)")
+
+    def _his_formes(self, resume, historique):
+        """Toutes les formes d'un resume : une par langue installee, plus l'ancienne."""
+        formes = {historique}
+        for code, _nom in self.env["res.lang"].get_installed():
+            formes.add(resume(self.env["res.users"].new({"lang": code})))
+        return list(formes)
 
     def _his_rappel_existant(self):
         """Le rappel pose par cette boucle, s'il y en a un."""
@@ -274,7 +290,7 @@ class CrmLead(models.Model):
             [
                 ("res_model", "=", "crm.lead"),
                 ("res_id", "=", self.id),
-                ("summary", "=", RESUME_RAPPEL),
+                ("summary", "in", self._his_formes(self._his_resume_rappel, RESUME_RAPPEL_HISTORIQUE)),
             ],
             limit=1,
         )
@@ -296,7 +312,7 @@ class CrmLead(models.Model):
         self._his_rappel_existant().unlink()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Candidat joint"),
+            "name": _("Applicant reached"),
             "res_model": "crm.lead",
             "res_id": self.id,
             "view_mode": "form",
@@ -368,11 +384,9 @@ class CrmLead(models.Model):
             if manquants:
                 raise ValidationError(
                     _(
-                        "« %(lead)s » ne peut pas passer en Approbation : "
-                        "le ou les livrables suivants ne sont pas approuves — "
-                        "%(manquants)s.\n\n"
-                        "Chaque livrable demande doit porter le statut « Approuve » "
-                        "avant la validation finale.",
+                        '"%(lead)s" cannot move to Approval: the following deliverable(s) are '
+                        "not approved — %(manquants)s.\n\nEvery requested deliverable must have "
+                        'the "Approved" status before final validation.',
                         lead=lead.display_name,
                         manquants=", ".join(manquants),
                     )
@@ -400,7 +414,7 @@ class CrmLead(models.Model):
                 contexte["default_lost_reason_id"] = fantome.id
         return {
             "type": "ir.actions.act_window",
-            "name": _("Perdre le candidat"),
+            "name": _("Lose the Applicant"),
             "res_model": "crm.lead.lost",
             "view_mode": "form",
             "target": "new",
@@ -458,20 +472,18 @@ class CrmLead(models.Model):
             if not lead.lost_reason_id:
                 raise ValidationError(
                     _(
-                        "« %(lead)s » ne peut pas etre perdu sans motif.\n\n"
-                        "Le motif est ce qui permet de savoir OU l'on perd les "
-                        "candidats. Si aucun de la liste ne convient, choisissez "
-                        "« Autre - a preciser » et dites en une ligne ce qui s'est "
-                        "passe.",
+                        '"%(lead)s" cannot be lost without a reason.\n\nThe reason is what tells '
+                        'us WHERE we lose applicants. If none in the list fits, choose "Other - '
+                        'please specify" and say in one line what happened.',
                         lead=lead.display_name,
                     )
                 )
             if autre and lead.lost_reason_id == autre and not (lead.perte_precision or "").strip():
                 raise ValidationError(
                     _(
-                        "« %(lead)s » : le motif « Autre » demande une precision.\n\n"
-                        "Sans elle, « Autre » deviendrait le raccourci universel et "
-                        "n'apprendrait rien de plus qu'un motif vide.",
+                        '"%(lead)s": the "Other" reason needs details.\n\nWithout them, "Other" '
+                        "would become the universal shortcut and teach nothing more than an "
+                        "empty reason.",
                         lead=lead.display_name,
                     )
                 )
@@ -520,19 +532,19 @@ class CrmLead(models.Model):
                     ("res_id", "=", lead.id),
                     ("activity_type_id", "=", activity_type.id),
                     ("user_id", "=", responsable.id),
-                    ("summary", "=", "Relance SLA - premier contact en retard (>4h)"),
+                    ("summary", "in", self._his_formes(self._his_resume_sla, RESUME_SLA_HISTORIQUE)),
                 ]
             )
             if deja:
                 continue
             lead.activity_schedule(
                 "mail.mail_activity_data_todo",
-                summary="Relance SLA - premier contact en retard (>4h)",
+                summary=self._his_resume_sla(responsable),
                 note=_(
-                    "Ce lead est en « Pris en charge » depuis plus de %(heures)s heures "
-                    "sans premier contact. Conseiller assigne : %(conseiller)s.",
+                    'This lead has been "Taken On" for more than %(heures)s hours without a '
+                    "first contact. Assigned advisor: %(conseiller)s.",
                     heures=SLA_PREMIER_CONTACT_HEURES,
-                    conseiller=lead.user_id.display_name or _("aucun"),
+                    conseiller=lead.user_id.display_name or _("none"),
                 ),
                 user_id=responsable.id,
             )

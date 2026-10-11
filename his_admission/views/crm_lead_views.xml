@@ -12,7 +12,7 @@
                      pouvoir cocher a la place de l'Admission : ses droits sur
                      his.engagement sont en lecture seule (ir.model.access.csv). -->
                 <button name="action_ouvrir_dossier_admission" type="object"
-                        string="Ouvrir le dossier d'admission" class="btn-link"
+                        string="Open the Admission File" class="btn-link"
                         icon="fa-folder-open-o"
                         invisible="not his_person_id"/>
             </field>
@@ -46,9 +46,9 @@
 
             <field name="motivation_notes" position="before">
                 <field name="motivation_majeure"
-                       placeholder="Pourquoi cette specialite ?"/>
+                       placeholder="Why this specialty?"/>
                 <field name="motivation_his"
-                       placeholder="Pourquoi HIS ?"/>
+                       placeholder="Why HIS?"/>
             </field>
 
             <!-- Ce que le formulaire recueille et que personne ne lisait dans

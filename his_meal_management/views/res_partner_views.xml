@@ -97,7 +97,7 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Nobody holds a card yet</p>
             <p>People appear here once they have been given a card. The people
-               themselves are created in the Personnes referential — by HR for an
+               themselves are created in the People register — by HR for an
                employee, or through the student import — then a card is tapped on
                the Cards screen.</p>
         </field>
@@ -120,7 +120,7 @@
         <field name="res_model">his.faculty</field>
         <field name="view_mode">list</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">The faculty referential</p>
+            <p class="o_view_nocontent_smiling_face">The faculty register</p>
             <p>Six codes were observed in the HIS data. A person may belong to more
                than one, which is why the link is many-to-many.</p>
         </field>

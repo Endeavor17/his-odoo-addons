@@ -30,7 +30,7 @@ class HrApplicant(models.Model):
         help="Not collected by the current web form; kept so the field exists the day the form starts asking for it.",
     )
     campus_wilaya = fields.Char("Wilaya", help="Not collected by the current web form.")
-    campus_commune = fields.Char("Commune", help="Not collected by the current web form.")
+    campus_commune = fields.Char("Municipality", help="Not collected by the current web form.")
 
     campus_university = fields.Char("University / Institution")
     campus_faculty = fields.Char("Faculty")
@@ -236,11 +236,11 @@ class HrApplicant(models.Model):
         tracking=True,
     )
     campus_in_contract_stage = fields.Boolean(
-        "In Contrat Stage",
+        "In Contract Stage",
         compute="_compute_campus_in_contract_stage",
-        help="Whether this application has actually reached the Contrat stage "
-        "(only true once the Course Breakdown is approved). Marking a "
-        "contract Signed or Not Signed is only available once this is true.",
+        help="Whether this application has actually reached the Contract stage (only "
+        "true once the Course Breakdown is approved). Marking a contract Signed "
+        "or Not Signed is only available once this is true.",
     )
     campus_in_cb_stage = fields.Boolean(
         "In Course Breakdown Stage",
@@ -893,7 +893,7 @@ class HrApplicant(models.Model):
                     _(
                         "Attach the %s on the Hiring tab before sending — the email "
                         "carries these files, and would go out empty.",
-                        " and the ".join(missing),
+                        _(" and the ").join(missing),
                     )
                 )
 
@@ -1086,7 +1086,7 @@ class HrApplicant(models.Model):
         # Posted before the stage moves: once it does, campus_process_id
         # becomes interview2, and a user only granted interview1 access would
         # otherwise get an AccessError writing this very confirmation message.
-        self.message_post(body=_("1st interview marked completed. Moved to the 2ème Interview stage."))
+        self.message_post(body=_("1st interview marked completed. Moved to the 2nd Interview stage."))
         self._campus_advance_stage("campus_teacher_management.stage_interview2")
         return True
 
@@ -1138,8 +1138,8 @@ class HrApplicant(models.Model):
             if not applicant.campus_in_contract_stage:
                 raise UserError(
                     _(
-                        "%(name)s has not reached the Contrat stage yet — approve the "
-                        "Course Breakdown first before you can %(what)s.",
+                        "%(name)s has not reached the Contract stage yet — approve the Course "
+                        "Breakdown first before you can %(what)s.",
                         name=applicant.display_name,
                         what=what,
                     )

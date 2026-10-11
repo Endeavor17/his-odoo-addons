@@ -19,7 +19,7 @@
                 </group>
                 <button name="action_search" type="object" string="Search" class="btn-secondary"/>
 
-                <group string="Possible Existing Persons" invisible="not possible_person_ids">
+                <group string="Possible Existing People" invisible="not possible_person_ids">
                     <field name="possible_person_ids" nolabel="1" readonly="1">
                         <list>
                             <field name="name"/>

@@ -7,8 +7,7 @@ class ProductAttribute(models.Model):
 
     allowed_categ_ids = fields.Many2many(
         "product.category",
-        string="Catégories éligibles",
-        help="Si renseigné, cet attribut ne peut être utilisé que sur des produits "
-        "appartenant à ces catégories. Laisser vide pour un attribut sans "
-        "restriction (cas de « Marque »).",
+        string="Eligible Categories",
+        help="If set, this attribute can only be used on products belonging to these "
+        'categories. Leave empty for an unrestricted attribute (as with "Brand").',
     )

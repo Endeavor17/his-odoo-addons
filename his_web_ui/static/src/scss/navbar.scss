@@ -20,12 +20,9 @@
     --NavBar-entry-backgroundColor--hover: #{"var(--his-navy-500)"};
     --NavBar-entry-color--hover: #{"var(--his-on-navy)"};
 
-    // Le nom de l'établissement, à gauche : c'est le seul endroit de
-    // l'interface de travail qui porte une serif. Le registre académique en
-    // deux mots, sans faire venir une police par le réseau — une école n'a pas
-    // à attendre fonts.googleapis.com pour afficher son propre nom.
+    // Le nom de l'établissement, à gauche, dans la police du reste de
+    // l'interface : une seule famille partout (consigne de Mohamed, 2026-10-08).
     .o_menu_brand {
-        font-family: Georgia, "Times New Roman", serif;
         font-size: 1rem;
         letter-spacing: 0.02em;
         color: var(--his-on-navy);

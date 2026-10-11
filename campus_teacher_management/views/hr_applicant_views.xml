@@ -111,7 +111,7 @@
                 <button name="action_campus_mark_interview1_completed" type="object"
                         string="Mark Interview 1 Completed" class="btn-primary"
                         invisible="campus_hiring_state != 'meeting_1' or not campus_can_validate_process"
-                        confirm="Mark the first interview as completed? Moving to the 2ème Interview stage is a separate, manual step."/>
+                        confirm="Mark the first interview as completed? Moving to the 2nd Interview stage is a separate, manual step."/>
 
                 <button name="action_campus_open_schedule_interview2" type="object"
                         string="Schedule 2nd Interview" class="btn-primary"
@@ -159,7 +159,7 @@
                             <field name="campus_state"/>
                             <field name="campus_evaluation_date"/>
                         </group>
-                        <group string="Provenance">
+                        <group string="Origin">
                             <field name="campus_engine_version"/>
                             <field name="campus_weighting_method"/>
                             <field name="campus_locked"/>
@@ -503,7 +503,7 @@
 
     <!-- ============ Actions ============ -->
     <record id="action_campus_applications" model="ir.actions.act_window">
-        <field name="name">Candidatures</field>
+        <field name="name">Applications</field>
         <field name="res_model">hr.applicant</field>
         <field name="view_mode">list,kanban,form,graph,pivot</field>
         <field name="domain">[('campus_version_id', '!=', False)]</field>
@@ -613,7 +613,7 @@
         <field name="name">hr.applicant.phase.interview1.list</field>
         <field name="model">hr.applicant</field>
         <field name="arch" type="xml">
-            <list string="1er Interview" create="false">
+            <list string="1st Interview" create="false">
                 <field name="partner_name" string="Candidate"/>
                 <field name="email_from" string="Email"/>
                 <field name="campus_interview1_id" string="Scheduled For"/>
@@ -632,21 +632,21 @@
                 <button name="action_campus_mark_interview1_completed" type="object"
                         string="Mark Completed" icon="fa-flag-checkered"
                         invisible="campus_hiring_state != 'meeting_1' or not campus_can_validate_process"
-                        confirm="Mark the first interview as completed and move this candidate to 2ème Interview?"/>
+                        confirm="Mark the first interview as completed and move this candidate to 2nd Interview?"/>
             </list>
         </field>
     </record>
 
     <record id="action_campus_phase_interview1" model="ir.actions.act_window">
-        <field name="name">1er Interview</field>
+        <field name="name">1st Interview</field>
         <field name="res_model">hr.applicant</field>
         <field name="view_mode">list,form</field>
         <field name="domain" eval="[('stage_id', '=', ref('stage_interview1'))]"/>
         <field name="view_id" ref="campus_phase_interview1_view_list"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Nobody at 1er Interview right now</p>
+            <p class="o_view_nocontent_smiling_face">Nobody at 1st Interview right now</p>
             <p>Candidates land here once selected. Schedule the interview, confirm it, then
-               mark it completed to move them on to 2ème Interview.</p>
+               mark it completed to move them on to 2nd Interview.</p>
         </field>
     </record>
 
@@ -655,7 +655,7 @@
         <field name="name">hr.applicant.phase.interview2.list</field>
         <field name="model">hr.applicant</field>
         <field name="arch" type="xml">
-            <list string="2ème Interview" create="false">
+            <list string="2nd Interview" create="false">
                 <field name="partner_name" string="Candidate"/>
                 <field name="email_from" string="Email"/>
                 <field name="campus_interview2_id" string="Scheduled For"/>
@@ -680,13 +680,13 @@
     </record>
 
     <record id="action_campus_phase_interview2" model="ir.actions.act_window">
-        <field name="name">2ème Interview</field>
+        <field name="name">2nd Interview</field>
         <field name="res_model">hr.applicant</field>
         <field name="view_mode">list,form</field>
         <field name="domain" eval="[('stage_id', '=', ref('stage_interview2'))]"/>
         <field name="view_id" ref="campus_phase_interview2_view_list"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Nobody at 2ème Interview right now</p>
+            <p class="o_view_nocontent_smiling_face">Nobody at 2nd Interview right now</p>
             <p>Candidates land here once their 1st interview is marked completed.</p>
         </field>
     </record>
@@ -713,7 +713,7 @@
                         string="Approve" icon="fa-check"
                         invisible="campus_cb_state not in ('submitted',) or not campus_can_validate_process"
                         groups="campus_teacher_management.group_campus_manager"
-                        confirm="Approve the latest Course Breakdown submission and move this candidate to Contrat?"/>
+                        confirm="Approve the latest Course Breakdown submission and move this candidate to Contract?"/>
             </list>
         </field>
     </record>
@@ -727,7 +727,7 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Nobody at Course Breakdown right now</p>
             <p>Candidates land here once their 2nd interview is marked completed. Approving the
-               latest submission moves them on to Contrat.</p>
+               latest submission moves them on to Contract.</p>
         </field>
     </record>
 
@@ -736,7 +736,7 @@
         <field name="name">hr.applicant.phase.contract.list</field>
         <field name="model">hr.applicant</field>
         <field name="arch" type="xml">
-            <list string="Contrat" create="false">
+            <list string="Contract" create="false">
                 <field name="partner_name" string="Candidate"/>
                 <field name="email_from" string="Email"/>
                 <field name="campus_contract_file" string="Contract" filename="campus_contract_filename"/>
@@ -770,13 +770,13 @@
     </record>
 
     <record id="action_campus_phase_contract" model="ir.actions.act_window">
-        <field name="name">Contrat</field>
+        <field name="name">Contract</field>
         <field name="res_model">hr.applicant</field>
         <field name="view_mode">list,form</field>
         <field name="domain" eval="[('stage_id', '=', ref('stage_contract'))]"/>
         <field name="view_id" ref="campus_phase_contract_view_list"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Nobody at Contrat right now</p>
+            <p class="o_view_nocontent_smiling_face">Nobody at Contract right now</p>
             <p>Candidates land here once their Course Breakdown is approved. Marking the
                contract signed moves them on to Shooting.</p>
         </field>

@@ -24,11 +24,11 @@ class HisPerson(models.Model):
     )
 
     insite_candidature_ids = fields.One2many("insite.candidature", "person_id", "InSite Candidatures")
-    insite_candidature_count = fields.Integer(compute="_compute_insite_counts")
+    insite_candidature_count = fields.Integer(string="InSite Candidature Count", compute="_compute_insite_counts")
     # Not ``engagement_ids``: his_person_core already uses that name for the
     # admission journey (his.engagement).
     insite_engagement_ids = fields.One2many("academic.engagement", "person_id", "InSite Engagements")
-    insite_engagement_count = fields.Integer(compute="_compute_insite_counts")
+    insite_engagement_count = fields.Integer(string="InSite Engagement Count", compute="_compute_insite_counts")
 
     def _compute_insite_counts(self):
         candidatures = dict(

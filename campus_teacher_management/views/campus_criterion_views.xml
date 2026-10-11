@@ -57,7 +57,7 @@
                     </group>
                     <field name="description" placeholder="Notes for whoever maintains this criterion..."/>
                     <notebook invisible="value_type != 'scale'">
-                        <page string="Scale (barème)" name="scale">
+                        <page string="Scale" name="scale">
                             <field name="scale_ids" nolabel="1">
                                 <list string="Scale" editable="bottom">
                                     <field name="sequence" widget="handle"/>

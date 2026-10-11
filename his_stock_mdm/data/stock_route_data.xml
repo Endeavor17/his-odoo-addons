@@ -22,7 +22,7 @@
              d'achat. -->
 
         <record id="route_reappro_comptoirs" model="stock.route">
-            <field name="name">Réappro comptoirs</field>
+            <field name="name">Counter Replenishment</field>
             <field name="sequence">20</field>
             <field name="product_selectable" eval="False"/>
             <field name="warehouse_selectable" eval="True"/>
@@ -30,7 +30,7 @@
         </record>
 
         <record id="rule_reappro_cafeteria" model="stock.rule">
-            <field name="name">WH/Stock → Cafétéria</field>
+            <field name="name">WH/Stock → Cafeteria</field>
             <field name="route_id" ref="route_reappro_comptoirs"/>
             <field name="action">pull</field>
             <field name="procure_method">make_to_stock</field>

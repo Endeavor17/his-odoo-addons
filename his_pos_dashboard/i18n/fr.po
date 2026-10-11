@@ -1,0 +1,76 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_pos_dashboard
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_pos_dashboard
+#. odoo-javascript
+#: code:addons/his_pos_dashboard/static/src/app/dashboard_screen.xml:0
+#: code:addons/his_pos_dashboard/static/src/app/navbar.xml:0
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: his_pos_dashboard
+#: model:ir.model.fields,field_description:his_pos_dashboard.field_pos_config__his_dashboard_available
+msgid "Dashboard Available"
+msgstr "Tableau de bord disponible"
+
+#. module: his_pos_dashboard
+#: model:ir.model.fields,field_description:his_pos_dashboard.field_pos_config__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_pos_dashboard
+#: model:ir.model.fields,field_description:his_pos_dashboard.field_pos_config__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_pos_dashboard
+#. odoo-python
+#: code:addons/his_pos_dashboard/models/pos_config.py:0
+msgid "Only a point of sale user can open the POS dashboard."
+msgstr ""
+"Seul un utilisateur du point de vente peut ouvrir le tableau de bord de la "
+"caisse."
+
+#. module: his_pos_dashboard
+#: model:ir.model,name:his_pos_dashboard.model_pos_config
+msgid "Point of Sale Configuration"
+msgstr "Configuration du point de vente"
+
+#. module: his_pos_dashboard
+#: model:ir.model.fields,help:his_pos_dashboard.field_pos_config__his_dashboard_available
+msgid ""
+"Set when the three Metabase system parameters are: the till then shows a "
+"Dashboard menu item."
+msgstr ""
+"Coché quand les trois paramètres système Metabase sont renseignés : la "
+"caisse affiche alors une entrée de menu Tableau de bord."
+
+#. module: his_pos_dashboard
+#. odoo-python
+#: code:addons/his_pos_dashboard/models/pos_config.py:0
+msgid ""
+"The POS dashboard is not configured: set the his_metabase.site_url, "
+"his_metabase.secret_key and his_pos_dashboard.metabase_dashboard_id system "
+"parameters."
+msgstr ""
+"Le tableau de bord de la caisse n'est pas configuré : renseignez les "
+"paramètres système his_metabase.site_url, his_metabase.secret_key et "
+"his_pos_dashboard.metabase_dashboard_id."
+
+#. module: his_pos_dashboard
+#. odoo-javascript
+#: code:addons/his_pos_dashboard/static/src/app/dashboard_screen.js:0
+msgid "The dashboard could not be loaded."
+msgstr "Le tableau de bord n'a pas pu être chargé."

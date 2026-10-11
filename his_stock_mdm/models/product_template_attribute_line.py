@@ -15,10 +15,9 @@ class ProductTemplateAttributeLine(models.Model):
             if allowed and line.product_tmpl_id.categ_id not in allowed:
                 raise ValidationError(
                     _(
-                        "L'attribut « %(attr)s » n'est pas autorisé sur la catégorie « %(categ)s ».\n"
-                        "Catégories éligibles : %(allowed)s.\n"
-                        "En dehors de ces catégories, une variation physique doit être "
-                        "portée par une fiche produit distincte.",
+                        'The attribute "%(attr)s" is not allowed on the category "%(categ)s".\n'
+                        "Eligible categories: %(allowed)s.\nOutside these categories, a physical "
+                        "variation must be carried by a separate product.",
                         attr=line.attribute_id.name,
                         categ=line.product_tmpl_id.categ_id.complete_name,
                         allowed=", ".join(allowed.mapped("complete_name")),

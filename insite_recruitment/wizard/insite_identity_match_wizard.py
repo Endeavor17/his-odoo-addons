@@ -15,14 +15,14 @@ class InsiteIdentityMatchWizard(models.TransientModel):
 
     submission_id = fields.Many2one("insite.submission", "Raw Submission")
 
-    matricule = fields.Char("Institutional Matricule")
+    matricule = fields.Char("Institutional Registration Number")
     first_name = fields.Char("First Name")
     last_name = fields.Char("Last Name")
     name_ar = fields.Char("Name (Arabic)")
     email = fields.Char("Email")
     phone = fields.Char("Phone")
 
-    possible_person_ids = fields.Many2many("his.person", string="Possible Existing Persons")
+    possible_person_ids = fields.Many2many("his.person", string="Possible Existing People")
     possible_applicant_ids = fields.Many2many("hr.applicant", string="Possible Campus+ Applicants")
 
     selected_person_id = fields.Many2one("his.person", "Use This Person")

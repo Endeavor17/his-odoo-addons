@@ -47,7 +47,7 @@ class AcademicEngagement(models.Model):
         "here (need_id.hourly_volume) rather than duplicated on this model.",
     )
 
-    track = fields.Char("Track / Piste")
+    track = fields.Char("Track")
     hourly_volume = fields.Float("Hourly Volume", related="need_id.hourly_volume", readonly=True)
     state = fields.Selection(
         [

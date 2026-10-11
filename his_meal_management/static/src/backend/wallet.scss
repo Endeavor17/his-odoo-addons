@@ -11,7 +11,7 @@
 .o_his_wallet {
     // A balance is the one number anybody opens this page for.
     .o_field_widget[name="meal_credits_remaining"] {
-        font-family: var(--bs-font-monospace, ui-monospace, monospace);
+        font-family: var(--font-monospace, monospace);
         font-size: 1.75rem;
         font-weight: 600;
         line-height: 1.2;
@@ -22,7 +22,7 @@
     // set as figures: same width per digit, no confusion between similar
     // glyphs.
     .o_field_widget[name="meal_card_code"] {
-        font-family: var(--bs-font-monospace, ui-monospace, monospace);
+        font-family: var(--font-monospace, monospace);
         font-size: 1.125rem;
         letter-spacing: 1.2px;
         color: var(--his-ink, #10323f);

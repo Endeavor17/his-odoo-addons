@@ -106,9 +106,9 @@ class HisMealSubscription(models.Model):
             if not sub.partner_id.sudo().his_person_ids:
                 raise ValidationError(
                     _(
-                        "%s has no person record, so no meal credits can be held.\n\n"
-                        "Sell the plan to a registered person, or have them registered "
-                        "in the Personnes referential first.",
+                        "%s has no person record, so no meal credits can be held.\n\nSell the plan "
+                        "to a registered person, or have them registered in the People register "
+                        "first.",
                         sub.partner_id.display_name,
                     )
                 )

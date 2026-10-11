@@ -77,7 +77,7 @@ class ProductTemplate(models.Model):
             if len(template.product_variant_ids) > 1:
                 continue
             if not template.default_code:
-                raise ValidationError(_("La référence interne est obligatoire pour « %s ».", template.name))
+                raise ValidationError(_('The internal reference is required for "%s".', template.name))
 
     # --- MDM regle 2 : categorie feuille obligatoire -------------------------
 
@@ -87,9 +87,9 @@ class ProductTemplate(models.Model):
             if template.categ_id.child_id:
                 raise ValidationError(
                     _(
-                        "La catégorie « %(categ)s » est un nœud intermédiaire. Un produit doit "
-                        "être rattaché à une catégorie terminale (sans sous-catégorie).\n"
-                        "Sous-catégories disponibles : %(children)s.",
+                        'The category "%(categ)s" is an intermediate node. A product must belong '
+                        "to a leaf category (one without subcategories).\nAvailable "
+                        "subcategories: %(children)s.",
                         categ=template.categ_id.complete_name,
                         children=", ".join(template.categ_id.child_id.mapped("name")),
                     )
@@ -109,8 +109,7 @@ class ProductTemplate(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "Le prix de vente est obligatoire pour « %s » : il s'agit d'un "
-                        "produit stockable marqué comme vendable.",
+                        'A sales price is required for "%s": it is a storable product marked as sellable.',
                         template.name,
                     )
                 )

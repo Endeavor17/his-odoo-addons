@@ -30,10 +30,9 @@ class HrJob(models.Model):
         "his_job_group_rel",
         "job_id",
         "group_id",
-        string="Roles Odoo du poste",
-        help="Roles accordes automatiquement a qui occupe ce poste. Les roles "
-        "poses a la main sur un utilisateur ne sont jamais touches par "
-        "cette liste.",
+        string="Position Odoo Roles",
+        help="Roles granted automatically to whoever holds this position. Roles set "
+        "by hand on a user are never touched by this list.",
     )
 
     @api.model
@@ -62,9 +61,9 @@ class HrJob(models.Model):
             if fautifs:
                 raise ValidationError(
                     _(
-                        "Un poste ne peut pas accorder de role d'administration "
-                        "(%(roles)s). Ces acces restent attribues a la main par un "
-                        "administrateur, dans Reglages ▸ Utilisateurs.",
+                        "A position cannot grant an administration role (%(roles)s). These "
+                        "accesses are still assigned by hand by an administrator, in Settings ▸ "
+                        "Users.",
                         roles=", ".join(fautifs.mapped("name")),
                     )
                 )
@@ -80,11 +79,11 @@ class HrJob(models.Model):
             "params": {
                 "type": "success" if touches else "warning",
                 "message": _(
-                    "%(n)s compte(s) mis a jour.",
+                    "%(n)s account(s) updated.",
                     n=touches,
                 )
                 if touches
-                else _("Aucun compte a mettre a jour : les employes de ce poste n'ont pas d'utilisateur Odoo."),
+                else _("No account to update: the employees in this position have no Odoo user."),
                 "sticky": False,
             },
         }

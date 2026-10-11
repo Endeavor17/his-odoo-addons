@@ -19,7 +19,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_cloturer" type="object" string="Clôturer"
+                    <button name="action_cloturer" type="object" string="Close"
                             class="oe_highlight" invisible="state == 'cloture'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -33,7 +33,7 @@
                     </group>
                     <group>
                         <field name="note" readonly="state == 'cloture'"
-                               placeholder="Écarts constatés, remarques pour l'exercice suivant..."/>
+                               placeholder="Differences found, notes for next fiscal year..."/>
                     </group>
                 </sheet>
             </form>
@@ -41,16 +41,16 @@
     </record>
 
     <record id="his_inventaire_annuel_action" model="ir.actions.act_window">
-        <field name="name">Inventaires annuels</field>
+        <field name="name">Annual Inventories</field>
         <field name="res_model">his.inventaire.annuel</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Ouvrez le comptage physique annuel de l'exercice
+                Open the annual physical count for the fiscal year
             </p>
             <p>
-                La clôture est bloquée tant qu'un comptage reste saisi sans
-                avoir été appliqué aux livres (Inventaire ▸ Ajustements).
+                Closing is blocked while a count is entered without
+                having been applied to the books (Inventory ▸ Adjustments).
             </p>
         </field>
     </record>
@@ -59,7 +59,7 @@
          (security/ir.model.access.csv) : double controle deliberement,
          meme discipline que do_scrap/action_apply_inventory. -->
     <menuitem id="menu_his_inventaire_annuel"
-              name="Inventaires annuels"
+              name="Annual Inventories"
               parent="stock.menu_stock_config_settings"
               action="his_inventaire_annuel_action"
               groups="stock.group_stock_manager"

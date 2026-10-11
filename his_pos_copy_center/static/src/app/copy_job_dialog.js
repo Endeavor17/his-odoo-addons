@@ -85,8 +85,8 @@ export class CopyJobDialog extends Component {
 
     get serviceLabel() {
         return {
-            photocopie: _t("Photocopie"),
-            impression: _t("Impression"),
+            photocopie: _t("Photocopy"),
+            impression: _t("Print"),
         };
     }
 
@@ -127,9 +127,9 @@ export class CopyJobDialog extends Component {
                         "not a mistake at the till.",
                     {
                         format: this.state.format.toUpperCase(),
-                        color: this.state.color === "bw" ? _t("N&B") : _t("Couleur"),
+                        color: this.state.color === "bw" ? _t("B&W") : _t("Colour"),
                         sides:
-                            this.state.sides === "recto" ? _t("Recto") : _t("Recto-verso"),
+                            this.state.sides === "recto" ? _t("Single-sided") : _t("Double-sided"),
                     }
                 ),
             });

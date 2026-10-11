@@ -9,7 +9,7 @@
              ecarter les etudiants de leurs selecteurs de contacts par defaut,
              quand ces modules arriveront. -->
         <record id="categ_partner_identite" model="res.partner.category">
-            <field name="name">HIS — Identité institutionnelle</field>
+            <field name="name">HIS — Institutional Identity</field>
             <field name="color">4</field>
         </record>
     </data>

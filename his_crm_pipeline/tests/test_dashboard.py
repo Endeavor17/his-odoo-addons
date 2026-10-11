@@ -214,9 +214,9 @@ class TestDashboard(TransactionCase):
         plus inutile qu'un motif faux."""
         lead = self._candidatures(1)
         lead.action_set_lost(lost_reason_id=self.env.ref("his_crm_pipeline.lost_reason_sans_reponse").id)
-        pertes = next(d for d in self._spec()["donuts"] if d["label"] == "Motifs de perte")
+        pertes = next(d for d in self._spec()["donuts"] if d["label"] == "Lost Reasons")
         self.assertEqual(pertes["total"], 1)
-        self.assertEqual(pertes["segments"][0]["label"], "Sans reponse")
+        self.assertEqual(pertes["segments"][0]["label"], "No Answer")
 
     def test_les_donuts_comptent_la_meme_population_que_les_tuiles(self):
         """Deux totaux differents cote a cote sur le meme ecran sont
@@ -234,7 +234,7 @@ class TestDashboard(TransactionCase):
         spec = self._spec()
         recues = self._tuile(spec, "candidatures")["valeur"]
         for donut in spec["donuts"]:
-            if donut["label"] == "Motifs de perte":
+            if donut["label"] == "Lost Reasons":
                 continue
             self.assertEqual(
                 donut["total"],
@@ -247,7 +247,7 @@ class TestDashboard(TransactionCase):
         part a l'oeil."""
         self._candidatures(5)
         self._candidatures(2, stage=self.st_pre_admis)
-        etat = next(d for d in self._spec()["donuts"] if d["label"] == "Etat du portefeuille")
+        etat = next(d for d in self._spec()["donuts"] if d["label"] == "Portfolio Status")
         comptes = [s["count"] for s in etat["segments"]]
         self.assertEqual(comptes, sorted(comptes, reverse=True))
 

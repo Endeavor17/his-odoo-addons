@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class CampusShootingProgram(models.Model):
@@ -33,7 +33,7 @@ class CampusShootingProgram(models.Model):
     @api.depends("applicant_id")
     def _compute_display_name(self):
         for program in self:
-            program.display_name = f"{program.applicant_id.display_name} — Shooting Program"
+            program.display_name = _("%s — Shooting Program", program.applicant_id.display_name)
 
     @api.model
     def _get_or_create_for_applicant(self, applicant):

@@ -6,7 +6,7 @@
          utilisent aussi le calendrier, les activites et le chatter. -->
 
     <record id="action_crm_lead_admissions" model="ir.actions.act_window">
-        <field name="name">Pipeline Admissions</field>
+        <field name="name">Admissions Pipeline</field>
         <field name="res_model">crm.lead</field>
         <field name="view_mode">kanban,list,form,activity</field>
         <!-- eval et non %(xmlid)d : la substitution %(...)d n'a lieu que dans
@@ -20,9 +20,9 @@
              d'affectation. -->
         <field name="view_id" ref="view_crm_lead_kanban_admissions"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucune candidature dans votre pipeline.</p>
-            <p>Si cette liste est vide alors qu'il existe des candidatures, c'est que vous
-               n'etes membre ni de l'equipe Ventes / Admissions ni de la Cellule d'Orientation.</p>
+            <p class="o_view_nocontent_smiling_face">No application in your pipeline.</p>
+            <p>If this list is empty while applications exist, you are
+               a member of neither the Sales / Admissions team nor the Guidance Unit.</p>
         </field>
     </record>
 
@@ -84,7 +84,7 @@
     <!-- La file d'affectation est l'outil du responsable : c'est lui qui
          arbitre, et lui seul qui peut y ecrire le commercial. La montrer a une
          conseillere lui proposerait un geste que le serveur refusera. -->
-    <menuitem id="menu_crm_lead_non_affectes" name="Leads a affecter"
+    <menuitem id="menu_crm_lead_non_affectes" name="Leads to Assign"
               parent="menu_admissions_root"
               action="action_crm_lead_non_affectes" sequence="20"
               groups="his_crm_pipeline.group_admissions_responsable"/>
@@ -105,24 +105,24 @@
          CRM. -->
 
     <record id="action_crm_lead_contenu" model="ir.actions.act_window">
-        <field name="name">Demandes de contenu</field>
+        <field name="name">Content Requests</field>
         <field name="res_model">crm.lead</field>
         <field name="view_mode">kanban,list,form,activity</field>
         <field name="domain" eval="[('team_id', '=', ref('his_crm_pipeline.crm_team_contenu'))]"/>
         <field name="context" eval="{'default_team_id': ref('his_crm_pipeline.crm_team_contenu'), 'default_type': 'opportunity'}"/>
         <field name="view_id" ref="view_crm_lead_kanban_contenu"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucune demande de contenu.</p>
-            <p>Deposez une demande : precisez la marque, le departement demandeur et
-               les livrables attendus — texte, design, video.</p>
+            <p class="o_view_nocontent_smiling_face">No content request.</p>
+            <p>File a request: specify the brand, the requesting department and
+               the expected deliverables — copy, design, video.</p>
         </field>
     </record>
 
-    <menuitem id="menu_contenu_root" name="Production Contenu"
+    <menuitem id="menu_contenu_root" name="Content Production"
               sequence="26"
               groups="his_crm_pipeline.group_contenu_demandeur"/>
 
-    <menuitem id="menu_contenu_demandes" name="Demandes"
+    <menuitem id="menu_contenu_demandes" name="Requests"
               parent="menu_contenu_root"
               action="action_crm_lead_contenu" sequence="10"/>
 

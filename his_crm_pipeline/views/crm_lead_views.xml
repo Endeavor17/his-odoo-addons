@@ -19,7 +19,7 @@
                             <field name="score_academique"/>
                             <field name="score_opportunite"/>
                         </group>
-                        <group string="Visite du campus">
+                        <group string="Campus Visit">
                             <field name="visite_campus_effectuee"/>
                             <field name="date_visite_campus"
                                    invisible="not visite_campus_effectuee"/>
@@ -36,12 +36,12 @@
                                  tout seul mentirait sur la moitie d'entre
                                  elles. -->
                             <button name="action_schedule_meeting" type="object"
-                                    string="Programmer une visite"
+                                    string="Schedule a Visit"
                                     icon="fa-calendar-plus-o" class="btn-link"/>
                         </group>
                     </group>
                     <group>
-                        <group string="Joindre le candidat">
+                        <group string="Reach the Applicant">
                             <field name="tentatives_appel"/>
                             <field name="derniere_tentative"
                                    invisible="not tentatives_appel"/>
@@ -50,16 +50,16 @@
                                  lien profond vers une application externe, pas
                                  une action serveur. Le widget url le dit. -->
                             <field name="whatsapp_url" widget="url"
-                                   text="Ouvrir WhatsApp"
+                                   text="Open WhatsApp"
                                    invisible="not whatsapp_url"/>
                         </group>
-                        <group string="Issue de l'appel">
+                        <group string="Call Outcome">
                             <button name="action_appel_sans_reponse"
                                     type="object" class="btn-secondary"
-                                    string="Sans reponse"/>
+                                    string="No Answer"/>
                             <button name="action_appel_joint"
                                     type="object" class="btn-primary"
-                                    string="Joint"/>
+                                    string="Reached"/>
                             <!-- La precision de la perte se lit ici, aupres de
                                  l'issue de l'appel : c'est de cela qu'elle
                                  parle. L'assistant natif la remplit tout seul
@@ -70,14 +70,14 @@
                     </group>
                     <group string="Motivation">
                         <field name="motivation_notes" nolabel="1"
-                               placeholder="Ce que le candidat dit de son projet..."/>
+                               placeholder="What the applicant says about their plans..."/>
                     </group>
                 </page>
 
-                <page string="Production contenu" name="his_contenu"
+                <page string="Content production" name="his_contenu"
                       invisible="team_id != %(his_crm_pipeline.crm_team_contenu)d">
                     <group>
-                        <group string="Demande">
+                        <group string="Request">
                             <field name="demandeur_id" readonly="1"/>
                             <field name="departement_demandeur"/>
                             <field name="marque"/>
@@ -89,7 +89,7 @@
                          fait » de « pas concerne ». -->
                     <field name="deliverable_ids" nolabel="1"
                            context="{'default_statut': 'a_faire'}">
-                        <list editable="bottom" string="Livrables"
+                        <list editable="bottom" string="Deliverables"
                               decoration-danger="en_retard"
                               decoration-muted="statut == 'approuve'">
                             <field name="type_id"/>
@@ -117,7 +117,7 @@
                  l'une d'elles, Odoo propage. Aucune logique cote serveur, aucun
                  round-robin : l'affectation est un arbitrage humain, voulu tel
                  quel par la Direction. -->
-            <list string="Leads a affecter" multi_edit="1" default_order="score_academique desc">
+            <list string="Leads to Assign" multi_edit="1" default_order="score_academique desc">
                 <field name="score_academique"/>
                 <field name="name"/>
                 <field name="partner_name" optional="show"/>
@@ -132,16 +132,16 @@
     </record>
 
     <record id="action_crm_lead_non_affectes" model="ir.actions.act_window">
-        <field name="name">Leads a affecter</field>
+        <field name="name">Leads to Assign</field>
         <field name="res_model">crm.lead</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_crm_lead_list_non_affectes"/>
         <field name="domain" eval="[('user_id', '=', False), ('stage_id', 'in', [ref('his_crm_pipeline.stage_vente_nouveau'), ref('his_crm_pipeline.stage_vente_pris_en_charge')])]"/>
         <field name="context" eval="{'default_team_id': ref('his_crm_pipeline.crm_team_ventes')}"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun lead en attente d'affectation.</p>
-            <p>Les leads scores par le Marketing apparaissent ici, du meilleur score au moins bon.
-               Selectionnez-en plusieurs et modifiez le commercial pour les affecter d'un coup.</p>
+            <p class="o_view_nocontent_smiling_face">No lead waiting to be assigned.</p>
+            <p>Leads scored by Marketing appear here, from the best score to the lowest.
+               Select several and change the salesperson to assign them in one go.</p>
         </field>
     </record>
 
@@ -227,7 +227,7 @@
             <!-- Le geste de la conseillere, la ou elle regarde deja. -->
             <xpath expr="//t[@t-name='menu']" position="inside">
                 <a role="menuitem" type="object" name="action_schedule_meeting"
-                   class="dropdown-item">Programmer une visite</a>
+                   class="dropdown-item">Schedule a Visit</a>
             </xpath>
 
             <!-- o_his_lead_kanban_meta est un point d'accroche stable pour les
@@ -239,8 +239,8 @@
                 <div class="o_his_lead_kanban_meta d-flex align-items-center gap-1">
                     <span class="badge rounded-pill text-bg-light"
                           invisible="not score_academique"
-                          title="Score academique">
-                        <i class="fa fa-star-o me-1" role="img" aria-label="Score academique"/><field name="score_academique"/>
+                          title="Academic Score">
+                        <i class="fa fa-star-o me-1" role="img" aria-label="Academic score"/><field name="score_academique"/>
                     </span>
                     <!-- Le compteur ne s'affiche qu'a partir de la premiere
                          tentative : « 0 tentative » est le cas de tout lead
@@ -249,12 +249,12 @@
                     <span class="badge rounded-pill"
                           invisible="not tentatives_appel"
                           t-att-class="record.tentatives_appel.raw_value >= 3 ? 'text-bg-danger' : 'text-bg-light'"
-                          title="Appels restes sans reponse">
-                        <i class="fa fa-phone me-1" role="img" aria-label="Tentatives d'appel"/><field name="tentatives_appel"/>
+                          title="Unanswered calls">
+                        <i class="fa fa-phone me-1" role="img" aria-label="Call attempts"/><field name="tentatives_appel"/>
                     </span>
                     <i class="fa fa-calendar-check-o text-success"
-                       role="img" aria-label="Visite du campus effectuee"
-                       title="Visite du campus effectuee"
+                       role="img" aria-label="Campus Visit Done"
+                       title="Campus Visit Done"
                        invisible="not visite_campus_effectuee"/>
                 </div>
             </xpath>
@@ -278,33 +278,33 @@
                 <div class="o_his_lead_actions d-flex align-items-center gap-1 mt-2">
                     <button type="object" name="action_appel_sans_reponse"
                             class="btn btn-sm btn-outline-secondary"
-                            title="Appel sans reponse : compte, trace et replanifie">
-                        Sans reponse
+                            title="Unanswered call: counted, logged and rescheduled">
+                        No Answer
                     </button>
                     <button type="object" name="action_appel_joint"
                             class="btn btn-sm btn-outline-primary"
-                            title="Candidat joint : passe en Contact etabli">
-                        Joint
+                            title="Applicant reached: moves to Contact Made">
+                        Reached
                     </button>
                     <button type="object" name="action_perdre_rapide"
                             class="btn btn-sm btn-outline-danger"
-                            title="Perdre le candidat : motif pre-rempli si la fiche le sait">
-                        Perdu
+                            title="Lose the applicant: reason pre-filled if the record knows it">
+                        Lost
                     </button>
                     <a t-if="record.whatsapp_url.raw_value"
                        t-att-href="record.whatsapp_url.raw_value"
                        target="_blank" rel="noopener" role="button"
                        class="btn btn-sm btn-outline-success"
-                       title="Ouvrir WhatsApp avec ce numero"
-                       aria-label="Ouvrir WhatsApp">
+                       title="Open WhatsApp with this number"
+                       aria-label="Open WhatsApp">
                         <i class="fa fa-whatsapp" role="img"/>
                     </a>
                     <a t-if="record.telephone_e164.raw_value"
                        t-attf-href="tel:{{ record.telephone_e164.raw_value }}"
                        role="button"
                        class="btn btn-sm btn-outline-secondary"
-                       title="Appeler (utile sur mobile)"
-                       aria-label="Appeler">
+                       title="Call (handy on mobile)"
+                       aria-label="Call">
                         <i class="fa fa-phone" role="img"/>
                     </a>
                 </div>

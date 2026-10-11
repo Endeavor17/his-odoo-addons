@@ -27,7 +27,7 @@
             <field name="email_to">{{ object.email_from }}</field>
             <field name="lang">{{ object.partner_id.lang or 'en_US' }}</field>
             <field name="body_html" type="html">
-<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+<div style="font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>Dear <t t-out="object.campus_name_lat or object.partner_name or ''">Teacher</t>,</p>
 
     <p>
@@ -69,7 +69,7 @@
             <field name="email_to">{{ object.email_from }}</field>
             <field name="lang">{{ object.partner_id.lang or 'en_US' }}</field>
             <field name="body_html" type="html">
-<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+<div style="font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>Dear <t t-out="object.campus_name_lat or object.partner_name or ''">Teacher</t>,</p>
 
     <p>Thank you for meeting with us. Your second interview is scheduled for:</p>
@@ -112,7 +112,7 @@
             <field name="email_to">{{ object.applicant_id.email_from }}</field>
             <field name="lang">{{ object.applicant_id.partner_id.lang or 'en_US' }}</field>
             <field name="body_html" type="html">
-<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+<div style="font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>Dear <t t-out="object.applicant_id.campus_name_lat or object.applicant_id.partner_name or ''">Teacher</t>,</p>
 
     <p>
@@ -141,7 +141,7 @@
             <field name="email_to">{{ object.applicant_id.email_from }}</field>
             <field name="lang">{{ object.applicant_id.partner_id.lang or 'en_US' }}</field>
             <field name="body_html" type="html">
-<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+<div style="font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>Dear <t t-out="object.applicant_id.campus_name_lat or object.applicant_id.partner_name or ''">Teacher</t>,</p>
 
     <p>
@@ -164,7 +164,7 @@
             <field name="email_to">{{ object.applicant_id.email_from }}</field>
             <field name="lang">{{ object.applicant_id.partner_id.lang or 'en_US' }}</field>
             <field name="body_html" type="html">
-<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+<div style="font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>Dear <t t-out="object.applicant_id.campus_name_lat or object.applicant_id.partner_name or ''">Teacher</t>,</p>
 
     <p>A recording session has been scheduled for you:</p>
@@ -205,7 +205,7 @@
             <field name="email_to">{{ object.applicant_id.email_from }}</field>
             <field name="lang">{{ object.applicant_id.partner_id.lang or 'en_US' }}</field>
             <field name="body_html" type="html">
-<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+<div style="font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>Dear <t t-out="object.applicant_id.campus_name_lat or object.applicant_id.partner_name or ''">Teacher</t>,</p>
 
     <p>Your recording session has been updated. The current details are:</p>

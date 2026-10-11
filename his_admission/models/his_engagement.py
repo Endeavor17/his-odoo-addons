@@ -1,14 +1,17 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import LazyTranslate
 
 from .his_document_type import BAC_FILIERE, TYPE_INSCRIPTION
 from .his_specialite import CYCLE
 
+_lt = LazyTranslate(__name__)
+
 LIBELLES_PAIEMENT = {
-    "frais_inscription_payes": "Frais d'inscription",
-    "frais_scolarite_payes": "Frais de scolarite",
-    "droits_prog_qualifiant_payes": "Droits du programme qualifiant",
+    "frais_inscription_payes": _lt("Registration Fees"),
+    "frais_scolarite_payes": _lt("Tuition Fees"),
+    "droits_prog_qualifiant_payes": _lt("Qualifying Programme Fees"),
 }
 
 # Les deux droits exiges avant l'inscription definitive. Les droits du
@@ -41,10 +44,11 @@ class HisEngagement(models.Model):
     # administratif » est un arret, pas un abandon — le candidat veut toujours
     # s'inscrire, c'est le dossier qui coince.
     etat = fields.Selection(
+        string="Status",
         selection_add=[
             ("candidat_soumis",),
-            ("admis", "Admis"),
-            ("blocage_administratif", "Blocage administratif"),
+            ("admis", "Admitted"),
+            ("blocage_administratif", "Administrative Hold"),
             ("inscrit",),
         ],
         ondelete={"admis": "set default", "blocage_administratif": "set default"},
@@ -52,7 +56,7 @@ class HisEngagement(models.Model):
 
     type_inscription = fields.Selection(
         TYPE_INSCRIPTION,
-        string="Type d'inscription",
+        string="Enrolment Type",
         default="nouveau",
         tracking=True,
     )
@@ -65,71 +69,71 @@ class HisEngagement(models.Model):
             ("m1", "M1"),
             ("m2", "M2"),
         ],
-        string="Niveau",
+        string="Level",
         tracking=True,
     )
     specialite_id = fields.Many2one(
         "his.specialite",
-        string="Specialite",
+        string="Specialty",
         ondelete="restrict",
         tracking=True,
     )
     domaine_id = fields.Many2one(
         related="specialite_id.domaine_id",
-        string="Domaine",
+        string="Field of Study",
         store=True,
         readonly=True,
     )
     programme_qualifiant = fields.Selection(
         selection=[
-            ("aucun", "Sans programme qualifiant"),
+            ("aucun", "Without Qualifying Programme"),
             ("inf", "PREP INF"),
             ("eco", "PREP ECO"),
             ("elc", "PREP ELC"),
         ],
-        string="Programme qualifiant",
+        string="Qualifying Programme",
         default="aucun",
     )
     langue_etude = fields.Selection(
         selection=[
-            ("arabe", "Arabe"),
-            ("francais", "Francais"),
-            ("anglais", "Anglais"),
+            ("arabe", "Arabic"),
+            ("francais", "French"),
+            ("anglais", "English"),
         ],
-        string="Langue d'etude",
+        string="Language of Study",
     )
     # Numero libre, volontairement. Ils numerotent aujourd'hui en 260511001
     # (annee + filiere + specialite + sequence) ; rien n'est verifie ni impose.
     # Le matricule institutionnel du groupe vit sur his.person et prendra le
     # relais plus tard — decision prise, pas oubli.
     numero_etudiant = fields.Char(
-        string="Numero d'etudiant",
+        string="Student Number",
         copy=False,
         index=True,
-        help="Numero utilise aujourd'hui par l'Admission. Distinct du matricule "
-        "institutionnel porte par la fiche personne.",
+        help="Number used today by Admission. Distinct from the institutional "
+        "registration number carried by the person record.",
     )
-    date_inscription = fields.Date(string="Date d'inscription")
+    date_inscription = fields.Date(string="Enrolment Date")
 
     # --- Dossier academique --------------------------------------------------
 
-    bac_numero = fields.Char(string="Numero du BAC")
-    bac_session = fields.Char(string="Session du BAC", help="Annee, ex. 2025.")
-    bac_filiere = fields.Selection(BAC_FILIERE, string="Filiere du BAC")
-    bac_moyenne = fields.Float(string="Moyenne du BAC", digits=(4, 2))
-    note_math = fields.Float(string="Note de maths", digits=(4, 2))
-    note_physique = fields.Float(string="Note de physique", digits=(4, 2))
+    bac_numero = fields.Char(string="Baccalaureate Number")
+    bac_session = fields.Char(string="Baccalaureate Session", help="Year, e.g. 2025.")
+    bac_filiere = fields.Selection(BAC_FILIERE, string="Baccalaureate Stream")
+    bac_moyenne = fields.Float(string="Baccalaureate Average", digits=(4, 2))
+    note_math = fields.Float(string="Maths Mark", digits=(4, 2))
+    note_physique = fields.Float(string="Physics Mark", digits=(4, 2))
     type_lycee = fields.Selection(
         selection=[
-            ("public", "Publique"),
-            ("prive", "Privee"),
-            ("libre", "Libre"),
+            ("public", "Public"),
+            ("prive", "Private"),
+            ("libre", "Independent"),
         ],
-        string="Type d'etablissement",
+        string="Institution Type",
     )
 
     moyenne_ponderee = fields.Float(
-        string="Moyenne ponderee",
+        string="Weighted Average",
         digits=(4, 2),
         compute="_compute_eligibilite",
         store=True,
@@ -138,15 +142,15 @@ class HisEngagement(models.Model):
     eligibilite = fields.Selection(
         selection=[
             ("eligible", "Eligible"),
-            ("a_verifier", "A verifier"),
+            ("a_verifier", "To Check"),
         ],
-        string="Eligibilite",
+        string="Eligibility",
         compute="_compute_eligibilite",
         store=True,
         readonly=True,
     )
     eligibilite_motif = fields.Char(
-        string="Motif",
+        string="Reason",
         compute="_compute_eligibilite",
         store=True,
         readonly=True,
@@ -154,10 +158,10 @@ class HisEngagement(models.Model):
 
     # --- Jalons du process ---------------------------------------------------
 
-    inscription_initiale = fields.Boolean(string="Inscription initiale")
-    lettre_acceptation = fields.Boolean(string="Lettre d'acceptation emise")
-    inscription_definitive = fields.Boolean(string="Inscription definitive")
-    lettre_definitive = fields.Boolean(string="Lettre definitive emise")
+    inscription_initiale = fields.Boolean(string="Initial Enrolment")
+    lettre_acceptation = fields.Boolean(string="Acceptance Letter Issued")
+    inscription_definitive = fields.Boolean(string="Final Enrolment")
+    lettre_definitive = fields.Boolean(string="Final Letter Issued")
 
     # --- Paiements -----------------------------------------------------------
     # Paye / non paye seulement, comme le classeur. Aucun montant, aucun raccord
@@ -171,19 +175,19 @@ class HisEngagement(models.Model):
     # comme pour l'Admission, et demain pour le module Finance qui appellera la
     # meme methode. Un chemin unique est ce qui rend la trace fiable.
     frais_inscription_payes = fields.Boolean(
-        string="Frais d'inscription payes",
+        string="Registration Fees Paid",
         readonly=True,
         copy=False,
         tracking=True,
     )
     frais_scolarite_payes = fields.Boolean(
-        string="Frais de scolarite payes",
+        string="Tuition Fees Paid",
         readonly=True,
         copy=False,
         tracking=True,
     )
     droits_prog_qualifiant_payes = fields.Boolean(
-        string="Droits programme qualifiant payes",
+        string="Qualifying Programme Fees Paid",
         readonly=True,
         copy=False,
         tracking=True,
@@ -194,36 +198,36 @@ class HisEngagement(models.Model):
     document_ids = fields.One2many(
         "his.admission.document",
         "engagement_id",
-        string="Pieces du dossier",
+        string="File Documents",
     )
     documents_complets = fields.Boolean(
-        string="Dossier complet",
+        string="Complete File",
         compute="_compute_documents_complets",
         store=True,
     )
     documents_manquants = fields.Char(
-        string="Pieces manquantes",
+        string="Missing Documents",
         compute="_compute_documents_complets",
         store=True,
     )
 
     # --- Carte etudiant ------------------------------------------------------
 
-    carte_recue_it = fields.Boolean(string="Carte recue de l'IT")
-    carte_etudiant_informe = fields.Boolean(string="Etudiant informe")
-    carte_date_remise = fields.Date(string="Date de remise de la carte")
+    carte_recue_it = fields.Boolean(string="Card Received from IT")
+    carte_etudiant_informe = fields.Boolean(string="Student Informed")
+    carte_date_remise = fields.Date(string="Card Handover Date")
 
     # --- Origine commerciale -------------------------------------------------
 
     conseiller_id = fields.Many2one(
         "res.users",
-        string="Conseillere",
+        string="Advisor",
         tracking=True,
-        help="Conseillere Ventes qui a amene ce candidat. Reprise du lead a la pre-admission.",
+        help="Sales advisor who brought in this applicant. Taken from the lead at pre-admission.",
     )
     lead_id = fields.Many2one(
         "crm.lead",
-        string="Lead d'origine",
+        string="Original Lead",
         ondelete="set null",
         copy=False,
     )
@@ -274,21 +278,21 @@ class HisEngagement(models.Model):
             if eng.bac_moyenne < domaine.min_bac:
                 eng.eligibilite = "a_verifier"
                 eng.eligibilite_motif = _(
-                    "Moyenne BAC %(valeur).2f inferieure au minimum %(mini).2f.",
+                    "Baccalaureate average %(valeur).2f below the minimum %(mini).2f.",
                     valeur=eng.bac_moyenne,
                     mini=domaine.min_bac,
                 )
             elif domaine.min_math and eng.note_math < domaine.min_math:
                 eng.eligibilite = "a_verifier"
                 eng.eligibilite_motif = _(
-                    "Note de maths %(valeur).2f inferieure au minimum %(mini).2f.",
+                    "Maths mark %(valeur).2f below the minimum %(mini).2f.",
                     valeur=eng.note_math,
                     mini=domaine.min_math,
                 )
             elif moyenne < domaine.seuil_eligibilite:
                 eng.eligibilite = "a_verifier"
                 eng.eligibilite_motif = _(
-                    "Moyenne ponderee %(valeur).2f sous le seuil %(seuil).2f.",
+                    "Weighted average %(valeur).2f below the threshold %(seuil).2f.",
                     valeur=moyenne,
                     seuil=domaine.seuil_eligibilite,
                 )
@@ -372,8 +376,8 @@ class HisEngagement(models.Model):
             eng.sudo().write({champ: True})
             eng.sudo().message_post(
                 body=_(
-                    "%(droit)s : encaissement enregistre par %(user)s.",
-                    droit=LIBELLES_PAIEMENT.get(champ, champ),
+                    "%(droit)s: payment recorded by %(user)s.",
+                    droit=str(LIBELLES_PAIEMENT.get(champ, champ)),
                     user=self.env.user.display_name,
                 )
             )
@@ -397,7 +401,7 @@ class HisEngagement(models.Model):
                 personne._his_attribuer_matricule()
                 eng.sudo().message_post(
                     body=_(
-                        "Matricule institutionnel attribue : %(matricule)s.",
+                        "Institutional registration number assigned: %(matricule)s.",
                         matricule=personne.matricule_institutionnel,
                     )
                 )
@@ -457,16 +461,15 @@ class HisEngagement(models.Model):
                 continue
             griefs = []
             if eng.documents_manquants:
-                griefs.append(_("pieces manquantes : %s", eng.documents_manquants))
-            impayes = [LIBELLES_PAIEMENT[champ] for champ in PAIEMENTS_REQUIS_POUR_INSCRIPTION if not eng[champ]]
+                griefs.append(_("missing documents: %s", eng.documents_manquants))
+            impayes = [str(LIBELLES_PAIEMENT[champ]) for champ in PAIEMENTS_REQUIS_POUR_INSCRIPTION if not eng[champ]]
             if impayes:
-                griefs.append(_("droits non encaisses : %s", ", ".join(impayes)))
+                griefs.append(_("fees not collected: %s", ", ".join(impayes)))
             if griefs:
                 raise ValidationError(
                     _(
-                        "« %(personne)s » ne peut pas passer a « Inscrit » — %(griefs)s.\n\n"
-                        "Un dossier incomplet reste en « Admis » ou en « Blocage "
-                        "administratif ».",
+                        '"%(personne)s" cannot move to "Enrolled" — %(griefs)s.\n\nAn incomplete '
+                        'file stays in "Admitted" or "Administrative Hold".',
                         personne=eng.person_id.display_name,
                         griefs=" ; ".join(griefs),
                     )

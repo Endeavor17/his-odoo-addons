@@ -46,14 +46,14 @@
             <field name="value_type">scale</field>
             <field name="source_key">rank</field>
         </record>
-        <record id="scale_c1_prof" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">prof</field><field name="name">Professeur</field><field name="aliases">استاذ التعليم العالي (Professeur),استاذ التعليم العالي,Prof</field><field name="score">6</field><field name="sequence">10</field></record>
+        <record id="scale_c1_prof" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">prof</field><field name="name">Professor</field><field name="aliases">استاذ التعليم العالي (Professeur),استاذ التعليم العالي,Prof,Professeur</field><field name="score">6</field><field name="sequence">10</field></record>
         <record id="scale_c1_mca" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">mca</field><field name="name">MCA</field><field name="aliases">استاذ محاضر أ (MCA),استاذ محاضر أ</field><field name="score">5</field><field name="sequence">20</field></record>
         <record id="scale_c1_mcb" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">mcb</field><field name="name">MCB</field><field name="aliases">استاذ محاضر ب (MCB),استاذ محاضر ب</field><field name="score">4</field><field name="sequence">30</field></record>
         <record id="scale_c1_maa" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">maa</field><field name="name">MAA</field><field name="aliases">استاذ مساعد أ (MAA),استاذ مساعد أ</field><field name="score">3</field><field name="sequence">40</field></record>
         <record id="scale_c1_mab" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">mab</field><field name="name">MAB</field><field name="aliases">استاذ مساعد ب (MAB),استاذ مساعد ب</field><field name="score">2</field><field name="sequence">50</field></record>
         <!-- The form offers two ranks the barème does not name; both are "Autre". -->
-        <record id="scale_c1_vacataire" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">vacataire</field><field name="name">Autre — Vacataire</field><field name="aliases">أستاذ معيد / مستخلف / متربص / مؤقت</field><field name="score">1</field><field name="sequence">60</field></record>
-        <record id="scale_c1_doctorant" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">doctorant</field><field name="name">Autre — Doctorant</field><field name="aliases">طالب دكتوراه أو دكتور متخرج</field><field name="score">1</field><field name="sequence">70</field></record>
+        <record id="scale_c1_vacataire" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">vacataire</field><field name="name">Other — Adjunct Lecturer</field><field name="aliases">أستاذ معيد / مستخلف / متربص / مؤقت,Autre — Vacataire</field><field name="score">1</field><field name="sequence">60</field></record>
+        <record id="scale_c1_doctorant" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c1"/><field name="key">doctorant</field><field name="name">Other — PhD Student</field><field name="aliases">طالب دكتوراه أو دكتور متخرج,Autre — Doctorant</field><field name="score">1</field><field name="sequence">70</field></record>
 
         <!-- ============ C2 — Previous Campus+ participation ============ -->
         <record id="criterion_c2" model="campus.criterion">
@@ -65,8 +65,8 @@
             <field name="value_type">scale</field>
             <field name="source_key">taughtCampus</field>
         </record>
-        <record id="scale_c2_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c2"/><field name="key">yes</field><field name="name">Oui</field><field name="aliases">نعم,oui</field><field name="score">5</field><field name="sequence">10</field></record>
-        <record id="scale_c2_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c2"/><field name="key">no</field><field name="name">Non</field><field name="aliases">لا,non</field><field name="score">0</field><field name="sequence">20</field></record>
+        <record id="scale_c2_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c2"/><field name="key">yes</field><field name="name">Yes</field><field name="aliases">نعم,oui</field><field name="score">5</field><field name="sequence">10</field></record>
+        <record id="scale_c2_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c2"/><field name="key">no</field><field name="name">No</field><field name="aliases">لا,non</field><field name="score">0</field><field name="sequence">20</field></record>
 
         <!-- ============ C3 — Years of experience ============ -->
         <record id="criterion_c3" model="campus.criterion">
@@ -87,17 +87,17 @@
             <field name="version_id" ref="version_2026"/>
             <field name="code">C4</field>
             <field name="name">Confidence on Camera</field>
-            <field name="description">The barème has five bands scored 0, 1, 3, 4, 5 — it deliberately skips 2. The form's five levels map onto them in order.</field>
+            <field name="description">The scale has five bands scored 0, 1, 3, 4, 5 — it deliberately skips 2. The form's five levels map onto them in order.</field>
             <field name="sequence">40</field>
             <field name="priority">1</field>
             <field name="value_type">scale</field>
             <field name="source_key">camConfidence</field>
         </record>
-        <record id="scale_c4_4" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">4</field><field name="name">Très bonne</field><field name="aliases">ثقة عالية جداً وأتحدث بطلاقة أمام الكاميرا</field><field name="score">5</field><field name="sequence">10</field></record>
-        <record id="scale_c4_3" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">3</field><field name="name">Bonne</field><field name="aliases">ثقة جيدة وأستطيع التحدث بشكل مرتاح</field><field name="score">4</field><field name="sequence">20</field></record>
-        <record id="scale_c4_2" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">2</field><field name="name">Moyenne</field><field name="aliases">ثقة متوسطة مع بعض التوتر في البداية</field><field name="score">3</field><field name="sequence">30</field></record>
-        <record id="scale_c4_1" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">1</field><field name="name">Faible</field><field name="aliases">ثقة ضعيفة وأشعر بالتوتر أثناء التحدث</field><field name="score">1</field><field name="sequence">40</field></record>
-        <record id="scale_c4_0" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">0</field><field name="name">Aucune</field><field name="aliases">لا أشعر بأي ثقة وأجد الأمر صعباً جداً</field><field name="score">0</field><field name="sequence">50</field></record>
+        <record id="scale_c4_4" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">4</field><field name="name">Very good</field><field name="aliases">ثقة عالية جداً وأتحدث بطلاقة أمام الكاميرا,Très bonne</field><field name="score">5</field><field name="sequence">10</field></record>
+        <record id="scale_c4_3" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">3</field><field name="name">Good</field><field name="aliases">ثقة جيدة وأستطيع التحدث بشكل مرتاح,Bonne</field><field name="score">4</field><field name="sequence">20</field></record>
+        <record id="scale_c4_2" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">2</field><field name="name">Average</field><field name="aliases">ثقة متوسطة مع بعض التوتر في البداية,Moyenne</field><field name="score">3</field><field name="sequence">30</field></record>
+        <record id="scale_c4_1" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">1</field><field name="name">Weak</field><field name="aliases">ثقة ضعيفة وأشعر بالتوتر أثناء التحدث,Faible</field><field name="score">1</field><field name="sequence">40</field></record>
+        <record id="scale_c4_0" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c4"/><field name="key">0</field><field name="name">None</field><field name="aliases">لا أشعر بأي ثقة وأجد الأمر صعباً جداً,Aucune</field><field name="score">0</field><field name="sequence">50</field></record>
 
         <!-- ============ C5 — Already taught the selected subjects ============
              NEEDS CONFIRMATION: the form has no such question. Derived from the
@@ -114,8 +114,8 @@
             <field name="value_type">scale</field>
             <field name="source_key">taughtSelectedSubjects</field>
         </record>
-        <record id="scale_c5_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c5"/><field name="key">oui</field><field name="name">Oui</field><field name="aliases">نعم,yes</field><field name="score">5</field><field name="sequence">10</field></record>
-        <record id="scale_c5_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c5"/><field name="key">non</field><field name="name">Non</field><field name="aliases">لا,no</field><field name="score">0</field><field name="sequence">20</field></record>
+        <record id="scale_c5_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c5"/><field name="key">oui</field><field name="name">Yes</field><field name="aliases">نعم,yes,Oui</field><field name="score">5</field><field name="sequence">10</field></record>
+        <record id="scale_c5_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c5"/><field name="key">non</field><field name="name">No</field><field name="aliases">لا,no,Non</field><field name="score">0</field><field name="sequence">20</field></record>
 
         <!-- ============ C6 — Already taught at HIS ============ -->
         <record id="criterion_c6" model="campus.criterion">
@@ -127,8 +127,8 @@
             <field name="value_type">scale</field>
             <field name="source_key">taughtHIS</field>
         </record>
-        <record id="scale_c6_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c6"/><field name="key">yes</field><field name="name">Oui</field><field name="aliases">نعم,oui</field><field name="score">5</field><field name="sequence">10</field></record>
-        <record id="scale_c6_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c6"/><field name="key">no</field><field name="name">Non</field><field name="aliases">لا,non</field><field name="score">0</field><field name="sequence">20</field></record>
+        <record id="scale_c6_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c6"/><field name="key">yes</field><field name="name">Yes</field><field name="aliases">نعم,oui</field><field name="score">5</field><field name="sequence">10</field></record>
+        <record id="scale_c6_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c6"/><field name="key">no</field><field name="name">No</field><field name="aliases">لا,non</field><field name="score">0</field><field name="sequence">20</field></record>
 
         <!-- ============ C7 — Digital tools used ============ -->
         <record id="criterion_c7" model="campus.criterion">
@@ -153,11 +153,11 @@
             <field name="value_type">scale</field>
             <field name="source_key">flippedKnowledge</field>
         </record>
-        <record id="scale_c8_4" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">4</field><field name="name">Bonne</field><field name="aliases">لدي معرفة جيدة</field><field name="score">4</field><field name="sequence">10</field></record>
-        <record id="scale_c8_3" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">3</field><field name="name">Limitée</field><field name="aliases">لدي معرفة محدودة</field><field name="score">3</field><field name="sequence">20</field></record>
-        <record id="scale_c8_2" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">2</field><field name="name">Superficielle</field><field name="aliases">لدي معرفة سطحية</field><field name="score">2</field><field name="sequence">30</field></record>
-        <record id="scale_c8_1" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">1</field><field name="name">A entendu parler</field><field name="aliases">سمعت به فقط</field><field name="score">1</field><field name="sequence">40</field></record>
-        <record id="scale_c8_0" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">0</field><field name="name">Ne connaît pas</field><field name="aliases">لم أسمع به من قبل</field><field name="score">0</field><field name="sequence">50</field></record>
+        <record id="scale_c8_4" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">4</field><field name="name">Good</field><field name="aliases">لدي معرفة جيدة,Bonne</field><field name="score">4</field><field name="sequence">10</field></record>
+        <record id="scale_c8_3" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">3</field><field name="name">Limited</field><field name="aliases">لدي معرفة محدودة,Limitée</field><field name="score">3</field><field name="sequence">20</field></record>
+        <record id="scale_c8_2" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">2</field><field name="name">Superficial</field><field name="aliases">لدي معرفة سطحية,Superficielle</field><field name="score">2</field><field name="sequence">30</field></record>
+        <record id="scale_c8_1" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">1</field><field name="name">Has heard of it</field><field name="aliases">سمعت به فقط,A entendu parler</field><field name="score">1</field><field name="sequence">40</field></record>
+        <record id="scale_c8_0" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c8"/><field name="key">0</field><field name="name">Does not know it</field><field name="aliases">لم أسمع به من قبل,Ne connaît pas</field><field name="score">0</field><field name="sequence">50</field></record>
 
         <!-- ============ C9 — Experience per subject ============
              NEEDS CONFIRMATION: derived from whether the candidate filled in any
@@ -172,8 +172,8 @@
             <field name="value_type">scale</field>
             <field name="source_key">subjectExperienceProvided</field>
         </record>
-        <record id="scale_c9_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c9"/><field name="key">oui</field><field name="name">Réponse fournie</field><field name="aliases">نعم,yes</field><field name="score">5</field><field name="sequence">10</field></record>
-        <record id="scale_c9_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c9"/><field name="key">non</field><field name="name">Pas de réponse</field><field name="aliases">لا,no</field><field name="score">0</field><field name="sequence">20</field></record>
+        <record id="scale_c9_yes" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c9"/><field name="key">oui</field><field name="name">Answer given</field><field name="aliases">نعم,yes,Réponse fournie</field><field name="score">5</field><field name="sequence">10</field></record>
+        <record id="scale_c9_no" model="campus.criterion.scale"><field name="criterion_id" ref="criterion_c9"/><field name="key">non</field><field name="name">No answer</field><field name="aliases">لا,no,Pas de réponse</field><field name="score">0</field><field name="sequence">20</field></record>
 
         <!-- ============ C10 — Pedagogical means used ============ -->
         <record id="criterion_c10" model="campus.criterion">

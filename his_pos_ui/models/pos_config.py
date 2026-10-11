@@ -20,7 +20,7 @@ class PosConfig(models.Model):
         [
             ("copy_center", "Copy Center"),
             ("restaurant", "Restaurant"),
-            ("cafeteria", "Cafétéria"),
+            ("cafeteria", "Cafeteria"),
         ],
         string="HIS Theme",
         help="Appearance of this point of sale. Leave empty to keep the stock Odoo interface.",

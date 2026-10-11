@@ -16,7 +16,7 @@
                     <field name="etat" widget="statusbar" options="{'clickable': 1}"
                            statusbar_visible="prospect,candidat_soumis,admis,inscrit"/>
                     <button name="action_generer_documents" type="object"
-                            string="Actualiser les pieces attendues" class="btn-secondary"
+                            string="Refresh Expected Documents" class="btn-secondary"
                             groups="his_admission.group_his_admission"/>
                 </header>
             </xpath>
@@ -40,9 +40,9 @@
             <field name="notes" position="replace">
                 <notebook>
 
-                    <page string="Inscription" name="inscription">
+                    <page string="Enrolment" name="inscription">
                         <group>
-                            <group string="Cursus">
+                            <group string="Studies">
                                 <field name="cycle"/>
                                 <field name="specialite_id"
                                        domain="[('cycle', '=', cycle)]"
@@ -52,7 +52,7 @@
                                 <field name="langue_etude"/>
                                 <field name="programme_qualifiant"/>
                             </group>
-                            <group string="Jalons">
+                            <group string="Milestones">
                                 <field name="inscription_initiale"/>
                                 <field name="lettre_acceptation"/>
                                 <field name="inscription_definitive"/>
@@ -61,9 +61,9 @@
                         </group>
                     </page>
 
-                    <page string="Dossier academique" name="academique">
+                    <page string="Academic Record" name="academique">
                         <group>
-                            <group string="Baccalaureat">
+                            <group string="Baccalaureate">
                                 <field name="bac_numero"/>
                                 <field name="bac_session"/>
                                 <field name="bac_filiere"/>
@@ -75,7 +75,7 @@
                                 <field name="note_physique"/>
                             </group>
                         </group>
-                        <group string="Eligibilite">
+                        <group string="Eligibility">
                             <!-- Calculee depuis le bareme du domaine, jamais
                                  saisie : c'est ce qui remplace la feuille
                                  CALCULATEUR et sa formule recopiee a la main. -->
@@ -88,10 +88,10 @@
                         </group>
                     </page>
 
-                    <page string="Pieces" name="pieces">
+                    <page string="Documents" name="pieces">
                         <div class="alert alert-info" role="status"
                              invisible="not documents_manquants">
-                            Pieces obligatoires manquantes :
+                            Missing required documents:
                             <field name="documents_manquants" readonly="1" class="oe_inline"/>
                         </div>
                         <field name="document_ids">
@@ -112,13 +112,13 @@
                              est le seul chemin, pour le guichet comme pour
                              l'Admission, et demain pour le module Finance qui
                              appellera la meme methode. -->
-                        <group string="Droits encaisses">
+                        <group string="Fees Collected">
                             <label for="frais_inscription_payes"/>
                             <div>
                                 <field name="frais_inscription_payes" class="oe_inline"/>
                                 <button name="action_encaisser_frais_inscription"
                                         type="object" class="btn-link"
-                                        string="Enregistrer l'encaissement"
+                                        string="Record Payment"
                                         invisible="frais_inscription_payes"
                                         groups="his_admission.group_his_admission,his_admission.group_his_finance"/>
                             </div>
@@ -127,7 +127,7 @@
                                 <field name="frais_scolarite_payes" class="oe_inline"/>
                                 <button name="action_encaisser_frais_scolarite"
                                         type="object" class="btn-link"
-                                        string="Enregistrer l'encaissement"
+                                        string="Record Payment"
                                         invisible="frais_scolarite_payes"
                                         groups="his_admission.group_his_admission,his_admission.group_his_finance"/>
                             </div>
@@ -137,19 +137,19 @@
                                 <field name="droits_prog_qualifiant_payes" class="oe_inline"/>
                                 <button name="action_encaisser_droits_prog_qualifiant"
                                         type="object" class="btn-link"
-                                        string="Enregistrer l'encaissement"
+                                        string="Record Payment"
                                         invisible="droits_prog_qualifiant_payes"
                                         groups="his_admission.group_his_admission,his_admission.group_his_finance"/>
                             </div>
                         </group>
                         <p class="text-muted">
-                            Paye ou non paye seulement : les montants restent dans l'outil
-                            de caisse. Enregistrer les frais d'inscription fait passer le
-                            lead d'origine en gagne — c'est le seul geste qui le gagne.
+                            Paid or not paid only: the amounts stay in the cash
+                            tool. Recording the registration fees marks the
+                            original lead as won — it is the only action that wins it.
                         </p>
                     </page>
 
-                    <page string="Carte etudiant" name="carte">
+                    <page string="Student Card" name="carte">
                         <!-- Une carte s'edite sur un dossier INSCRIT, et sur
                              lui seul. L'ecran « Cartes etudiant » ne liste que
                              les inscrits : sans ce verrou, on remplit ici des
@@ -164,9 +164,9 @@
                              y a a corriger plutot qu'un onglet vide. -->
                         <div class="alert alert-info" role="status"
                              invisible="etat == 'inscrit'">
-                            La carte etudiant se renseigne une fois le dossier
-                            <b>Inscrit</b>. L'ecran « Cartes etudiant » ne liste
-                            que les inscrits.
+                            The student card is entered once the file is
+                            <b>Enrolled</b>. The "Student Cards" screen only lists
+                            enrolled students.
                         </div>
                         <group>
                             <field name="carte_recue_it"
@@ -179,7 +179,7 @@
                     </page>
 
                     <page string="Notes" name="notes">
-                        <field name="notes" placeholder="Remarques sur ce dossier..."/>
+                        <field name="notes" placeholder="Remarks on this file..."/>
                     </page>
 
                 </notebook>
@@ -218,41 +218,41 @@
                 <field name="conseiller_id"/>
             </field>
             <filter name="filter_inscrit" position="after">
-                <filter name="filter_admis" string="Admis"
+                <filter name="filter_admis" string="Admitted"
                         domain="[('etat', '=', 'admis')]"/>
-                <filter name="filter_blocage" string="Blocages administratifs"
+                <filter name="filter_blocage" string="Administrative Holds"
                         domain="[('etat', '=', 'blocage_administratif')]"/>
                 <separator/>
-                <filter name="filter_dossier_incomplet" string="Dossier incomplet"
+                <filter name="filter_dossier_incomplet" string="Incomplete File"
                         domain="[('documents_complets', '=', False)]"/>
-                <filter name="filter_a_verifier" string="Eligibilite a verifier"
+                <filter name="filter_a_verifier" string="Eligibility to Check"
                         domain="[('eligibilite', '=', 'a_verifier')]"/>
                 <separator/>
-                <filter name="filter_reinscription" string="Reinscriptions"
+                <filter name="filter_reinscription" string="Re-enrolments"
                         domain="[('type_inscription', '=', 'reinscription')]"/>
             </filter>
             <filter name="group_etat" position="after">
                 <filter name="group_cycle" string="Cycle" context="{'group_by': 'cycle'}"/>
-                <filter name="group_specialite" string="Specialite"
+                <filter name="group_specialite" string="Specialty"
                         context="{'group_by': 'specialite_id'}"/>
-                <filter name="group_conseiller" string="Conseillere"
+                <filter name="group_conseiller" string="Advisor"
                         context="{'group_by': 'conseiller_id'}"/>
             </filter>
         </field>
     </record>
 
     <record id="action_his_engagement_admission" model="ir.actions.act_window">
-        <field name="name">Dossiers d'admission</field>
+        <field name="name">Admission Files</field>
         <field name="res_model">his.engagement</field>
         <field name="view_mode">list,form,pivot</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun dossier d'admission.</p>
-            <p>Les dossiers naissent du CRM : au premier contact commercial pour le
-               parcours, a la pre-admission pour l'instruction du dossier.</p>
+            <p class="o_view_nocontent_smiling_face">No admission file.</p>
+            <p>Files are born in the CRM: at the first sales contact for the
+               journey, at pre-admission for processing the file.</p>
         </field>
     </record>
 
-    <menuitem id="menu_admission_dossiers" name="Dossiers"
+    <menuitem id="menu_admission_dossiers" name="Files"
               parent="menu_admission_root" groups="his_admission.group_his_admission"
               action="action_his_engagement_admission"
               sequence="10"/>

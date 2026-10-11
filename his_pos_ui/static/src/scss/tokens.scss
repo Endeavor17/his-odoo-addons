@@ -42,10 +42,11 @@
     --his-accent-ink: #ffffff;
     --his-accent-dim: var(--his-tint);
 
-    // Read only by the Copy job dialog; the system stack is what it always used.
-    --his-font-label: 600 0.72rem/1.1 system-ui, -apple-system, "Segoe UI", sans-serif;
+    // Read only by the Copy job dialog. Same faces as his_theme, so the till
+    // reads as one typeface whether or not the theme is installed.
+    --his-font-label: 600 0.72rem/1.1 "Figtree", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
     --his-label-tracking: 0.09em;
-    --his-font-mono: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "SF Mono", Menlo, Consolas, monospace;
+    --his-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 
     // --- Hooks Odoo already exposes ------------------------------------------
     // orderline.scss paints a selected line from this variable.

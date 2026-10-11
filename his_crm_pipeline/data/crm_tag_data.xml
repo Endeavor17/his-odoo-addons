@@ -26,22 +26,22 @@
              rappeler avant de rappeler le candidat. -->
 
         <record id="tag_bourse_demandee" model="crm.tag">
-            <field name="name">Bourse demandee</field>
+            <field name="name">Scholarship requested</field>
             <field name="color">4</field>
         </record>
 
         <record id="tag_indecis_programme" model="crm.tag">
-            <field name="name">Indecis programme</field>
+            <field name="name">Undecided on programme</field>
             <field name="color">3</field>
         </record>
 
         <record id="tag_parent_implique" model="crm.tag">
-            <field name="name">Parent tres implique</field>
+            <field name="name">Very involved parent</field>
             <field name="color">6</field>
         </record>
 
         <record id="tag_relance_prioritaire" model="crm.tag">
-            <field name="name">Relance prioritaire</field>
+            <field name="name">Priority Follow-up</field>
             <field name="color">1</field>
         </record>
 
@@ -55,17 +55,17 @@
         </record>
 
         <record id="tag_reseaux_sociaux" model="crm.tag">
-            <field name="name">Reseaux sociaux</field>
+            <field name="name">Social Media</field>
             <field name="color">10</field>
         </record>
 
         <record id="tag_site_web" model="crm.tag">
-            <field name="name">Site web</field>
+            <field name="name">Website</field>
             <field name="color">7</field>
         </record>
 
         <record id="tag_evenement" model="crm.tag">
-            <field name="name">Evenement</field>
+            <field name="name">Event</field>
             <field name="color">5</field>
         </record>
 

@@ -1,0 +1,445 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_person_sync_sheets
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,help:his_person_sync_sheets.field_his_person_import_line__candidate_person_id
+msgid "Best match found. Until it is confirmed, nothing is linked."
+msgstr ""
+"Meilleure correspondance trouvée. Tant qu'elle n'est pas confirmée, rien "
+"n'est rattaché."
+
+#. module: his_person_sync_sheets
+#. odoo-python
+#: code:addons/his_person_sync_sheets/wizard/his_person_import.py:0
+msgid "CSV file encoding not recognised."
+msgstr "Encodage du fichier CSV non reconnu."
+
+#. module: his_person_sync_sheets
+#. odoo-python
+#: code:addons/his_person_sync_sheets/wizard/his_person_import.py:0
+msgid ""
+"Card %(card)s is already assigned to %(holder)s (%(matricule)s). A card "
+"identifies only one person: row rejected, to be resolved by hand."
+msgstr ""
+"La carte %(card)s est déjà attribuée à %(holder)s (%(matricule)s). Une carte"
+" n'identifie qu'une personne : ligne rejetée, à arbitrer manuellement."
+
+#. module: his_person_sync_sheets
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_import_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: his_person_sync_sheets
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_import_form
+msgid "Confirm: it is the same person"
+msgstr "Confirmer : c'est la même personne"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_import_line__outcome__conflict
+msgid "Conflict - row rejected"
+msgstr "Conflit - ligne rejetée"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__outcome__conflict
+msgid "Conflict — row rejected"
+msgstr "Conflit — ligne rejetée"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__conflict_count
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_sync_log_search
+msgid "Conflicts"
+msgstr "Conflits"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__created_count
+msgid "Created"
+msgstr "Créées"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__create_uid
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__create_uid
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__create_date
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__create_date
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__match_method__new
+msgid "Creation"
+msgstr "Création"
+
+#. module: his_person_sync_sheets
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_sync_log_list
+msgid "Date"
+msgstr "Date"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__message
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__message
+msgid "Detail"
+msgstr "Détail"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__match_method__deterministic
+msgid "Deterministic"
+msgstr "Déterministe"
+
+#. module: his_person_sync_sheets
+#. odoo-python
+#: code:addons/his_person_sync_sheets/wizard/his_person_import.py:0
+msgid "Deterministic match."
+msgstr "Rapprochement déterministe."
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__display_name
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__display_name
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_person_sync_sheets
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_import_form
+msgid ""
+"Drop the Sales/Admission export (CSV or XLSX). The import is\n"
+"                        <b>one-way</b>: nothing is ever written back to the source file."
+msgstr ""
+"Déposez l'export Sales/Admission (CSV ou XLSX). L'import est à\n"
+"                        <b>sens unique</b> : rien n'est jamais réécrit dans le fichier source."
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__file
+msgid "Export File (CSV or XLSX)"
+msgstr "Fichier export (CSV ou XLSX)"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__filename
+msgid "File Name"
+msgstr "Nom du fichier"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__source_system__google_sheets
+msgid "Google Sheets"
+msgstr "Google Sheets"
+
+#. module: his_person_sync_sheets
+#. odoo-python
+#: code:addons/his_person_sync_sheets/wizard/his_person_import.py:0
+msgid "Google Sheets import (%(ref)s): %(message)s"
+msgstr "Import Google Sheets (%(ref)s) : %(message)s"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__id
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__id
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__import_id
+msgid "Import"
+msgstr "Import"
+
+#. module: his_person_sync_sheets
+#: model:ir.ui.menu,name:his_person_sync_sheets.menu_his_person_import
+msgid "Import (Google Sheets)"
+msgstr "Importer (Google Sheets)"
+
+#. module: his_person_sync_sheets
+#: model:ir.actions.act_window,name:his_person_sync_sheets.action_his_person_import
+msgid "Import People (Google Sheets)"
+msgstr "Importer des personnes (Google Sheets)"
+
+#. module: his_person_sync_sheets
+#: model:ir.model,name:his_person_sync_sheets.model_his_person_import
+msgid "Import people from the Google Sheets export"
+msgstr "Import des personnes depuis l'export Google Sheets"
+
+#. module: his_person_sync_sheets
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_import_form
+msgid "Import the Google Sheets Export"
+msgstr "Importer l'export Google Sheets"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__email
+msgid "Institutional Email"
+msgstr "Email institutionnel"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__write_uid
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__write_uid
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__write_date
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__write_date
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_person_sync_sheets
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_sync_log_search
+msgid "Log"
+msgstr "Journal"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__source_system__manual
+msgid "Manual Entry"
+msgstr "Saisie manuelle"
+
+#. module: his_person_sync_sheets
+#. odoo-python
+#: code:addons/his_person_sync_sheets/wizard/his_person_import.py:0
+msgid "Match (%(score)d%%) confirmed by %(user)s."
+msgstr "Rapprochement (%(score)d%%) confirmé par %(user)s."
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_import_line__outcome__confirmed
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__outcome__confirmed
+msgid "Match Confirmed"
+msgstr "Rapprochement confirmé"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_import_line__outcome__rejected
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__outcome__rejected
+msgid "Match Rejected, Record Created"
+msgstr "Rapprochement refusé, fiche créée"
+
+#. module: his_person_sync_sheets
+#. odoo-python
+#: code:addons/his_person_sync_sheets/wizard/his_person_import.py:0
+msgid "Match rejected by %s: separate record created."
+msgstr "Rapprochement refusé par %s : fiche distincte créée."
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__match_method
+msgid "Method"
+msgstr "Méthode"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__nom_arabe
+msgid "Name (Arabic)"
+msgstr "Nom (arabe)"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__name
+msgid "Name (Latin)"
+msgstr "Nom (latin)"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__nom_source
+msgid "Name in the source"
+msgstr "Nom dans la source"
+
+#. module: his_person_sync_sheets
+#. odoo-python
+#: code:addons/his_person_sync_sheets/wizard/his_person_import.py:0
+msgid "No name column recognised in the file header. Accepted headings: %s."
+msgstr ""
+"Aucune colonne de nom reconnue dans l'en-tête du fichier. Intitulés acceptés"
+" : %s."
+
+#. module: his_person_sync_sheets
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_import_form
+msgid ""
+"No record is merged automatically. A probable match\n"
+"                        is <b>suggested</b>: you confirm or reject it."
+msgstr ""
+"Aucune fiche n'est fusionnée automatiquement. Une correspondance\n"
+"                        probable est <b>proposée</b> : c'est vous qui confirmez ou refusez."
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__source_system__odoo_hr
+msgid "Odoo HR"
+msgstr "Odoo RH"
+
+#. module: his_person_sync_sheets
+#: model:ir.model,name:his_person_sync_sheets.model_his_person_import_line
+msgid "People Import Row"
+msgstr "Ligne d'import de personnes"
+
+#. module: his_person_sync_sheets
+#: model:ir.model,name:his_person_sync_sheets.model_his_person_sync_log
+msgid "People Sync Log"
+msgstr "Journal de synchronisation des personnes"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__person_id
+msgid "Person"
+msgstr "Personne"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__email_personnel
+msgid "Personal Email"
+msgstr "Email personnel"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__phone
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__match_method__probabilistic
+msgid "Probabilistic"
+msgstr "Probabiliste"
+
+#. module: his_person_sync_sheets
+#. odoo-python
+#: code:addons/his_person_sync_sheets/wizard/his_person_import.py:0
+msgid "Probable match (%d%%): confirm or reject it."
+msgstr "Correspondance probable (%d%%) : à confirmer ou refuser."
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__numero_carte
+msgid "RFID Badge"
+msgstr "Badge RFID"
+
+#. module: his_person_sync_sheets
+#. odoo-python
+#: code:addons/his_person_sync_sheets/wizard/his_person_import.py:0
+msgid ""
+"Reading XLSX requires openpyxl, which is missing from this environment. "
+"Export the sheet as CSV and run the import again."
+msgstr ""
+"La lecture XLSX nécessite openpyxl, absent de cet environnement. Exportez la"
+" feuille en CSV et relancez l'import."
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_import_line__outcome__created
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__outcome__created
+msgid "Record Created"
+msgstr "Fiche créée"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_import_line__outcome__updated
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__outcome__updated
+msgid "Record Updated"
+msgstr "Fiche mise à jour"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__matricule_institutionnel
+msgid "Registration Number (Source)"
+msgstr "Matricule (source)"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__matricule_source
+msgid "Registration number in the source"
+msgstr "Matricule dans la source"
+
+#. module: his_person_sync_sheets
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_import_form
+msgid "Reject: create a separate record"
+msgstr "Refuser : créer une fiche distincte"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__outcome
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__outcome
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_import__state__review
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_sync_log_search
+msgid "Result"
+msgstr "Résultat"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__person_id
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_import_form
+msgid "Resulting Record"
+msgstr "Fiche résultante"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__line_ids
+msgid "Rows"
+msgstr "Lignes"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__user_id
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_sync_log_search
+msgid "Run By"
+msgstr "Exécuté par"
+
+#. module: his_person_sync_sheets
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_import_form
+msgid "Run Import"
+msgstr "Importer"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__score
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__score
+msgid "Score"
+msgstr "Score"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__external_ref
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__external_ref
+msgid "Source Reference"
+msgstr "Référence source"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_sync_log__source_system
+msgid "Source System"
+msgstr "Système source"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__state
+msgid "Step"
+msgstr "Étape"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import_line__candidate_person_id
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_import_form
+msgid "Suggested Record"
+msgstr "Fiche proposée"
+
+#. module: his_person_sync_sheets
+#: model:ir.actions.act_window,name:his_person_sync_sheets.action_his_person_sync_log
+#: model:ir.ui.menu,name:his_person_sync_sheets.menu_his_person_sync_log
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_sync_log_list
+msgid "Sync Log"
+msgstr "Journal de synchronisation"
+
+#. module: his_person_sync_sheets
+#. odoo-python
+#: code:addons/his_person_sync_sheets/wizard/his_person_import.py:0
+msgid "The file contains no usable row."
+msgstr "Le fichier ne contient aucune ligne exploitable."
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__flagged_count
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_import_line__outcome__flagged
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__outcome__flagged
+#: model_terms:ir.ui.view,arch_db:his_person_sync_sheets.view_his_person_sync_log_search
+msgid "To Review"
+msgstr "À arbitrer"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_sync_log__source_system__uniflow
+msgid "Uniflow"
+msgstr "Uniflow"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields,field_description:his_person_sync_sheets.field_his_person_import__updated_count
+msgid "Updated"
+msgstr "Mises à jour"
+
+#. module: his_person_sync_sheets
+#: model:ir.model.fields.selection,name:his_person_sync_sheets.selection__his_person_import__state__upload
+msgid "Upload"
+msgstr "Dépôt"

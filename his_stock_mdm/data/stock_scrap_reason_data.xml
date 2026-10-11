@@ -6,27 +6,27 @@
              charger ; l'obligation de saisie est dans models/stock_scrap.py. -->
 
         <record id="scrap_reason_perime" model="stock.scrap.reason.tag">
-            <field name="name">Périmé/Expiré</field>
+            <field name="name">Out of Date/Expired</field>
             <field name="sequence">10</field>
             <field name="color">#C55</field>
         </record>
         <record id="scrap_reason_casse" model="stock.scrap.reason.tag">
-            <field name="name">Casse/Endommagé</field>
+            <field name="name">Broken/Damaged</field>
             <field name="sequence">20</field>
             <field name="color">#D80</field>
         </record>
         <record id="scrap_reason_vol" model="stock.scrap.reason.tag">
-            <field name="name">Vol/Manquant inexpliqué</field>
+            <field name="name">Theft/Unexplained Shortage</field>
             <field name="sequence">30</field>
             <field name="color">#933</field>
         </record>
         <record id="scrap_reason_preparation" model="stock.scrap.reason.tag">
-            <field name="name">Erreur de préparation</field>
+            <field name="name">Picking Error</field>
             <field name="sequence">40</field>
             <field name="color">#57A</field>
         </record>
         <record id="scrap_reason_autre" model="stock.scrap.reason.tag">
-            <field name="name">Autre</field>
+            <field name="name">Other</field>
             <field name="sequence">50</field>
             <field name="color">#888</field>
         </record>

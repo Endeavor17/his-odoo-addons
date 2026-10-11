@@ -55,7 +55,7 @@
 }
 
 .o_mu_kpi_value {
-    font-family: var(--bs-font-monospace, ui-monospace, monospace);
+    font-family: var(--font-monospace, monospace);
     font-size: 2.375rem;
     font-weight: 600;
     line-height: 1.05;
@@ -154,7 +154,7 @@
 // Figures wear the mono face and a text colour — never the colour of the bar
 // beside them.
 .o_mu_figure {
-    font-family: var(--bs-font-monospace, ui-monospace, monospace);
+    font-family: var(--font-monospace, monospace);
     font-size: 0.875rem;
     font-weight: 600;
 }

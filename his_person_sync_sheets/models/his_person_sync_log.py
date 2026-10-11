@@ -4,7 +4,7 @@ from odoo import fields, models
 
 class HisPersonSyncLog(models.Model):
     _name = "his.person.sync.log"
-    _description = "Journal de synchronisation des personnes"
+    _description = "People Sync Log"
     _order = "create_date desc, id desc"
 
     # Un modele dedie plutot que le seul chatter : un import porte des
@@ -12,46 +12,46 @@ class HisPersonSyncLog(models.Model):
     # rattaches a AUCUNE fiche — un message de chatter n'aurait nulle part ou
     # se poser. Les fiches effectivement touchees recoivent en plus leur
     # message de chatter.
-    person_id = fields.Many2one("his.person", string="Personne", ondelete="set null", index=True)
+    person_id = fields.Many2one("his.person", string="Person", ondelete="set null", index=True)
     source_system = fields.Selection(
         selection=[
-            ("odoo_hr", "Odoo RH"),
+            ("odoo_hr", "Odoo HR"),
             ("google_sheets", "Google Sheets"),
             ("uniflow", "Uniflow"),
-            ("manual", "Saisie manuelle"),
+            ("manual", "Manual Entry"),
         ],
-        string="Systeme source",
+        string="Source System",
         required=True,
     )
-    external_ref = fields.Char(string="Reference source", index=True)
-    nom_source = fields.Char(string="Nom dans la source")
-    matricule_source = fields.Char(string="Matricule dans la source")
+    external_ref = fields.Char(string="Source Reference", index=True)
+    nom_source = fields.Char(string="Name in the source")
+    matricule_source = fields.Char(string="Registration number in the source")
     outcome = fields.Selection(
         selection=[
-            ("created", "Fiche creee"),
-            ("updated", "Fiche mise a jour"),
-            ("flagged", "A arbitrer"),
-            ("confirmed", "Rapprochement confirme"),
-            ("rejected", "Rapprochement refuse, fiche creee"),
-            ("conflict", "Conflit — ligne rejetee"),
+            ("created", "Record Created"),
+            ("updated", "Record Updated"),
+            ("flagged", "To Review"),
+            ("confirmed", "Match Confirmed"),
+            ("rejected", "Match Rejected, Record Created"),
+            ("conflict", "Conflict — row rejected"),
         ],
-        string="Resultat",
+        string="Result",
         required=True,
         index=True,
     )
     match_method = fields.Selection(
         selection=[
-            ("deterministic", "Deterministe"),
-            ("probabilistic", "Probabiliste"),
+            ("deterministic", "Deterministic"),
+            ("probabilistic", "Probabilistic"),
             ("new", "Creation"),
         ],
-        string="Methode",
+        string="Method",
     )
     score = fields.Float(string="Score", digits=(3, 2))
     message = fields.Char(string="Detail")
     user_id = fields.Many2one(
         "res.users",
-        string="Execute par",
+        string="Run By",
         default=lambda self: self.env.user,
         required=True,
     )

@@ -45,6 +45,7 @@ class PosConfig(models.Model):
     _inherit = "pos.config"
 
     his_dashboard_available = fields.Boolean(
+        string="Dashboard Available",
         compute="_compute_his_dashboard_available",
         help="Set when the three Metabase system parameters are: the till then shows a Dashboard menu item.",
     )

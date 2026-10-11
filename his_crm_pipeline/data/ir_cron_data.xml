@@ -7,7 +7,7 @@
              relance n'a plus d'objet. Le defaut d'Odoo (1 day) est donc
              explicitement ecrase ici. -->
         <record id="ir_cron_his_crm_sla_premier_contact" model="ir.cron">
-            <field name="name">CRM Admissions : relance SLA premier contact</field>
+            <field name="name">CRM Admissions: first-contact SLA reminder</field>
             <field name="model_id" ref="crm.model_crm_lead"/>
             <field name="state">code</field>
             <field name="code">model._cron_relance_sla_premier_contact()</field>

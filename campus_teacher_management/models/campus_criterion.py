@@ -105,7 +105,7 @@ class CampusCriterion(models.Model):
     def _selection_value_type(self):
         """Overridable so a future module can add a value type by inheritance."""
         return [
-            ("scale", "Scale (barème)"),
+            ("scale", "Scale"),
             ("count", "Count of selected options"),
             ("number", "Numeric answer"),
             ("answered", "Answered / not answered"),

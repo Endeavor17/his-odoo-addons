@@ -1,0 +1,1463 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_crm_pipeline
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid ""
+"\"%(lead)s\" cannot be lost without a reason.\n"
+"\n"
+"The reason is what tells us WHERE we lose applicants. If none in the list fits, choose \"Other - please specify\" and say in one line what happened."
+msgstr ""
+"« %(lead)s » ne peut pas être perdu sans motif.\n"
+"\n"
+"Le motif est ce qui permet de savoir OÙ l'on perd les candidats. Si aucun de la liste ne convient, choisissez « Autre - à préciser » et dites en une ligne ce qui s'est passé."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid ""
+"\"%(lead)s\" cannot move to Approval: the following deliverable(s) are not approved — %(manquants)s.\n"
+"\n"
+"Every requested deliverable must have the \"Approved\" status before final validation."
+msgstr ""
+"« %(lead)s » ne peut pas passer en Approbation : le ou les livrables suivants ne sont pas approuvés — %(manquants)s.\n"
+"\n"
+"Chaque livrable demandé doit porter le statut « Approuvé » avant la validation finale."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid ""
+"\"%(lead)s\": the \"Other\" reason needs details.\n"
+"\n"
+"Without them, \"Other\" would become the universal shortcut and teach nothing more than an empty reason."
+msgstr ""
+"« %(lead)s » : le motif « Autre » demande une précision.\n"
+"\n"
+"Sans elle, « Autre » deviendrait le raccourci universel et n'apprendrait rien de plus qu'un motif vide."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_objectif.py:0
+msgid "\"%(nom)s\" ends before it starts."
+msgstr "« %(nom)s » se termine avant de commencer."
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "% vs previous period"
+msgstr "% vs période précédente"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid "%(approuves)s/%(total)s approved"
+msgstr "%(approuves)s/%(total)s approuvés"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_content_deliverable.py:0
+msgid ""
+"%(nom)s cannot receive the deliverable \"%(livrable)s\": this account has no"
+" Content Production role and would not even have access to the request."
+msgstr ""
+"%(nom)s ne peut pas recevoir le livrable « %(livrable)s » : ce compte ne "
+"porte aucun rôle de Production Contenu et n'aurait même pas accès à la "
+"demande."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid "%s - late"
+msgstr "%s - en retard"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid ""
+"/day required ·\n"
+"                                    projection"
+msgstr ""
+"/j requis ·\n"
+"                                    projection"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid ""
+"<i class=\"fa fa-calendar-check-o text-success\" role=\"img\" aria-"
+"label=\"Campus Visit Done\" title=\"Campus Visit Done\" invisible=\"not "
+"visite_campus_effectuee\"/>"
+msgstr ""
+"<i class=\"fa fa-calendar-check-o text-success\" role=\"img\" aria-"
+"label=\"Visite campus effectuée\" title=\"Visite campus effectuée\" "
+"invisible=\"not visite_campus_effectuee\"/>"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "<i class=\"fa fa-phone me-1\" role=\"img\" aria-label=\"Call attempts\"/>"
+msgstr "<i class=\"fa fa-phone me-1\" role=\"img\" aria-label=\"Tentatives d'appel\"/>"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "<i class=\"fa fa-star-o me-1\" role=\"img\" aria-label=\"Academic score\"/>"
+msgstr "<i class=\"fa fa-star-o me-1\" role=\"img\" aria-label=\"Score académique\"/>"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_objectif.py:0
+msgid "A target of zero or less measures nothing."
+msgstr "Une cible de zéro ou moins ne mesure rien."
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__score_academique
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Academic Score"
+msgstr "Score académique"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__crm_lead__departement_demandeur__pedagogie
+msgid "Academics"
+msgstr "Pédagogie"
+
+#. module: his_crm_pipeline
+#: model:res.groups,name:his_crm_pipeline.group_admissions_acquisition
+msgid "Acquisition"
+msgstr "Acquisition"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Acquisition by Source"
+msgstr "Acquisition par source"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable_type__active
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: his_crm_pipeline
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_direction_admissions
+#: model:res.groups.privilege,name:his_crm_pipeline.res_groups_privilege_admissions
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+msgid "Admissions"
+msgstr "Admissions"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+#: model:ir.actions.client,name:his_crm_pipeline.action_dashboard_admissions
+msgid "Admissions Cockpit"
+msgstr "Cockpit Admissions"
+
+#. module: his_crm_pipeline
+#: model:ir.actions.act_window,name:his_crm_pipeline.action_crm_lead_admissions
+msgid "Admissions Pipeline"
+msgstr "Pipeline Admissions"
+
+#. module: his_crm_pipeline
+#: model:res.groups,name:his_crm_pipeline.group_admissions_conseiller
+msgid "Advisor"
+msgstr "Conseiller"
+
+#. module: his_crm_pipeline
+#: model:ir.model.constraint,message:his_crm_pipeline.constraint_his_content_deliverable_type_code_unique
+msgid "Another deliverable type already uses this code."
+msgstr "Un autre type de livrable porte déjà ce code."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid "Applicant reached"
+msgstr "Candidat joint"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Applicant reached: moves to Contact Made"
+msgstr "Candidat joint : passe en Contact établi"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Applicants by Score"
+msgstr "Candidats par score"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "Application Journey"
+msgstr "Parcours des candidatures"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Applications Over Time"
+msgstr "Candidatures dans le temps"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_objectif__axe__candidatures
+msgid "Applications Received"
+msgstr "Candidatures reçues"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_contenu_approbation
+#: model:res.groups,name:his_crm_pipeline.group_contenu_approbation
+msgid "Approval"
+msgstr "Approbation"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_content_deliverable__statut__approuve
+msgid "Approved"
+msgstr "Approuvé"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_capacites.py:0
+msgid ""
+"Approving, publishing or rejecting a content request requires the "
+"\"Approval\" role. Your role lets you move your deliverable forward, not "
+"close the request."
+msgstr ""
+"Approuver, publier ou refuser une demande de contenu demande le rôle « "
+"Approbation ». Votre rôle vous permet de faire avancer votre livrable, pas "
+"de clore la demande."
+
+#. module: his_crm_pipeline
+#: model:res.groups,name:his_crm_pipeline.group_admissions_orientation
+msgid "Assessor"
+msgstr "Évaluateur"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__date_assignation
+msgid "Assigned On"
+msgstr "Assigné le"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__assignee_id
+msgid "Assigned To"
+msgstr "Assigné à"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_content_deliverable.py:0
+msgid "Assigning a deliverable requires the \"Prioritisation\" role."
+msgstr "Affecter un livrable demande le rôle « Priorisation »."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_capacites.py:0
+msgid ""
+"Assigning a lead to an advisor belongs to the team lead. The queue is sorted"
+" by score: helping yourself from it would defeat that order."
+msgstr ""
+"Affecter un lead à une conseillère appartient au responsable d'équipe. La "
+"file est triée par score : s'y servir soi-même viderait ce tri de son sens."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Average Assignment Time"
+msgstr "Délai moyen d'affectation"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Awaiting Approval"
+msgstr "En attente d'approbation"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_bac_ancien
+msgid "Baccalaureate too old"
+msgstr "BAC trop ancien"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_retour_production
+msgid "Back to production needed"
+msgstr "Retour production nécessaire"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__marque
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__marque
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__marque
+msgid "Brand"
+msgstr "Marque"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "Breakdowns"
+msgstr "Répartitions"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "By Advisor and Stage"
+msgstr "Par conseillère et par étape"
+
+#. module: his_crm_pipeline
+#: model:ir.actions.server,name:his_crm_pipeline.ir_cron_his_crm_sla_premier_contact_ir_actions_server
+msgid "CRM Admissions: first-contact SLA reminder"
+msgstr "CRM Admissions : relance SLA premier contact"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Call"
+msgstr "Appeler"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Call (handy on mobile)"
+msgstr "Appeler (utile sur mobile)"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__tentatives_appel
+msgid "Call Attempts"
+msgstr "Tentatives d'appel"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+msgid "Call Outcome"
+msgstr "Issue de l'appel"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid "Call the applicant back"
+msgstr "Rappeler le candidat"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+msgid "Campus Visit"
+msgstr "Visite du campus"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__date_visite_campus
+msgid "Campus Visit Date"
+msgstr "Date de visite du campus"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__visite_campus_effectuee
+msgid "Campus Visit Done"
+msgstr "Visite du campus effectuée"
+
+#. module: his_crm_pipeline
+#: model:res.groups,comment:his_crm_pipeline.group_admissions_acquisition
+msgid ""
+"Captures and scores applications. Does not move a lead beyond \"New "
+"(scored)\": taking it on belongs to Sales."
+msgstr ""
+"Capture et score les candidatures. Ne fait pas avancer un lead au-delà de « "
+"Nouveau (score) » : la prise en charge appartient aux Ventes."
+
+#. module: his_crm_pipeline
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_admissions_cockpit
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_contenu_cockpit
+msgid "Cockpit"
+msgstr "Cockpit"
+
+#. module: his_crm_pipeline
+#: model:ir.model,name:his_crm_pipeline.model_his_dashboard
+msgid "Cockpit Indicators"
+msgstr "Indicateurs des cockpits"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable_type__code
+msgid "Code"
+msgstr "Code"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_vente_contact_etabli
+msgid "Contact Made"
+msgstr "Contact établi"
+
+#. module: his_crm_pipeline
+#: model:ir.actions.client,name:his_crm_pipeline.action_dashboard_contenu
+msgid "Content Cockpit"
+msgstr "Cockpit Contenu"
+
+#. module: his_crm_pipeline
+#: model:ir.model,name:his_crm_pipeline.model_his_content_deliverable
+msgid "Content Deliverable"
+msgstr "Livrable de contenu"
+
+#. module: his_crm_pipeline
+#: model:ir.model,name:his_crm_pipeline.model_his_content_deliverable_type
+msgid "Content Deliverable Type"
+msgstr "Type de livrable de contenu"
+
+#. module: his_crm_pipeline
+#: model:crm.team,name:his_crm_pipeline.crm_team_contenu
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_contenu_root
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_direction_contenu
+#: model:res.groups.privilege,name:his_crm_pipeline.res_groups_privilege_contenu
+msgid "Content Production"
+msgstr "Production Contenu"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Content Production Cockpit"
+msgstr "Cockpit Production Contenu"
+
+#. module: his_crm_pipeline
+#: model:ir.actions.act_window,name:his_crm_pipeline.action_crm_lead_contenu
+msgid "Content Requests"
+msgstr "Demandes de contenu"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+msgid "Content production"
+msgstr "Production contenu"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Conversion Rate"
+msgstr "Taux de conversion"
+
+#. module: his_crm_pipeline
+#: model:res.groups,comment:his_crm_pipeline.group_contenu_production
+msgid ""
+"Copy, design, video. Sees the team's workload and moves forward the status "
+"of the deliverable assigned to them — that one only."
+msgstr ""
+"Rédaction, design, vidéo. Voit le plan de charge de l'équipe et fait avancer"
+" le statut du livrable qui lui est assigné — celui-là seulement."
+
+#. module: his_crm_pipeline
+#: model:his.content.deliverable.type,name:his_crm_pipeline.deliverable_type_copy
+msgid "Copywriting"
+msgstr "Rédaction"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__create_uid
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable_type__create_uid
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__create_date
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable_type__create_date
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "Data Quality"
+msgstr "Qualité des données"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__date_echeance
+msgid "Deadline"
+msgstr "Échéance"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_vente_accompagnement
+msgid "Decision Support"
+msgstr "Accompagnement décision"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__deliverable_ids
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+msgid "Deliverables"
+msgstr "Livrables"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__livrables_resume
+msgid "Deliverables Progress"
+msgstr "Avancement des livrables"
+
+#. module: his_crm_pipeline
+#: model:his.content.deliverable.type,name:his_crm_pipeline.deliverable_type_design
+msgid "Design"
+msgstr "Design"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__display_name
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead_lost__display_name
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lost_reason__display_name
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__display_name
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable_type__display_name
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_dashboard__display_name
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Dormant Applications"
+msgstr "Candidatures en sommeil"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Enrolments"
+msgstr "Inscriptions"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_objectif__axe__inscriptions
+msgid "Enrolments (fees collected)"
+msgstr "Inscriptions (frais encaissés)"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,help:his_crm_pipeline.field_his_content_deliverable__date_echeance
+msgid "Estimate of the date on which the opportunity will be won."
+msgstr "Estimation de la date à laquelle l'opportunité sera gagnée."
+
+#. module: his_crm_pipeline
+#: model:crm.tag,name:his_crm_pipeline.tag_evenement
+msgid "Event"
+msgstr "Événement"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "Explore"
+msgstr "Explorer"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_trop_cher
+msgid "Fees too high"
+msgstr "Frais trop élevés"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.actions.act_window,help:his_crm_pipeline.action_crm_lead_contenu
+msgid ""
+"File a request: specify the brand, the requesting department and\n"
+"               the expected deliverables — copy, design, video."
+msgstr ""
+"Déposez une demande : précisez la marque, le département demandeur et\n"
+"               les livrables attendus — texte, design, vidéo."
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_vente_dossier
+msgid "File and Pre-admission"
+msgstr "Dossier et pré-admission"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_dossier_non_retenu
+msgid "File not accepted"
+msgstr "Dossier non retenu"
+
+#. module: his_crm_pipeline
+#: model:res.groups,comment:his_crm_pipeline.group_contenu_demandeur
+msgid ""
+"Files a content request and follows ONLY their own. Can be given to anyone —"
+" HR, Academics, an advisor — without adding them to the Content team or "
+"opening the others' workload to them."
+msgstr ""
+"Dépose une demande de contenu et suit UNIQUEMENT les siennes. Assignable à "
+"n'importe qui — RH, Pédagogie, une conseillère — sans l'ajouter à l'équipe "
+"Contenu ni lui ouvrir le plan de charge des autres."
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__date_fin
+msgid "Finished On"
+msgstr "Terminé le"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "First Contact Overdue"
+msgstr "Premier contact en retard"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid "First-contact SLA reminder - late (>4h)"
+msgstr "Relance SLA - premier contact en retard (>4h)"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,help:his_crm_pipeline.field_crm_lead__motivation_notes
+msgid "Free text collected at scoring time."
+msgstr "Texte libre recueilli au moment du scoring."
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__date_debut
+msgid "From"
+msgstr "Du"
+
+#. module: his_crm_pipeline
+#: model:ir.model,name:his_crm_pipeline.model_crm_lead_lost
+msgid "Get Lost Reason"
+msgstr "Motif de perte"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_fantome
+msgid "Ghost application"
+msgstr "Candidature fantôme"
+
+#. module: his_crm_pipeline
+#: model:crm.team,name:his_crm_pipeline.crm_team_orientation
+#: model:res.groups.privilege,name:his_crm_pipeline.res_groups_privilege_orientation
+msgid "Guidance Unit"
+msgstr "Cellule d'Orientation"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__crm_lead__marque__his
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_objectif__marque__his
+msgid "HIS"
+msgstr "HIS"
+
+#. module: his_crm_pipeline
+#: model:ir.module.category,name:his_crm_pipeline.module_category_his_crm
+msgid "HIS Group CRM"
+msgstr "CRM Groupe HIS"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__crm_lead__marque__htc
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_objectif__marque__htc
+msgid "HTC"
+msgstr "HTC"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__crm_lead__departement_demandeur__hr
+msgid "Human Resources"
+msgstr "Ressources humaines"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__id
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead_lost__id
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lost_reason__id
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__id
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable_type__id
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_dashboard__id
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__crm_lead__marque__ira
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_objectif__marque__ira
+msgid "IRA"
+msgstr "IRA"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.actions.act_window,help:his_crm_pipeline.action_crm_lead_admissions
+msgid ""
+"If this list is empty while applications exist, you are\n"
+"               a member of neither the Sales / Admissions team nor the Guidance Unit."
+msgstr ""
+"Si cette liste est vide alors qu'il existe des candidatures, c'est que vous\n"
+"               n'êtes membre ni de l'équipe Ventes / Admissions ni de la Cellule d'Orientation."
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_content_deliverable__statut__en_cours
+msgid "In Progress"
+msgstr "En cours"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_dossier_incomplet
+msgid "Incomplete file / not eligible"
+msgstr "Dossier incomplet / non éligible"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_content_deliverable__statut__revision_interne
+msgid "Internal Review"
+msgstr "Révision interne"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__name
+msgid "Label"
+msgstr "Intitulé"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__derniere_tentative
+msgid "Last Attempt"
+msgstr "Dernière tentative"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__write_uid
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable_type__write_uid
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__write_date
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable_type__write_date
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.js:0
+msgid "Last month"
+msgstr "Le mois dernier"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__en_retard
+msgid "Late"
+msgstr "En retard"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Late Deliverables"
+msgstr "Livrables en retard"
+
+#. module: his_crm_pipeline
+#: model:ir.model,name:his_crm_pipeline.model_crm_lead
+msgid "Lead"
+msgstr "Piste"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.actions.act_window,help:his_crm_pipeline.action_crm_lead_non_affectes
+msgid ""
+"Leads scored by Marketing appear here, from the best score to the lowest.\n"
+"               Select several and change the salesperson to assign them in one go."
+msgstr ""
+"Les leads scorés par le Marketing apparaissent ici, du meilleur score au moins bon.\n"
+"               Sélectionnez-en plusieurs et modifiez le commercial pour les affecter d'un coup."
+
+#. module: his_crm_pipeline
+#: model:ir.actions.act_window,name:his_crm_pipeline.action_crm_lead_non_affectes
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_crm_lead_non_affectes
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_list_non_affectes
+msgid "Leads to Assign"
+msgstr "Leads à affecter"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "Loading indicators..."
+msgstr "Chargement des indicateurs..."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid "Lose the Applicant"
+msgstr "Perdre le candidat"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Lose the applicant: reason pre-filled if the record knows it"
+msgstr "Perdre le candidat : motif pré-rempli si la fiche le sait"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__perte_precision
+msgid "Loss Details"
+msgstr "Précision sur la perte"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Lost"
+msgstr "Perdu"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Lost Reasons"
+msgstr "Motifs de perte"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+#: model:res.groups,name:his_crm_pipeline.group_direction
+#: model:res.groups.privilege,name:his_crm_pipeline.res_groups_privilege_direction
+msgid "Management"
+msgstr "Direction"
+
+#. module: his_crm_pipeline
+#: model:res.groups,name:his_crm_pipeline.group_admissions_responsable
+msgid "Manager"
+msgstr "Responsable"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__crm_lead__departement_demandeur__marketing
+msgid "Marketing"
+msgstr "Marketing"
+
+#. module: his_crm_pipeline
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_direction_root
+msgid "Marketing & Sales Dashboard"
+msgstr "Tableau de bord Marketing & Ventes"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+msgid "Motivation"
+msgstr "Motivation"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__motivation_notes
+msgid "Motivation Notes"
+msgstr "Notes de motivation"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_capacites.py:0
+msgid "Moving a request forward requires the \"Prioritisation\" role."
+msgstr "Faire avancer une demande demande le rôle « Priorisation »."
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_vente_nouveau
+msgid "New (scored)"
+msgstr "Nouveau (score)"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "No Acquisition Source"
+msgstr "Sans source d'acquisition"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_sans_reponse
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "No Answer"
+msgstr "Sans réponse"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "No Phone or Email"
+msgstr "Sans téléphone ni email"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "No Target Specialty"
+msgstr "Sans spécialité visée"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.actions.act_window,help:his_crm_pipeline.action_crm_lead_admissions
+msgid "No application in your pipeline."
+msgstr "Aucune candidature dans votre pipeline."
+
+#. module: his_crm_pipeline
+#: model_terms:ir.actions.act_window,help:his_crm_pipeline.action_crm_lead_contenu
+msgid "No content request."
+msgstr "Aucune demande de contenu."
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "No data for the period"
+msgstr "Aucune donnée sur la période"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.actions.act_window,help:his_crm_pipeline.action_crm_lead_non_affectes
+msgid "No lead waiting to be assigned."
+msgstr "Aucun lead en attente d'affectation."
+
+#. module: his_crm_pipeline
+#: model_terms:ir.actions.act_window,help:his_crm_pipeline.action_objectif
+msgid "No target defined."
+msgstr "Aucun objectif défini."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Not set"
+msgstr "Non renseigné"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,help:his_crm_pipeline.field_crm_lead__tentatives_appel
+msgid ""
+"Number of calls left unanswered. Nothing resets it: it is a history, not a "
+"state."
+msgstr ""
+"Nombre d'appels restés sans réponse. Remis à zéro par aucun geste : c'est un"
+" historique, pas un état."
+
+#. module: his_crm_pipeline
+#: model:ir.model,name:his_crm_pipeline.model_his_objectif
+msgid "Numeric Target"
+msgstr "Objectif chiffré"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,help:his_crm_pipeline.field_crm_lead__livrables_resume
+msgid "One-line summary, for the kanban card."
+msgstr "Résumé d'une ligne, pour la carte du tableau kanban."
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Open WhatsApp"
+msgstr "Ouvrir WhatsApp"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Open WhatsApp with this number"
+msgstr "Ouvrir WhatsApp avec ce numéro"
+
+#. module: his_crm_pipeline
+#: model:ir.model,name:his_crm_pipeline.model_crm_lost_reason
+msgid "Opp. Lost Reason"
+msgstr "Motif de perte de l'opportunité"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__score_opportunite
+msgid "Opportunity Score"
+msgstr "Score d'opportunité"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_autre
+msgid "Other - please specify"
+msgstr "Autre - à préciser"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_hors_quota
+msgid "Outside sales quota"
+msgstr "Hors quota commercial"
+
+#. module: his_crm_pipeline
+#: model:ir.actions.client,name:his_crm_pipeline.action_dashboard_direction
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_direction_vue
+msgid "Overview"
+msgstr "Vue d'ensemble"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_paiement_non_confirme
+msgid "Payment not confirmed"
+msgstr "Paiement non confirmé"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "Period ended"
+msgstr "Période terminée"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__telephone_e164
+msgid "Phone (E.164)"
+msgstr "Téléphone (E.164)"
+
+#. module: his_crm_pipeline
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_admissions_pipeline
+msgid "Pipeline"
+msgstr "Pipeline"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Portfolio Status"
+msgstr "État du portefeuille"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_vente_pre_admis
+msgid "Pre-admitted"
+msgstr "Pré-admis"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Pre-admitted, Not Paid"
+msgstr "Pré-admis sans encaissement"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_contenu_priorisation
+#: model:res.groups,name:his_crm_pipeline.group_contenu_priorisation
+msgid "Prioritisation"
+msgstr "Priorisation"
+
+#. module: his_crm_pipeline
+#: model:crm.tag,name:his_crm_pipeline.tag_relance_prioritaire
+msgid "Priority Follow-up"
+msgstr "Relance prioritaire"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_contenu_production
+#: model:res.groups,name:his_crm_pipeline.group_contenu_production
+msgid "Production"
+msgstr "Production"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_profil_inadapte
+msgid "Profile not suitable"
+msgstr "Profil non adapté"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_vente_evaluation_psy
+msgid "Psychological Assessment"
+msgstr "Évaluation psychologique"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_objectif__axe__publications
+msgid "Published Content"
+msgstr "Contenus publiés"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+msgid "Reach the Applicant"
+msgstr "Joindre le candidat"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Reached"
+msgstr "Joint"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_vente_frais_payes
+msgid "Registration Fees Paid"
+msgstr "Frais d'inscription payés"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_content_deliverable__statut__rejete
+msgid "Rejected"
+msgstr "Rejeté"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "Remaining"
+msgstr "Reste"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__lead_id
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+msgid "Request"
+msgstr "Demande"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_contenu_demande
+msgid "Request / Idea"
+msgstr "Demande / Idée"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__demandeur_id
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__demandeur_id
+#: model:res.groups,name:his_crm_pipeline.group_contenu_demandeur
+msgid "Requester"
+msgstr "Demandeur"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__departement_demandeur
+msgid "Requesting Department"
+msgstr "Département demandeur"
+
+#. module: his_crm_pipeline
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_contenu_demandes
+msgid "Requests"
+msgstr "Demandes"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Requests Received"
+msgstr "Demandes reçues"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Requests Stuck in Production"
+msgstr "Demandes bloquées en production"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,help:his_crm_pipeline.field_crm_lead__perte_precision
+msgid "Required with the reason \"Other - please specify\"."
+msgstr "Obligatoire avec le motif « Autre - à préciser »."
+
+#. module: his_crm_pipeline
+#: model:ir.module.category,description:his_crm_pipeline.module_category_his_crm
+msgid "Roles for the Admissions and Content Production processes."
+msgstr "Rôles des processus Admissions et Production Contenu."
+
+#. module: his_crm_pipeline
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_admissions_root
+msgid "Sales"
+msgstr "Ventes"
+
+#. module: his_crm_pipeline
+#: model:crm.team,name:his_crm_pipeline.crm_team_ventes
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__crm_lead__departement_demandeur__sales
+msgid "Sales / Admissions"
+msgstr "Ventes / Admissions"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,help:his_crm_pipeline.field_crm_lead__score_opportunite
+msgid ""
+"Sales assessment after direct contact: commitment, fit with the programme, "
+"conversion potential. Distinct from the academic score, which comes before "
+"any exchange."
+msgstr ""
+"Évaluation des Ventes après contact direct : engagement, adéquation au "
+"programme, potentiel de conversion. Distinct du score académique, qui lui "
+"précède tout échange."
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Schedule a Visit"
+msgstr "Programmer une visite"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_contenu_publication
+msgid "Scheduling and Publishing"
+msgstr "Planification et publication"
+
+#. module: his_crm_pipeline
+#: model:crm.tag,name:his_crm_pipeline.tag_bourse_demandee
+msgid "Scholarship requested"
+msgstr "Bourse demandée"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,help:his_crm_pipeline.field_crm_lead__score_academique
+msgid ""
+"Score set by Marketing at capture: academic profile and motivation. It "
+"orders the queue of leads to assign."
+msgstr ""
+"Score posé par le Marketing à la capture : profil académique et motivation. "
+"C'est lui qui ordonne la file des leads à affecter."
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+msgid "Scoring"
+msgstr "Scoring"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "See the"
+msgstr "Voir les"
+
+#. module: his_crm_pipeline
+#: model:res.groups,comment:his_crm_pipeline.group_direction
+msgid ""
+"Sees and arbitrates both processes as a whole: admissions, guidance and "
+"content production. Does not configure the CRM — that stays with the "
+"administrator."
+msgstr ""
+"Voit et arbitre les deux processus dans leur ensemble : admissions, "
+"orientation et production de contenu. Ne configure pas le CRM — cela reste à"
+" l'administrateur."
+
+#. module: his_crm_pipeline
+#: model:res.groups,comment:his_crm_pipeline.group_admissions_orientation
+msgid ""
+"Sees applicants during their psychological assessment, and only them. Acts "
+"only on a lead that is in that stage."
+msgstr ""
+"Voit les candidats pendant leur évaluation psychologique, et eux seuls. "
+"N'agit que sur un lead se trouvant dans cette étape."
+
+#. module: his_crm_pipeline
+#: model:res.groups,comment:his_crm_pipeline.group_admissions_responsable
+msgid ""
+"Sees their whole team and arbitrates the queue. The only one who can assign "
+"a lead to an advisor."
+msgstr ""
+"Voit toute son équipe et arbitre la file. Seul à pouvoir affecter un lead à "
+"une conseillère."
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lost_reason__sequence
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__sequence
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable_type__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: his_crm_pipeline
+#: model:crm.tag,name:his_crm_pipeline.tag_reseaux_sociaux
+msgid "Social Media"
+msgstr "Réseaux sociaux"
+
+#. module: his_crm_pipeline
+#: model:res.groups,comment:his_crm_pipeline.group_contenu_priorisation
+msgid ""
+"Sorts incoming requests, assigns deliverables and arbitrates their statuses."
+" Takes the request up to the Production stage."
+msgstr ""
+"Trie les demandes entrantes, affecte les livrables et arbitre leurs statuts."
+" Mène la demande jusqu'à l'étape Production."
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,help:his_crm_pipeline.field_his_content_deliverable_type__code
+msgid "Stable technical identifier. The label may change, this does not."
+msgstr "Identifiant technique stable. Le libellé peut changer, pas lui."
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__stage_id
+msgid "Stage"
+msgstr "Étape"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__date_debut
+msgid "Started On"
+msgstr "Démarré le"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__statut
+msgid "Status"
+msgstr "Statut"
+
+#. module: his_crm_pipeline
+#: model:crm.stage,name:his_crm_pipeline.stage_vente_pris_en_charge
+msgid "Taken On"
+msgstr "Pris en charge"
+
+#. module: his_crm_pipeline
+#: model:res.groups,comment:his_crm_pipeline.group_admissions_conseiller
+msgid ""
+"Takes the applicant from first contact to pre-admission. Sees their own "
+"files and their team's queue."
+msgstr ""
+"Mène le candidat du premier contact à la pré-admission. Voit ses propres "
+"dossiers et la file d'attente de son équipe."
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__valeur_cible
+msgid "Target"
+msgstr "Cible"
+
+#. module: his_crm_pipeline
+#: model:ir.actions.act_window,name:his_crm_pipeline.action_objectif
+#: model:ir.ui.menu,name:his_crm_pipeline.menu_direction_objectifs
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_objectif_list
+msgid "Targets"
+msgstr "Objectifs"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__team_id
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__team_id
+msgid "Team"
+msgstr "Équipe"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_capacites.py:0
+msgid ""
+"The \"Acquisition\" role captures and scores applications. Moving a lead "
+"beyond \"New (scored)\" belongs to the advisors."
+msgstr ""
+"Le rôle « Acquisition » capture et score les candidatures. Faire avancer un "
+"lead au-delà de « Nouveau (score) » appartient aux conseillères."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_capacites.py:0
+msgid ""
+"The Guidance Unit only acts on an applicant in psychological assessment."
+msgstr ""
+"La Cellule d'Orientation n'intervient que sur un candidat en évaluation "
+"psychologique."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_content_deliverable.py:0
+msgid ""
+"The deliverable \"%(livrable)s\" is not yours. Only the person it is "
+"assigned to moves its status forward, or the \"Prioritisation\" role, which "
+"arbitrates."
+msgstr ""
+"Le livrable « %(livrable)s » n'est pas le vôtre. Seule la personne à qui il "
+"est assigné fait avancer son statut, ou le rôle « Priorisation » qui "
+"arbitre."
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,help:his_crm_pipeline.field_crm_lead__telephone_e164
+msgid "The number in international format, the only form WhatsApp accepts."
+msgstr "Le numéro au format international, seule forme que WhatsApp accepte."
+
+#. module: his_crm_pipeline
+#: model:res.groups,comment:his_crm_pipeline.group_contenu_approbation
+msgid ""
+"The only role that can take a request out of the Production stage: approve, "
+"publish, or send back to production."
+msgstr ""
+"Seul rôle pouvant sortir une demande de l'étape Production : approuver, "
+"publier, ou renvoyer en production."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid ""
+"This lead has been \"Taken On\" for more than %(heures)s hours without a "
+"first contact. Assigned advisor: %(conseiller)s."
+msgstr ""
+"Ce lead est en « Pris en charge » depuis plus de %(heures)s heures sans "
+"premier contact. Conseiller assigné : %(conseiller)s."
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.js:0
+msgid "This month"
+msgstr "Ce mois-ci"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.js:0
+msgid "This quarter"
+msgstr "Ce trimestre"
+
+#. module: his_crm_pipeline
+#: model:ir.model.constraint,message:his_crm_pipeline.constraint_his_content_deliverable_type_unique_par_demande
+msgid "This request already carries a deliverable of this type."
+msgstr "Cette demande porte déjà un livrable de ce type."
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.js:0
+msgid "This year"
+msgstr "Cette année"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Throughput per Brand"
+msgstr "Débit par marque"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__date_fin
+msgid "To"
+msgstr "Au"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields.selection,name:his_crm_pipeline.selection__his_content_deliverable__statut__a_faire
+msgid "To Do"
+msgstr "À faire"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "To Process"
+msgstr "À traiter"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable__type_id
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_content_deliverable_type__name
+msgid "Type"
+msgstr "Type"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid "Unanswered call (attempt no. %(n)s)."
+msgstr "Appel sans réponse (tentative n° %(n)s)."
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Unanswered call: counted, logged and rescheduled"
+msgstr "Appel sans réponse : compté, tracé et replanifié"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_kanban_admissions
+msgid "Unanswered calls"
+msgstr "Appels restés sans réponse"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Unassigned Applications"
+msgstr "Candidatures non affectées"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Unassigned Deliverables"
+msgstr "Livrables non assignés"
+
+#. module: his_crm_pipeline
+#: model:crm.tag,name:his_crm_pipeline.tag_indecis_programme
+msgid "Undecided on programme"
+msgstr "Indécis programme"
+
+#. module: his_crm_pipeline
+#: model:crm.tag,name:his_crm_pipeline.tag_urgent
+msgid "Urgent"
+msgstr "Urgent"
+
+#. module: his_crm_pipeline
+#: model:crm.tag,name:his_crm_pipeline.tag_parent_implique
+msgid "Very involved parent"
+msgstr "Parent très impliqué"
+
+#. module: his_crm_pipeline
+#: model:his.content.deliverable.type,name:his_crm_pipeline.deliverable_type_video
+msgid "Video"
+msgstr "Vidéo"
+
+#. module: his_crm_pipeline
+#: model:crm.tag,name:his_crm_pipeline.tag_site_web
+msgid "Website"
+msgstr "Site web"
+
+#. module: his_crm_pipeline
+#: model_terms:ir.ui.view,arch_db:his_crm_pipeline.view_crm_lead_form_his
+msgid "What the applicant says about their plans..."
+msgstr "Ce que le candidat dit de son projet..."
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_his_objectif__axe
+msgid "What we count"
+msgstr "Ce qu'on compte"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,field_description:his_crm_pipeline.field_crm_lead__whatsapp_url
+msgid "WhatsApp Link"
+msgstr "Lien WhatsApp"
+
+#. module: his_crm_pipeline
+#: model:ir.model.fields,help:his_crm_pipeline.field_crm_lead__demandeur_id
+#: model:ir.model.fields,help:his_crm_pipeline.field_his_content_deliverable__demandeur_id
+msgid ""
+"Who filed the request. Distinct from the salesperson, who changes hands at "
+"prioritisation — this field, not user_id, determines what a requester sees "
+"of their own requests."
+msgstr ""
+"Qui a déposé la demande. Distinct du commercial, qui change de main à la "
+"priorisation — c'est ce champ, et non user_id, qui détermine ce qu'un "
+"demandeur voit de ses propres demandes."
+
+#. module: his_crm_pipeline
+#: model_terms:ir.actions.act_window,help:his_crm_pipeline.action_objectif
+msgid ""
+"Without a target, the cockpits show counters. With a target, they\n"
+"               show progress, the pace still needed and the projection for the\n"
+"               end of the period."
+msgstr ""
+"Sans cible, les cockpits affichent des compteurs. Avec une cible, ils\n"
+"               disent l'atteinte, le rythme qu'il reste à tenir et la projection de\n"
+"               fin de période."
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "Workload per Person"
+msgstr "Charge par personne"
+
+#. module: his_crm_pipeline
+#: model:crm.lost.reason,name:his_crm_pipeline.lost_reason_numero_errone
+msgid "Wrong number"
+msgstr "Numéro erroné"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/his_dashboard.py:0
+msgid "d"
+msgstr "j"
+
+#. module: his_crm_pipeline
+#. odoo-javascript
+#: code:addons/his_crm_pipeline/static/src/dashboard/dashboard.xml:0
+msgid "d ·"
+msgstr "j ·"
+
+#. module: his_crm_pipeline
+#. odoo-python
+#: code:addons/his_crm_pipeline/models/crm_lead.py:0
+msgid "none"
+msgstr "aucun"

@@ -40,6 +40,7 @@ class HisPerson(models.Model):
     # the till accepts and the attendance reader refuses. There is exactly one
     # place a badge number lives now: an active his.meal.card row.
     numero_carte = fields.Char(
+        string="RFID Badge",
         compute="_compute_numero_carte",
         inverse="_inverse_numero_carte",
         store=True,

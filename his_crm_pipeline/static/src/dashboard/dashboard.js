@@ -12,7 +12,9 @@
  * un nouveau cockpit realisable sans toucher a ce fichier.
  */
 import { Component, onWillStart, useState } from "@odoo/owl";
+import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
+import { user } from "@web/core/user";
 import { useService } from "@web/core/utils/hooks";
 import { Layout } from "@web/search/layout";
 import { standardActionServiceProps } from "@web/webclient/actions/action_service";
@@ -31,14 +33,14 @@ import { standardActionServiceProps } from "@web/webclient/actions/action_servic
  */
 const PERIODES = {
     mois: {
-        label: "Ce mois-ci",
+        label: _t("This month"),
         bornes: () => {
             const today = new Date();
             return [new Date(today.getFullYear(), today.getMonth(), 1), today];
         },
     },
     mois_dernier: {
-        label: "Le mois dernier",
+        label: _t("Last month"),
         bornes: () => {
             const today = new Date();
             return [
@@ -49,7 +51,7 @@ const PERIODES = {
         },
     },
     trimestre: {
-        label: "Ce trimestre",
+        label: _t("This quarter"),
         bornes: () => {
             const today = new Date();
             const debut = Math.floor(today.getMonth() / 3) * 3;
@@ -57,7 +59,7 @@ const PERIODES = {
         },
     },
     annee: {
-        label: "Cette annee",
+        label: _t("This year"),
         bornes: () => {
             const today = new Date();
             return [new Date(today.getFullYear(), 0, 1), today];
@@ -112,10 +114,10 @@ export class HisDashboard extends Component {
         const [debut, fin] = PERIODES[this.state.periode].bornes();
         const format = { day: "numeric", month: "long" };
         const meme_annee = debut.getFullYear() === fin.getFullYear();
-        return `${debut.toLocaleDateString("fr-FR", {
+        return `${debut.toLocaleDateString(user.lang, {
             ...format,
             year: meme_annee ? undefined : "numeric",
-        })} — ${fin.toLocaleDateString("fr-FR", { ...format, year: "numeric" })}`;
+        })} — ${fin.toLocaleDateString(user.lang, { ...format, year: "numeric" })}`;
     }
 
     get methode() {
@@ -169,7 +171,7 @@ export class HisDashboard extends Component {
         }
         // Les petits comptes restent bruts : « 5 » n'a pas besoin d'espace, et
         // un taux garde sa decimale.
-        return valeur.toLocaleString("fr-FR", { maximumFractionDigits: 2 });
+        return valeur.toLocaleString(user.lang, { maximumFractionDigits: 2 });
     }
 
     /**

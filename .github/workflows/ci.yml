@@ -45,6 +45,12 @@ jobs:
           MODS=$(echo "$MODULES" | tr ',' ' ')
           pylint --rcfile=.pylintrc $MODS
 
+      # Une seule police : celle de his_theme. Le pendant « langue » (source
+      # anglaise + i18n/fr.po complet) est un test Odoo, dans his_access_base :
+      # il lui faut une base pour extraire les termes.
+      - name: Polices
+        run: python tools/verifier_polices.py
+
       - uses: actions/setup-node@v4
         with:
           node-version: "22"

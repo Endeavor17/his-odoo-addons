@@ -9,7 +9,7 @@
             <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
             <field name="email_to">{{ object.person_id.email_personnel or object.person_id.email }}</field>
             <field name="body_html" type="html">
-<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+<div style="font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>Dear <t t-out="object.person_id.display_name or ''">Teacher</t>,</p>
     <p>
         You are invited to apply to the <strong>InSite</strong> teaching programme.
@@ -27,7 +27,7 @@
             <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
             <field name="email_to">{{ object.person_id.email_personnel or object.person_id.email }}</field>
             <field name="body_html" type="html">
-<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+<div style="font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>Dear <t t-out="object.person_id.display_name or ''">Teacher</t>,</p>
     <p>Thank you for accepting the InSite teaching programme. Here are your meeting details:</p>
     <p><strong>Date:</strong> <t t-out="format_datetime(dt=object.meeting_event_id.start, tz='UTC', dt_format='EEEE, d MMMM y')">a date</t></p>
@@ -45,7 +45,7 @@
             <field name="email_from">{{ user.email_formatted }}</field>
             <field name="email_to">{{ user.email_formatted }}</field>
             <field name="body_html" type="html">
-<div style="font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
+<div style="font-family:Figtree,'Segoe UI',Tahoma,Arial,sans-serif;font-size:14px;color:#1A2340;line-height:1.7;">
     <p>
         <t t-out="object.person_id.display_name or ''">Candidate</t> was contacted on
         <t t-out="object.contacted_date or ''"/> and has not responded within 48 hours.

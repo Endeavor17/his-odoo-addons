@@ -18,14 +18,14 @@ class HisEngagement(models.Model):
     """
 
     _name = "his.engagement"
-    _description = "Engagement d'une personne aupres de l'institution"
+    _description = "A person's engagement with the institution"
     _inherit = ["mail.thread"]
     _order = "date_debut desc, id desc"
     _rec_name = "person_id"
 
     person_id = fields.Many2one(
         "his.person",
-        string="Personne",
+        string="Person",
         required=True,
         index=True,
         ondelete="cascade",
@@ -38,17 +38,17 @@ class HisEngagement(models.Model):
     etat = fields.Selection(
         selection=[
             ("prospect", "Prospect"),
-            ("candidat_soumis", "Candidature soumise"),
-            ("inscrit", "Inscrit"),
-            ("abandonne", "Abandonne"),
+            ("candidat_soumis", "Application Submitted"),
+            ("inscrit", "Enrolled"),
+            ("abandonne", "Withdrawn"),
         ],
-        string="Etat",
+        string="Status",
         required=True,
         default="prospect",
         tracking=True,
     )
     date_debut = fields.Date(
-        string="Date de debut",
+        string="Start Date",
         required=True,
         default=fields.Date.context_today,
     )

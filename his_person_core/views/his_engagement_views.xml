@@ -42,10 +42,10 @@
             <search string="Engagements">
                 <field name="person_id"/>
                 <filter name="filter_prospect" string="Prospects" domain="[('etat','=','prospect')]"/>
-                <filter name="filter_soumis" string="Candidatures soumises" domain="[('etat','=','candidat_soumis')]"/>
-                <filter name="filter_inscrit" string="Inscrits" domain="[('etat','=','inscrit')]"/>
+                <filter name="filter_soumis" string="Applications Submitted" domain="[('etat','=','candidat_soumis')]"/>
+                <filter name="filter_inscrit" string="Enrolled Students" domain="[('etat','=','inscrit')]"/>
                 <separator/>
-                <filter name="group_etat" string="Etat" context="{'group_by': 'etat'}"/>
+                <filter name="group_etat" string="Status" context="{'group_by': 'etat'}"/>
             </search>
         </field>
     </record>

@@ -11,7 +11,7 @@
              l'Admission, pas une livraison de code. -->
 
         <record id="spec_info_systemes" model="his.specialite">
-            <field name="name">Informatique - Systemes d'information</field>
+            <field name="name">Computer Science - Information Systems</field>
             <field name="name_arabe">إعلام آلي - أنظمة الإعلام الآلي</field>
             <field name="code">INF-SI</field>
             <field name="domaine_id" ref="domaine_mi"/>
@@ -20,7 +20,7 @@
         </record>
 
         <record id="spec_info_securite" model="his.specialite">
-            <field name="name">Informatique - Securite des systemes</field>
+            <field name="name">Computer Science - Systems Security</field>
             <field name="name_arabe">إعلام آلي - أمن أنظمة معلوماتية</field>
             <field name="code">INF-SEC</field>
             <field name="domaine_id" ref="domaine_mi"/>
@@ -29,7 +29,7 @@
         </record>
 
         <record id="spec_info_cyber_master" model="his.specialite">
-            <field name="name">Informatique - Master cybersecurite</field>
+            <field name="name">Computer Science - Master in Cybersecurity</field>
             <field name="name_arabe">إعلام آلي - ماستر امن سيبيراني</field>
             <field name="code">INF-CYB-M</field>
             <field name="domaine_id" ref="domaine_mi"/>
@@ -38,7 +38,7 @@
         </record>
 
         <record id="spec_st_electronique" model="his.specialite">
-            <field name="name">Sciences et Technologies - Electronique</field>
+            <field name="name">Science and Technology - Electronics</field>
             <field name="name_arabe">علوم و تكنولوجيا - إلكترونيك</field>
             <field name="code">ST-ELC</field>
             <field name="domaine_id" ref="domaine_st"/>
@@ -47,7 +47,7 @@
         </record>
 
         <record id="spec_eco_entreprises" model="his.specialite">
-            <field name="name">Sciences economiques - Economie et gestion des entreprises</field>
+            <field name="name">Economics - Business Economics and Management</field>
             <field name="name_arabe">علوم اقتصادية - اقتصاد وتسيير المؤسسات</field>
             <field name="code">ECO-GE</field>
             <field name="domaine_id" ref="domaine_segc"/>
@@ -56,7 +56,7 @@
         </record>
 
         <record id="spec_eco_mba_master" model="his.specialite">
-            <field name="name">Sciences economiques - Master administration des affaires</field>
+            <field name="name">Economics - Master in Business Administration</field>
             <field name="name_arabe">علوم اقتصادية - ماستر إدارة الأعمال</field>
             <field name="code">ECO-MBA-M</field>
             <field name="domaine_id" ref="domaine_segc"/>
@@ -65,7 +65,7 @@
         </record>
 
         <record id="spec_com_ecommerce" model="his.specialite">
-            <field name="name">Sciences commerciales - Commerce electronique</field>
+            <field name="name">Commercial Sciences - E-commerce</field>
             <field name="name_arabe">علوم تجارية - تجارة إلكترونية</field>
             <field name="code">COM-ECOM</field>
             <field name="domaine_id" ref="domaine_com"/>
@@ -74,7 +74,7 @@
         </record>
 
         <record id="spec_ss_psycho" model="his.specialite">
-            <field name="name">Sciences sociales - Psychologie clinique</field>
+            <field name="name">Social Sciences - Clinical Psychology</field>
             <field name="name_arabe">علوم اجتماعية - علم النفس العيادي</field>
             <field name="code">SS-PSY</field>
             <field name="domaine_id" ref="domaine_ss"/>
@@ -83,7 +83,7 @@
         </record>
 
         <record id="spec_droit_public" model="his.specialite">
-            <field name="name">Droit - Droit public</field>
+            <field name="name">Law - Public Law</field>
             <field name="name_arabe">حقوق - القانون العام</field>
             <field name="code">DR-PUB</field>
             <field name="domaine_id" ref="domaine_dr"/>
@@ -104,7 +104,7 @@
              rapprochement, qui est verifie par tools/test_rapprochement.mjs. -->
 
         <record id="spec_droit_affaires_master" model="his.specialite">
-            <field name="name">Droit - Master droit des affaires</field>
+            <field name="name">Law - Master in Business Law</field>
             <field name="name_arabe">حقوق - ماستر قانون الأعمال</field>
             <field name="code">DR-AFF-M</field>
             <field name="domaine_id" ref="domaine_dr"/>
@@ -118,7 +118,7 @@
              (voir his_domaine_data.xml, TODO A7). Le bareme SS ne pese ni les
              maths ni la physique, ce qui convient a un cursus d'orientation. -->
         <record id="spec_educ_orientation_master" model="his.specialite">
-            <field name="name">Sciences sociales - Master sciences de l'education, orientation et guidance</field>
+            <field name="name">Social Sciences - Master in Educational Sciences, Orientation and Guidance</field>
             <field name="name_arabe">علوم اجتماعية - ماستر علوم التربية - إرشاد وتوجيه</field>
             <field name="code">SS-ORI-M</field>
             <field name="domaine_id" ref="domaine_ss"/>
@@ -127,7 +127,7 @@
         </record>
 
         <record id="spec_com_marketing_master" model="his.specialite">
-            <field name="name">Sciences commerciales - Master marketing digital</field>
+            <field name="name">Commercial Sciences - Master in Digital Marketing</field>
             <field name="name_arabe">علوم تجارية - ماستر تسويق رقمي</field>
             <field name="code">COM-MKD-M</field>
             <field name="domaine_id" ref="domaine_com"/>
@@ -140,7 +140,7 @@
              cycle en amont du rapprochement, une specialite Licence est donc
              invisible a une candidature Master, et inversement. -->
         <record id="spec_ss_psycho_master" model="his.specialite">
-            <field name="name">Sciences sociales - Master psychologie clinique</field>
+            <field name="name">Social Sciences - Master in Clinical Psychology</field>
             <field name="name_arabe">علوم اجتماعية - ماستر علم النفس العيادي</field>
             <field name="code">SS-PSY-M</field>
             <field name="domaine_id" ref="domaine_ss"/>
@@ -154,7 +154,7 @@
              caracteres et ce libelle en fait 81. C'est precisement celui que la
              candidate a choisi. Relever une liste deroulante sans plafond. -->
         <record id="spec_info_donnees_master" model="his.specialite">
-            <field name="name">Informatique - Master ingenierie des donnees et technologie web</field>
+            <field name="name">Computer Science - Master in Data Engineering and Web Technology</field>
             <field name="name_arabe">إعلام آلي - ماستر هندسة البيانات وتكنولوجيا الويب</field>
             <field name="code">INF-DATA-M</field>
             <field name="domaine_id" ref="domaine_mi"/>

@@ -18,33 +18,33 @@ from odoo.exceptions import ValidationError
 # ajouter un ici sans l'y traiter donnerait un objectif qu'aucune tuile ne
 # reprend, donc un chiffre saisi pour rien.
 AXE_OBJECTIF = [
-    ("candidatures", "Candidatures recues"),
-    ("inscriptions", "Inscriptions (frais encaisses)"),
-    ("publications", "Contenus publies"),
+    ("candidatures", "Applications Received"),
+    ("inscriptions", "Enrolments (fees collected)"),
+    ("publications", "Published Content"),
 ]
 
 
 class HisObjectif(models.Model):
     _name = "his.objectif"
-    _description = "Objectif chiffre"
+    _description = "Numeric Target"
     _order = "date_debut desc, id desc"
 
-    name = fields.Char(string="Intitule", required=True)
-    axe = fields.Selection(AXE_OBJECTIF, string="Ce qu'on compte", required=True)
-    valeur_cible = fields.Float(string="Cible", required=True)
+    name = fields.Char(string="Label", required=True)
+    axe = fields.Selection(AXE_OBJECTIF, string="What we count", required=True)
+    valeur_cible = fields.Float(string="Target", required=True)
 
-    date_debut = fields.Date(string="Du", required=True)
-    date_fin = fields.Date(string="Au", required=True)
+    date_debut = fields.Date(string="From", required=True)
+    date_fin = fields.Date(string="To", required=True)
 
     # Filtres facultatifs. Vides, l'objectif porte sur tout le groupe — c'est le
     # cas courant. Renseignes, il ne s'applique qu'au perimetre nomme, ce qui
     # permet une cible par marque sans multiplier les axes.
     marque = fields.Selection(
         selection=[("his", "HIS"), ("htc", "HTC"), ("ira", "IRA")],
-        string="Marque",
+        string="Brand",
     )
-    team_id = fields.Many2one("crm.team", string="Equipe")
-    active = fields.Boolean(string="Actif", default=True)
+    team_id = fields.Many2one("crm.team", string="Team")
+    active = fields.Boolean(string="Active", default=True)
 
     @api.constrains("date_debut", "date_fin")
     def _check_periode(self):
@@ -52,7 +52,7 @@ class HisObjectif(models.Model):
             if objectif.date_fin < objectif.date_debut:
                 raise ValidationError(
                     _(
-                        "« %(nom)s » se termine avant de commencer.",
+                        '"%(nom)s" ends before it starts.',
                         nom=objectif.name,
                     )
                 )
@@ -61,7 +61,7 @@ class HisObjectif(models.Model):
     def _check_cible(self):
         for objectif in self:
             if objectif.valeur_cible <= 0:
-                raise ValidationError(_("Une cible de zero ou moins ne mesure rien."))
+                raise ValidationError(_("A target of zero or less measures nothing."))
 
     @api.model
     def _pour(self, axe, date_from, date_to, marque=None, team=None):

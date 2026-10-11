@@ -22,42 +22,42 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
 STATUT_LIVRABLE = [
-    ("a_faire", "A faire"),
-    ("en_cours", "En cours"),
-    ("revision_interne", "Revision interne"),
-    ("approuve", "Approuve"),
-    ("rejete", "Rejete"),
+    ("a_faire", "To Do"),
+    ("en_cours", "In Progress"),
+    ("revision_interne", "Internal Review"),
+    ("approuve", "Approved"),
+    ("rejete", "Rejected"),
 ]
 
 
 class HisContentDeliverableType(models.Model):
     _name = "his.content.deliverable.type"
-    _description = "Type de livrable de contenu"
+    _description = "Content Deliverable Type"
     _order = "sequence, name"
 
     name = fields.Char(string="Type", required=True, translate=True)
     code = fields.Char(
         string="Code",
         required=True,
-        help="Identifiant technique stable. Le libelle peut changer, pas lui.",
+        help="Stable technical identifier. The label may change, this does not.",
     )
     sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(string="Actif", default=True)
+    active = fields.Boolean(string="Active", default=True)
 
     _code_unique = models.Constraint(
         "unique(code)",
-        "Un autre type de livrable porte deja ce code.",
+        "Another deliverable type already uses this code.",
     )
 
 
 class HisContentDeliverable(models.Model):
     _name = "his.content.deliverable"
-    _description = "Livrable de contenu"
+    _description = "Content Deliverable"
     _order = "lead_id, sequence, id"
 
     lead_id = fields.Many2one(
         "crm.lead",
-        string="Demande",
+        string="Request",
         required=True,
         index=True,
         ondelete="cascade",
@@ -72,7 +72,7 @@ class HisContentDeliverable(models.Model):
 
     statut = fields.Selection(
         STATUT_LIVRABLE,
-        string="Statut",
+        string="Status",
         default="a_faire",
         required=True,
     )
@@ -82,7 +82,7 @@ class HisContentDeliverable(models.Model):
     # commande du contenu, il n'en produit pas.
     assignee_id = fields.Many2one(
         "res.users",
-        string="Assigne a",
+        string="Assigned To",
         index=True,
         domain=lambda self: [("all_group_ids", "in", self._groupes_producteurs())],
     )
@@ -92,17 +92,17 @@ class HisContentDeliverable(models.Model):
     # de mesurer un delai et un retard — exactement ce que les anciens champs ne
     # savaient pas dire.
 
-    date_assignation = fields.Datetime(string="Assigne le", readonly=True, copy=False)
-    date_debut = fields.Datetime(string="Demarre le", readonly=True, copy=False)
-    date_fin = fields.Datetime(string="Termine le", readonly=True, copy=False)
+    date_assignation = fields.Datetime(string="Assigned On", readonly=True, copy=False)
+    date_debut = fields.Datetime(string="Started On", readonly=True, copy=False)
+    date_fin = fields.Datetime(string="Finished On", readonly=True, copy=False)
 
     date_echeance = fields.Date(
         related="lead_id.date_deadline",
         store=True,
-        string="Echeance",
+        string="Deadline",
     )
     en_retard = fields.Boolean(
-        string="En retard",
+        string="Late",
         compute="_compute_en_retard",
         store=True,
     )
@@ -111,18 +111,18 @@ class HisContentDeliverable(models.Model):
     # Recopies de la demande et STOCKES : un tableau de bord groupe par marque
     # sans jointure, et l'outil de BI lira la table de faits telle quelle.
 
-    marque = fields.Selection(related="lead_id.marque", store=True, string="Marque")
-    team_id = fields.Many2one(related="lead_id.team_id", store=True, string="Equipe")
-    stage_id = fields.Many2one(related="lead_id.stage_id", store=True, string="Etape")
+    marque = fields.Selection(related="lead_id.marque", store=True, string="Brand")
+    team_id = fields.Many2one(related="lead_id.team_id", store=True, string="Team")
+    stage_id = fields.Many2one(related="lead_id.stage_id", store=True, string="Stage")
     demandeur_id = fields.Many2one(
         related="lead_id.demandeur_id",
         store=True,
-        string="Demandeur",
+        string="Requester",
     )
 
     _type_unique_par_demande = models.Constraint(
         "unique(lead_id, type_id)",
-        "Cette demande porte deja un livrable de ce type.",
+        "This request already carries a deliverable of this type.",
     )
 
     @api.model
@@ -150,10 +150,9 @@ class HisContentDeliverable(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "%(nom)s ne peut pas recevoir le livrable "
-                        "« %(livrable)s » : ce compte ne porte aucun role de "
-                        "Production Contenu et n'aurait meme pas acces a la "
-                        "demande.",
+                        '%(nom)s cannot receive the deliverable "%(livrable)s": this account has '
+                        "no Content Production role and would not even have access to the "
+                        "request.",
                         nom=assigne.display_name,
                         livrable=livrable.display_name,
                     )
@@ -227,15 +226,15 @@ class HisContentDeliverable(models.Model):
         if user.has_group("his_crm_pipeline.group_contenu_priorisation"):
             return
         if "assignee_id" in vals:
-            raise AccessError(_("Affecter un livrable demande le role « Priorisation »."))
+            raise AccessError(_('Assigning a deliverable requires the "Prioritisation" role.'))
         if "statut" in vals:
             for livrable in self:
                 if livrable.assignee_id != user:
                     raise AccessError(
                         _(
-                            "Le livrable « %(livrable)s » n'est pas le votre. Seule "
-                            "la personne a qui il est assigne fait avancer son "
-                            "statut, ou le role « Priorisation » qui arbitre.",
+                            'The deliverable "%(livrable)s" is not yours. Only the person it is '
+                            'assigned to moves its status forward, or the "Prioritisation" role, '
+                            "which arbitrates.",
                             livrable=livrable.display_name,
                         )
                     )

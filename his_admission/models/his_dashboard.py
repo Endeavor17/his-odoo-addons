@@ -8,7 +8,7 @@ d'installer le pipeline sans les dossiers, et de ne pas casser la vue Direction
 en le faisant.
 """
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class HisDashboard(models.AbstractModel):
@@ -30,27 +30,27 @@ class HisDashboard(models.AbstractModel):
         tuiles = [
             self._tuile(
                 "dossiers_ouverts",
-                "Dossiers ouverts",
+                _("Open Files"),
                 ouverts,
-                action=self._action("Dossiers ouverts", "his.engagement", []),
+                action=self._action(_("Open Files"), "his.engagement", []),
             ),
             self._tuile(
                 "dossiers_complets",
-                "Dossiers complets",
+                _("Complete Files"),
                 round(complets / ouverts * 100, 1) if ouverts else 0,
                 unite="%",
                 action=self._action(
-                    "Dossiers complets",
+                    _("Complete Files"),
                     "his.engagement",
-                    [("documents_complets", "=", True)],
+                    domain=[("documents_complets", "=", True)],
                 ),
             ),
             self._tuile(
                 "encaissements",
-                "Encaissements de la periode",
+                _("Payments This Period"),
                 Engagement.search_count(encaisses + periode),
                 action=self._action(
-                    "Encaissements",
+                    _("Payments"),
                     "his.engagement",
                     encaisses + periode,
                 ),
@@ -60,12 +60,12 @@ class HisDashboard(models.AbstractModel):
             ),
             self._tuile(
                 "a_verifier",
-                "Eligibilite a verifier",
+                _("Eligibility to Check"),
                 Engagement.search_count([("eligibilite", "=", "a_verifier")]),
                 action=self._action(
-                    "Eligibilite a verifier",
+                    _("Eligibility to Check"),
                     "his.engagement",
-                    [("eligibilite", "=", "a_verifier")],
+                    domain=[("eligibilite", "=", "a_verifier")],
                 ),
             ),
         ]
@@ -73,7 +73,7 @@ class HisDashboard(models.AbstractModel):
         tuiles += self._tuiles_revenu()
 
         return {
-            "titre": "Cockpit Dossiers",
+            "titre": _("Files Cockpit"),
             "tiles": tuiles,
             "funnel": [],
             "attention": [
@@ -81,26 +81,26 @@ class HisDashboard(models.AbstractModel):
                 # exactement ce que le classeur Excel ne savait pas dire :
                 # « pas encore recu » plutot que « pas concerne ».
                 self._a_traiter(
-                    "Dossiers incomplets",
+                    _("Incomplete Files"),
                     "his.engagement",
-                    [("documents_complets", "=", False)],
+                    domain=[("documents_complets", "=", False)],
                 ),
                 self._a_traiter(
-                    "Lettres d'acceptation non emises",
+                    _("Acceptance Letters Not Issued"),
                     "his.engagement",
-                    [("inscription_initiale", "=", True), ("lettre_acceptation", "=", False)],
+                    domain=[("inscription_initiale", "=", True), ("lettre_acceptation", "=", False)],
                 ),
                 self._a_traiter(
-                    "Cartes recues de l'IT, non remises",
+                    _("Cards Received from IT, Not Handed Over"),
                     "his.engagement",
-                    [("carte_recue_it", "=", True), ("carte_date_remise", "=", False)],
+                    domain=[("carte_recue_it", "=", True), ("carte_date_remise", "=", False)],
                 ),
             ],
             "explore": [
                 {
-                    "label": "Par cycle et specialite",
+                    "label": _("By Cycle and Specialty"),
                     "action": self._action(
-                        "Par cycle et specialite",
+                        _("By Cycle and Specialty"),
                         "his.engagement",
                         [],
                         views=[[False, "pivot"], [False, "list"]],
@@ -142,11 +142,11 @@ class HisDashboard(models.AbstractModel):
         return [
             self._tuile(
                 "revenu_attendu",
-                "Revenu attendu",
+                _("Expected Revenue"),
                 round(attendu, 2),
                 unite="DA",
                 action=self._action(
-                    "Candidatures ouvertes chiffrables",
+                    _("Open Applications With a Fee"),
                     "crm.lead",
                     domaine,
                 ),
@@ -180,9 +180,9 @@ class HisDashboard(models.AbstractModel):
         if sans_tarif:
             files.append(
                 self._a_traiter(
-                    "Specialites sans tarif",
+                    _("Specialties Without a Fee"),
                     "his.specialite",
-                    [("id", "in", sans_tarif.ids)],
+                    domain=[("id", "in", sans_tarif.ids)],
                 )
             )
         return files

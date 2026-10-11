@@ -12,5 +12,5 @@ class ResPartner(models.Model):
     his_person_ids = fields.One2many(
         "his.person",
         "partner_id",
-        string="Fiche personne",
+        string="Person Record",
     )

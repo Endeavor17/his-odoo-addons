@@ -13,12 +13,12 @@ SOURCE_SYSTEM = "google_sheets"
 CANDIDATE_TYPES = ("etudiant", "candidat")
 
 OUTCOME_SELECTION = [
-    ("created", "Fiche creee"),
-    ("updated", "Fiche mise a jour"),
-    ("flagged", "A arbitrer"),
-    ("confirmed", "Rapprochement confirme"),
-    ("rejected", "Rapprochement refuse, fiche creee"),
-    ("conflict", "Conflit - ligne rejetee"),
+    ("created", "Record Created"),
+    ("updated", "Record Updated"),
+    ("flagged", "To Review"),
+    ("confirmed", "Match Confirmed"),
+    ("rejected", "Match Rejected, Record Created"),
+    ("conflict", "Conflict - row rejected"),
 ]
 
 ROW_FIELDS = (
@@ -60,21 +60,21 @@ def _normalize_header(header):
 
 class HisPersonImport(models.TransientModel):
     _name = "his.person.import"
-    _description = "Import des personnes depuis l'export Google Sheets"
+    _description = "Import people from the Google Sheets export"
 
-    file = fields.Binary(string="Fichier export (CSV ou XLSX)", required=True)
-    filename = fields.Char(string="Nom du fichier")
+    file = fields.Binary(string="Export File (CSV or XLSX)", required=True)
+    filename = fields.Char(string="File Name")
     state = fields.Selection(
-        selection=[("upload", "Depot"), ("review", "Resultat")],
+        selection=[("upload", "Upload"), ("review", "Result")],
         default="upload",
-        string="Etape",
+        string="Step",
     )
-    line_ids = fields.One2many("his.person.import.line", "import_id", string="Lignes")
+    line_ids = fields.One2many("his.person.import.line", "import_id", string="Rows")
 
-    created_count = fields.Integer(string="Creees", compute="_compute_counts")
-    updated_count = fields.Integer(string="Mises a jour", compute="_compute_counts")
-    flagged_count = fields.Integer(string="A arbitrer", compute="_compute_counts")
-    conflict_count = fields.Integer(string="Conflits", compute="_compute_counts")
+    created_count = fields.Integer(string="Created", compute="_compute_counts")
+    updated_count = fields.Integer(string="Updated", compute="_compute_counts")
+    flagged_count = fields.Integer(string="To Review", compute="_compute_counts")
+    conflict_count = fields.Integer(string="Conflicts", compute="_compute_counts")
 
     @api.depends("line_ids.outcome")
     def _compute_counts(self):
@@ -94,7 +94,7 @@ class HisPersonImport(models.TransientModel):
         raw_rows = self._read_xlsx(content) if name.endswith((".xlsx", ".xlsm")) else self._read_csv(content)
         rows = self._map_rows(raw_rows)
         if not rows:
-            raise UserError(_("Le fichier ne contient aucune ligne exploitable."))
+            raise UserError(_("The file contains no usable row."))
         return rows
 
     def _read_csv(self, content):
@@ -105,7 +105,7 @@ class HisPersonImport(models.TransientModel):
             except UnicodeDecodeError:
                 continue
         else:
-            raise UserError(_("Encodage du fichier CSV non reconnu."))
+            raise UserError(_("CSV file encoding not recognised."))
         # Sniff : la feuille est exportee tantot en virgule, tantot en
         # point-virgule selon la locale du poste qui l'exporte.
         try:
@@ -120,8 +120,8 @@ class HisPersonImport(models.TransientModel):
         except ImportError:
             raise UserError(
                 _(
-                    "La lecture XLSX necessite openpyxl, absent de cet environnement. "
-                    "Exportez la feuille en CSV et relancez l'import."
+                    "Reading XLSX requires openpyxl, which is missing from this environment. "
+                    "Export the sheet as CSV and run the import again."
                 )
             ) from None
         workbook = load_workbook(io.BytesIO(content), read_only=True, data_only=True)
@@ -149,7 +149,7 @@ class HisPersonImport(models.TransientModel):
         if "name" not in mapping:
             raise UserError(
                 _(
-                    "Aucune colonne de nom reconnue dans l'en-tete du fichier. Intitules acceptes : %s.",
+                    "No name column recognised in the file header. Accepted headings: %s.",
                     ", ".join(COLUMN_ALIASES["name"]),
                 )
             )
@@ -205,14 +205,14 @@ class HisPersonImport(models.TransientModel):
                 self._update_person(match["person"], row)
                 line_vals.update(
                     outcome="updated",
-                    message="Rapprochement deterministe.",
+                    message=_("Deterministic match."),
                     person_id=match["person"].id,
                 )
             elif match["method"] == "probabilistic":
                 # Jamais de lien automatique, quel que soit le score.
                 line_vals.update(
                     outcome="flagged",
-                    message="Correspondance probable (%d%%) : a confirmer ou refuser." % round(match["score"] * 100),
+                    message=_("Probable match (%d%%): confirm or reject it.", round(match["score"] * 100)),
                 )
             else:
                 method = "deterministic" if row.get("matricule_institutionnel") else "new"
@@ -245,14 +245,12 @@ class HisPersonImport(models.TransientModel):
         )
         if not holder or holder == target:
             return False
-        return (
-            "La carte %s est deja attribuee a %s (%s). Une carte n'identifie "
-            "qu'une personne : ligne rejetee, a arbitrer manuellement."
-            % (
-                card,
-                holder.display_name,
-                holder.matricule_affiche or holder.matricule_institutionnel,
-            )
+        return _(
+            "Card %(card)s is already assigned to %(holder)s (%(matricule)s). A card identifies "
+            "only one person: row rejected, to be resolved by hand.",
+            card=card,
+            holder=holder.display_name,
+            matricule=holder.matricule_affiche or holder.matricule_institutionnel,
         )
 
     @api.model
@@ -317,7 +315,7 @@ class HisPersonImport(models.TransientModel):
             if line.person_id:
                 line.person_id.sudo().message_post(
                     body=_(
-                        "Import Google Sheets (%(ref)s) : %(message)s",
+                        "Google Sheets import (%(ref)s): %(message)s",
                         ref=line.external_ref or "-",
                         message=line.message or line.outcome,
                     ),
@@ -336,29 +334,29 @@ class HisPersonImport(models.TransientModel):
 
 class HisPersonImportLine(models.TransientModel):
     _name = "his.person.import.line"
-    _description = "Ligne d'import de personnes"
+    _description = "People Import Row"
     _order = "outcome, id"
 
     import_id = fields.Many2one("his.person.import", required=True, ondelete="cascade")
 
-    matricule_institutionnel = fields.Char(string="Matricule (source)", readonly=True)
-    name = fields.Char(string="Nom (latin)", readonly=True)
-    nom_arabe = fields.Char(string="Nom (arabe)", readonly=True)
-    email = fields.Char(string="Email institutionnel", readonly=True)
-    email_personnel = fields.Char(string="Email personnel", readonly=True)
-    phone = fields.Char(string="Telephone", readonly=True)
-    numero_carte = fields.Char(string="Badge RFID", readonly=True)
-    external_ref = fields.Char(string="Reference source", readonly=True)
+    matricule_institutionnel = fields.Char(string="Registration Number (Source)", readonly=True)
+    name = fields.Char(string="Name (Latin)", readonly=True)
+    nom_arabe = fields.Char(string="Name (Arabic)", readonly=True)
+    email = fields.Char(string="Institutional Email", readonly=True)
+    email_personnel = fields.Char(string="Personal Email", readonly=True)
+    phone = fields.Char(string="Phone", readonly=True)
+    numero_carte = fields.Char(string="RFID Badge", readonly=True)
+    external_ref = fields.Char(string="Source Reference", readonly=True)
 
-    outcome = fields.Selection(selection=OUTCOME_SELECTION, string="Resultat", readonly=True)
+    outcome = fields.Selection(selection=OUTCOME_SELECTION, string="Result", readonly=True)
     message = fields.Char(string="Detail", readonly=True)
     score = fields.Float(string="Score", digits=(3, 2), readonly=True)
-    person_id = fields.Many2one("his.person", string="Fiche resultante", readonly=True)
+    person_id = fields.Many2one("his.person", string="Resulting Record", readonly=True)
     candidate_person_id = fields.Many2one(
         "his.person",
-        string="Fiche proposee",
+        string="Suggested Record",
         readonly=True,
-        help="Meilleure correspondance trouvee. Tant qu'elle n'est pas confirmee, rien n'est rattache.",
+        help="Best match found. Until it is confirmed, nothing is linked.",
     )
 
     def action_confirm_match(self):
@@ -379,10 +377,10 @@ class HisPersonImportLine(models.TransientModel):
                 {
                     "outcome": "confirmed",
                     "person_id": person.id,
-                    "message": "Rapprochement (%d%%) confirme par %s."
-                    % (
-                        round(line.score * 100),
-                        self.env.user.display_name,
+                    "message": _(
+                        "Match (%(score)d%%) confirmed by %(user)s.",
+                        score=round(line.score * 100),
+                        user=self.env.user.display_name,
                     ),
                 }
             )
@@ -399,7 +397,7 @@ class HisPersonImportLine(models.TransientModel):
                 {
                     "outcome": "rejected",
                     "person_id": person.id,
-                    "message": "Rapprochement refuse par %s : fiche distincte creee." % self.env.user.display_name,
+                    "message": _("Match rejected by %s: separate record created.", self.env.user.display_name),
                 }
             )
             line.import_id._log_line(line)

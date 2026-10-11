@@ -1,0 +1,164 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* campus_identity_bridge
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: campus_identity_bridge
+#: model_terms:ir.ui.view,arch_db:campus_identity_bridge.hr_applicant_view_form_campus_identity
+msgid ""
+"An existing record looks like this candidate\n"
+"                            ("
+msgstr ""
+"Une fiche existante ressemble à ce candidat\n"
+"                            ("
+
+#. module: campus_identity_bridge
+#: model:ir.model,name:campus_identity_bridge.model_hr_applicant
+msgid "Applicant"
+msgstr "Candidat"
+
+#. module: campus_identity_bridge
+#: model:ir.model.fields,help:campus_identity_bridge.field_hr_applicant__his_person_candidate_id
+msgid ""
+"Best match found in the register. Until a human confirms it, NOTHING is "
+"linked."
+msgstr ""
+"Meilleure correspondance trouvée dans le référentiel. Tant qu'elle n'est pas"
+" confirmée par un humain, RIEN n'est rattaché."
+
+#. module: campus_identity_bridge
+#: model:ir.model.fields.selection,name:campus_identity_bridge.selection__his_person__source_system__campus_plus
+msgid "Campus+"
+msgstr "Campus+"
+
+#. module: campus_identity_bridge
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_his_person__campus_applicant_ids
+msgid "Campus+ Applications"
+msgstr "Candidatures Campus+"
+
+#. module: campus_identity_bridge
+#: model_terms:ir.ui.view,arch_db:campus_identity_bridge.hr_applicant_view_form_campus_identity
+msgid "Create a separate record"
+msgstr "Créer une fiche distincte"
+
+#. module: campus_identity_bridge
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_his_person__display_name
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_hr_applicant__display_name
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_hr_employee__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: campus_identity_bridge
+#: model:ir.model,name:campus_identity_bridge.model_hr_employee
+msgid "Employee"
+msgstr "Employé"
+
+#. module: campus_identity_bridge
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_his_person__id
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_hr_applicant__id
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_hr_employee__id
+msgid "ID"
+msgstr "ID"
+
+#. module: campus_identity_bridge
+#: model_terms:ir.ui.view,arch_db:campus_identity_bridge.hr_applicant_view_form_campus_identity
+msgid "Identity Register"
+msgstr "Référentiel Identité"
+
+#. module: campus_identity_bridge
+#. odoo-python
+#: code:addons/campus_identity_bridge/models/hr_applicant.py:0
+msgid "Identity match to review"
+msgstr "Rapprochement d'identité à arbitrer"
+
+#. module: campus_identity_bridge
+#: model:ir.model.fields,help:campus_identity_bridge.field_hr_applicant__his_person_id
+msgid "Identity register record linked to this application."
+msgstr "Fiche du référentiel Identité rattachée à cette candidature."
+
+#. module: campus_identity_bridge
+#: model_terms:ir.ui.view,arch_db:campus_identity_bridge.hr_applicant_view_form_campus_identity
+msgid "It is the same person"
+msgstr "C'est la même personne"
+
+#. module: campus_identity_bridge
+#. odoo-python
+#: code:addons/campus_identity_bridge/models/hr_applicant.py:0
+msgid ""
+"Linked to the record \"%(fiche)s\". Different addresses: the application "
+"keeps its own contact."
+msgstr ""
+"Rattachée à la fiche « %(fiche)s ». Adresses différentes : la candidature "
+"garde son propre contact."
+
+#. module: campus_identity_bridge
+#. odoo-python
+#: code:addons/campus_identity_bridge/models/hr_applicant.py:0
+msgid "Match (%(score)d%%) confirmed by %(user)s."
+msgstr "Rapprochement (%(score)d%%) confirmé par %(user)s."
+
+#. module: campus_identity_bridge
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_hr_applicant__his_person_match_score
+msgid "Match Score"
+msgstr "Score de rapprochement"
+
+#. module: campus_identity_bridge
+#. odoo-python
+#: code:addons/campus_identity_bridge/models/hr_applicant.py:0
+msgid "Match rejected by %(user)s: separate record created."
+msgstr "Rapprochement refusé par %(user)s : fiche distincte créée."
+
+#. module: campus_identity_bridge
+#: model:ir.model,name:campus_identity_bridge.model_his_person
+msgid "Person (HIS-HTC-IRA Group)"
+msgstr "Personne (Groupe HIS-HTC-IRA)"
+
+#. module: campus_identity_bridge
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_hr_applicant__his_person_id
+msgid "Person Record"
+msgstr "Fiche personne"
+
+#. module: campus_identity_bridge
+#. odoo-python
+#: code:addons/campus_identity_bridge/models/hr_applicant.py:0
+msgid ""
+"Probable match (%(score)d%%) with \"%(fiche)s\": confirm or reject it from "
+"the application. No record has been linked."
+msgstr ""
+"Correspondance probable (%(score)d%%) avec « %(fiche)s » : à confirmer ou "
+"refuser depuis la candidature. Aucune fiche n'a été rattachée."
+
+#. module: campus_identity_bridge
+#. odoo-python
+#: code:addons/campus_identity_bridge/models/hr_applicant.py:0
+msgid "Record created from the Campus+ application \"%(applicant)s\"."
+msgstr "Fiche créée depuis la candidature Campus+ « %(applicant)s »."
+
+#. module: campus_identity_bridge
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_his_person__source_system
+msgid "Source System"
+msgstr "Système source"
+
+#. module: campus_identity_bridge
+#: model:ir.model.fields,field_description:campus_identity_bridge.field_hr_applicant__his_person_candidate_id
+msgid "Suggested Record"
+msgstr "Fiche proposée"
+
+#. module: campus_identity_bridge
+#: model_terms:ir.ui.view,arch_db:campus_identity_bridge.hr_applicant_view_form_campus_identity
+msgid ""
+"similarity). No record is linked until\n"
+"                            you decide."
+msgstr ""
+"de similarité). Aucune fiche n'a été rattachée tant que\n"
+"                            vous n'avez pas tranché."

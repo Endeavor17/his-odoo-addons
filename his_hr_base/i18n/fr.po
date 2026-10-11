@@ -1,0 +1,116 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_hr_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_hr_base
+#: model:hr.contract.type,name:his_hr_base.contract_type_dz_apprentissage
+msgid "Apprenticeship Contract"
+msgstr "Contrat d'apprentissage"
+
+#. module: his_hr_base
+#: model:ir.model.fields,field_description:his_hr_base.field_hr_employee__barcode
+msgid "Badge ID"
+msgstr "Identifiant du badge"
+
+#. module: his_hr_base
+#: model:hr.contract.type,name:his_hr_base.contract_type_dz_cdd
+msgid "CDD — Fixed-Term Contract"
+msgstr "CDD — Contrat à Durée Déterminée"
+
+#. module: his_hr_base
+#: model:hr.contract.type,name:his_hr_base.contract_type_dz_cdi
+msgid "CDI — Permanent Contract"
+msgstr "CDI — Contrat à Durée Indéterminée"
+
+#. module: his_hr_base
+#: model:ir.model.fields,field_description:his_hr_base.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:his_hr_base.field_hr_employee_public__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_hr_base
+#: model:ir.model,name:his_hr_base.model_hr_employee
+msgid "Employee"
+msgstr "Employé"
+
+#. module: his_hr_base
+#: model:ir.model.fields,field_description:his_hr_base.field_hr_employee__id
+#: model:ir.model.fields,field_description:his_hr_base.field_hr_employee_public__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_hr_base
+#: model:ir.model.fields,field_description:his_hr_base.field_hr_employee__matricule_institutionnel
+#: model:ir.model.fields,field_description:his_hr_base.field_hr_employee_public__matricule_institutionnel
+msgid "Institutional Registration Number"
+msgstr "Matricule institutionnel"
+
+#. module: his_hr_base
+#: model:hr.contract.type,name:his_hr_base.contract_type_dz_temps_partiel
+msgid "Part-Time Contract"
+msgstr "Contrat à temps partiel"
+
+#. module: his_hr_base
+#: model:ir.model.fields,field_description:his_hr_base.field_hr_employee__person_id
+msgid "Person Record"
+msgstr "Fiche personne"
+
+#. module: his_hr_base
+#: model:ir.model,name:his_hr_base.model_hr_employee_public
+msgid "Public Employee"
+msgstr "Employé public"
+
+#. module: his_hr_base
+#: model_terms:ir.ui.view,arch_db:his_hr_base.view_employee_form_inherit_his_hr_base
+msgid "RFID Badge"
+msgstr "Badge RFID"
+
+#. module: his_hr_base
+#: model:ir.model.fields,field_description:his_hr_base.field_hr_employee__matricule_affiche
+msgid "Registration Number"
+msgstr "Matricule"
+
+#. module: his_hr_base
+#. odoo-python
+#: code:addons/his_hr_base/models/hr_employee.py:0
+msgid ""
+"The contact \"%(contact)s\" already carries the person record %(matricule)s."
+" Two records on the same contact would make the registration number "
+"ambiguous."
+msgstr ""
+"Le contact « %(contact)s » porte déjà la fiche personne %(matricule)s. Deux "
+"fiches sur un même contact rendraient le matricule ambigu."
+
+#. module: his_hr_base
+#. odoo-python
+#: code:addons/his_hr_base/models/hr_employee.py:0
+msgid ""
+"The contact \"%(contact)s\" already serves %(count)s other employee(s) "
+"(%(names)s). A registration number identifies a single person: first link "
+"each employee to their own contact."
+msgstr ""
+"Le contact « %(contact)s » sert déjà %(count)s autre(s) employé(s) "
+"(%(names)s). Un matricule identifie une seule personne : rattachez d'abord "
+"chaque employé à son propre contact."
+
+#. module: his_hr_base
+#: model:ir.model.fields,help:his_hr_base.field_hr_employee__barcode
+msgid ""
+"The person's RFID badge. The same physical card for clocking in, building "
+"access and meals. It can be entered on the person record or here, either "
+"way."
+msgstr ""
+"Badge RFID de la personne. Même carte physique pour le pointage, l'accès aux"
+" locaux et les repas. Se saisit sur la fiche personne ou ici, "
+"indifféremment."

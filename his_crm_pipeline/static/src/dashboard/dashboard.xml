@@ -51,7 +51,7 @@
                              class="his_ecart"
                              t-att-class="classeEcart(tuile.ecart)">
                             <t t-esc="tuile.ecart > 0 ? '▲' : '▼'"/>
-                            <t t-esc="Math.abs(tuile.ecart)"/>% vs periode precedente
+                            <t t-esc="Math.abs(tuile.ecart)"/>% vs previous period
                         </div>
 
                         <!-- L'objectif : atteinte, rythme requis, projection.
@@ -68,11 +68,11 @@
                             </div>
                             <div class="his_objectif_rythme">
                                 <t t-if="tuile.jours_restants > 0">
-                                    Reste <t t-esc="tuile.jours_restants"/> j ·
-                                    <t t-esc="tuile.rythme_requis"/>/j requis ·
+                                    Remaining <t t-esc="tuile.jours_restants"/> d ·
+                                    <t t-esc="tuile.rythme_requis"/>/day required ·
                                     projection <t t-esc="tuile.projection"/>
                                 </t>
-                                <t t-else="">Periode terminee</t>
+                                <t t-else="">Period ended</t>
                             </div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                      Cumulatif : chaque marche contient les suivantes, sinon le
                      taux de passage ne veut rien dire. -->
                 <div t-if="state.spec.funnel.length" class="his_bloc">
-                    <h3 class="his_titre">Parcours des candidatures</h3>
+                    <h3 class="his_titre">Application Journey</h3>
                     <div t-foreach="state.spec.funnel" t-as="marche"
                          t-key="marche.label" class="his_marche his_cliquable"
                          t-on-click="() => this.ouvrir(marche.action)">
@@ -106,14 +106,14 @@
                      et evite d'ajouter une bibliotheque pour quatre camemberts
                      statiques. Chaque part est cliquable, comme chaque tuile. -->
                 <div t-if="state.spec.donuts and state.spec.donuts.length" class="his_bloc">
-                    <h3 class="his_titre">Repartitions</h3>
+                    <h3 class="his_titre">Breakdowns</h3>
                     <div class="his_donuts">
                         <div t-foreach="state.spec.donuts" t-as="donut"
                              t-key="donut.label" class="his_donut">
                             <div class="his_donut_titre" t-esc="donut.label"/>
                             <div t-if="!donut.total"
                                  class="his_donut_vide text-muted small">
-                                Aucune donnee sur la periode
+                                No data for the period
                             </div>
                             <div t-else="" class="his_donut_corps">
                                 <div class="his_donut_disque"
@@ -147,7 +147,7 @@
                      un tableau de bord qui ne dit pas ce qu'il ignore laisse
                      croire qu'il sait tout. Meme mecanique que « A traiter ». -->
                 <div t-if="state.spec.qualite and state.spec.qualite.length" class="his_bloc">
-                    <h3 class="his_titre">Qualite des donnees</h3>
+                    <h3 class="his_titre">Data Quality</h3>
                     <div class="his_files">
                         <div t-foreach="state.spec.qualite" t-as="file"
                              t-key="file.label" class="his_file">
@@ -170,7 +170,7 @@
                      Des exceptions, pas des agregats : la moitie du cockpit qui
                      fait travailler. -->
                 <div t-if="state.spec.attention.length" class="his_bloc">
-                    <h3 class="his_titre">A traiter</h3>
+                    <h3 class="his_titre">To Process</h3>
                     <div class="his_files">
                         <div t-foreach="state.spec.attention" t-as="file"
                              t-key="file.label" class="his_file">
@@ -188,7 +188,7 @@
                             <div t-if="file.count > file.apercu.length"
                                  class="his_voir_tout his_cliquable"
                                  t-on-click="() => this.ouvrir(file.action)">
-                                Voir les <t t-esc="file.count"/>
+                                See the <t t-esc="file.count"/>
                             </div>
                         </div>
                     </div>
@@ -198,7 +198,7 @@
                      La profondeur est deleguee aux vues pivot et graph natives :
                      elles sont gratuites et infiniment explorables. -->
                 <div t-if="state.spec.explore.length" class="his_bloc">
-                    <h3 class="his_titre">Explorer</h3>
+                    <h3 class="his_titre">Explore</h3>
                     <div class="his_explorer">
                         <button t-foreach="state.spec.explore" t-as="lien"
                                 t-key="lien.label" class="btn btn-secondary btn-sm"
@@ -210,7 +210,7 @@
             </div>
 
             <div t-else="" class="o_his_dashboard_vide p-5 text-center text-muted">
-                Chargement des indicateurs...
+                Loading indicators...
             </div>
         </Layout>
         </div>

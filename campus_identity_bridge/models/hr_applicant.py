@@ -16,22 +16,21 @@ class HrApplicant(models.Model):
 
     his_person_id = fields.Many2one(
         "his.person",
-        string="Fiche personne",
+        string="Person Record",
         readonly=True,
         copy=False,
         index="btree_not_null",
-        help="Fiche du referentiel Identite rattachee a cette candidature.",
+        help="Identity register record linked to this application.",
     )
     his_person_candidate_id = fields.Many2one(
         "his.person",
-        string="Fiche proposee",
+        string="Suggested Record",
         readonly=True,
         copy=False,
-        help="Meilleure correspondance trouvee dans le referentiel. Tant "
-        "qu'elle n'est pas confirmee par un humain, RIEN n'est rattache.",
+        help="Best match found in the register. Until a human confirms it, NOTHING is linked.",
     )
     his_person_match_score = fields.Float(
-        string="Score de rapprochement",
+        string="Match Score",
         digits=(3, 2),
         readonly=True,
         copy=False,
@@ -136,9 +135,8 @@ class HrApplicant(models.Model):
                 )
                 applicant._his_signaler(
                     _(
-                        "Correspondance probable (%(score)d%%) avec « %(fiche)s » : "
-                        "a confirmer ou refuser depuis la candidature. Aucune fiche "
-                        "n'a ete rattachee.",
+                        'Probable match (%(score)d%%) with "%(fiche)s": confirm or reject it '
+                        "from the application. No record has been linked.",
                         score=round(match["score"] * 100),
                         fiche=match["person"].display_name,
                     )
@@ -174,7 +172,7 @@ class HrApplicant(models.Model):
         person = self.env["his.person"].sudo().create(vals)
         person.message_post(
             body=_(
-                "Fiche creee depuis la candidature Campus+ « %(applicant)s ».",
+                'Record created from the Campus+ application "%(applicant)s".',
                 applicant=self.display_name,
             )
         )
@@ -197,8 +195,7 @@ class HrApplicant(models.Model):
             else:
                 self.message_post(
                     body=_(
-                        "Rattachee a la fiche « %(fiche)s ». Adresses differentes : la "
-                        "candidature garde son propre contact.",
+                        'Linked to the record "%(fiche)s". Different addresses: the application keeps its own contact.',
                         fiche=person.display_name,
                     )
                 )
@@ -210,7 +207,7 @@ class HrApplicant(models.Model):
         if self.user_id:
             self.activity_schedule(
                 "mail.mail_activity_data_todo",
-                summary="Rapprochement Identite a arbitrer",
+                summary=_("Identity match to review"),
                 note=message,
                 user_id=self.user_id.id,
             )
@@ -233,7 +230,7 @@ class HrApplicant(models.Model):
             applicant._his_lier(person)
             applicant.message_post(
                 body=_(
-                    "Rapprochement (%(score)d%%) confirme par %(user)s.",
+                    "Match (%(score)d%%) confirmed by %(user)s.",
                     score=round(applicant.his_person_match_score * 100),
                     user=self.env.user.display_name,
                 )
@@ -247,7 +244,7 @@ class HrApplicant(models.Model):
             applicant.his_person_id = applicant._his_creer_personne("new")
             applicant.message_post(
                 body=_(
-                    "Rapprochement refuse par %(user)s : fiche distincte creee.",
+                    "Match rejected by %(user)s: separate record created.",
                     user=self.env.user.display_name,
                 )
             )

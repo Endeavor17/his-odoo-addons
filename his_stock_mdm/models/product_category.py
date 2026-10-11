@@ -42,17 +42,17 @@ class ProductCategory(models.Model):
 
     default_tracking = fields.Selection(
         selection=[
-            ("serial", "Par numéro de série"),
-            ("lot", "Par lots"),
-            ("none", "Par quantité"),
+            ("serial", "By Serial Number"),
+            ("lot", "By Lots"),
+            ("none", "By Quantity"),
         ],
-        string="Traçabilité par défaut",
-        help="Appliquée automatiquement aux produits stockables créés dans cette "
-        "catégorie. Une valeur saisie manuellement sur le produit est conservée.",
+        string="Default Tracking",
+        help="Applied automatically to storable products created in this category. A "
+        "value entered manually on the product is kept.",
     )
     default_use_expiration_date = fields.Boolean(
-        string="Date de péremption par défaut",
-        help="Active la gestion des dates de péremption sur les produits créés dans cette catégorie.",
+        string="Default Expiration Date",
+        help="Enables expiration date tracking on products created in this category.",
     )
 
     @api.model

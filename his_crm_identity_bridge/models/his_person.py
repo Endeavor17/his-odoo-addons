@@ -15,6 +15,7 @@ class HisPerson(models.Model):
     # pont, les fiches nees du CRM basculent donc en « Saisie manuelle » : leur
     # provenance reelle reste lisible dans external_ref et dans le chatter.
     source_system = fields.Selection(
+        string="Source System",
         selection_add=[("odoo_crm", "Odoo CRM")],
         ondelete={"odoo_crm": lambda recs: recs.write({"source_system": "manual"})},
     )

@@ -5,6 +5,11 @@
 // for the same reason: a stylesheet that fails to compile takes the screen with
 // it, and the cashier has no other way in.
 
+:root {
+    --his-font-sans: "Figtree", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+    --his-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
 // The till's header, in the university's colours, with the same hairline that
 // sits above the navbar everywhere else. `bg-view` and `border-bottom` are
 // Bootstrap-style utilities carrying !important, so overriding them takes the

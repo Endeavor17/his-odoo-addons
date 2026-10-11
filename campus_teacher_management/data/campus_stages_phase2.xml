@@ -20,14 +20,14 @@
         </record>
 
         <record id="stage_interview1" model="hr.recruitment.stage">
-            <field name="name">1er Interview</field>
+            <field name="name">1st Interview</field>
             <field name="sequence">10</field>
             <field name="job_ids" eval="[(4, ref('job_campus_teacher'))]"/>
             <field name="requirements">Schedule the first interview and record whether it happened. Moving to the next stage is always manual.</field>
         </record>
 
         <record id="stage_interview2" model="hr.recruitment.stage">
-            <field name="name">2ème Interview</field>
+            <field name="name">2nd Interview</field>
             <field name="sequence">11</field>
             <field name="job_ids" eval="[(4, ref('job_campus_teacher'))]"/>
             <field name="requirements">Schedule the second interview, track the Course Breakdown review cycle and the Contract signature, and select the candidate's subjects once the interview is done.</field>
@@ -41,7 +41,7 @@
         </record>
 
         <record id="stage_contract" model="hr.recruitment.stage">
-            <field name="name">Contrat</field>
+            <field name="name">Contract</field>
             <field name="sequence">13</field>
             <field name="job_ids" eval="[(4, ref('job_campus_teacher'))]"/>
             <field name="requirements">Contract sent, awaiting signature. See the Hiring tab for the exact status.</field>

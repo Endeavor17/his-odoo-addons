@@ -5,7 +5,7 @@ class CampusProcess(models.Model):
     """One of the Campus+ Recruitment menu items that carries per-user permissions.
 
     Not the same thing as ``hr.recruitment.stage``: a process is the menu/screen
-    (e.g. "Contrat"), a stage is where a specific candidate sits in the pipeline.
+    (e.g. "Contract"), a stage is where a specific candidate sits in the pipeline.
     ``stage_id`` links the two for the five phases that have one; Dashboard and
     Candidatures have no single stage, so it stays empty for them.
     """
@@ -17,11 +17,11 @@ class CampusProcess(models.Model):
     code = fields.Selection(
         [
             ("dashboard", "Dashboard"),
-            ("candidatures", "Candidatures"),
-            ("interview1", "1er Interview"),
-            ("interview2", "2ème Interview"),
+            ("candidatures", "Applications"),
+            ("interview1", "1st Interview"),
+            ("interview2", "2nd Interview"),
             ("course_breakdown", "Course Breakdown"),
-            ("contract", "Contrat"),
+            ("contract", "Contract"),
             ("shooting", "Shooting"),
         ],
         required=True,

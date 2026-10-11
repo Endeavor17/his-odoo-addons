@@ -27,30 +27,30 @@ class CrmLead(models.Model):
 
     specialite_id = fields.Many2one(
         "his.specialite",
-        string="Specialite visee",
+        string="Target Specialty",
         ondelete="restrict",
-        help="Determine quelles notes comptent dans le score : le domaine de la "
-        "specialite dit deja lesquelles il utilise.",
+        help="Determines which marks count in the score: the specialty's field of "
+        "study already says which ones it uses.",
     )
     domaine_id = fields.Many2one(
         related="specialite_id.domaine_id",
-        string="Domaine",
+        string="Field of Study",
         store=True,
         readonly=True,
     )
-    bac_moyenne = fields.Float(string="Moyenne du BAC", digits=(4, 2))
-    note_math = fields.Float(string="Note de maths", digits=(4, 2))
-    note_physique = fields.Float(string="Note de physique", digits=(4, 2))
+    bac_moyenne = fields.Float(string="Baccalaureate Average", digits=(4, 2))
+    note_math = fields.Float(string="Maths Mark", digits=(4, 2))
+    note_physique = fields.Float(string="Physics Mark", digits=(4, 2))
 
-    motivation_majeure = fields.Text(string="Pourquoi cette specialite ?")
-    motivation_his = fields.Text(string="Pourquoi HIS ?")
+    motivation_majeure = fields.Text(string="Why this specialty?")
+    motivation_his = fields.Text(string="Why HIS?")
 
     # Renseignements que le formulaire recueille mais qu'aucun champ ne portait
     # encore. Ils arrivaient jusqu'ici dans GoHighLevel et nulle part ailleurs :
     # la conseillere qui rappelle depuis Odoo devait rouvrir GHL pour savoir
     # d'ou vient le candidat et quel bac il a passe.
     wilaya = fields.Char(string="Wilaya")
-    bac_annee = fields.Char(string="Annee du BAC")
+    bac_annee = fields.Char(string="Baccalaureate Year")
 
     # L'UTM « content » designe le CREATIF : c'est lui qui distingue deux
     # annonces d'une meme campagne (« Flexible ad arabic »). Odoo n'a pas de
@@ -62,9 +62,9 @@ class CrmLead(models.Model):
     # publicites de Meta, il change au rythme des annonces, et une table de
     # configuration obligerait a creer une ligne avant chaque campagne.
     utm_contenu = fields.Char(
-        string="Annonce (UTM content)",
+        string="Ad (UTM content)",
         index=True,
-        help="Le creatif publicitaire, tel que la campagne le nomme. Distingue deux annonces d'une meme campagne.",
+        help="The ad creative, as the campaign names it. Tells two ads of the same campaign apart.",
     )
 
     # La filiere du bac, et non la specialite visee : les deux se confondent
@@ -74,14 +74,14 @@ class CrmLead(models.Model):
     # Char et non Selection : les libelles arrivent du formulaire GHL en
     # francais ou en arabe selon la langue choisie par le candidat, et une
     # Selection imposerait une livraison de code a chaque libelle nouveau.
-    bac_filiere = fields.Char(string="Filiere du BAC")
+    bac_filiere = fields.Char(string="Baccalaureate Stream")
 
     # Loi 18-07 (protection des donnees a caractere personnel). Le consentement
     # se prouve par une date, pas par une case : « il a coche » sans quand ne
     # vaut rien devant l'ANPDP. copy=False pour que dupliquer un lead ne
     # duplique pas un consentement qui n'a jamais ete donne sur cette copie.
-    consentement_18_07 = fields.Boolean(string="Consentement Loi 18-07", copy=False)
-    date_consentement = fields.Datetime(string="Date du consentement", copy=False)
+    consentement_18_07 = fields.Boolean(string="Law 18-07 Consent", copy=False)
+    date_consentement = fields.Datetime(string="Consent Date", copy=False)
 
     # Le meme score, calcule dans le navigateur du candidat. Il est conserve
     # POUR ETRE COMPARE, jamais pour trier : il se modifie depuis la console du
@@ -89,19 +89,19 @@ class CrmLead(models.Model):
     # specialite mal rapprochee a la capture, soit une saisie trafiquee — dans
     # les deux cas quelque chose qu'un humain doit regarder.
     score_client = fields.Integer(
-        string="Score client (non verifie)",
+        string="Client Score (Unverified)",
         copy=False,
         readonly=True,
-        help="Score calcule dans le navigateur du candidat, donc modifiable par "
-        "lui. Conserve pour comparaison avec le score academique, jamais "
-        "pour ordonner la file d'affectation.",
+        help="Score computed in the applicant's browser, so they can change it. Kept "
+        "for comparison with the academic score, never to order the assignment "
+        "queue.",
     )
 
     # Quelles notes sont demandees depend de la majeure. Plutot qu'une seconde
     # table de correspondance a tenir en phase avec la premiere, on lit celle
     # qui existe : un domaine qui ne pondere pas les maths ne les demande pas.
-    note_math_utilisee = fields.Boolean(compute="_compute_notes_utilisees")
-    note_physique_utilisee = fields.Boolean(compute="_compute_notes_utilisees")
+    note_math_utilisee = fields.Boolean(string="Maths Mark Used", compute="_compute_notes_utilisees")
+    note_physique_utilisee = fields.Boolean(string="Physics Mark Used", compute="_compute_notes_utilisees")
 
     # --- Le score, calcule ---------------------------------------------------
 
@@ -109,18 +109,18 @@ class CrmLead(models.Model):
     # installable seul. Des que le referentiel academique est la, le score
     # cesse d'etre une opinion et devient un calcul.
     score_academique = fields.Integer(
+        string="Academic Score",
         compute="_compute_score_academique",
         store=True,
         readonly=True,
     )
     score_detail = fields.Char(
-        string="Detail du score",
+        string="Score Breakdown",
         compute="_compute_score_academique",
         store=True,
         readonly=True,
-        help="Comment les points ont ete obtenus. Le score ordonne la file "
-        "d'affectation : il doit pouvoir s'expliquer a la conseillere qui "
-        "recoit le lead.",
+        help="How the points were obtained. The score orders the assignment queue: it "
+        "must be explainable to the advisor who receives the lead.",
     )
 
     @api.depends("domaine_id.coef_math", "domaine_id.coef_physique")
@@ -171,7 +171,7 @@ class CrmLead(models.Model):
         for lead in self:
             if not lead.bac_moyenne:
                 lead.score_academique = 0
-                lead.score_detail = _("Moyenne du BAC non renseignee.")
+                lead.score_detail = _("Baccalaureate average not entered.")
                 continue
 
             if lead.bac_moyenne >= BAC_SEUIL_HAUT:
@@ -180,17 +180,17 @@ class CrmLead(models.Model):
                 points_bac = BAC_POINTS_MOYEN
             else:
                 points_bac = BAC_POINTS_BAS
-            detail = [_("BAC %(note).2f : %(pts)s pts", note=lead.bac_moyenne, pts=points_bac)]
+            detail = [_("Baccalaureate %(note).2f: %(pts)s pts", note=lead.bac_moyenne, pts=points_bac)]
 
             ponderee = lead._moyenne_ponderee_lead()
             if ponderee is None:
                 points_ponderee = 0
-                detail.append(_("moyenne ponderee non applicable : 0 pt"))
+                detail.append(_("weighted average not applicable: 0 pt"))
             else:
                 points_ponderee = PONDERE_POINTS_HAUT if ponderee >= PONDERE_SEUIL else PONDERE_POINTS_BAS
                 detail.append(
                     _(
-                        "ponderee %(note).2f : %(pts)s pts",
+                        "weighted %(note).2f: %(pts)s pts",
                         note=ponderee,
                         pts=points_ponderee,
                     )
@@ -198,7 +198,7 @@ class CrmLead(models.Model):
 
             motive = bool((lead.motivation_majeure or "").strip() or (lead.motivation_his or "").strip())
             points_motivation = MOTIVATION_POINTS if motive else 0
-            detail.append(_("motivation : %(pts)s pt", pts=points_motivation))
+            detail.append(_("motivation: %(pts)s pt", pts=points_motivation))
 
             lead.score_academique = points_bac + points_ponderee + points_motivation
             lead.score_detail = " + ".join(detail)
@@ -309,11 +309,10 @@ class CrmLead(models.Model):
             if not engagement or not engagement.frais_inscription_payes:
                 raise ValidationError(
                     _(
-                        "« %(lead)s » ne peut pas etre gagne : les frais d'inscription "
-                        "ne sont pas encaisses.\n\n"
-                        "Le lead y passera de lui-meme quand le guichet enregistrera "
-                        "l'encaissement. Un candidat pre-admis qui ne paie pas se perd "
-                        "avec le motif « Paiement non confirme ».",
+                        '"%(lead)s" cannot be won: the registration fees have not been '
+                        "collected.\n\nThe lead will get there by itself when the front desk "
+                        "records the payment. A pre-admitted applicant who does not pay is lost "
+                        'with the reason "Payment not confirmed".',
                         lead=lead.display_name,
                     )
                 )
@@ -372,7 +371,7 @@ class CrmLead(models.Model):
             )
             engagement.message_post(
                 body=_(
-                    "Pre-admission prononcee sur le lead « %(lead)s ». Dossier transmis a l'Admission.",
+                    'Pre-admission granted on the lead "%(lead)s". File sent to Admission.',
                     lead=lead.display_name,
                 )
             )
@@ -382,7 +381,7 @@ class CrmLead(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Dossier d'admission"),
+            "name": _("Admission File"),
             "res_model": "his.engagement",
             "view_mode": "form",
             "res_id": self.his_person_id.engagement_ids[:1].id,
