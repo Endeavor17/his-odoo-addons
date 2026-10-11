@@ -5,14 +5,14 @@
 // files and nothing there proves which SCSS variables are in scope for the
 // bundle. Custom properties always are.
 
+// No --his-teal here: his_web_ui publishes its own (#00acc0, from the seal) and
+// loads after this module, so a second value only ever lost, silently.
 :root {
-    --his-teal: #0d6e8c;
     --his-teal-deep: #0a5871;
     --his-teal-deepest: #08475c;
     --his-gold: #dfa22a;
     --his-gold-dark: #c58c1d;
     --his-gold-ink: #3d2803;
-    --his-maroon: #5a2d1d;
     --his-ink: #10323f;
     --his-ink-60: #5e7883;
     --his-ink-40: #7b929b;
@@ -36,11 +36,9 @@
     --his-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
 
-// The hairline above the navbar, straight off the university site. The navbar
-// is the topmost element of the client, so its own top border is the strip.
-.o_main_navbar {
-    border-top: 6px solid var(--his-maroon);
-}
+// No strip above the navbar. The bar is a fixed 46px, so a 6px top border ate
+// into it and the systray dropdowns (activities, avatar) hung 6px below it.
+// The bar itself is his_web_ui's: navy, the colour of the seal.
 
 // Gold is the single completing action on a screen — the one that finishes what
 // the user came to do — never a second brand colour. Bootstrap 5 buttons are
