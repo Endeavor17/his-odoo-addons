@@ -174,8 +174,13 @@ jobs:
             ghcr.io/endeavor17/his-odoo:sha-${{ github.sha }}
             ghcr.io/endeavor17/his-odoo:main
           labels: org.opencontainers.image.revision=${{ github.sha }}
+      # Dokploy repond 301 « Branch Not Match » quand il refuse : curl -f ne le
+      # voit pas comme une erreur. On exige donc un 200 explicite.
       - name: Deployer le staging
         if: env.WEBHOOK != ''
-        run: >-
-          curl -fsS -X POST -H "Content-Type: application/json"
-          -H "X-GitHub-Event: push" -d '{"ref":"refs/heads/main"}' "$WEBHOOK"
+        run: |
+          CODE=$(curl -sS -o resp.txt -w '%{http_code}' -X POST \
+            -H "Content-Type: application/json" -H "X-GitHub-Event: push" \
+            -d '{"ref":"refs/heads/main"}' "$WEBHOOK")
+          cat resp.txt; echo
+          if [ "$CODE" != "200" ]; then echo "::error::Webhook Dokploy : HTTP $CODE"; exit 1; fi
