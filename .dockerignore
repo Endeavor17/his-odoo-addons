@@ -1,0 +1,14 @@
+# Seuls les modules partent dans l'image.
+.git
+.github
+.worktrees
+.superpowers
+.ruff_cache
+.claude
+node_modules
+docs
+tools
+deploy
+config
+docker-compose.yml
+Dockerfile
