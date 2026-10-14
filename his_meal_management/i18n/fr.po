@@ -17,12 +17,11 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/his_meal_management/static/src/app/pos_store.js:0
 msgid ""
-"%(name)s has %(credits)s credit(s) left and %(meal)s costs %(cost)s. The two"
-" allowance meals are already used. Sell the meal at its normal price, or "
-"sell a new plan at the student centre."
+"%(name)s has %(credits)s credit(s) left and %(meal)s costs %(cost)s. Sell "
+"the meal at its normal price, or sell a new plan at the student centre."
 msgstr ""
-"%(name)s n'a plus que %(credits)s crédit(s) et %(meal)s coûte %(cost)s. Les "
-"deux repas d'avance sont déjà utilisés. Vendez le repas à son prix normal, "
+"%(name)s n'a plus que %(credits)s crédit(s) et %(meal)s coûte %(cost)s. "
+"Vendez le repas à son prix normal, "
 "ou vendez un nouveau forfait au centre étudiant."
 
 #. module: his_meal_management
