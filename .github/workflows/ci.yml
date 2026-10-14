@@ -152,6 +152,10 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      # URL du webhook de deploiement Dokploy du staging (le jeton y est le
+      # seul secret). Absent : l'image est poussee, rien n'est deploye.
+      WEBHOOK: ${{ secrets.STAGING_DEPLOY_WEBHOOK }}
     steps:
       - uses: actions/checkout@v4
       - uses: docker/login-action@v3
@@ -159,8 +163,19 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      # `main` est un tag mobile reserve au staging (pull_policy: always) : le
+      # webhook Dokploy ne prend aucun parametre, il redeploie le compose tel
+      # quel. La prod, elle, n'epingle que des tags v*.
       - uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/endeavor17/his-odoo:sha-${{ github.sha }}
+          tags: |
+            ghcr.io/endeavor17/his-odoo:sha-${{ github.sha }}
+            ghcr.io/endeavor17/his-odoo:main
+          labels: org.opencontainers.image.revision=${{ github.sha }}
+      - name: Deployer le staging
+        if: env.WEBHOOK != ''
+        run: >-
+          curl -fsS -X POST -H "Content-Type: application/json"
+          -H "X-GitHub-Event: push" -d '{"ref":"refs/heads/main"}' "$WEBHOOK"
