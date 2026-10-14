@@ -1,12 +1,12 @@
 from odoo import Command
 
 # Identifiants du modele l10n_dz (resolus par societe : account.<id>_<nom>).
-TVA_REVENTE = "l10n_dz_vat_sale_19_resale"
-TVA_SUR_PLACE = "l10n_dz_vat_sale_19_on_site_consumption"
-TVA_SERVICES = "l10n_dz_vat_sale_19_other_services"
-# La taxe par defaut du modele dz : « production de biens », fausse pour HIS
-# qui revend. C'est la seule qu'on remplace sur un produit deja taxe.
-TVA_PRODUCTION = "l10n_dz_vat_sale_19_prod"
+# Taux reduit 9 % sur tout ce que vendent les caisses (accord du 2026-10-14).
+# Le modele dz n'a pas de 9 % « consommation sur place » : la nourriture va sur
+# « Biens, produits et denrees », les prestations sur « Services ». Meme taux,
+# seule change la ligne de la G50.
+TVA_BIENS = "l10n_dz_vat_sale_9_g"
+TVA_SERVICES = "l10n_dz_vat_sale_9_s"
 
 
 def post_init_hook(env):
@@ -15,21 +15,18 @@ def post_init_hook(env):
 
 
 def appliquer_tva(env, company):
-    """Pose la TVA a 19 % comprise dans le prix sur ce que vendent les caisses.
+    """Pose la TVA a 9 % comprise dans le prix sur ce que vendent les caisses.
 
     Idempotent : peut etre rejoue (migration, nouvelle societe). Ne fait rien
     si le plan comptable dz n'est pas charge sur la societe.
     """
     chart = env["account.chart.template"].with_company(company)
-    revente, sur_place, services = (
-        chart.ref(xmlid, raise_if_not_found=False) for xmlid in (TVA_REVENTE, TVA_SUR_PLACE, TVA_SERVICES)
-    )
-    if not (revente and sur_place and services):
+    biens, services = (chart.ref(xmlid, raise_if_not_found=False) for xmlid in (TVA_BIENS, TVA_SERVICES))
+    if not (biens and services):
         return
-    production = chart.ref(TVA_PRODUCTION, raise_if_not_found=False)
 
-    (revente | sur_place | services).write({"active": True, "price_include_override": "tax_included"})
-    company.account_sale_tax_id = revente
+    (biens | services).write({"active": True, "price_include_override": "tax_included"})
+    company.account_sale_tax_id = biens
 
     # Valeur stockee (carte cadeau, eWallet) : pas une vente, reste sans taxe.
     valeur_stockee = env["product.template"]
@@ -48,13 +45,10 @@ def appliquer_tva(env, company):
     )
     for produit in produits - valeur_stockee:
         taxes_societe = produit.taxes_id.filtered(lambda t, c=company: t.company_id == c)
-        if produit.meal_credit_cost or produit.meal_credits:
-            cible = sur_place
-        elif produit.copy_service:
-            cible = services
-        elif taxes_societe - production:
-            continue  # taxe choisie a la main : on n'y touche pas
-        else:
-            cible = revente
+        # Tout ce qui est a 19 % (le defaut « production » du modele dz, ou une
+        # pose anterieure) passe a 9 % ; un autre taux choisi a la main reste.
+        if taxes_societe.filtered(lambda t: t.amount != 19.0) - (biens | services):
+            continue
+        cible = services if produit.copy_service else biens
         if taxes_societe != cible:
             produit.taxes_id = [Command.unlink(t.id) for t in taxes_societe] + [Command.link(cible.id)]
