@@ -68,7 +68,9 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     container:
-      image: odoo:19.0
+      # Meme digest que le Dockerfile : les tests tournent sur la base de
+      # l'image qui part en production.
+      image: odoo:19.0@sha256:dd9013e669caaa23d26765dc55814655eaeecca7cfc2c265dbabae913bce22fd
       options: --user root
     services:
       db:
@@ -140,3 +142,40 @@ jobs:
           # « X failed, Y error(s) » d'Odoo, lui, ne compte que les vrais echecs,
           # et un plantage de chargement (CRITICAL) fait deja echouer l'etape
           # d'installation avant celle-ci. C'est donc ce decompte qui fait foi.
+
+  # Image de deploiement, seulement sur main et seulement apres lint + tests.
+  # Le staging la prend automatiquement ; la prod jamais (voir promotion.yml).
+  image:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, tests]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      # URL du webhook de deploiement Dokploy du staging (le jeton y est le
+      # seul secret). Absent : l'image est poussee, rien n'est deploye.
+      WEBHOOK: ${{ secrets.STAGING_DEPLOY_WEBHOOK }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # `main` est un tag mobile reserve au staging (pull_policy: always) : le
+      # webhook Dokploy ne prend aucun parametre, il redeploie le compose tel
+      # quel. La prod, elle, n'epingle que des tags v*.
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/endeavor17/his-odoo:sha-${{ github.sha }}
+            ghcr.io/endeavor17/his-odoo:main
+          labels: org.opencontainers.image.revision=${{ github.sha }}
+      - name: Deployer le staging
+        if: env.WEBHOOK != ''
+        run: >-
+          curl -fsS -X POST -H "Content-Type: application/json"
+          -H "X-GitHub-Event: push" -d '{"ref":"refs/heads/main"}' "$WEBHOOK"
