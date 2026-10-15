@@ -48,7 +48,7 @@ class MaintenanceRequest(models.Model):
     # Migration : migrations/19.0.4.0.0/pre-migration.py.
     maintenance_category_id = fields.Many2one(
         "maintenance.category",
-        string="Category",
+        string="Maintenance Category",
         required=True,
         tracking=True,
         index=True,

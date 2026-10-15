@@ -153,7 +153,6 @@ msgstr "الفئات"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__category_id
-#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__maintenance_category_id
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_category_form
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
@@ -508,6 +507,7 @@ msgstr "منخفضة"
 
 #. module: maintenance_university
 #: model:ir.model,name:maintenance_university.model_maintenance_category
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__maintenance_category_id
 msgid "Maintenance Category"
 msgstr "فئة الصيانة"
 
