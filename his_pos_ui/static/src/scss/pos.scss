@@ -166,6 +166,14 @@
     .orderline .product-name {
         color: var(--his-navy);
     }
+
+    // Except on the ticket previewed on the receipt screen: a ticket is black
+    // (his_theme's receipt.scss), the order lines inside it included.
+    .pos-receipt .orderline,
+    .pos-receipt .orderline .product-name,
+    .pos-receipt .orderline .qty {
+        color: inherit;
+    }
 }
 
 // -------------------------------------------------------- entry screen logo
