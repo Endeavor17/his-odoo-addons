@@ -24,7 +24,7 @@ The governing idea, stated first:
 | In version 1 | Out of version 1 (and why) |
 |---|---|
 | Internal purchase request with lines and approval | Ad hoc committee, meeting minutes: no committee at HIS |
-| Sourcing tiers by amount (direct / three quotes) | Imports (foreign currency, bank domiciliation, customs): no case yet |
+| Optional comparison of several quotes (no minimum number) | Imports (foreign currency, bank domiciliation, customs): no case yet |
 | Supplier answer on each RFQ (quoted / declined / no answer) | Budget control that blocks a request: analytic tagging only, budgets later |
 | Documented supplier choice, locked after confirmation | Supplier portal, e-signature |
 | Order approval above a threshold (native Odoo) | Stamp duty and cash-payment limits: accounting, not purchasing (see §10) |
@@ -52,8 +52,8 @@ The governing idea, stated first:
 Two native behaviours that shape the design:
 
 - **The comparison ranks on `price_total_cc`: tax included, in company
-  currency.** That is the right basis only if HIS cannot recover input VAT
-  (§11, question 3). It also **skips lines with a zero total**, so a supplier
+  currency.** Kept as is (decided 2026-10-15: start with 19 % and see; revisit
+  the basis only if the accountant says input VAT is recoverable). It also **skips lines with a zero total**, so a supplier
   who declined is never highlighted as cheapest — but nothing stops someone
   from confirming that RFQ. The guard is ours (§5.3).
 - **`l10n_dz` ships taxes and a chart of accounts, but no partner fields.**
@@ -67,7 +67,7 @@ Two modules, so the Algerian identifiers serve sales and invoicing too:
 | Module | Depends on | Holds |
 |---|---|---|
 | `his_partner_dz` | `base`, `account`, `l10n_dz` | RC, NIS, AI on `res.partner` and `res.company`; NIF label on `vat`; supplier tax regime; printing helpers for the legal block |
-| `his_purchase` | `purchase`, `purchase_stock`, `purchase_requisition`, `hr`, `his_stock_mdm`, `his_partner_dz` | Purchase request, sourcing tiers, supplier answer, supplier choice, reports, groups and rules |
+| `his_purchase` | `purchase`, `purchase_stock`, `purchase_requisition`, `hr`, `his_stock_mdm`, `his_partner_dz` | Purchase request, sourcing, supplier answer, supplier choice, reports, groups and rules |
 
 Before building the request model, check whether OCA `purchase_request` has a
 mature 19.0 branch. If it does, vendor it (as was done for `helpdesk_mgmt`)
@@ -85,15 +85,18 @@ below are the `fr.po` values. No module-specific `font-family`.
 | Requester | `base.group_user` (any employee with a login) | Create, edit and submit their own requests; see their own requests and the resulting order status |
 | Request approver | new `his_purchase.group_request_approver` (department heads) | Approve or reject requests of their department |
 | Purchasing officer | `purchase.group_purchase_user` | Turn approved requests into RFQs, record supplier answers, compare, choose, confirm orders below the approval amount |
-| Purchase manager | `purchase.group_purchase_manager` | Approve **POS-operations** orders above the amount (§5.5); authorise exceptions (single source, not-cheapest choice above the amount, split orders) |
+| Purchase manager | `purchase.group_purchase_manager` | Approve **POS-operations** orders above the amount (§5.5); authorise quantity top-ups (§5.6) |
 | Executive director | `purchase.group_purchase_manager` + new `his_purchase.group_purchase_director` | Approves **general** orders above the amount, and may approve POS-operations orders too; last level of escalation (§5.8) |
 | Warehouse manager | `stock.group_stock_manager` | Owns the monthly orders (§6.2) |
 | Storekeeper | `stock.group_stock_user` | Receive goods against the order |
 | Accountant | `account.group_account_invoice` | Record and check vendor bills |
 
-Separation of duties (default, to confirm): **the person who approves an
-order cannot be the one who chose the supplier**. Odoo does not enforce this;
-`his_purchase` does, server-side.
+The purchase managers are known but have no Odoo accounts yet: their users
+are created and put in the groups at go-live.
+
+No separation of duties (decided 2026-10-15, for flexibility): the person who
+chose the supplier **may** approve the order. Both names are recorded and
+printed on the Fiche de choix fournisseur.
 
 Authorisation is enforced by groups and record rules, never by hiding buttons
 alone.
@@ -118,7 +121,7 @@ Created by the requester. Reference from a sequence, e.g. `DA/2026/00018`.
 | `analytic_distribution` | Json | Cost centre (school, service); copied to order lines |
 | `date_required` | Date | When the goods are needed; must not be in the past at submission |
 | `justification` | Text | Why the purchase is needed; required at submission |
-| `estimated_amount` | Monetary, computed | Sum of line estimates; decides the sourcing tier |
+| `estimated_amount` | Monetary, computed | Sum of line estimates; informative (the approver sees it) |
 | `line_ids` | One2many | At least one line to submit |
 | `order_ids` | computed | RFQs and orders created from the request; smart button |
 | `state` | Selection | `draft`, `submitted`, `approved`, `sourcing`, `ordered`, `done`, `rejected`, `cancelled` |
@@ -131,7 +134,7 @@ Request line — `his.purchase.request.line`:
 | `description` | Required when there is no product (services, one-off items) |
 | `product_qty` | > 0 |
 | `product_uom_id` | Required; same category as the product's UoM |
-| `estimated_price_unit` | ≥ 0; used for the tier only, never sent to suppliers |
+| `estimated_price_unit` | ≥ 0; internal estimate, never sent to suppliers |
 | `purchase_line_ids` | Order lines that source this line |
 | `qty_ordered` | Computed from confirmed order lines |
 
@@ -146,21 +149,19 @@ Rules:
   lines need a product): the officer picks a catalogue product or a generic
   service product per expense category.
 
-### 5.2 Sourcing tiers
+### 5.2 Sourcing
 
-When the officer clicks « Source », the tier is set from `estimated_amount`
-(thresholds stored in settings, values to confirm, §11 question 1):
-
-| Tier | Estimated amount | Rule |
-|---|---|---|
-| **Direct** | below `direct_purchase_limit` | One RFQ to one supplier. No comparison needed. |
-| **Three quotes** | from `direct_purchase_limit` | At least **three** alternative RFQs, or a documented exception (single source: exclusive supplier, urgency, brand imposed) authorised by a purchase manager |
-| **Blanket order** | any amount | A call-off from an active blanket order (monthly order or ad hoc, §6) skips comparison: the supplier and prices were chosen when the blanket order was set up |
+**No minimum number of quotes** (decided 2026-10-15): three quotes are good
+when they exist, one is acceptable. HIS does not want a rule here, so there
+are no amount tiers and no exception workflow.
 
 « Source » creates the first RFQ from the request lines (quantities, UoM,
 required date as `date_planned`, analytic distribution, link back to the
-request line). The other suppliers are added with Odoo's « Create
-alternative », which copies the lines.
+request line). If the officer wants to compare, the other suppliers are added
+with Odoo's « Create alternative », which copies the lines.
+
+When the products are on an active blanket order (§6), « Source » proposes a
+call-off from it instead: supplier and prices are already agreed.
 
 ### 5.3 Supplier answer — extension of `purchase.order` (RFQ stage)
 
@@ -181,29 +182,27 @@ Rules:
 - `quoted` requires every line to have a positive price, a proforma reference
   and a proforma date. A genuinely free item is a line with price 0 and a
   mandatory note; it does not make the whole RFQ count as zero.
-- `declined` and `no_answer` RFQs **cannot be confirmed** and do not count
-  towards the three quotes. Marking one sets its line quantities to 0 so the
+- `declined` and `no_answer` RFQs **cannot be confirmed**. Marking one sets its line quantities to 0 so the
   comparison ignores it (Odoo already skips zero totals).
 - The supplier answer is a business field; the Odoo state (`draft`, `sent`,
   `purchase`, `cancel`) is not repurposed.
 
 ### 5.4 Supplier choice — extension of `purchase.order` (confirmation)
 
-On confirmation of an RFQ that belongs to a request in the **three quotes**
-tier, a wizard asks:
+Kept light, since HIS does not focus on comparison. On confirmation of an RFQ
+that has **at least one other `quoted` alternative**, a small wizard asks:
 
 | Field | Rule |
 |---|---|
-| `his_choice_criterion` | Selection: `lowest_price`, `earliest_delivery`, `quality`, `single_source`, `other` |
-| `his_choice_note` | Required unless the criterion is `lowest_price` **and** this RFQ is the lowest on every line |
+| `his_choice_criterion` | Selection: `lowest_price`, `earliest_delivery`, `quality`, `only_supplier`, `other`; pre-filled with `lowest_price` when this RFQ is the cheapest |
+| `his_choice_note` | Optional |
 | `his_chosen_by_id` | Current user, read-only |
 | `his_chosen_on` | Now, read-only |
 
+With a single RFQ there is no wizard: the criterion is set to `only_supplier`
+silently, so the Fiche de choix fournisseur can still be printed.
+
 Rules:
-- Confirmation is refused when fewer than three alternatives are `quoted`,
-  unless a purchase manager has recorded the single-source exception.
-- Choosing an offer that is not the lowest requires a note; above the
-  approval amount it also requires a purchase manager.
 - After confirmation the choice fields are read-only for everyone. A change
   means cancelling the order and choosing again; both events stay in the
   chatter.
@@ -214,7 +213,9 @@ Rules:
 Use Odoo's « Purchase Order Approval » (company setting
 `po_double_validation = two_step`, amount `po_double_validation_amount`).
 Orders above the amount go to `to approve` and only a purchase manager can
-approve them. `his_purchase` adds the separation-of-duties check of §4.
+approve them. Default amount: **0, every order is approved** — consistent
+with monthly orders not skipping approval (§6.2); to raise later if approvals
+become a bottleneck (§11, question 1).
 
 **Who approves (decided by Mohamed, 2026-10-15):** the executive director
 approves most purchases; the purchase manager approves POS purchases, and the
@@ -223,7 +224,7 @@ order, so `his_purchase` adds the routing:
 
 | `his_purchase_domain` | Meaning | Who can approve |
 |---|---|---|
-| `pos` | Supplies for the points of sale: Cafétéria, Restaurant, Copy Center (goods for sale and their ingredients/consumables) | Purchase manager **or** executive director |
+| `pos` | Supplies for the points of sale: Cafétéria, Restaurant, Copy Center only (goods for sale and their ingredients/consumables) | Purchase manager **or** executive director |
 | `general` | Everything else (IT, maintenance, office, furniture, services) | Executive director only |
 
 `his_purchase_domain` is set on the request from the requester's department
@@ -297,8 +298,10 @@ the director.
 - `his_reply_by` (Date) on the RFQ, printed on the Demande de proforma.
 - At the reply-by date the officer gets « Chase supplier »; one click on
   « Send reminder » emails the supplier the « Relance demande de proforma »
-  template with the proforma attached again. Sending it automatically is a
-  setting, off by default (to confirm).
+  template with the proforma attached again. The cron also **sends it
+  automatically** at the reply-by date (decided 2026-10-15), then again every
+  3 days while the answer is still `pending`, at most twice; the officer can
+  still send one by hand at any time.
 - Late deliveries on confirmed orders: Odoo's native **receipt reminder**
   (supplier setting « Receipt Reminder », daily cron « Purchase reminder »)
   emails the supplier N days before the promised date; switch it on for
@@ -322,10 +325,15 @@ deliveries**. Both are handled, with one agreement as the backbone.
 ### 6.1 The agreement: a blanket order (native)
 
 The monthly supplier gets a **blanket order** (`purchase.requisition`,
-`requisition_type = blanket_order`) for a period (e.g. the school year or a
-quarter), with the agreed products, unit prices and total quantities. It is
-set up once — this is where the supplier is chosen, so the three-quotes rule
-and approval apply **to the blanket order**, not to each monthly order.
+`requisition_type = blanket_order`) for **one year** (decided 2026-10-15;
+`date_start` / `date_end` on the agreement), with the agreed products, unit prices and total quantities. It is
+set up once a year — this is where the supplier and prices are chosen.
+Every order placed on it, monthly or ad hoc, still goes through approval
+(§5.5).
+
+Thirty days before `date_end`, « Renew agreement » is scheduled on the
+purchase manager (reminded and escalated as in §5.8). The monthly cron stops
+at `date_end`: no order is created on an expired agreement.
 
 What Odoo does natively when it is confirmed (verified in the 19.0 source):
 it creates a vendor price (`product.supplierinfo`) for each line, tied to the
@@ -366,8 +374,8 @@ rule** (`his_stock_mdm` min/max when stock falls low).
 | The product is… | Needed… | What happens |
 |---|---|---|
 | on the active blanket order | **after** the next monthly order is prepared | « Add to next monthly order »: the request line is linked to the agreement and the cron adds its quantity to the next monthly draft. No separate order, no extra delivery. |
-| on the active blanket order | **before** it | « Order now »: a call-off from the blanket order (Blanket tier: no comparison, supplier and price already agreed; approval as usual). |
-| not on any blanket order | — | Normal request flow: Direct or three quotes (§5.2). |
+| on the active blanket order | **before** it | « Order now »: a call-off from the blanket order (no comparison: supplier and price already agreed; approval as usual). |
+| not on any blanket order | — | Normal request flow (§5.2). |
 
 The purchasing officer picks between the first two from the request (the
 system proposes one from the dates).
@@ -378,8 +386,7 @@ the monthly order. Odoo's replenishment normally adds a need to an existing
 draft RFQ of the same supplier rather than opening a new one, so a shortage
 noticed while the monthly draft is open lands in it (to verify on staging).
 Reorder-rule RFQs carry no `his_request_id`, which is how reports tell them
-apart; outside a blanket order they are treated as the Direct tier and keep
-the approval amount.
+apart; they go through approval like any other order.
 
 ### 6.4 Where the goods go
 
@@ -401,7 +408,7 @@ On `res.partner` (companies) and `res.company`:
 
 Rules:
 - A supplier must have NIF and RC before an order to it can be confirmed
-  (default; exceptions for individuals, to confirm).
+  (decided 2026-10-15; identifier for individuals: §11, question 4).
 - A supplier under `ifu` or `auto_entrepreneur` gets a fiscal position that
   maps the purchase VAT taxes to `l10n_dz_vat_purchase_0` (created by the
   module if `l10n_dz` has none suitable), so its quotes compare correctly
@@ -417,7 +424,7 @@ in the company's timezone and `dd/mm/yyyy`, amounts in DA.
 | Document (fr.po title) | Printed from | Minimum content |
 |---|---|---|
 | **Demande de proforma** | RFQ | HIS header with legal identifiers; supplier and its RC/NIF; RFQ reference and date; request reference; lines (product, description, quantity, UoM) **without prices**; reply-by date; delivery address; contact of the purchasing officer |
-| **Fiche de choix fournisseur** | Confirmed order with alternatives | Request reference, requester, department, date; for each supplier: answer, proforma ref and date, HT / VAT / TTC per line and total, promised date; comparison basis (HT or TTC, §11 question 3); chosen supplier, criterion, note; chosen by, approved by, dates; signature boxes for the officer and the approver |
+| **Fiche de choix fournisseur** | Confirmed order with alternatives | Request reference, requester, department, date; for each supplier: answer, proforma ref and date, HT / VAT / TTC per line and total, promised date; comparison basis (TTC, Odoo's native ranking); chosen supplier, criterion, note; chosen by, approved by, dates; signature boxes for the officer and the approver |
 | **Bon de commande** | Confirmed order | Order number and date; HIS and supplier legal identifiers; delivery address; lines with unit price, VAT rate, HT; totals HT, VAT per rate, TTC; **amount in words**; promised date; payment terms; request reference; signature box |
 | **Bon de réception** | Receipt | Receipt number and date, order reference, supplier, lines ordered / received, storekeeper, signature boxes |
 
@@ -439,7 +446,7 @@ The draft's « PV de commission ad hoc » is dropped: there is no committee.
 ## 10. Algerian context — what this design does and does not cover
 
 - **Pro formas from several suppliers** before ordering is standard practice;
-  the three-quotes tier formalises it without a committee.
+  the optional comparison records it without a committee or a minimum.
 - **Public procurement law** (décret présidentiel 15-247) binds public bodies
   only. HIS is private: the thresholds here are internal policy and can be
   set freely.
@@ -452,36 +459,36 @@ The draft's « PV de commission ad hoc » is dropped: there is no committee.
 
 ## 11. Open questions for Mohamed
 
-1. **Thresholds.** Amount below which a direct purchase is allowed? Amount
-   above which an order needs approval — or does every order need approval
-   (amount 0)? Who are the purchase managers? (Approvers are decided: §5.5.)
+1. **Approval amount.** Default is 0 (every order approved, §5.5). Keep it, or
+   approve only above an amount?
 2. **Companies.** Are HIS, HTC and IRA separate companies in Odoo, or one
    company with cost centres? This decides `company_id` vs analytic only, and
    whose letterhead prints.
-3. **Input VAT.** Can HIS deduct the VAT it pays on purchases (question for
-   the accountant)? If not, comparison is on TTC (Odoo's native basis); if
-   yes, it must be on HT and the comparison view needs an HT ranking.
-4. **Recurring purchases.** Which suppliers get blanket orders (food for the
-   Restaurant and Cafétéria, paper for the Copy Center, cleaning products)?
-   For how long are prices agreed?
-5. **Request approval.** Is the department head the right approver for every
+3. **Request approval.** Is the department head the right approver for every
    request, including the Restaurant and Cafétéria managers' own requests?
-6. **Separation of duties.** Confirm that the approver of an order must not be
-   the person who chose the supplier.
-7. **Individuals as suppliers.** Can HIS buy from an individual with no RC
-   (e.g. a craftsman)? If yes, which identifiers are required instead?
-8. **Supplier reminders.** Should the « Relance demande de proforma » go out
-   automatically at the reply-by date, or only when the officer clicks?
-9. **Monthly supplier.** Is the agreement for the school year or shorter? Does
-   the supplier need the order 10 days before the 1st, or is less enough?
-10. **POS vs general.** Which departments default to the `pos` domain
-    (Cafétéria, Restaurant, Copy Center — others?).
+4. **Individuals as suppliers.** NIF and RC are required for companies. For
+   an individual with no RC (e.g. a craftsman), which identifier is required
+   instead — national ID number, NIF only, nothing?
+5. **Other blanket orders.** Besides the Restaurant's monthly supplier, which
+   suppliers get a yearly agreement (Cafétéria, paper for the Copy Center,
+   cleaning products)?
+6. **Monthly order lead time.** Does the supplier need the order 10 days
+   before the 1st, or is less enough?
+7. **Input VAT (later).** Start with 19 % and the native TTC comparison; ask
+   the accountant whether input VAT is recoverable before the first year-end.
 
-Decided on 2026-10-15: reminder delays 2 / 2 / 5 days; escalation above the
-purchase manager = executive director; executive director approves general
-purchases, purchase manager or director approves POS purchases; monthly
-supplier delivers at the start of the month to the main warehouse, owned by
-the warehouse manager, with approval.
+Decided on 2026-10-15:
+- Reminder delays 2 / 2 / 5 days; escalation above the purchase manager =
+  executive director; supplier reminders sent automatically.
+- Executive director approves general purchases; purchase manager or director
+  approves POS purchases; POS = Cafétéria, Restaurant, Copy Center only.
+- The person who chose the supplier may also approve the order.
+- No minimum number of quotes.
+- Monthly supplier: yearly agreement, delivery at the start of the month to
+  the main warehouse, owned by the warehouse manager, with approval.
+- Suppliers need NIF and RC (exception for individuals, question 4).
+- Purchase VAT: 19 % by default, comparison on TTC.
+- Purchase managers exist but have no Odoo users yet: created at go-live.
 
 ## 12. Acceptance tests
 
@@ -490,15 +497,17 @@ the warehouse manager, with approval.
 | AT-01 | A requester creates a request with one line and a justification; it gets a `DA/` reference and can be submitted. |
 | AT-02 | Submitting without justification, required date or line is refused, and the error names what is missing. |
 | AT-03 | A requester cannot see another department's requests; a department head sees their department's. |
-| AT-04 | An approved request below the direct limit is sourced with one RFQ and confirmed without comparison. |
-| AT-05 | An approved request above the direct limit: with two quoted RFQs confirmation is refused; with three it is allowed. |
-| AT-06 | An RFQ marked `declined` cannot be confirmed, does not count towards three quotes, and is never highlighted as best price. |
-| AT-07 | Suppliers A (20 000 DA) and B (19 000 DA) quoted on the same basis: comparison highlights B; choosing A without a note is refused. |
+| AT-04 | An approved request is sourced with one RFQ and confirmed without comparison and without the choice wizard; the criterion is `only_supplier`. |
+| AT-05 | With two `quoted` alternatives, confirming one opens the choice wizard, pre-filled with `lowest_price` when it is the cheapest. |
+| AT-06 | An RFQ marked `declined` cannot be confirmed and is never highlighted as best price. |
+| AT-07 | Suppliers A (20 000 DA) and B (19 000 DA) quoted on the same basis: comparison highlights B; choosing A is allowed, with criterion other than `lowest_price`. |
 | AT-08 | After confirmation, the choice criterion and note cannot be changed by anyone. |
-| AT-09 | Above the approval amount the order goes to `to approve`; the user who chose the supplier cannot approve it; a purchase manager can. |
+| AT-09 | With approval amount 0 every order goes to `to approve`; the officer who chose the supplier can approve it if they are a purchase manager. |
 | AT-10 | A second order cannot exceed the requested quantity of a request line without a manager's authorisation. |
-| AT-11 | A supplier under IFU quotes without VAT; comparison against a VAT-charging supplier uses the same basis (§11, question 3). |
-| AT-12 | An order to a supplier without NIF or RC cannot be confirmed. |
+| AT-11 | A supplier under IFU quotes without VAT; its total is compared TTC against a VAT-charging supplier's. |
+| AT-12 | An order to a company supplier without NIF or RC cannot be confirmed. |
+| AT-28 | The proforma reminder is emailed automatically at the reply-by date, then every 3 days, at most twice. |
+| AT-29 | Thirty days before a blanket order ends, « Renew agreement » is scheduled; no monthly order is created after `date_end`. |
 | AT-13 | Demande de proforma, Fiche de choix fournisseur and Bon de commande show the same references, suppliers, quantities and amounts as the records; the Demande de proforma shows no prices. |
 | AT-14 | A reorder rule creates an RFQ without a request; above the approval amount it still requires approval. |
 | AT-15 | Receiving the order creates a stock move valued at the order price without error (precondition 9.1). |
