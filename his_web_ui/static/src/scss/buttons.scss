@@ -18,7 +18,7 @@
     --btn-active-bg: var(--his-navy-900);
     --btn-active-border-color: var(--his-navy-900);
     --btn-active-color: var(--his-on-navy);
-    --btn-focus-shadow-rgb: 0, 56, 116;
+    --btn-focus-shadow-rgb: var(--his-action-rgb);
 }
 
 // Les liens et les etats selectionnes suivent la meme teinte, sinon le violet
