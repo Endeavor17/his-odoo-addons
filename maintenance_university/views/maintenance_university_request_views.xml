@@ -9,7 +9,7 @@
                 <field name="name"/>
                 <field name="description"/>
                 <field name="building_id"/>
-                <field name="category_id"/>
+                <field name="maintenance_category_id"/>
                 <field name="owner_user_id" string="Manager"/>
                 <field name="employee_ids" widget="many2many_tags"/>
                 <field name="priority" widget="priority"/>
@@ -29,7 +29,7 @@
             <kanban default_group_by="state" class="o_kanban_small_column" quick_create="false">
                 <field name="name"/>
                 <field name="building_id"/>
-                <field name="category_id"/>
+                <field name="maintenance_category_id"/>
                 <field name="priority"/>
                 <field name="state"/>
                 <field name="duration"/>
@@ -42,7 +42,7 @@
                             <div t-if="record.is_inspection.raw_value" class="badge text-bg-warning mb-1">Inspection tour</div>
                             <field name="name" class="fw-bold fs-5"/>
                             <div class="text-muted">
-                                <field name="building_id"/> · <field name="category_id"/>
+                                <field name="building_id"/> · <field name="maintenance_category_id"/>
                             </div>
                             <div t-if="record.scheduled_date.raw_value" class="text-muted small">
                                 <i class="fa fa-clock-o me-1" title="Scheduled for" role="img" aria-label="Scheduled for"/><field name="scheduled_date"/>
@@ -130,7 +130,7 @@
                         <group>
                             <field name="name" readonly="not is_manager"/>
                             <field name="building_id" readonly="not is_manager"/>
-                            <field name="category_id" readonly="not is_manager"/>
+                            <field name="maintenance_category_id" readonly="not is_manager"/>
                             <field name="is_inspection" invisible="1"/>
                             <field name="employee_ids" widget="many2many_tags" readonly="not is_manager"/>
                             <field name="priority" widget="priority" readonly="not is_manager"/>
@@ -201,7 +201,7 @@
             <search string="Maintenance Requests">
                 <field name="name"/>
                 <field name="building_id"/>
-                <field name="category_id"/>
+                <field name="maintenance_category_id"/>
                 <field name="employee_ids"/>
                 <filter string="My Requests" name="filter_my_requests" domain="[('employee_ids.user_id', '=', uid)]"/>
                 <separator/>
@@ -212,7 +212,7 @@
                 <filter string="Done" name="filter_done" domain="[('state', '=', 'done')]"/>
                 <filter string="Cancelled" name="filter_cancelled" domain="[('state', '=', 'cancelled')]"/>
                 <group>
-                    <filter string="Category" name="groupby_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Category" name="groupby_category" context="{'group_by': 'maintenance_category_id'}"/>
                     <filter string="Building" name="groupby_building" context="{'group_by': 'building_id'}"/>
                     <filter string="Worker" name="groupby_employee" context="{'group_by': 'employee_ids'}"/>
                     <filter string="Status" name="groupby_state" context="{'group_by': 'state'}"/>
