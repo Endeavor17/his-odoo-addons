@@ -24,3 +24,9 @@
     border-radius: var(--his-radius, 0);
     font-weight: 700;
 }
+
+// The loading screen a till shows while it starts names Lato outright
+// (point_of_sale's loader.scss): one face for the whole product.
+.pos-loader {
+    font-family: var(--his-font-sans);
+}
