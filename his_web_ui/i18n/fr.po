@@ -27,3 +27,13 @@ msgstr "ID"
 #: model:ir.model,name:his_web_ui.model_res_users
 msgid "User"
 msgstr "Utilisateur"
+
+#. module: his_web_ui
+#: model_terms:ir.ui.view,arch_db:his_web_ui.login_layout
+msgid "Higher Institute of Sciences"
+msgstr "Higher Institute of Sciences"
+
+#. module: his_web_ui
+#: model_terms:ir.ui.view,arch_db:his_web_ui.login
+msgid "Sign in"
+msgstr "Connexion"

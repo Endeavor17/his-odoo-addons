@@ -81,7 +81,7 @@
     }
 
     .o_app {
-        border-radius: 0.75rem;
+        border-radius: var(--his-radius, 0);
         transition: background-color 0.15s ease, transform 0.15s ease;
 
         &:hover,
@@ -94,33 +94,61 @@
         }
     }
 
-    // Application courante : le meme or que la barre du haut, pour que
-    // « ou je suis » se dise partout de la meme facon.
+    // L'icone sur sa tuile blanche : web_responsive la pose a 64 px, rayon
+    // --border-radius-lg (devenu 0 dans his_theme). Un peu plus grande pour que
+    // la grille se lise de loin, toujours carree.
+    .o-app-menu-item__icon {
+        width: 4.75rem;
+        max-width: 4.75rem;
+    }
+
+    // Application courante : le turquoise du sceau, la couleur des reperes.
     .o-app-menu-item__active {
         color: var(--his-teal);
     }
 
     // La recherche du tiroir.
     //
-    // Le champ est blanc par defaut. Se contenter d'en changer la couleur de
-    // texte donnait du blanc sur blanc : invisible des la premiere frappe. Le
-    // champ est donc habille en entier — fond, bordure, texte — pour appartenir
-    // a la page sombre plutot que d'y flotter.
-    .search-container .search-input,
-    .search-container .form-control {
+    // web_responsive dessine deux boites : le div .search-input (icone + champ)
+    // et l'input .form-control dedans. Les habiller toutes les deux donnait un
+    // cadre dans un cadre. Le div devient le champ, l'input s'efface dedans.
+    .search-container {
+        max-width: 40rem;
+        margin-inline: auto;
+    }
+
+    .search-container div.search-input {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        min-height: 3rem;
+        padding-inline: 1rem;
         background-color: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+
+        &:focus-within {
+            background-color: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.55);
+        }
+    }
+
+    .search-container div.search-input input.form-control {
+        background-color: transparent;
+        border: 0;
+        box-shadow: none;
+        padding-inline: 0;
         color: var(--his-on-navy);
+        font-size: 1rem;
 
         &::placeholder {
             color: var(--his-navy-200);
             opacity: 1;
         }
 
-        &:focus {
-            background-color: rgba(255, 255, 255, 0.12);
-            border-color: var(--his-teal);
-            box-shadow: none;
+        // Le focus se voit sur le cadre (:focus-within ci-dessus), pas en
+        // second contour dans le cadre.
+        &:focus-visible {
+            outline: 0;
         }
     }
 
