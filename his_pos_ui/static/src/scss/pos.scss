@@ -133,44 +133,45 @@
 
 // -------------------------------------------------------- serve-meal dialog
 // his_meal_management's dialog is portalled outside .pos, so it is matched by
-// its own classes; .modal adds the weight to beat its stylesheet.
+// its own classes; .modal adds the weight to beat its stylesheet. It sits
+// outside .his-pos too, so it reads the :root tokens.
 .modal .his_serve_meal_head {
-    background-color: #006883;
+    background-color: var(--his-till);
 }
 
 .modal .his_serve_meal_meter_kept {
-    background-color: #006883;
+    background-color: var(--his-till);
 }
 
 .modal .his_serve_meal_meter_spent {
-    background-color: #cc9900;
+    background-color: var(--his-gold);
 }
 
 .modal .his_serve_meal_icon {
-    color: #006883;
+    color: var(--his-till);
 }
 
 .modal .btn.btn-his-gold.his_serve_meal_confirm {
-    --btn-bg: #cc9900;
-    --btn-border-color: #cc9900;
-    --btn-color: #001f45;
-    --btn-hover-bg: #b38600;
-    --btn-hover-border-color: #b38600;
-    --btn-hover-color: #001f45;
-    --btn-active-bg: #9a7300;
-    --btn-active-border-color: #9a7300;
-    --btn-active-color: #ffffff;
-    background-color: #cc9900 !important;
-    border-color: #cc9900 !important;
-    color: #001f45 !important;
+    --btn-bg: var(--his-gold);
+    --btn-border-color: var(--his-gold);
+    --btn-color: var(--his-gold-ink);
+    --btn-hover-bg: var(--his-gold-dark);
+    --btn-hover-border-color: var(--his-gold-dark);
+    --btn-hover-color: var(--his-gold-ink);
+    --btn-active-bg: var(--his-gold-dark);
+    --btn-active-border-color: var(--his-gold-dark);
+    --btn-active-color: var(--his-gold-ink);
+    background-color: var(--his-gold) !important;
+    border-color: var(--his-gold) !important;
+    color: var(--his-gold-ink) !important;
 
     &:hover {
-        background-color: #b38600 !important;
-        border-color: #b38600 !important;
+        background-color: var(--his-gold-dark) !important;
+        border-color: var(--his-gold-dark) !important;
     }
 }
 
 // The empty-card warning keeps its red header: that is a signal, not brand.
 .modal .his_serve_meal_head.his_serve_meal_head_empty {
-    background-color: #a4342a;
+    background-color: var(--his-red);
 }

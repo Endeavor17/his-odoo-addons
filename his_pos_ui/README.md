@@ -17,7 +17,8 @@ L'idée directrice, énoncée d'abord :
 
 | | Propriétaire |
 |---|---|
-| Thème d'un point de vente, jetons de couleur, taille tactile | **ici** |
+| Thème d'un point de vente, taille tactile | **ici** |
+| Jetons de couleur et polices | `his_theme` — **pas ici** |
 | Écran d'entrée : voile, typographie, repli sans image | **ici** |
 | Crédits repas, cartes, abonnements | `his_meal_management` — **pas ici** |
 | Catalogue, catégories, attributs, gouvernance MDM | `his_stock_mdm` — **pas ici** |
@@ -68,12 +69,13 @@ une vraie liste blanche (voir `his_pos_copy_center`).
 d'entrée arrive donc sans aucune surcharge de template.** Il ne restait qu'à
 poser un voile pour que le texte ait un sol.
 
-Les jetons propres au module (`--his-surface`, `--his-accent`, …) sont des
-propriétés personnalisées et non des variables SCSS : Odoo compile son SCSS
-avant le nôtre et ses variables sont hors de portée, alors qu'une propriété
-personnalisée est résolue au moment du rendu. Une classe sur la racine
-re-thématise toute l'application, et les futurs modules Restaurant et Cafétéria
-n'auront rien à restyler pour obtenir leur couleur.
+Les jetons que lit ce module (`--his-teal`, `--his-accent`, `--his-ground`…)
+appartiennent à `his_theme` : les valeurs dans son `primary_variables.scss`, les
+propriétés dans son `tokens.scss`, y compris les noms limités à `.his-pos`. Ce
+module n'écrit aucune couleur ; son `tokens.scss` ne garde que les crochets
+d'Odoo (`--orderline-selected`, `--navbar-logo`, `--homeMenu-bg-*`) et les
+chemins de ses propres images. Une classe sur la racine re-thématise toute
+l'application.
 
 ## 4. La palette
 
@@ -97,10 +99,10 @@ que personne ne remarque que les règles n'ont jamais rien ciblé.
 
 ## 5. Les images
 
-`static/src/img/` attend `copy_center.webp`, `restaurant.webp` et
-`cafeteria.webp`. **Elles ne sont pas versionnées à ce jour.**
+`static/src/img/` contient `copy_center.webp`, `restaurant.webp` et
+`cafeteria.webp`.
 
-Ce n'est pas une panne : chaque thème définit `--his-wallpaper-color` à côté de
+Une image absente ne serait pas une panne : chaque thème définit `--his-wallpaper-color` à côté de
 `--his-wallpaper`, donc une image absente retombe sur la teinte profonde du
 thème et l'écran d'entrée reste délibéré plutôt que cassé. Voir
 `static/src/img/README.md`.
@@ -110,7 +112,8 @@ thème et l'écran d'entrée reste délibéré plutôt que cassé. Voir
 - **Pas de RTL.** `pos_app.scss` d'Odoo impose `direction: ltr` sur `.pos`. Les
   chaînes arabes se traduisent, la mise en page ne se reflète pas. Changer cela
   est un combat à l'échelle d'Odoo, hors sujet ici.
-- **Pas de police web.** La pile système est conservée : une caisse n'est pas
-  l'endroit où payer un aller-retour réseau au démarrage d'une session.
+- **Polices servies localement.** Figtree, Readex Pro et IBM Plex Mono viennent
+  de `his_theme`, servies par Odoo lui-même et mises en cache : aucun appel à un
+  CDN au démarrage d'une session.
 - **L'apparence n'est pas testée.** Aucune campagne de captures d'écran. Les
   rapports de contraste sont vérifiés à la main contre les jetons.
