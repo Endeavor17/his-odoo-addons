@@ -97,35 +97,27 @@ effect of reaching a done stage, from a nested `write()` inside our own action.
 
 ### Fields redirected rather than duplicated
 
-The module reuses core's field slots instead of adding parallel ones:
+The module reuses core's field slots where the meaning and the type stay the same:
 
-- **`category_id`** → repointed at `maintenance.category`. Core's version is
-  `related='equipment_id.category_id'`, an asset taxonomy; we have buildings,
-  not equipment, so it would always be empty.
 - **`request_date`** → `Date` becomes `Datetime`, because the dashboard compares
   month windows.
 - **`duration`** → core's static schedule estimate becomes the real sum of
   logged time segments.
 - **`priority`** → same four keys (`0`–`3`), only the labels change.
 
-> ### The trap that redirecting `category_id` created
+> ### Categories have their own field, `maintenance_category_id`
 >
-> Core declares, on **its own** category model:
+> Until 19.0.4.0.0 the module repointed core's `category_id` at
+> `maintenance.category`. Core declares that field towards
+> `maintenance.equipment.category`, and `maintenance` is upgraded before this
+> module, so **any upgrade of core** re-created core's foreign key on values
+> that pointed at our table, and failed. `-u all` was impossible on any
+> database holding a request.
 >
-> ```
-> maintenance/models/maintenance.py:43
->     maintenance_ids = fields.One2many('maintenance.request', 'category_id')
-> ```
->
-> The ORM therefore records *"the inverse of `category_id` is called
-> `maintenance_ids`"* and looks for it on the comodel — which is now
-> `maintenance.category`. While that field did not exist, the first `onchange`
-> on a category raised `KeyError: 'maintenance_ids'` and the Categories form
-> could not be opened at all.
->
-> `maintenance.category.maintenance_ids` exists for exactly this reason. **Do
-> not remove it.** `tests/test_category_inverse.py` reproduces the original
-> crash if it goes.
+> Core's `category_id` is now left untouched (empty: we have buildings, not
+> equipment). `migrations/19.0.4.0.0/` moves existing values and their chatter
+> history to `maintenance_category_id`. **Do not reuse a core field slot with a
+> different comodel**: `tests/test_category_field.py` checks core's field is intact.
 
 ---
 
@@ -400,6 +392,6 @@ Python changes need `docker compose restart odoo`; view and data changes need
 |---|---|
 | `test_matricule_is_mirrored.py` | The matricule is read here, never issued |
 | `test_worker_create.py` | The wizard's duplicate guard, contact and account reuse |
-| `test_category_inverse.py` | The `maintenance_ids` inverse, and the crash without it |
+| `test_category_field.py` | Categories live in `maintenance_category_id`; core's `category_id` is intact |
 
 **Depends on** `base`, `mail`, `hr`, `his_hr_base`, `maintenance`.

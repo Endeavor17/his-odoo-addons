@@ -61,6 +61,8 @@ class TestActionViewsAreExplicit(TransactionCase):
         action = finding.action_convert_to_request()
 
         self.assertEqual(action["res_model"], "maintenance.request")
+        request = self.env["maintenance.request"].browse(action["res_id"])
+        self.assertEqual(request.maintenance_category_id, category)
         ours = self.env.ref("maintenance_university.view_maintenance_university_request_form")
         self.assertIn(
             (ours.id, "form"),

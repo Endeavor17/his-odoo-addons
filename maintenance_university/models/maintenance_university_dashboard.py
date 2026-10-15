@@ -151,7 +151,7 @@ class MaintenanceUniversityDashboard(models.AbstractModel):
                 ("request_date", "<", end_dt),
             ]
         )
-        category_breakdown = self._group_count(requests_this_month, "category_id")
+        category_breakdown = self._group_count(requests_this_month, "maintenance_category_id")
         building_breakdown = self._group_count(requests_this_month, "building_id")
 
         return {
