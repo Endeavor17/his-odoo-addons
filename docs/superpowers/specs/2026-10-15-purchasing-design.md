@@ -85,7 +85,9 @@ below are the `fr.po` values. No module-specific `font-family`.
 | Requester | `base.group_user` (any employee with a login) | Create, edit and submit their own requests; see their own requests and the resulting order status |
 | Request approver | new `his_purchase.group_request_approver` (department heads) | Approve or reject requests of their department |
 | Purchasing officer | `purchase.group_purchase_user` | Turn approved requests into RFQs, record supplier answers, compare, choose, confirm orders below the approval amount |
-| Purchase manager | `purchase.group_purchase_manager` | Approve orders above the amount; authorise exceptions (single source, not-cheapest choice above the amount, split orders) |
+| Purchase manager | `purchase.group_purchase_manager` | Approve **POS-operations** orders above the amount (§5.5); authorise exceptions (single source, not-cheapest choice above the amount, split orders) |
+| Executive director | `purchase.group_purchase_manager` + new `his_purchase.group_purchase_director` | Approves **general** orders above the amount, and may approve POS-operations orders too; last level of escalation (§5.8) |
+| Warehouse manager | `stock.group_stock_manager` | Owns the monthly orders (§6.2) |
 | Storekeeper | `stock.group_stock_user` | Receive goods against the order |
 | Accountant | `account.group_account_invoice` | Record and check vendor bills |
 
@@ -214,9 +216,24 @@ Use Odoo's « Purchase Order Approval » (company setting
 Orders above the amount go to `to approve` and only a purchase manager can
 approve them. `his_purchase` adds the separation-of-duties check of §4.
 
-Odoo has one amount per company and one approval level. If HIS needs two
-levels (e.g. purchase manager, then director above a higher amount), that is
-an addition to decide (§11, question 1).
+**Who approves (decided by Mohamed, 2026-10-15):** the executive director
+approves most purchases; the purchase manager approves POS purchases, and the
+director may step in there too. Odoo lets any purchase manager approve any
+order, so `his_purchase` adds the routing:
+
+| `his_purchase_domain` | Meaning | Who can approve |
+|---|---|---|
+| `pos` | Supplies for the points of sale: Cafétéria, Restaurant, Copy Center (goods for sale and their ingredients/consumables) | Purchase manager **or** executive director |
+| `general` | Everything else (IT, maintenance, office, furniture, services) | Executive director only |
+
+`his_purchase_domain` is set on the request from the requester's department
+(a department setting), editable by the purchasing officer before sourcing,
+copied to the RFQs and orders; on a blanket order it is set when the
+agreement is created. Reorder-rule RFQs take `pos` when their destination is
+a counter or the Restaurant, `general` otherwise.
+
+Odoo still has one approval amount per company; the routing decides who may
+approve above it.
 
 ### 5.6 No duplicate orders
 
@@ -241,14 +258,19 @@ owns the next action, with a due date; when it is missed, the system reminds
 them, then escalates.** Nothing depends on someone remembering to check.
 
 **Who owns each step, and by when** (delays in working days, stored in
-settings, values to confirm):
+settings; the 2 / 2 / 5 days were confirmed by Mohamed on 2026-10-15). The
+escalation chain is **owner → purchase manager → executive director**; when
+the owner is already the purchase manager, the escalation goes straight to
+the director.
 
 | Step | Owner | Due | Reminder to the owner | Escalation to |
 |---|---|---|---|---|
-| Request `submitted` | Department head | 2 days | at due date | Purchase manager, 2 days later |
-| Request `approved` (not sourced yet) | Purchasing officer | 2 days | at due date | Purchase manager, 2 days later |
+| Request `submitted` | Department head | 2 days | at due date | Purchase manager, 2 days later; director 2 days after that |
+| Request `approved` (not sourced yet) | Purchasing officer | 2 days | at due date | Purchase manager, 2 days later; director 2 days after that |
 | RFQ sent, answer `pending` | Purchasing officer | `his_reply_by` (default: sent + 5 days) | « Chase supplier » at reply-by date | Purchase manager, 3 days later |
-| Order `to approve` | Purchase manager(s) | 2 days | at due date | Second purchase manager / director (§11, question 1) |
+| Order `to approve`, domain `pos` | Purchase manager | 2 days | at due date | Executive director, 2 days later |
+| Order `to approve`, domain `general` | Executive director | 2 days | at due date | — (reminder repeated every 2 days, shown in the weekly digest) |
+| Monthly order not confirmed (§6.2) | Warehouse manager | review due date | at due date | Purchase manager, 1 day later |
 | Order confirmed, not received by `date_planned` | Purchasing officer | `date_planned` | « Late delivery » the day after | Purchase manager, 3 days later |
 | Request not ordered and `date_required` within 5 days | Purchasing officer | — | alert, whatever the state | Purchase manager, at the same time |
 
@@ -263,7 +285,8 @@ settings, values to confirm):
   reminder email to the owner and a note in the chatter; after the escalation
   delay, an activity and an email to the escalation person. Each reminder is
   counted (`his_reminder_count`) and visible on the request.
-- A **weekly digest** (Monday morning) to the purchase managers: every open
+- A **weekly digest** (Monday morning) to the purchase managers and the
+  executive director: every open
   request with its state, owner, days in state and required date, oldest
   first.
 - A **« Remind » button for the requester** on their submitted or approved
@@ -317,21 +340,23 @@ the agreement shows quantity ordered against quantity agreed.
 | Field | Rule |
 |---|---|
 | `his_recurring` | Boolean: this agreement has a monthly order |
-| `his_delivery_day` | Day of the month the supplier delivers (e.g. 5) |
-| `his_prepare_days` | How many days before delivery the draft order is created (e.g. 7) |
-| `his_owner_id` | Stock person who reviews and sends the monthly order |
+| `his_delivery_day` | Day of the month the supplier delivers: **1** for the Restaurant supplier (start of the month) |
+| `his_prepare_days` | How many days before delivery the draft order is created: default **10** |
+| `his_owner_id` | Who reviews and sends the monthly order: the **warehouse manager** |
 | `his_recurring_qty` (on each line) | Usual monthly quantity |
 
-A daily cron creates, `his_prepare_days` before each delivery date, a **draft
-RFQ** on the blanket order with the usual monthly quantities, `date_planned`
-on the delivery date, and schedules « Review monthly order » on the owner,
-due two days before delivery. The owner adjusts quantities to what is
-actually needed (stock on hand, events, holidays) and confirms. If it is not
-confirmed by the due date, §5.8 reminds and escalates like any other step.
+Timeline for a delivery on the 1st (decided by Mohamed, 2026-10-15: owner =
+warehouse manager, delivery to the main warehouse, approval **not** skipped):
 
-Approval of monthly orders (default, to confirm): **no approval** as long as
-the order stays within the blanket order's remaining quantities and prices;
-the order goes through Odoo's approval if it exceeds them.
+| When | What |
+|---|---|
+| Delivery − 10 days (≈ 21st) | Cron creates the **draft RFQ** on the blanket order with the usual quantities, `date_planned` on the 1st, and schedules « Review monthly order » on the warehouse manager |
+| Delivery − 7 days (≈ 24th) | Review due: the warehouse manager adjusts quantities (stock on hand, events, holidays) and confirms |
+| Delivery − 5 days (≈ 26th) | Approval due (domain `pos`: purchase manager or executive director, §5.5) |
+| After approval | Order sent to the supplier; native receipt reminder before the 1st |
+
+If a step is late, §5.8 reminds and escalates like any other step. The cron
+creates one monthly order per agreement per month, never two.
 
 ### 6.3 Needs between two deliveries
 
@@ -341,7 +366,7 @@ rule** (`his_stock_mdm` min/max when stock falls low).
 | The product is… | Needed… | What happens |
 |---|---|---|
 | on the active blanket order | **after** the next monthly order is prepared | « Add to next monthly order »: the request line is linked to the agreement and the cron adds its quantity to the next monthly draft. No separate order, no extra delivery. |
-| on the active blanket order | **before** it | « Order now »: a call-off from the blanket order (Blanket tier: no comparison, supplier and price already agreed). |
+| on the active blanket order | **before** it | « Order now »: a call-off from the blanket order (Blanket tier: no comparison, supplier and price already agreed; approval as usual). |
 | not on any blanket order | — | Normal request flow: Direct or three quotes (§5.2). |
 
 The purchasing officer picks between the first two from the request (the
@@ -358,11 +383,9 @@ the approval amount.
 
 ### 6.4 Where the goods go
 
-The monthly delivery is received in the main warehouse, then moved to the
-Restaurant with the weekly internal transfers already designed (« Réappro
-Restaurant », `RESIN`). If the supplier delivers straight to the Restaurant
-instead, the monthly order uses a receipt type with destination
-`WH/Stock/Restaurant` (§11, question 9).
+The monthly delivery is received in the **main warehouse** (decided
+2026-10-15), then moved to the Restaurant with the weekly internal transfers
+already designed (« Réappro Restaurant », `RESIN`).
 
 ## 7. Algerian supplier identifiers — `his_partner_dz`
 
@@ -429,10 +452,9 @@ The draft's « PV de commission ad hoc » is dropped: there is no committee.
 
 ## 11. Open questions for Mohamed
 
-1. **Thresholds and approvers.** Amount below which a direct purchase is
-   allowed? Amount above which a purchase manager must approve the order? Is
-   one approval level enough, or does a director approve above a higher
-   amount? Who are the purchase managers?
+1. **Thresholds.** Amount below which a direct purchase is allowed? Amount
+   above which an order needs approval — or does every order need approval
+   (amount 0)? Who are the purchase managers? (Approvers are decided: §5.5.)
 2. **Companies.** Are HIS, HTC and IRA separate companies in Odoo, or one
    company with cost centres? This decides `company_id` vs analytic only, and
    whose letterhead prints.
@@ -448,14 +470,18 @@ The draft's « PV de commission ad hoc » is dropped: there is no committee.
    the person who chose the supplier.
 7. **Individuals as suppliers.** Can HIS buy from an individual with no RC
    (e.g. a craftsman)? If yes, which identifiers are required instead?
-8. **Reminder delays.** Are the delays in §5.8 right (2 days to approve, 2 to
-   source, 5 for a supplier to answer)? Who is the escalation above the
-   purchase manager? Should supplier reminders go out automatically?
-9. **Monthly supplier.** Its delivery day, how many days before it the order
-   must be sent, who in the stock team owns it, and whether it delivers to
-   the main warehouse or straight to the Restaurant. Is the agreement for the
-   school year or shorter? Are monthly orders within the agreement exempt
-   from approval?
+8. **Supplier reminders.** Should the « Relance demande de proforma » go out
+   automatically at the reply-by date, or only when the officer clicks?
+9. **Monthly supplier.** Is the agreement for the school year or shorter? Does
+   the supplier need the order 10 days before the 1st, or is less enough?
+10. **POS vs general.** Which departments default to the `pos` domain
+    (Cafétéria, Restaurant, Copy Center — others?).
+
+Decided on 2026-10-15: reminder delays 2 / 2 / 5 days; escalation above the
+purchase manager = executive director; executive director approves general
+purchases, purchase manager or director approves POS purchases; monthly
+supplier delivers at the start of the month to the main warehouse, owned by
+the warehouse manager, with approval.
 
 ## 12. Acceptance tests
 
@@ -483,6 +509,8 @@ The draft's « PV de commission ad hoc » is dropped: there is no committee.
 | AT-20 | An RFQ still `pending` at its reply-by date creates « Chase supplier »; « Send reminder » emails the supplier the relance template. |
 | AT-21 | The weekly digest lists every open request, oldest first, with its owner. |
 | AT-22 | Confirming a blanket order makes a new RFQ for its products default to that supplier and price. |
-| AT-23 | With delivery day 5 and 7 preparation days, the cron creates the monthly draft RFQ on the 28th of the previous month with the usual quantities, and runs only once per month. |
+| AT-23 | With delivery day 1 and 10 preparation days, the cron creates the monthly draft RFQ 10 days before the 1st, with the usual quantities, assigned to the warehouse manager, and creates only one per month. |
 | AT-24 | A request for a blanket-order product needed after the next monthly order is added to that monthly draft; one needed sooner becomes a call-off without comparison. |
-| AT-25 | A monthly order within the agreement's remaining quantities is confirmed without approval; one exceeding them goes to `to approve`. |
+| AT-25 | A confirmed monthly order goes through approval like any other order (domain `pos`). |
+| AT-26 | A `general` order above the amount can be approved by the executive director and is refused for a purchase manager; a `pos` order can be approved by either. |
+| AT-27 | A `pos` order left `to approve` 2 days past due escalates to the executive director. |
