@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Menu du traiteur, 2026-10-14. Ordre et prix du PDF ; la sequence garde
+         l'ordre du menu dans chaque onglet (entrees froides puis chaudes ;
+         plat special, poulet, viande).
+
+         Taxes vides a la creation : voir hooks.taxer_plats. type consu sans
+         is_storable : un plat ne se stocke pas. -->
+    <data noupdate="1">
+        <record id="product_category_menu" model="product.category">
+            <field name="name">Restaurant Menu</field>
+        </record>
+
+        <record id="pos_categ_starters" model="pos.category">
+            <field name="name">Starters</field><field name="sequence">1</field>
+        </record>
+        <record id="pos_categ_mains" model="pos.category">
+            <field name="name">Main Courses</field><field name="sequence">2</field>
+        </record>
+        <record id="pos_categ_sides" model="pos.category">
+            <field name="name">Sides</field><field name="sequence">3</field>
+        </record>
+
+        <record id="dish_vegetarian_salad" model="product.template">
+            <field name="name">Vegetarian Salad</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">100.0</field>
+            <field name="sequence">1</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_starters')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_pasta_rice_salad" model="product.template">
+            <field name="name">Pasta / Rice Salad</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">200.0</field>
+            <field name="sequence">2</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_starters')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_caesar_salad" model="product.template">
+            <field name="name">Caesar Salad</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">250.0</field>
+            <field name="sequence">3</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_starters')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_vegetable_soup" model="product.template">
+            <field name="name">Vegetable Soup</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">100.0</field>
+            <field name="sequence">4</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_starters')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_chorba_hrira" model="product.template">
+            <field name="name">Chorba / Hrira</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">250.0</field>
+            <field name="sequence">5</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_starters')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_lentil_soup" model="product.template">
+            <field name="name">Lentil Soup</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">150.0</field>
+            <field name="sequence">6</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_starters')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_poutine" model="product.template">
+            <field name="name">Poutine</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">600.0</field>
+            <field name="sequence">7</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_mains')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_creamy_chicken" model="product.template">
+            <field name="name">Creamy Chicken</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">8</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_mains')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_chicken_escalope" model="product.template">
+            <field name="name">Chicken Escalope</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">9</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_mains')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_crispy_chicken" model="product.template">
+            <field name="name">Crispy Chicken</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">10</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_mains')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_chicken_leg" model="product.template">
+            <field name="name">Chicken Leg</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">11</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_mains')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_chicken_balls" model="product.template">
+            <field name="name">Chicken Balls (4 pcs)</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">12</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_mains')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_chicken_tenders_box" model="product.template">
+            <field name="name">Chicken Tenders Box (5 pcs)</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">500.0</field>
+            <field name="sequence">13</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_mains')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_merguez" model="product.template">
+            <field name="name">Merguez (4 pcs)</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">14</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_mains')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_mchermel_steak" model="product.template">
+            <field name="name">Mchermel Steak</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">550.0</field>
+            <field name="sequence">15</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_mains')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_liver_kebda" model="product.template">
+            <field name="name">Liver (Kebda)</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">400.0</field>
+            <field name="sequence">16</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_mains')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_rice_bulgur" model="product.template">
+            <field name="name">Rice / Bulgur</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">200.0</field>
+            <field name="sequence">17</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_sides')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_french_fries" model="product.template">
+            <field name="name">French Fries</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">150.0</field>
+            <field name="sequence">18</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_sides')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_mashed_potatoes" model="product.template">
+            <field name="name">Mashed Potatoes</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">200.0</field>
+            <field name="sequence">19</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_sides')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_pasta" model="product.template">
+            <field name="name">Pasta</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">200.0</field>
+            <field name="sequence">20</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_sides')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_sauteed_vegetables" model="product.template">
+            <field name="name">Sauteed Vegetables</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">250.0</field>
+            <field name="sequence">21</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_sides')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_tagliatelle" model="product.template">
+            <field name="name">Tagliatelle</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">22</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_sides')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="dish_gratin" model="product.template">
+            <field name="name">Gratin</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">23</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_sides')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+    </data>
+</odoo>
