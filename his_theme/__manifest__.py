@@ -1,6 +1,6 @@
 {
     "name": "HIS Theme",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.2.0",
     "summary": "The university identity - seal navy, till teal, Figtree - as one set of tokens for the client, the till and the login page",
     "description": """
 HIS Theme
@@ -47,6 +47,7 @@ not installed - so this can be dropped into any database of the group's.
         "point_of_sale._assets_pos": [
             "his_theme/static/src/scss/tokens.scss",
             "his_theme/static/src/scss/pos.scss",
+            "his_theme/static/src/scss/receipt.scss",
         ],
     },
     "installable": True,

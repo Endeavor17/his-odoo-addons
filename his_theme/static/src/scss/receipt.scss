@@ -1,0 +1,72 @@
+// The till receipt: the 80 mm thermal print, the copy shown on screen and the
+// image attached to the emailed ticket.
+//
+// Odoo draws the printed and emailed receipts in a render container outside
+// the till's root element, so a rule scoped to .his-pos never reaches them:
+// these rules target .pos-receipt itself. Nothing is removed or reordered -
+// legal mentions, VAT lines, numbering, the meal balance and the company
+// block all stay where Odoo and the HIS modules put them. Only how they print.
+//
+// Thermal paper prints black or nothing: no colour, no grey fills, black
+// rules only.
+
+.pos-receipt {
+    color: #000000;
+    font-family: var(--his-font-sans);
+
+    // The company logo, whatever it is: greyscale and pushed to black and
+    // white, so a navy seal prints as lines instead of a dithered blob. Capped
+    // so it heads the ticket without eating paper.
+    .pos-receipt-logo {
+        max-width: 55%;
+        max-height: 26mm;
+        width: auto;
+        filter: grayscale(1) contrast(1.6);
+    }
+
+    // On screen the till's theme colours product names and quantities; on a
+    // ticket everything is black.
+    .orderline,
+    .orderline .product-name,
+    .orderline .qty,
+    .orderline .price {
+        color: inherit;
+    }
+
+    // Figures line up column to column.
+    .font-monospace {
+        font-family: var(--his-font-mono);
+        font-variant-numeric: tabular-nums;
+    }
+
+    // Sections separated by black rules, the total boxed between two.
+    .pos-receipt-taxes,
+    .pos-receipt-qr {
+        border-top: 1px dashed #000000;
+        margin-top: 0.75rem;
+    }
+
+    .receipt-total {
+        border-top: 2px solid #000000;
+        border-bottom: 2px solid #000000;
+        margin-top: 0.5rem;
+        padding: 0.3rem 0;
+        font-size: 1.15em;
+    }
+
+    // The meal balance (his_meal_management): framed, so a student finds what
+    // is left on the card at a glance.
+    .his_meal_balance {
+        border: 1.5px solid #000000;
+        margin-top: 0.75rem;
+        padding: 0.4rem 0.5rem;
+        font-weight: 600;
+    }
+}
+
+// Paper: a thermal head cannot print to the very edge; keep the text clear of it.
+@media print {
+    .pos-receipt {
+        padding-inline: 2mm;
+    }
+}

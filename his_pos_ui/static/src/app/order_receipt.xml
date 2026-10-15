@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The company block at the foot of the ticket: stacked, not in two
+         half-width columns. On 80 mm paper the halves broke the phone number
+         and the e-mail across lines. Classes only; every line stays.
+
+         Applies to the printed, the on-screen and the emailed ticket alike,
+         which Odoo all render from this template. -->
+    <t t-name="his_pos_ui.OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('pos-config-name')]/parent::div/parent::div" position="attributes">
+            <attribute name="class">d-flex flex-column gap-1 pt-3</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('pos-config-name')]/parent::div/following-sibling::div[1]" position="attributes">
+            <attribute name="class">text-break text-start</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('pos-config-name')]/parent::div" position="attributes">
+            <attribute name="class">text-break text-start</attribute>
+        </xpath>
+    </t>
+
+</templates>
