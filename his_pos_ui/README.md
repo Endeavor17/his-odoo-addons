@@ -88,9 +88,14 @@ client. Donc :
   travail restent une surface neutre et calme ;
 - **le voile est en CSS, pas cuit dans l'image** : le contraste reste réglable
   sans réexporter un fichier ;
-- **un accent saturé par point de vente**, dépensé sur l'action principale et
-  sur rien d'autre — bleu encre au Copy Center, vert herbe au Restaurant, ambre
-  espresso à la Cafétéria. « Le bouton coloré » est toujours l'action voulue.
+- **la même palette sur chaque caisse** (décision du 2026-10-15) : bandeau
+  turquoise caisse, **bleu sceau pour l'action qui termine** (Paiement, Valider,
+  Nouvelle commande, Servir le repas), turquoise pour ce qui est sélectionné,
+  aucune autre couleur. Le pavé numérique et les cartes produit perdent les
+  teintes d'Odoo et la couleur de catégorie du catalogue : sur une caisse, une
+  couleur veut toujours dire quelque chose ;
+- **arêtes vives et aucun liseré coloré** : la forme vient de `his_theme`
+  (rayons à 0), une sélection se dit par un aplat.
 
 Les sélecteurs habillés (`.product`, `.orderline`, `.numpad-button`, `.total`)
 ont tous été relevés dans les templates de `point_of_sale` avant d'être écrits.
