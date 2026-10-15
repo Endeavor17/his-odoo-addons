@@ -171,7 +171,7 @@ class MaintenanceUniversityFinding(models.Model):
             {
                 "name": summary[0][:120] if summary else _("Finding follow-up"),
                 "building_id": self.building_id.id,
-                "category_id": self.category_id.id,
+                "maintenance_category_id": self.category_id.id,
                 "description": self.description,
                 "priority": SEVERITY_TO_PRIORITY.get(self.severity, "1"),
                 "origin_finding_id": self.id,

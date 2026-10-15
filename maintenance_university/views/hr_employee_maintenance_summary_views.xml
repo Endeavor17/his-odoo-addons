@@ -94,7 +94,7 @@
                                 <list default_order="request_date desc" create="0" delete="0">
                                     <field name="name"/>
                                     <field name="building_id"/>
-                                    <field name="category_id"/>
+                                    <field name="maintenance_category_id"/>
                                     <field name="state"/>
                                     <field name="request_date"/>
                                     <field name="date_end"/>

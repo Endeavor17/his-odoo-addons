@@ -1,6 +1,6 @@
 from . import (
     test_action_views,
-    test_category_inverse,
+    test_category_field,
     test_matricule_is_mirrored,
     test_metabase_dashboard,
     test_start_date_access,

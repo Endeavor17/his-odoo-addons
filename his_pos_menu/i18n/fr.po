@@ -1,0 +1,147 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* his_pos_menu
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_pos_menu
+#: model:product.category,name:his_pos_menu.product_category_menu
+msgid "Restaurant Menu"
+msgstr "Menu du restaurant"
+
+#. module: his_pos_menu
+#: model:pos.category,name:his_pos_menu.pos_categ_starters
+msgid "Starters"
+msgstr "Entrées"
+
+#. module: his_pos_menu
+#: model:pos.category,name:his_pos_menu.pos_categ_mains
+msgid "Main Courses"
+msgstr "Plats principaux"
+
+#. module: his_pos_menu
+#: model:pos.category,name:his_pos_menu.pos_categ_sides
+msgid "Sides"
+msgstr "Accompagnements"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_vegetarian_salad
+msgid "Vegetarian Salad"
+msgstr "Salade végétarienne"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_pasta_rice_salad
+msgid "Pasta / Rice Salad"
+msgstr "Salade de pâtes / riz"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_caesar_salad
+msgid "Caesar Salad"
+msgstr "Salade César"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_vegetable_soup
+msgid "Vegetable Soup"
+msgstr "Soupe de légumes"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_chorba_hrira
+msgid "Chorba / Hrira"
+msgstr "Chorba / Hrira"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_lentil_soup
+msgid "Lentil Soup"
+msgstr "Soupe de lentilles"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_poutine
+msgid "Poutine"
+msgstr "Poutine"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_creamy_chicken
+msgid "Creamy Chicken"
+msgstr "Poulet à la crème"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_chicken_escalope
+msgid "Chicken Escalope"
+msgstr "Escalope de poulet"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_crispy_chicken
+msgid "Crispy Chicken"
+msgstr "Poulet croustillant"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_chicken_leg
+msgid "Chicken Leg"
+msgstr "Cuisse de poulet"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_chicken_balls
+msgid "Chicken Balls (4 pcs)"
+msgstr "Boulettes de poulet (4 pièces)"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_chicken_tenders_box
+msgid "Chicken Tenders Box (5 pcs)"
+msgstr "Box tenders de poulet (5 pièces)"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_merguez
+msgid "Merguez (4 pcs)"
+msgstr "Merguez (4 pièces)"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_mchermel_steak
+msgid "Mchermel Steak"
+msgstr "Steak mchermel"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_liver_kebda
+msgid "Liver (Kebda)"
+msgstr "Foie (kebda)"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_rice_bulgur
+msgid "Rice / Bulgur"
+msgstr "Riz / boulgour"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_french_fries
+msgid "French Fries"
+msgstr "Frites"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_mashed_potatoes
+msgid "Mashed Potatoes"
+msgstr "Purée de pommes de terre"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_pasta
+msgid "Pasta"
+msgstr "Pâtes"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_sauteed_vegetables
+msgid "Sauteed Vegetables"
+msgstr "Légumes sautés"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_tagliatelle
+msgid "Tagliatelle"
+msgstr "Tagliatelles"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.dish_gratin
+msgid "Gratin"
+msgstr "Gratin"

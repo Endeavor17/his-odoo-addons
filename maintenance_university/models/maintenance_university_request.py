@@ -40,20 +40,19 @@ class MaintenanceRequest(models.Model):
     building_id = fields.Many2one("maintenance.building", string="Building", required=True, tracking=True)
     employee_ids = fields.Many2many("hr.employee", string="Assigned Workers", tracking=True)
 
-    # Core's category_id is related='equipment_id.category_id' (an asset-type
-    # taxonomy) — we have no equipment, only buildings, so it's always empty
-    # left as-is. Redirected to our own category model instead of adding a
-    # second, differently-named field for the same "what kind of problem"
-    # concept the field slot already exists for.
-    category_id = fields.Many2one(
+    # Champ propre, a cote du category_id du coeur (categorie d'equipement,
+    # related='equipment_id.category_id') qu'on laisse intact. Le detourner vers
+    # maintenance.category cassait toute mise a jour du coeur : `maintenance`
+    # passe avant ce module et recreait sa cle etrangere vers
+    # maintenance_equipment_category sur des valeurs qui n'y sont pas.
+    # Migration : migrations/19.0.4.0.0/pre-migration.py.
+    maintenance_category_id = fields.Many2one(
         "maintenance.category",
-        string="Category",
+        string="Maintenance Category",
         required=True,
         tracking=True,
-        related=None,
-        compute=None,
-        store=True,
-        readonly=False,
+        index=True,
+        ondelete="restrict",
     )
 
     # Core's request_date is a plain Date; the dashboard needs datetime
@@ -87,7 +86,7 @@ class MaintenanceRequest(models.Model):
     # our own compute, rather than a second "actual_duration" field.
     duration = fields.Float(string="Duration (hours)", compute="_compute_duration", store=True)
 
-    is_inspection = fields.Boolean(related="category_id.is_inspection", store=True, string="Is Inspection")
+    is_inspection = fields.Boolean(related="maintenance_category_id.is_inspection", store=True, string="Is Inspection")
     finding_ids = fields.One2many("maintenance.university.finding", "request_id", string="Findings")
     finding_count = fields.Integer(string="Findings Count", compute="_compute_finding_count")
 
