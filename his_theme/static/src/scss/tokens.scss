@@ -1,0 +1,146 @@
+// HIS design tokens, published as CSS custom properties.
+//
+// Listed in the three bundles that draw HIS screens: the web client, the till
+// and the login page. Every value comes from primary_variables.scss ($his-*) or
+// from Odoo's own greys ($o-gray-*): this file writes no colour of its own, and
+// the module stylesheets that consume the tokens write none either.
+//
+// Custom properties rather than SCSS variables for the consumers: a module
+// stylesheet sits in its own file and nothing there proves which SCSS variables
+// are in scope for the bundle. Custom properties always are.
+
+// ------------------------------------------------------------------ faces
+// Served from this module (rule: no runtime call to an external CDN). Sources
+// and licences: README.md and static/src/fonts/OFL-*.txt.
+@font-face {
+    font-family: "Figtree";
+    src: url("/his_theme/static/src/fonts/figtree-latin-wght-normal.woff2") format("woff2-variations"),
+        url("/his_theme/static/src/fonts/figtree-latin-wght-normal.woff2") format("woff2");
+    font-weight: 300 900;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+// Arabic glyphs only: the unicode-range keeps it off every Latin character, so
+// Latin text stays Figtree even though this face sits second in the stack.
+@font-face {
+    font-family: "Readex Pro";
+    src: url("/his_theme/static/src/fonts/readex-pro-arabic-wght-normal.woff2") format("woff2-variations"),
+        url("/his_theme/static/src/fonts/readex-pro-arabic-wght-normal.woff2") format("woff2");
+    font-weight: 160 700;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+
+@font-face {
+    font-family: "IBM Plex Mono";
+    src: url("/his_theme/static/src/fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "IBM Plex Mono";
+    src: url("/his_theme/static/src/fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "IBM Plex Mono";
+    src: url("/his_theme/static/src/fonts/ibm-plex-mono-latin-600-normal.woff2") format("woff2");
+    font-weight: 600 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+// ------------------------------------------------------------------ tokens
+:root {
+    // The seal.
+    --his-navy-950: #{$his-navy-950};
+    --his-navy-900: #{$his-navy-900};
+    --his-navy-800: #{$his-navy-800};
+    --his-navy-700: #{$his-navy-700};
+    --his-navy-500: #{$his-navy-500};
+    --his-navy-200: #{$his-navy-200};
+    --his-navy-100: #{$his-navy-100};
+    --his-navy-50: #{$his-navy-50};
+    --his-on-navy: #ffffff;
+    // For translucent navy (scrims): rgba() needs the channels.
+    --his-navy-900-rgb: #{red($his-navy-900)}, #{green($his-navy-900)}, #{blue($his-navy-900)};
+    // Markers only: where you are, what has focus. Never text on navy.
+    --his-teal: #{$his-seal-teal};
+
+    // The action that completes a task (Save, Payment, Validate, Serve meal):
+    // the seal navy, filled. White on it is 11.55:1.
+    --his-action: var(--his-navy-700);
+    --his-action-hover: var(--his-navy-800);
+    --his-action-press: var(--his-navy-900);
+    --his-action-ink: #ffffff;
+    // Bootstrap's focus ring reads an "r, g, b" triplet, not a colour.
+    --his-action-rgb: #{red($his-navy-700)}, #{green($his-navy-700)}, #{blue($his-navy-700)};
+
+    // The tills' colour.
+    --his-till: #{$his-till};
+    --his-till-hover: #{$his-till-hover};
+    --his-till-tint: #{$his-till-tint};
+
+    // Legacy gold (maintenance dashboards, printed meal card).
+    --his-gold: #{$his-gold};
+    --his-gold-dark: #{$his-gold-dark};
+    --his-gold-ink: #{$his-gold-ink};
+
+    // Neutrals and semantics.
+    --his-ink: #{$his-ink};
+    --his-ink-60: #{$his-ink-60};
+    --his-ink-40: #{$his-ink-40};
+    --his-paper: #{$his-paper};
+    --his-card: #ffffff;
+    --his-line: #{$his-line};
+    --his-line-soft: #{$his-line-soft};
+    --his-green: #{$his-green};
+    --his-red: #{$his-red};
+    --his-series-1: #{$his-series-1};
+    --his-series-2: #{$his-series-2};
+
+    // Faces, for module stylesheets that set a font of their own.
+    --his-font-sans: #{inspect($his-font-sans)};
+    --his-font-mono: #{inspect($his-font-mono)};
+}
+
+// ------------------------------------------------------------------ the till
+// Names the till's stylesheets (his_pos_ui) and the Copy job dialog
+// (his_pos_copy_center) read, scoped to a themed till. The surfaces are Odoo's
+// own greys, so a themed till keeps Odoo's light ground.
+.his-pos {
+    --his-teal: var(--his-till);
+    --his-teal-hover: var(--his-till-hover);
+    --his-tint: var(--his-till-tint);
+    --his-navy: var(--his-navy-700);
+    --his-navy-deep: var(--his-navy-900);
+    --his-gold-hover: var(--his-gold-dark);
+    --his-gold-press: var(--his-gold-dark);
+
+    --his-ground: #{$o-gray-100};
+    --his-ground-raised: #ffffff;
+    --his-ground-sunk: #{$o-gray-200};
+    --his-line: #{$o-gray-300};
+    --his-line-strong: #{$o-gray-400};
+    --his-paper: #ffffff;
+    --his-paper-edge: #{$o-gray-200};
+    --his-paper-ink: #{$o-gray-900};
+    --his-paper-ink-muted: #{$o-gray-700};
+    --his-text: #{$o-gray-900};
+    --his-text-muted: #{$o-gray-700};
+
+    --his-accent: var(--his-till);
+    --his-accent-ink: #ffffff;
+    --his-accent-dim: var(--his-till-tint);
+
+    --his-font-label: 600 0.72rem/1.1 var(--his-font-sans);
+    --his-label-tracking: 0.09em;
+}

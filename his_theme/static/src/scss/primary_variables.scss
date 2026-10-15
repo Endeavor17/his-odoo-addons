@@ -1,35 +1,89 @@
-// HIS brand variables, sampled from the university site (his.edu.dz).
+// HIS brand variables: the ONE place a brand value is written.
 //
 // Prepended to web._assets_primary_variables, so this file lands BEFORE Odoo's
-// own primary_variables.scss and wins its `!default` assignments. That is the
-// whole mechanism: everything the backend colours itself with is derived from
-// the handful of values below.
+// own primary_variables.scss and wins its `!default` assignments. Every bundle
+// that compiles SCSS includes that one through web._assets_helpers - the web
+// client, the till (point_of_sale.base_app) and the login page
+// (web.assets_frontend) - so the $his-* values below are in scope in all three.
+// tokens.scss publishes them as CSS custom properties; no other file in the
+// repository should carry a brand value.
 //
 // Deliberately no function calls here. o-add-unicode-support-font() happens to
 // be in scope, but a stylesheet that fails to compile takes the entire backend
 // down with it, so this file stays to plain values only.
 
-// The navy of the university seal, the same value as his_web_ui's
-// --his-navy-700. $o-brand-odoo (the main navbar) and $o-brand-primary (buttons,
-// links, focus rings, checkboxes) both default to $o-community-color, so this
-// single line re-skins the client. It was the site's petrol teal; next to
-// his_web_ui's navy bar that gave the backend two blues.
-$o-community-color: #003874;
-$o-enterprise-color: #003874;
+// --- The seal ------------------------------------------------------------------
+// #003874 is the dominant colour of his_web_ui/static/img/his_seal.png, #00acc0
+// that of his_seal_teal.png. The navy scale only moves lightness, so every step
+// keeps the seal's hue (211 deg) and saturation.
+$his-navy-950: #00142b;
+$his-navy-900: #001e3d;
+$his-navy-800: #002a57;
+$his-navy-700: #003874;
+$his-navy-500: #0051a8;
+$his-navy-200: #7abaff;
+$his-navy-100: #e6eef7;
+$his-navy-50: #f4f7fb;
+// Markers only (active tab, focus ring): 2.74:1 on white, 4.21:1 on navy, so
+// never body text and never the only carrier of meaning on a light background.
+$his-seal-teal: #00acc0;
 
-// Semantic colours pulled onto the palette rather than left on Bootstrap's.
+// --- The tills -------------------------------------------------------------------
+// Accepted decision: navy back office, teal tills. White on #006883 is 6.35:1.
+$his-till: #006883;
+$his-till-hover: #00566d;
+$his-till-tint: #c6dce2;
+
+// --- Legacy gold -----------------------------------------------------------------
+// From the his.edu.dz site charter, not from the seal. Still read by the
+// maintenance dashboards and the printed meal card; the action that completes a
+// task is navy (decision of 2026-10-15).
+$his-gold: #dfa22a;
+$his-gold-dark: #c58c1d;
+$his-gold-ink: #3d2803;
+
+// --- Neutrals and semantics --------------------------------------------------------
+$his-ink: #10323f;
+$his-ink-60: #5e7883;
+$his-ink-40: #7b929b;
+$his-paper: #eef2f4;
+$his-line: #dde5e8;
+$his-line-soft: #f1f5f7;
+$his-green: #1c6b3f;
+$his-red: #a4342a;
+
+// Chart ink. Not the brand pair: the seal teal reads grey as a data fill and the
+// gold falls under 3:1 on white. These clear contrast and stay apart under
+// red-green and blue-yellow colour blindness.
+$his-series-1: #0b86b0;
+$his-series-2: #c07d10;
+
+// --- Type ------------------------------------------------------------------------
+// One family per script, shipped in static/src/fonts (no CDN): Figtree draws
+// Latin, Readex Pro only Arabic (its @font-face carries an Arabic unicode-range,
+// so it never touches a Latin glyph), IBM Plex Mono the codes and figures.
+$his-font-sans: ("Figtree", "Readex Pro", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif);
+$his-font-mono: ("IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+
+// --- What Odoo derives its client from ----------------------------------------------
+// $o-brand-odoo (the main navbar) and $o-brand-primary (buttons, links, focus
+// rings, checkboxes) both default to $o-community-color.
+$o-community-color: $his-navy-700;
+$o-enterprise-color: $his-navy-700;
+
 // $o-warning is not decoration: the workday banner reads --warning for its
-// "on break" stripe, which is exactly why it carries the brand gold.
-$o-warning: #dfa22a;
-$o-success: #1c6b3f;
-$o-danger: #a4342a;
+// "on break" stripe.
+$o-warning: $his-gold;
+$o-success: $his-green;
+$o-danger: $his-red;
 
-$o-main-text-color: #10323f;
+$o-main-text-color: $his-ink;
 
-// Figtree is the closest Google face to the site's; IBM Plex Mono carries every
-// card code, credit balance and duration, so digits line up column to column
-// and a card number never reads as prose. Both are pulled in by his_theme's
-// web.layout inherit — the stacks below are what shows if that request fails.
-$o-font-family-sans-serif: ("Figtree", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif);
-$o-headings-font-family: ("Figtree", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif);
-$o-font-family-monospace: ("IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
+$o-font-family-sans-serif: $his-font-sans;
+$o-headings-font-family: $his-font-sans;
+$o-font-family-monospace: $his-font-mono;
+// The login page and every other frontend page compile Bootstrap's own
+// variable (web/static/src/scss/bootstrap_overridden_frontend.scss), not
+// Odoo's: without this line the login screen drew in the system font.
+$font-family-sans-serif: $his-font-sans;
+$font-family-monospace: $his-font-mono;
