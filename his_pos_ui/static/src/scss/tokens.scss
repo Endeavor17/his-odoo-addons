@@ -10,7 +10,7 @@
     // orderline.scss paints a selected line from this variable.
     --orderline-selected: var(--his-tint);
     // navbar.scss draws the centre logo from this one.
-    --navbar-logo: url('/his_pos_ui/static/src/img/his_logo_white.png');
+    --navbar-logo: url('/his_theme/static/img/his_logo_white.png');
 
     // Entry screen (read by point_of_sale's login_screen.scss).
     --his-wallpaper: none;

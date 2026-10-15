@@ -65,6 +65,18 @@ $his-series-2: #c07d10;
 $his-font-sans: ("Figtree", "Readex Pro", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif);
 $his-font-mono: ("IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace);
 
+// --- Shape ----------------------------------------------------------------------
+// Sharp edges everywhere (decision of 2026-10-15): buttons, fields, cards,
+// dialogs, dropdowns, icon tiles. Odoo derives $border-radius* (Bootstrap) and
+// every component radius from these, so no component is overridden one by one.
+// Avatars keep `rounded-circle`, which is a percentage and not affected.
+$o-border-radius: 0;
+$o-border-radius-sm: 0;
+$o-border-radius-lg: 0;
+$border-radius-xl: 0;
+$border-radius-xxl: 0;
+$border-radius-pill: 0;
+
 // --- What Odoo derives its client from ----------------------------------------------
 // $o-brand-odoo (the main navbar) and $o-brand-primary (buttons, links, focus
 // rings, checkboxes) both default to $o-community-color.

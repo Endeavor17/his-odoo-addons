@@ -107,6 +107,9 @@
     --his-series-1: #{$his-series-1};
     --his-series-2: #{$his-series-2};
 
+    // Shape: sharp edges. For module stylesheets that draw their own boxes.
+    --his-radius: 0;
+
     // Faces, for module stylesheets that set a font of their own.
     --his-font-sans: #{inspect($his-font-sans)};
     --his-font-mono: #{inspect($his-font-mono)};
