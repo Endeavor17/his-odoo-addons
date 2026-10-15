@@ -7,6 +7,8 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import mute_logger
 
+from ..models.meal_subscription import ALLOWANCE_PARAM
+
 
 def make_person(env, name, **vals):
     """A person, created where identity now lives.
@@ -1195,6 +1197,9 @@ class TestMealAllowance(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # The advance is off by default since 2026-10-14; these tests are about
+        # how it behaves when someone switches it back on.
+        cls.env["ir.config_parameter"].set_param(ALLOWANCE_PARAM, "2")
         cls.person = make_person(cls.env, "Yacine")
         cls.student = cls.person.partner_id
         cls.weekly = cls.env["product.product"].create(
@@ -1501,3 +1506,62 @@ class TestMealPrivacy(TransactionCase):
             3,
             "the officer still reads the whole ledger",
         )
+
+
+@tagged("post_install", "-at_install")
+class TestNoAdvanceByDefault(TransactionCase):
+    """Since 2026-10-14 a subscriber with an empty card is refused like anyone else.
+
+    The advance machinery stays, behind a system parameter that defaults to 0:
+    a debt run up while it was on must still be repaid at the next top-up.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env["ir.config_parameter"].search([("key", "=", ALLOWANCE_PARAM)]).unlink()
+        cls.student = make_person(cls.env, "Amine").partner_id
+        cls.weekly = cls.env["product.product"].create(
+            {
+                "name": "Weekly Meal Plan",
+                "type": "service",
+                "list_price": 3000.0,
+                "meal_credits": 6,
+                "meal_validity_days": 0,
+            }
+        )
+
+    def test_an_empty_card_is_refused_even_for_a_subscriber(self):
+        self.student._grant_meal_credits(self.weekly)
+        self.student._consume_meal_credit(amount=6.0)
+
+        self.assertEqual(self.student.meal_allowance_left, 0)
+        with self.assertRaises(UserError):
+            self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.assertFalse(
+            self.env["his.meal.transaction"].search([("partner_id", "=", self.student.id), ("type", "=", "allowance")])
+        )
+        balance = self.student.get_meal_balance()
+        self.assertEqual(balance["allowance_left"], 0)
+        self.assertEqual(balance["allowance_total"], 0)
+
+    def test_half_a_credit_does_not_buy_a_full_meal(self):
+        """Without the advance, the half the plan cannot cover is not owed: it is refused."""
+        self.student._grant_meal_credits(self.weekly)
+        self.student._consume_meal_credit(amount=5.5)
+        with self.assertRaises(UserError):
+            self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        self.assertEqual(self.student.meal_credits_remaining, 0.5)
+
+    def test_a_debt_from_before_is_still_repaid(self):
+        params = self.env["ir.config_parameter"]
+        params.set_param(ALLOWANCE_PARAM, "2")
+        self.student._grant_meal_credits(self.weekly)
+        self.student._consume_meal_credit(amount=6.0)
+        self.student._consume_meal_credit(amount=1.0, allow_overdraft=True)
+        params.set_param(ALLOWANCE_PARAM, "0")
+
+        self.assertEqual(self.student.meal_allowance_debt, 1.0)
+        self.student._grant_meal_credits(self.weekly)
+        self.assertEqual(self.student.meal_allowance_debt, 0.0)
+        self.assertEqual(self.student.meal_credits_remaining, 5.0)

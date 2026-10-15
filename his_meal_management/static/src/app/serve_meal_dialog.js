@@ -16,10 +16,6 @@ import { Dialog } from "@web/core/dialog/dialog";
 export class ServeMealDialog extends Component {
     static template = "his_meal_management.ServeMealDialog";
     static components = { Dialog };
-    // Kept in step with ALLOWANCE_MEALS in models/meal_subscription.py by hand.
-    // The server is what enforces it; this is only how the number is worded on
-    // screen, and a mismatch shows as wrong wording, never as a wrong balance.
-    static ALLOWANCE_MEALS = 2;
     static props = {
         close: Function,
         confirm: Function,
@@ -39,6 +35,9 @@ export class ServeMealDialog extends Component {
         onAllowance: { type: Boolean, optional: true },
         allowanceLeft: { type: Number, optional: true },
         allowanceDebt: { type: Number, optional: true },
+        // From the server (system parameter), so the wording cannot drift from what
+        // it enforces.
+        allowanceTotal: { type: Number, optional: true },
     };
 
     setup() {
@@ -61,11 +60,11 @@ export class ServeMealDialog extends Component {
     // Which of the two allowance meals this one is: "meal 1 of 2" reads better
     // at a till than "1 left".
     get allowanceMealNumber() {
-        return this.constructor.ALLOWANCE_MEALS - (this.props.allowanceLeft ?? 0) + 1;
+        return this.allowanceTotal - (this.props.allowanceLeft ?? 0) + 1;
     }
 
     get allowanceTotal() {
-        return this.constructor.ALLOWANCE_MEALS;
+        return this.props.allowanceTotal ?? 0;
     }
 
     // What the student will owe once this meal is served, taken off their next

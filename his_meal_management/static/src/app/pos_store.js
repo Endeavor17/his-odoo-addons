@@ -102,10 +102,8 @@ patch(PosStore.prototype, {
         const qty = line ? line.getQuantity() : 1;
         const cost = product.meal_credit_cost * qty;
         const mealName = qty === 1 ? product.display_name : `${qty} × ${product.display_name}`;
-        // Short of credits is no longer the end of it: a student who has bought
-        // a plan carries two meals of allowance, and the till serves them behind
-        // a warning rather than turning the person away. Only when that is spent
-        // too does the refusal below stand.
+        // Short of credits: refused, unless the advance is switched on (system
+        // parameter, off by default) and the student still has some of it.
         const onAllowance = balance.credits < cost;
         if (onAllowance && balance.allowance_left < 1) {
             // Not a subscriber: the meal rung up earlier simply stays a sale.
@@ -115,7 +113,7 @@ patch(PosStore.prototype, {
             this.dialog.add(AlertDialog, {
                 title: _t("Not enough meal credits"),
                 body: _t(
-                    "%(name)s has %(credits)s credit(s) left and %(meal)s costs %(cost)s. The two allowance meals are already used. Sell the meal at its normal price, or sell a new plan at the student centre.",
+                    "%(name)s has %(credits)s credit(s) left and %(meal)s costs %(cost)s. Sell the meal at its normal price, or sell a new plan at the student centre.",
                     {
                         name: balance.name,
                         credits: balance.credits,
@@ -148,6 +146,7 @@ patch(PosStore.prototype, {
             onAllowance: onAllowance,
             allowanceLeft: balance.allowance_left,
             allowanceDebt: balance.allowance_debt,
+            allowanceTotal: balance.allowance_total,
             confirm: async () => {
                 if (line) {
                     // "manual", as addLineToCurrentOrder marks a line given a
