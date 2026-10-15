@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_his_purchase" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.his_purchase</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='purchase_setting_container']" position="before">
+                <block title="Purchasing Team" name="his_purchase_team">
+                    <setting id="his_purchase_people" company_dependent="1" help="Who sources requests, approves orders and receives escalations">
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label for="his_purchase_officer_id" class="col-lg-4 o_light_label"/>
+                                <field name="his_purchase_officer_id"/>
+                            </div>
+                            <div class="row">
+                                <label for="his_purchase_manager_id" class="col-lg-4 o_light_label"/>
+                                <field name="his_purchase_manager_id"/>
+                            </div>
+                            <div class="row">
+                                <label for="his_purchase_director_id" class="col-lg-4 o_light_label"/>
+                                <field name="his_purchase_director_id"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

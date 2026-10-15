@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="his_purchase_choice_form" model="ir.ui.view">
+        <field name="name">his.purchase.choice.form</field>
+        <field name="model">his.purchase.choice</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="order_id" invisible="1"/>
+                <field name="is_cheapest" invisible="1"/>
+                <div class="alert alert-info" role="alert" invisible="not is_cheapest">This offer is the cheapest.</div>
+                <div class="alert alert-warning" role="alert" invisible="is_cheapest">This offer is not the cheapest: say why it is chosen.</div>
+                <group>
+                    <field name="offer_summary" string="Offers"/>
+                    <field name="criterion"/>
+                    <field name="note"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm Order" class="btn-primary"/>
+                    <button special="cancel" string="Discard"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

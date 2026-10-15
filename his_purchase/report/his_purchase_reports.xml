@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_proforma_request" model="ir.actions.report">
+        <field name="name">Request for Pro Forma</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">his_purchase.report_proforma_request</field>
+        <field name="report_file">his_purchase.report_proforma_request</field>
+        <field name="print_report_name">'Pro Forma Request - %s' % object.name</field>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_supplier_choice" model="ir.actions.report">
+        <field name="name">Supplier Choice Sheet</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">his_purchase.report_supplier_choice</field>
+        <field name="report_file">his_purchase.report_supplier_choice</field>
+        <field name="print_report_name">'Supplier Choice - %s' % object.name</field>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_purchase_order" model="ir.actions.report">
+        <field name="name">Purchase Order (HIS)</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">his_purchase.report_purchase_order</field>
+        <field name="report_file">his_purchase.report_purchase_order</field>
+        <field name="print_report_name">'Purchase Order - %s' % object.name</field>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_goods_receipt" model="ir.actions.report">
+        <field name="name">Goods Receipt</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">his_purchase.report_goods_receipt</field>
+        <field name="report_file">his_purchase.report_goods_receipt</field>
+        <field name="print_report_name">'Goods Receipt - %s' % object.name</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

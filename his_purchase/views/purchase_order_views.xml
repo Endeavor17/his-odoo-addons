@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_form_his" model="ir.ui.view">
+        <field name="name">purchase.order.form.his</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//field[@name='partner_ref']" position="after">
+                <field name="his_request_id" invisible="not his_request_id"/>
+                <field name="his_purchase_domain" readonly="state not in ('draft', 'sent')"/>
+                <field name="his_monthly" invisible="not his_monthly"/>
+            </xpath>
+            <xpath expr="//page[@name='products']" position="after">
+                <page string="Supplier Answer and Choice" name="his_answer">
+                    <group>
+                        <group string="Supplier Answer">
+                            <field name="his_supplier_answer" readonly="state not in ('draft', 'sent')"/>
+                            <field name="his_reply_by" readonly="state not in ('draft', 'sent')"/>
+                            <field name="his_quote_ref" readonly="state not in ('draft', 'sent')"/>
+                            <field name="his_quote_date" readonly="state not in ('draft', 'sent')"/>
+                            <field name="his_quote_valid_until" readonly="state not in ('draft', 'sent')"/>
+                            <field name="his_supplier_reminder_count"/>
+                        </group>
+                        <group string="Choice">
+                            <field name="his_choice_criterion"/>
+                            <field name="his_choice_note"/>
+                            <field name="his_chosen_by_id"/>
+                            <field name="his_chosen_on"/>
+                            <field name="his_approved_by_id"/>
+                        </group>
+                    </group>
+                    <field name="his_answer_note" placeholder="Supplier observations (available from stock, brand...)" readonly="state not in ('draft', 'sent')"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_view_search_his" model="ir.ui.view">
+        <field name="name">purchase.order.search.his</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="his_request_id"/>
+                <filter name="his_late" string="Late Follow-up" domain="[('his_is_late', '=', True)]"/>
+                <filter name="his_monthly" string="Monthly Orders" domain="[('his_monthly', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
