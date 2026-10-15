@@ -28,7 +28,8 @@ The governing idea, stated first:
 | Supplier answer on each RFQ (quoted / declined / no answer) | Budget control that blocks a request: analytic tagging only, budgets later |
 | Documented supplier choice, locked after confirmation | Supplier portal, e-signature |
 | Order approval above a threshold (native Odoo) | Stamp duty and cash-payment limits: accounting, not purchasing (see §10) |
-| Blanket orders for recurring suppliers (food, consumables) | Composite products: not a purchasing concern |
+| Reminders and escalation so no request is forgotten (§5.8) | Composite products: not a purchasing concern |
+| Recurring monthly orders on a blanket order, plus ad hoc needs (§6) | Quantities computed from consumption: template quantities in v1 |
 | Supplier legal identifiers RC, NIF, NIS, AI | |
 | Printed documents: Demande de proforma, Fiche de choix fournisseur, Bon de commande, Bon de réception | |
 
@@ -152,7 +153,7 @@ When the officer clicks « Source », the tier is set from `estimated_amount`
 |---|---|---|
 | **Direct** | below `direct_purchase_limit` | One RFQ to one supplier. No comparison needed. |
 | **Three quotes** | from `direct_purchase_limit` | At least **three** alternative RFQs, or a documented exception (single source: exclusive supplier, urgency, brand imposed) authorised by a purchase manager |
-| **Blanket order** | any amount | A call-off from an active blanket order skips comparison: the prices were agreed when the blanket order was set up |
+| **Blanket order** | any amount | A call-off from an active blanket order (monthly order or ad hoc, §6) skips comparison: the supplier and prices were chosen when the blanket order was set up |
 
 « Source » creates the first RFQ from the request lines (quantities, UoM,
 required date as `date_planned`, analytic distribution, link back to the
@@ -233,14 +234,135 @@ an addition to decide (§11, question 1).
   `purchase_method = receive` as the default for stocked products), so the
   accountant pays what was received.
 
-## 6. Replenishment from `his_stock_mdm`
+### 5.8 Reminders and escalation
 
-`his_stock_mdm` reorder rules (counters, Restaurant) create draft RFQs through
-`purchase_stock` without any request. Default (to confirm): **they bypass the
-request but not the controls** — they are treated as the Direct tier, keep the
-approval amount, and when a blanket order exists for the product the RFQ is
-created against it. They carry no `his_request_id`, which is how reports tell
-them apart.
+Purchase requests get forgotten at HIS. The rule: **at every step one person
+owns the next action, with a due date; when it is missed, the system reminds
+them, then escalates.** Nothing depends on someone remembering to check.
+
+**Who owns each step, and by when** (delays in working days, stored in
+settings, values to confirm):
+
+| Step | Owner | Due | Reminder to the owner | Escalation to |
+|---|---|---|---|---|
+| Request `submitted` | Department head | 2 days | at due date | Purchase manager, 2 days later |
+| Request `approved` (not sourced yet) | Purchasing officer | 2 days | at due date | Purchase manager, 2 days later |
+| RFQ sent, answer `pending` | Purchasing officer | `his_reply_by` (default: sent + 5 days) | « Chase supplier » at reply-by date | Purchase manager, 3 days later |
+| Order `to approve` | Purchase manager(s) | 2 days | at due date | Second purchase manager / director (§11, question 1) |
+| Order confirmed, not received by `date_planned` | Purchasing officer | `date_planned` | « Late delivery » the day after | Purchase manager, 3 days later |
+| Request not ordered and `date_required` within 5 days | Purchasing officer | — | alert, whatever the state | Purchase manager, at the same time |
+
+**Mechanism — standard Odoo activities, driven by one daily cron:**
+- Each transition schedules a `mail.activity` on the owner with the due date
+  above (activity types created by the module: « Approve purchase request »,
+  « Source purchase request », « Chase supplier », « Late delivery »). Odoo
+  emails the owner when the activity is assigned, and it shows in their
+  activity menu (clock icon) until done. The activity is marked done
+  automatically when the step is completed, and replaced if the owner changes.
+- A daily cron (`_cron_purchase_reminders`) finds overdue steps: first a
+  reminder email to the owner and a note in the chatter; after the escalation
+  delay, an activity and an email to the escalation person. Each reminder is
+  counted (`his_reminder_count`) and visible on the request.
+- A **weekly digest** (Monday morning) to the purchase managers: every open
+  request with its state, owner, days in state and required date, oldest
+  first.
+- A **« Remind » button for the requester** on their submitted or approved
+  request: posts a message to the current owner and emails them. At most once
+  per 24 hours per request; logged in the chatter.
+
+**Chasing suppliers:**
+- `his_reply_by` (Date) on the RFQ, printed on the Demande de proforma.
+- At the reply-by date the officer gets « Chase supplier »; one click on
+  « Send reminder » emails the supplier the « Relance demande de proforma »
+  template with the proforma attached again. Sending it automatically is a
+  setting, off by default (to confirm).
+- Late deliveries on confirmed orders: Odoo's native **receipt reminder**
+  (supplier setting « Receipt Reminder », daily cron « Purchase reminder »)
+  emails the supplier N days before the promised date; switch it on for
+  regular suppliers. The « Late delivery » activity covers the day after.
+
+**Seeing what is late:**
+- `his_state_since` (Datetime) on the request, set at each transition;
+  `his_days_in_state` computed; `his_is_late` (Boolean, stored, set by the
+  cron) for filtering and red rows in the list.
+- Default filter « Late » and a kanban grouped by state for the purchase team.
+
+Emails go through the normal mail queue (the mail cron runs hourly): a
+reminder may arrive up to an hour after the cron, which is fine here.
+
+## 6. Recurring monthly supplier and ad hoc needs
+
+Situation today: the stock team has **one supplier who delivers the
+Restaurant's needs every month**, and **needs still come up between
+deliveries**. Both are handled, with one agreement as the backbone.
+
+### 6.1 The agreement: a blanket order (native)
+
+The monthly supplier gets a **blanket order** (`purchase.requisition`,
+`requisition_type = blanket_order`) for a period (e.g. the school year or a
+quarter), with the agreed products, unit prices and total quantities. It is
+set up once — this is where the supplier is chosen, so the three-quotes rule
+and approval apply **to the blanket order**, not to each monthly order.
+
+What Odoo does natively when it is confirmed (verified in the 19.0 source):
+it creates a vendor price (`product.supplierinfo`) for each line, tied to the
+agreement. From then on **any** RFQ for those products — monthly, ad hoc or
+from a reorder rule — picks this supplier and this price automatically, and
+the agreement shows quantity ordered against quantity agreed.
+
+### 6.2 The monthly order: a recurrence on the blanket order (custom)
+
+`his_purchase` adds to the blanket order:
+
+| Field | Rule |
+|---|---|
+| `his_recurring` | Boolean: this agreement has a monthly order |
+| `his_delivery_day` | Day of the month the supplier delivers (e.g. 5) |
+| `his_prepare_days` | How many days before delivery the draft order is created (e.g. 7) |
+| `his_owner_id` | Stock person who reviews and sends the monthly order |
+| `his_recurring_qty` (on each line) | Usual monthly quantity |
+
+A daily cron creates, `his_prepare_days` before each delivery date, a **draft
+RFQ** on the blanket order with the usual monthly quantities, `date_planned`
+on the delivery date, and schedules « Review monthly order » on the owner,
+due two days before delivery. The owner adjusts quantities to what is
+actually needed (stock on hand, events, holidays) and confirms. If it is not
+confirmed by the due date, §5.8 reminds and escalates like any other step.
+
+Approval of monthly orders (default, to confirm): **no approval** as long as
+the order stays within the blanket order's remaining quantities and prices;
+the order goes through Odoo's approval if it exceeds them.
+
+### 6.3 Needs between two deliveries
+
+A need can come from a **purchase request** (Restaurant staff) or a **reorder
+rule** (`his_stock_mdm` min/max when stock falls low).
+
+| The product is… | Needed… | What happens |
+|---|---|---|
+| on the active blanket order | **after** the next monthly order is prepared | « Add to next monthly order »: the request line is linked to the agreement and the cron adds its quantity to the next monthly draft. No separate order, no extra delivery. |
+| on the active blanket order | **before** it | « Order now »: a call-off from the blanket order (Blanket tier: no comparison, supplier and price already agreed). |
+| not on any blanket order | — | Normal request flow: Direct or three quotes (§5.2). |
+
+The purchasing officer picks between the first two from the request (the
+system proposes one from the dates).
+
+Reorder rules: for products on the monthly order, keep min/max as a **safety
+net** (a low minimum), not as the main supply, or they would compete with
+the monthly order. Odoo's replenishment normally adds a need to an existing
+draft RFQ of the same supplier rather than opening a new one, so a shortage
+noticed while the monthly draft is open lands in it (to verify on staging).
+Reorder-rule RFQs carry no `his_request_id`, which is how reports tell them
+apart; outside a blanket order they are treated as the Direct tier and keep
+the approval amount.
+
+### 6.4 Where the goods go
+
+The monthly delivery is received in the main warehouse, then moved to the
+Restaurant with the weekly internal transfers already designed (« Réappro
+Restaurant », `RESIN`). If the supplier delivers straight to the Restaurant
+instead, the monthly order uses a receipt type with destination
+`WH/Stock/Restaurant` (§11, question 9).
 
 ## 7. Algerian supplier identifiers — `his_partner_dz`
 
@@ -326,6 +448,14 @@ The draft's « PV de commission ad hoc » is dropped: there is no committee.
    the person who chose the supplier.
 7. **Individuals as suppliers.** Can HIS buy from an individual with no RC
    (e.g. a craftsman)? If yes, which identifiers are required instead?
+8. **Reminder delays.** Are the delays in §5.8 right (2 days to approve, 2 to
+   source, 5 for a supplier to answer)? Who is the escalation above the
+   purchase manager? Should supplier reminders go out automatically?
+9. **Monthly supplier.** Its delivery day, how many days before it the order
+   must be sent, who in the stock team owns it, and whether it delivers to
+   the main warehouse or straight to the Restaurant. Is the agreement for the
+   school year or shorter? Are monthly orders within the agreement exempt
+   from approval?
 
 ## 12. Acceptance tests
 
@@ -347,3 +477,12 @@ The draft's « PV de commission ad hoc » is dropped: there is no committee.
 | AT-14 | A reorder rule creates an RFQ without a request; above the approval amount it still requires approval. |
 | AT-15 | Receiving the order creates a stock move valued at the order price without error (precondition 9.1). |
 | AT-16 | Every label in a French session comes from `fr.po`; no French string in the Python or XML sources. |
+| AT-17 | Submitting a request schedules « Approve purchase request » on the department head; approving it marks the activity done and schedules « Source purchase request » on the officer. |
+| AT-18 | A request left `submitted` past its due date gets a reminder email to the department head; 2 days later the purchase manager gets an activity and an email. Both appear in the chatter. |
+| AT-19 | The requester's « Remind » works once, and is refused a second time within 24 hours. |
+| AT-20 | An RFQ still `pending` at its reply-by date creates « Chase supplier »; « Send reminder » emails the supplier the relance template. |
+| AT-21 | The weekly digest lists every open request, oldest first, with its owner. |
+| AT-22 | Confirming a blanket order makes a new RFQ for its products default to that supplier and price. |
+| AT-23 | With delivery day 5 and 7 preparation days, the cron creates the monthly draft RFQ on the 28th of the previous month with the usual quantities, and runs only once per month. |
+| AT-24 | A request for a blanket-order product needed after the next monthly order is added to that monthly draft; one needed sooner becomes a call-off without comparison. |
+| AT-25 | A monthly order within the agreement's remaining quantities is confirmed without approval; one exceeding them goes to `to approve`. |
