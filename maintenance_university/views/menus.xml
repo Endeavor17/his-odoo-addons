@@ -7,6 +7,7 @@
          (see other_apps_menu_restrictions.xml) so there's no collision. -->
     <menuitem id="menu_maintenance_root"
               name="Maintenance"
+              web_icon="maintenance_university,static/description/icon.svg"
               sequence="10"
               groups="maintenance_university.group_maintenance_worker,maintenance_university.group_maintenance_reporter"/>
 
