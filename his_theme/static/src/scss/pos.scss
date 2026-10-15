@@ -21,6 +21,6 @@
 // (his_meal_management's confirm dialog). Their colours are his_pos_ui's.
 .pos .pay-order-button,
 .btn.btn-his-gold {
-    border-radius: 999px;
+    border-radius: var(--his-radius, 0);
     font-weight: 700;
 }

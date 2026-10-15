@@ -2,7 +2,7 @@
 // and a till that fails to paint has no fallback the cashier can reach.
 
 .his_serve_meal {
-    border-radius: 16px;
+    border-radius: var(--his-radius, 0);
     overflow: hidden;
 }
 
@@ -20,7 +20,7 @@
     flex: 0 0 auto;
     width: 2.875rem;
     height: 2.875rem;
-    border-radius: 999px;
+    border-radius: var(--his-radius, 0);
     background-color: rgba(255, 255, 255, 0.18);
     display: flex;
     align-items: center;
@@ -59,7 +59,7 @@
 .his_serve_meal_meter {
     display: flex;
     height: 10px;
-    border-radius: 999px;
+    border-radius: var(--his-radius, 0);
     background-color: #e8eef0;
     overflow: hidden;
 }
@@ -81,7 +81,7 @@
 .his_serve_meal_ask {
     background-color: #f6f9fa;
     border: 1px solid #e4ecef;
-    border-radius: 12px;
+    border-radius: var(--his-radius, 0);
     padding: 1rem 1.125rem;
 }
 
@@ -95,7 +95,7 @@
     flex: 0 0 auto;
     width: 2.75rem;
     height: 2.75rem;
-    border-radius: 10px;
+    border-radius: var(--his-radius, 0);
     background-color: #eaf4f7;
     color: #0d6e8c;
     display: flex;
@@ -109,7 +109,7 @@
 .his_serve_meal_cancel,
 .his_serve_meal_confirm {
     height: 3.25rem;
-    border-radius: 999px;
+    border-radius: var(--his-radius, 0);
     font-weight: 600;
 }
 
@@ -130,7 +130,7 @@
 .his_serve_meal_empty {
     background-color: #fbe9e7;
     border: 1px solid #f0cec9;
-    border-radius: 12px;
+    border-radius: var(--his-radius, 0);
     padding: 1rem 1.125rem;
 }
 
@@ -138,7 +138,7 @@
     flex: 0 0 auto;
     width: 2.75rem;
     height: 2.75rem;
-    border-radius: 10px;
+    border-radius: var(--his-radius, 0);
     background-color: #f6d8d4;
     color: #a4342a;
     display: flex;
