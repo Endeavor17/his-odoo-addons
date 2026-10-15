@@ -66,13 +66,12 @@ Two modules, so the Algerian identifiers serve sales and invoicing too:
 
 | Module | Depends on | Holds |
 |---|---|---|
-| `his_partner_dz` | `base`, `account`, `l10n_dz` | RC, NIS, AI on `res.partner` and `res.company`; NIF label on `vat`; supplier tax regime; printing helpers for the legal block |
-| `his_purchase` | `purchase`, `purchase_stock`, `purchase_requisition`, `hr`, `his_stock_mdm`, `his_partner_dz` | Purchase request, sourcing, supplier answer, supplier choice, reports, groups and rules |
+| `his_partner_dz` | `account`, `l10n_dz` | RC, NIS, AI, NIN on `res.partner`, RC, NIS, AI on `res.company`; NIF label on `vat`; supplier tax regime; `his_missing_identifiers()` |
+| `his_purchase` | `hr`, `purchase_stock`, `purchase_requisition`, `his_partner_dz` | Purchase request, sourcing, supplier answer, supplier choice, reports, groups and rules |
 
-Before building the request model, check whether OCA `purchase_request` has a
-mature 19.0 branch. If it does, vendor it (as was done for `helpdesk_mgmt`)
-and put the HIS rules in `his_purchase`; if not, `his_purchase` carries its
-own small request model as described in §5.1.
+The request model is HIS's own (`his.purchase.request`): it is small, and it
+carries the HIS rules (department-head approval, reminders, monthly orders)
+that a vendored OCA module would have needed overriding anyway.
 
 Language rule (2026-10-08): every label is **English in the source** with
 `i18n/fr.po` (and `ar.po` when Arabic is switched on). French document titles
@@ -82,8 +81,7 @@ below are the `fr.po` values. No module-specific `font-family`.
 
 | Role | Odoo group | Can |
 |---|---|---|
-| Requester | `base.group_user` (any employee with a login) | Create, edit and submit their own requests; see their own requests and the resulting order status |
-| Request approver | new `his_purchase.group_request_approver` (department heads) | Approve or reject requests of their department |
+| Requester | new `his_purchase.group_requester` (« Purchase Requests / Requester ») | Create, edit and submit their own requests; see their own requests and the resulting order status. Department heads get this role too: they approve the requests of their department (the head set on the `hr.department`). Not given to every employee by default: the access policy (`his_access_base`) forbids opening a business app to accounts without a role. Purchasing users get it automatically. |
 | Purchasing officer | `purchase.group_purchase_user` | Turn approved requests into RFQs, record supplier answers, compare, choose, confirm orders below the approval amount |
 | Purchase manager | `purchase.group_purchase_manager` | Approve **POS-operations** orders above the amount (§5.5); authorise quantity top-ups (§5.6) |
 | Executive director | `purchase.group_purchase_manager` + new `his_purchase.group_purchase_director` | Approves **general** orders above the amount, and may approve POS-operations orders too; last level of escalation (§5.8) |
@@ -105,7 +103,7 @@ alone.
 
 ```
 Request (draft) ─submit→ Submitted ─approve→ Approved ─source→ Sourcing ─order→ Ordered → Done
-                               └─reject→ Rejected        (any state before Ordered) ─→ Cancelled
+                               └─reject→ back to Draft   (any state before Ordered) ─→ Cancelled
 ```
 
 ### 5.1 Purchase request — `his.purchase.request`
@@ -117,14 +115,14 @@ Created by the requester. Reference from a sequence, e.g. `DA/2026/00018`.
 | `name` | Char | Sequence, read-only |
 | `requester_id` | `hr.employee` | Default: current user's employee |
 | `department_id` | `hr.department` | Default from the employee; drives the approver |
-| `company_id` | `res.company` | HIS / HTC / IRA if they are separate companies (§11, question 2) |
+| `company_id` | `res.company` | HIS, HTC or IRA: separate companies (decided 2026-10-15) |
 | `analytic_distribution` | Json | Cost centre (school, service); copied to order lines |
 | `date_required` | Date | When the goods are needed; must not be in the past at submission |
 | `justification` | Text | Why the purchase is needed; required at submission |
 | `estimated_amount` | Monetary, computed | Sum of line estimates; informative (the approver sees it) |
 | `line_ids` | One2many | At least one line to submit |
 | `order_ids` | computed | RFQs and orders created from the request; smart button |
-| `state` | Selection | `draft`, `submitted`, `approved`, `sourcing`, `ordered`, `done`, `rejected`, `cancelled` |
+| `state` | Selection | `draft`, `submitted`, `approved`, `sourcing`, `ordered`, `done`, `cancel` |
 
 Request line — `his.purchase.request.line`:
 
@@ -179,9 +177,10 @@ each line, so Odoo's « earliest date » highlight keeps working. No separate
 lead-time picklist.
 
 Rules:
-- `quoted` requires every line to have a positive price, a proforma reference
-  and a proforma date. A genuinely free item is a line with price 0 and a
-  mandatory note; it does not make the whole RFQ count as zero.
+- `quoted` requires every line to have a positive price; the proforma
+  reference and date are recorded when the supplier gives them, not required
+  (HIS keeps this light). A `pending` RFQ becomes `quoted` when it is
+  confirmed. Free items (price 0) are not supported in version 1.
 - `declined` and `no_answer` RFQs **cannot be confirmed**. Marking one sets its line quantities to 0 so the
   comparison ignores it (Odoo already skips zero totals).
 - The supplier answer is a business field; the Odoo state (`draft`, `sent`,
@@ -215,7 +214,7 @@ Use Odoo's « Purchase Order Approval » (company setting
 Orders above the amount go to `to approve` and only a purchase manager can
 approve them. Default amount: **0, every order is approved** — consistent
 with monthly orders not skipping approval (§6.2); to raise later if approvals
-become a bottleneck (§11, question 1).
+become a bottleneck.
 
 **Who approves (decided by Mohamed, 2026-10-15):** the executive director
 approves most purchases; the purchase manager approves POS purchases, and the
@@ -258,8 +257,8 @@ Purchase requests get forgotten at HIS. The rule: **at every step one person
 owns the next action, with a due date; when it is missed, the system reminds
 them, then escalates.** Nothing depends on someone remembering to check.
 
-**Who owns each step, and by when** (delays in working days, stored in
-settings; the 2 / 2 / 5 days were confirmed by Mohamed on 2026-10-15). The
+**Who owns each step, and by when** (delays in working days, constants in
+the code for version 1; the 2 / 2 / 5 days were confirmed by Mohamed on 2026-10-15). The
 escalation chain is **owner → purchase manager → executive director**; when
 the owner is already the purchase manager, the escalation goes straight to
 the director.
@@ -337,8 +336,11 @@ at `date_end`: no order is created on an expired agreement.
 
 What Odoo does natively when it is confirmed (verified in the 19.0 source):
 it creates a vendor price (`product.supplierinfo`) for each line, tied to the
-agreement. From then on **any** RFQ for those products — monthly, ad hoc or
-from a reorder rule — picks this supplier and this price automatically, and
+agreement. That price applies to every order placed **on the agreement**
+(monthly orders and call-offs), and automatic replenishment (reorder rules)
+picks this supplier. A manual RFQ to the same supplier without the agreement
+does **not** get the agreement price (verified on Odoo 19, 2026-10-15) — which
+is why « Source » offers the call-off and the monthly order. The agreement
 the agreement shows quantity ordered against quantity agreed.
 
 ### 6.2 The monthly order: a recurrence on the blanket order (custom)
@@ -349,7 +351,7 @@ the agreement shows quantity ordered against quantity agreed.
 |---|---|
 | `his_recurring` | Boolean: this agreement has a monthly order |
 | `his_delivery_day` | Day of the month the supplier delivers: **1** for the Restaurant supplier (start of the month) |
-| `his_prepare_days` | How many days before delivery the draft order is created: default **10** |
+| `his_prepare_days` | How many days before delivery the draft order is created: default **7** (decided 2026-10-15: less than 10 is enough) |
 | `his_owner_id` | Who reviews and sends the monthly order: the **warehouse manager** |
 | `his_recurring_qty` (on each line) | Usual monthly quantity |
 
@@ -358,9 +360,9 @@ warehouse manager, delivery to the main warehouse, approval **not** skipped):
 
 | When | What |
 |---|---|
-| Delivery − 10 days (≈ 21st) | Cron creates the **draft RFQ** on the blanket order with the usual quantities, `date_planned` on the 1st, and schedules « Review monthly order » on the warehouse manager |
-| Delivery − 7 days (≈ 24th) | Review due: the warehouse manager adjusts quantities (stock on hand, events, holidays) and confirms |
-| Delivery − 5 days (≈ 26th) | Approval due (domain `pos`: purchase manager or executive director, §5.5) |
+| Delivery − 7 days (≈ 24th) | Cron creates the **draft RFQ** on the blanket order with the usual quantities and the queued ad hoc needs, `date_planned` on the 1st, and schedules « Review monthly order » on the warehouse manager |
+| + 2 working days | Review due: the warehouse manager adjusts quantities (stock on hand, events, holidays) and confirms |
+| + 2 working days | Approval due (domain `pos`: purchase manager or executive director, §5.5) |
 | After approval | Order sent to the supplier; native receipt reminder before the 1st |
 
 If a step is late, §5.8 reminds and escalates like any other step. The cron
@@ -408,11 +410,12 @@ On `res.partner` (companies) and `res.company`:
 
 Rules:
 - A supplier must have NIF and RC before an order to it can be confirmed
-  (decided 2026-10-15; identifier for individuals: §11, question 4).
-- A supplier under `ifu` or `auto_entrepreneur` gets a fiscal position that
-  maps the purchase VAT taxes to `l10n_dz_vat_purchase_0` (created by the
-  module if `l10n_dz` has none suitable), so its quotes compare correctly
-  against VAT-charging suppliers.
+  (decided 2026-10-15). An individual (not a company) needs NIF and national
+  ID number (NIN) instead of RC.
+- A supplier under `ifu` or `auto_entrepreneur` gets **no tax** on its
+  purchase lines (the line tax computation clears it, and confirmation clears
+  it again), so its quotes compare correctly against VAT-charging suppliers.
+  No fiscal position to maintain per company.
 - The company's own RC, NIF, NIS, AI print in the header of every purchase
   document.
 
@@ -457,38 +460,33 @@ The draft's « PV de commission ad hoc » is dropped: there is no committee.
 - **Invoice legal mentions** (RC, NIF, NIS, AI, HT/VAT/TTC, amount in words)
   are carried by `his_partner_dz` so vendor bills can be checked against them.
 
-## 11. Open questions for Mohamed
+## 11. Decisions
 
-1. **Approval amount.** Default is 0 (every order approved, §5.5). Keep it, or
-   approve only above an amount?
-2. **Companies.** Are HIS, HTC and IRA separate companies in Odoo, or one
-   company with cost centres? This decides `company_id` vs analytic only, and
-   whose letterhead prints.
-3. **Request approval.** Is the department head the right approver for every
-   request, including the Restaurant and Cafétéria managers' own requests?
-4. **Individuals as suppliers.** NIF and RC are required for companies. For
-   an individual with no RC (e.g. a craftsman), which identifier is required
-   instead — national ID number, NIF only, nothing?
-5. **Other blanket orders.** Besides the Restaurant's monthly supplier, which
-   suppliers get a yearly agreement (Cafétéria, paper for the Copy Center,
-   cleaning products)?
-6. **Monthly order lead time.** Does the supplier need the order 10 days
-   before the 1st, or is less enough?
-7. **Input VAT (later).** Start with 19 % and the native TTC comparison; ask
-   the accountant whether input VAT is recoverable before the first year-end.
+All questions were answered by Mohamed on 2026-10-15:
 
-Decided on 2026-10-15:
-- Reminder delays 2 / 2 / 5 days; escalation above the purchase manager =
-  executive director; supplier reminders sent automatically.
-- Executive director approves general purchases; purchase manager or director
-  approves POS purchases; POS = Cafétéria, Restaurant, Copy Center only.
-- The person who chose the supplier may also approve the order.
-- No minimum number of quotes.
-- Monthly supplier: yearly agreement, delivery at the start of the month to
-  the main warehouse, owned by the warehouse manager, with approval.
-- Suppliers need NIF and RC (exception for individuals, question 4).
-- Purchase VAT: 19 % by default, comparison on TTC.
-- Purchase managers exist but have no Odoo users yet: created at go-live.
+- **Approval:** every order is approved (amount 0). General purchases: the
+  executive director; point-of-sale purchases (Cafétéria, Restaurant, Copy
+  Center only): the purchase manager or the director. The person who chose
+  the supplier may also approve.
+- **Quotes:** no minimum number; comparing is optional.
+- **Companies:** HIS, HTC and IRA are separate companies in Odoo; each request
+  and order belongs to one, with its own letterhead and purchasing team.
+- **Request approval:** the department head, for every request; the executive
+  director when the head is the requester.
+- **Suppliers:** companies need NIF and RC; individuals need NIF and NIN.
+- **Reminders:** 2 days to approve, 2 to source, 5 for a supplier to answer;
+  escalation purchase manager → executive director; supplier reminders sent
+  automatically.
+- **Monthly supplier:** the Restaurant's supplier only; yearly agreement;
+  delivery at the start of the month to the main warehouse; owned by the
+  warehouse manager; approved like any order; order prepared 7 days before.
+- **VAT:** 19 % by default, comparison on TTC; whether input VAT is
+  recoverable is a later question for the accountant.
+- **Purchase managers:** known but without Odoo accounts yet; created at
+  go-live and set in Purchase settings.
+
+Later (not in version 1): analytic distribution on requests, an HT comparison
+if VAT turns out recoverable, delays as settings, free items on quotes.
 
 ## 12. Acceptance tests
 
