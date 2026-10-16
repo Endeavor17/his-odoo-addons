@@ -4,7 +4,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.tools import float_compare, float_round
 
-from .meal_subscription import ALLOWANCE_MEALS, CREDIT_PRECISION
+from .meal_subscription import ALLOWANCE_PARAM, CREDIT_PRECISION
 
 
 class ResPartner(models.Model):
@@ -171,8 +171,12 @@ class ResPartner(models.Model):
                 partner.meal_allowance_debt = 0.0
                 continue
             used, debt = partner._meal_allowance_state()
-            partner.meal_allowance_left = max(0, ALLOWANCE_MEALS - used)
+            partner.meal_allowance_left = max(0, partner._meal_allowance_size() - used)
             partner.meal_allowance_debt = debt
+
+    def _meal_allowance_size(self):
+        """Meals allowed on an empty card per cycle; 0 (the default) turns the advance off."""
+        return int(self.env["ir.config_parameter"].sudo().get_param(ALLOWANCE_PARAM, "0") or 0)
 
     def _qualifies_for_allowance(self):
         """Only someone who has actually bought a plan eats on credit.
@@ -194,7 +198,7 @@ class ResPartner(models.Model):
             return False
         self.env["his.meal.transaction"].flush_model()
         used, _debt = self._meal_allowance_state()
-        return used < ALLOWANCE_MEALS
+        return used < self._meal_allowance_size()
 
     @api.depends("meal_card_ids.state", "meal_card_ids.code")
     def _compute_meal_card_code(self):
@@ -463,6 +467,7 @@ class ResPartner(models.Model):
             # empty must not require handing them the ledger.
             "allowance_left": self.sudo().meal_allowance_left,
             "allowance_debt": self.sudo().meal_allowance_debt,
+            "allowance_total": self._meal_allowance_size(),
         }
 
     @api.model

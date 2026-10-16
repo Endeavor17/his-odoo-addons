@@ -37,6 +37,7 @@ from odoo.exceptions import AccessError, UserError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import float_compare
 
+from ..models.meal_subscription import ALLOWANCE_PARAM
 from .test_meal_credits import make_person
 
 # One credit is one 600 DA meal, a half credit is one 300 DA meal. The money
@@ -124,6 +125,9 @@ class TestFiftyStudentsOverATerm(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Written when every subscriber had two meals of advance; it is off by
+        # default now, so switch it on to keep exercising it.
+        cls.env["ir.config_parameter"].set_param(ALLOWANCE_PARAM, "2")
         cls.env.user.group_ids |= cls.env.ref("point_of_sale.group_pos_manager") | cls.env.ref(
             "his_meal_management.group_meal_officer"
         )
@@ -416,6 +420,9 @@ class TestWaysToEatForFree(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Written when every subscriber had two meals of advance; it is off by
+        # default now, so switch it on to keep exercising it.
+        cls.env["ir.config_parameter"].set_param(ALLOWANCE_PARAM, "2")
         cls.env.user.group_ids |= cls.env.ref("point_of_sale.group_pos_manager") | cls.env.ref(
             "his_meal_management.group_meal_officer"
         )
