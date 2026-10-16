@@ -146,7 +146,7 @@ class HisPurchaseFollowupMixin(models.AbstractModel):
             palier = record.his_step_level - 1
             if palier >= len(step["chain"]):
                 continue
-            echeance = step["due"] + timedelta(days=sum(d for d, _u in step["chain"][: palier + 1]))
+            echeance = add_working_days(step["due"], sum(d for d, _u in step["chain"][: palier + 1]))
             if today < echeance:
                 continue
             users = step["chain"][palier][1]

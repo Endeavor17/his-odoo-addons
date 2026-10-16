@@ -1959,3 +1959,25 @@ msgstr "le directeur exécutif"
 #: code:addons/his_purchase/models/his_purchase_request.py:0
 msgid "the head of department"
 msgstr "le chef de département"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Only the purchasing team can set: %s."
+msgstr "Seule l'équipe achats peut renseigner : %s."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_choice.py:0
+msgid "%s is not the cheapest offer: choose another criterion."
+msgstr "%s n'est pas l'offre la moins chère : choisissez un autre critère."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order_line__his_qty_before_answer
+msgid "Quantity Before Refusal"
+msgstr "Quantité avant refus"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_purchase_order_line__his_qty_before_answer
+msgid "Quantity set aside while the supplier answer is Declined or No Answer."
+msgstr "Quantité mise de côté tant que la réponse du fournisseur est « Refusée » ou « Sans réponse »."

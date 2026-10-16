@@ -101,3 +101,27 @@ class TestRequest(HisPurchaseCase):
         request = self._approved_request()
         with self.assertRaises(AccessError):
             request.with_user(self.requester).action_open_source()
+
+    def test_le_demandeur_ne_s_approuve_pas_lui_meme(self):
+        request = self._request()
+        for vals in (
+            {"state": "approved"},
+            {"approved_by_id": self.requester.id},
+            {"approver_id": self.requester.id},
+            {"his_purchase_domain": "pos"},
+        ):
+            with self.assertRaises(AccessError, msg=vals):
+                request.write(vals)
+        with self.assertRaises(AccessError):
+            self._request(state="approved")
+        self.assertEqual(request.state, "draft")
+        # L'acheteur corrige le domaine avant de sourcer (spec, section 5.5).
+        request.with_user(self.officer).his_purchase_domain = "pos"
+
+    def test_le_nouveau_directeur_devient_l_approbateur(self):
+        self.company.his_purchase_director_id = False
+        request = self._request(user=self.outsider, employee=self.outsider_emp)
+        self.assertFalse(request.approver_id)
+        self.company.his_purchase_director_id = self.director
+        self.assertEqual(request.approver_id, self.director)
+        request.action_submit()

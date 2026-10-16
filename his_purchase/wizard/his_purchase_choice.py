@@ -1,5 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 from ..models.purchase_order import CRITERIA
 
@@ -28,6 +29,8 @@ class HisPurchaseChoice(models.TransientModel):
 
     def action_confirm(self):
         self.ensure_one()
+        if self.criterion == "lowest_price" and not self.order_id._his_is_cheapest():
+            raise UserError(_("%s is not the cheapest offer: choose another criterion.", self.order_id.name))
         self.order_id.with_context(his_choice_write=True).write(
             {
                 "his_choice_criterion": self.criterion,

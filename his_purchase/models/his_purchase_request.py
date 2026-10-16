@@ -33,6 +33,17 @@ URGENT_DAYS = 5
 NUDGE_HOURS = 24
 # Champs que le suivi ecrit lui-meme, quel que soit l'etat.
 FOLLOWUP_FIELDS = {"his_step", "his_step_since", "his_step_level", "his_reminder_count", "his_is_late"}
+# Ecrits par les boutons (sudo) ou l'equipe achats, jamais par le demandeur :
+# sinon il approuve son propre brouillon, ou choisit qui approuvera ses commandes.
+PROTECTED_FIELDS = {
+    "state",
+    "approver_id",
+    "approved_by_id",
+    "approved_on",
+    "his_purchase_domain",
+    "his_last_nudge",
+    "his_urgent_alert_sent",
+}
 
 
 class HisPurchaseRequest(models.Model):
@@ -111,7 +122,13 @@ class HisPurchaseRequest(models.Model):
         for request in self:
             request.department_id = request.requester_id.department_id
 
-    @api.depends("department_id", "department_id.manager_id.user_id", "requester_user_id", "company_id")
+    @api.depends(
+        "department_id",
+        "department_id.manager_id.user_id",
+        "requester_user_id",
+        "company_id",
+        "company_id.his_purchase_director_id",
+    )
     def _compute_approver_id(self):
         for request in self:
             head = request.department_id.manager_id.user_id
@@ -142,6 +159,7 @@ class HisPurchaseRequest(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            self._his_check_protected(vals)
             if vals.get("name", _("New")) == _("New"):
                 company = self.env["res.company"].browse(vals.get("company_id")) or self.env.company
                 vals["name"] = self.env["ir.sequence"].with_company(company).next_by_code("his.purchase.request") or _(
@@ -150,6 +168,7 @@ class HisPurchaseRequest(models.Model):
         return super().create(vals_list)
 
     def write(self, vals):
+        self._his_check_protected(vals)
         # Le fil de discussion (pieces jointes, activites) reste ouvert a tous.
         business = {f for f in vals if f not in FOLLOWUP_FIELDS and not f.startswith(("message_", "activity_"))}
         if business and not self._his_is_purchasing():
@@ -172,6 +191,11 @@ class HisPurchaseRequest(models.Model):
 
     def _his_is_purchasing(self):
         return self.env.su or self.env.user.has_group("purchase.group_purchase_user")
+
+    def _his_check_protected(self, vals):
+        protected = PROTECTED_FIELDS & set(vals)
+        if protected and not self._his_is_purchasing():
+            raise AccessError(_("Only the purchasing team can set: %s.", ", ".join(sorted(protected))))
 
     def _his_check_requester(self):
         for request in self:
@@ -497,15 +521,21 @@ class HisPurchaseRequestLine(models.Model):
         for line in self:
             line.estimated_subtotal = line.product_qty * line.estimated_price_unit
 
-    @api.depends("purchase_line_ids.product_qty", "purchase_line_ids.state")
+    @api.depends(
+        "product_uom_id", "purchase_line_ids.product_qty", "purchase_line_ids.product_uom_id", "purchase_line_ids.state"
+    )
     def _compute_qty_ordered(self):
         for line in self:
             confirmed = line.purchase_line_ids.filtered(lambda p: p.state in ("to approve", "purchase"))
             drafts = line.purchase_line_ids.filtered(lambda p: p.state in ("draft", "sent"))
-            line.qty_ordered = sum(confirmed.filtered(lambda p: p.state == "purchase").mapped("product_qty"))
+            line.qty_ordered = sum(
+                p._his_qty_in_request_uom() for p in confirmed.filtered(lambda p: p.state == "purchase")
+            )
             # Ce qui reste a sourcer : les demandes de prix concurrentes visent le
             # meme besoin, elles comptent une fois (la plus grosse), pas en somme.
-            line.qty_in_progress = sum(confirmed.mapped("product_qty")) + max(drafts.mapped("product_qty") or [0.0])
+            line.qty_in_progress = sum(p._his_qty_in_request_uom() for p in confirmed) + max(
+                [p._his_qty_in_request_uom() for p in drafts] or [0.0]
+            )
 
     @api.constrains("product_id", "description", "product_qty")
     def _check_product_or_description(self):

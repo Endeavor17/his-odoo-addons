@@ -51,9 +51,9 @@ class HisPurchaseRequestSource(models.TransientModel):
                 wizard.suggestion = _("Covered by %s: order now on the blanket order.", agreement.name)
 
     def _his_lines(self):
-        lines = self.request_id.line_ids.filtered(
-            lambda line: line._his_remaining_qty() > 0 and not line.his_monthly_requisition_id
-        )
+        # Une ligne en attente de la commande mensuelle reste sourçable : la
+        # commander tout de suite la retire de l'attente (action_source).
+        lines = self.request_id.line_ids.filtered(lambda line: line._his_remaining_qty() > 0)
         if not lines:
             raise UserError(_("Every line of %s is already being sourced.", self.request_id.name))
         sans_produit = lines.filtered(lambda line: not line.product_id)
@@ -82,6 +82,8 @@ class HisPurchaseRequestSource(models.TransientModel):
         if not request._his_is_purchasing():
             raise UserError(_("Only the purchasing team can source a request."))
         lines = self._his_lines()
+        if self.mode != "monthly":
+            lines.write({"his_monthly_requisition_id": False})
         if self.mode == "rfq":
             if not self.partner_id:
                 raise UserError(_("Choose the supplier."))
@@ -120,20 +122,21 @@ class HisPurchaseRequestSource(models.TransientModel):
     def _his_create_order(self, partner, lines, agreement=False):
         request = self.request_id
         planned = to_planned_datetime(request.date_required) if request.date_required else fields.Datetime.now()
-        prices = {a.product_id: a.price_unit for a in agreement.line_ids} if agreement else {}
         order_lines = []
         for line in lines:
-            vals = {
-                "product_id": line.product_id.id,
-                "product_qty": line._his_remaining_qty(),
-                "product_uom_id": line.product_uom_id.id,
-                "date_planned": planned,
-                "his_request_line_id": line.id,
-            }
+            if agreement:
+                # Prix et unite du contrat, quantite convertie (comme la mensuelle).
+                vals = agreement._his_monthly_line_vals(line.product_id, line._his_remaining_qty(), line)
+            else:
+                vals = {
+                    "product_id": line.product_id.id,
+                    "product_qty": line._his_remaining_qty(),
+                    "product_uom_id": line.product_uom_id.id,
+                    "his_request_line_id": line.id,
+                }
+            vals["date_planned"] = planned
             if line.description:
                 vals["name"] = line.description
-            if agreement:
-                vals["price_unit"] = prices.get(line.product_id, 0.0)
             order_lines.append((0, 0, vals))
         vals = {
             "partner_id": partner.id,

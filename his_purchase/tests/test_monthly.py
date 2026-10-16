@@ -120,3 +120,31 @@ class TestMonthly(HisPurchaseCase):
         with freeze_time(date(2027, 8, 1)):
             self.env["purchase.requisition"]._cron_his_followup()
         self.assertEqual(self.agreement.activity_ids.user_id, self.manager)
+
+    def _add_to_monthly(self, qty):
+        request = self._approved_request(
+            user=self.cook, employee=self.cook_emp, lines=[{"product_id": self.tomatoes.id, "product_qty": qty}]
+        )
+        self.env["his.purchase.request.source"].with_user(self.officer).create(
+            {"request_id": request.id, "mode": "monthly", "requisition_id": self.agreement.id}
+        ).action_source()
+        return request
+
+    def test_la_commande_mensuelle_fait_avancer_la_demande(self):
+        request = self._add_to_monthly(20)
+        order = self._cron(date(2026, 11, 24))
+        order.with_user(self.officer).button_confirm()
+        order.with_user(self.manager).button_approve()
+        self.assertEqual(request.state, "ordered", "sans attendre le cron")
+        for move in order.picking_ids.move_ids:
+            move.quantity = move.product_uom_qty
+        order.picking_ids.button_validate()
+        self.assertEqual(request.state, "done")
+
+    def test_mensuelle_annulee_la_ligne_se_source_encore(self):
+        order = self._cron(date(2026, 11, 24))
+        request = self._add_to_monthly(15)
+        order.button_cancel()
+        rfq = self._source_rfq(request, self.supplier_b)
+        self.assertEqual(rfq.order_line.his_request_line_id, request.line_ids)
+        self.assertFalse(request.line_ids.his_monthly_requisition_id, "sortie de l'attente mensuelle")

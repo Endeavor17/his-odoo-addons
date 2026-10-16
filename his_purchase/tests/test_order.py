@@ -186,3 +186,58 @@ class TestOrder(HisPurchaseCase):
         )
         agreement.action_confirm()
         return agreement
+
+    def test_une_reponse_corrigee_rend_les_quantites(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 8500
+        order.his_supplier_answer = "no_answer"
+        self.assertEqual(order.order_line.product_qty, 0)
+        order.his_supplier_answer = "quoted"
+        self.assertEqual(order.order_line.product_qty, 2)
+        self.assertEqual(order.amount_untaxed, 17000)
+
+    def test_le_moins_cher_doit_l_etre(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 9500
+        self._alternative(order, self.supplier_b, 9000)
+        choice = (
+            self.env["his.purchase.choice"]
+            .with_user(self.officer)
+            .create({"order_id": order.id, "criterion": "lowest_price"})
+        )
+        with self.assertRaisesRegex(UserError, "not the cheapest"):
+            choice.action_confirm()
+        self.assertFalse(order.his_choice_criterion)
+
+    def test_appel_en_douzaines_converti(self):
+        dozen = self.env.ref("uom.product_uom_dozen")
+        dozen.active = True
+        eggs = self.env["product.product"].create({"name": "Eggs", "type": "consu", "purchase_ok": True})
+        agreement = self.env["purchase.requisition"].create(
+            {
+                "requisition_type": "blanket_order",
+                "vendor_id": self.supplier_a.id,
+                "his_purchase_domain": "general",
+                "line_ids": [
+                    (0, 0, {"product_id": eggs.id, "product_qty": 100, "price_unit": 300, "product_uom_id": dozen.id})
+                ],
+            }
+        )
+        agreement.action_confirm()
+        request = self._approved_request(lines=[{"product_id": eggs.id, "product_qty": 24}])
+        wizard = (
+            self.env["his.purchase.request.source"]
+            .with_user(self.officer)
+            .create({"request_id": request.id, "mode": "calloff", "requisition_id": agreement.id})
+        )
+        order = self.env["purchase.order"].browse(wizard.action_source()["res_id"])
+        self.assertEqual(order.order_line.product_uom_id, dozen)
+        self.assertEqual(order.order_line.product_qty, 2, "24 oeufs = 2 douzaines")
+        self.assertEqual(order.order_line.price_unit, 300)
+        self.assertEqual(request.line_ids.qty_in_progress, 24)
+        # 3 douzaines = 36 oeufs pour 24 demandes : depassement detecte.
+        order.order_line.product_qty = 3
+        with self.assertRaisesRegex(UserError, "more than requested"):
+            order.with_user(self.officer).button_confirm()

@@ -89,10 +89,14 @@ class PurchaseRequisition(models.Model):
     def _his_monthly_line_vals(self, product, qty, request_line=False):
         self.ensure_one()
         line = self.line_ids.filtered(lambda r: r.product_id == product)[:1]
+        uom = line.product_uom_id or product.uom_id
+        if request_line:
+            # Le prix du contrat est dans son unite : on y convertit le besoin.
+            qty = request_line.product_uom_id._compute_quantity(qty, uom)
         vals = {
             "product_id": product.id,
             "product_qty": qty,
-            "product_uom_id": (line.product_uom_id or product.uom_id).id,
+            "product_uom_id": uom.id,
             "price_unit": line.price_unit,
         }
         if request_line:

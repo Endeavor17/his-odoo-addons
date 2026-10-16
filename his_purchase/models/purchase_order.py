@@ -123,17 +123,26 @@ class PurchaseOrder(models.Model):
         if CHOICE_FIELDS & set(vals) and not self.env.context.get("his_choice_write"):
             raise UserError(_("The supplier choice is recorded at confirmation and cannot be changed afterwards."))
         if vals.get("his_supplier_answer") in ("declined", "no_answer"):
-            # Hors comparaison : Odoo ignore les lignes a total nul.
-            for order in self:
-                order.order_line.filtered(lambda line: not line.display_type).write({"product_qty": 0})
+            # Hors comparaison : Odoo ignore les lignes a total nul. Les quantites
+            # sont gardees de cote, pour revenir si la reponse etait une erreur.
+            for line in self.order_line.filtered(lambda line: not line.display_type and line.product_qty):
+                line.write({"his_qty_before_answer": line.product_qty, "product_qty": 0})
+        elif "his_supplier_answer" in vals:
+            for line in self.order_line.filtered("his_qty_before_answer"):
+                line.write({"product_qty": line.his_qty_before_answer, "his_qty_before_answer": 0})
         res = super().write(vals)
         if vals.get("his_supplier_answer") == "quoted":
             self._his_check_quoted()
         if {"state", "his_supplier_answer", "his_reply_by"} & set(vals):
             self._his_sync_step()
         if "state" in vals:
-            self.his_request_id._his_update_progress()
+            self._his_requests()._his_update_progress()
         return res
+
+    def _his_requests(self):
+        """Les demandes servies : une commande mensuelle ou un appel en sert
+        plusieurs, par ses lignes, sans `his_request_id`."""
+        return self.his_request_id | self.order_line.his_request_line_id.request_id
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -197,8 +206,8 @@ class PurchaseOrder(models.Model):
             autres = (request_line.purchase_line_ids - line).filtered(
                 lambda p: p.order_id.state in ("to approve", "purchase")
             )
-            total = sum(autres.mapped("product_qty")) + line.product_qty
-            if total > request_line.product_qty:
+            total = sum(p._his_qty_in_request_uom() for p in autres) + line._his_qty_in_request_uom()
+            if request_line.product_uom_id.compare(total, request_line.product_qty) > 0:
                 depassements.append((request_line, total))
         if not depassements:
             return
@@ -407,6 +416,21 @@ class PurchaseOrderLine(models.Model):
     his_request_line_id = fields.Many2one(
         "his.purchase.request.line", string="Request Line", index="btree_not_null", copy=True, readonly=True
     )
+    his_qty_before_answer = fields.Float(
+        string="Quantity Before Refusal",
+        digits="Product Unit",
+        readonly=True,
+        copy=False,
+        help="Quantity set aside while the supplier answer is Declined or No Answer.",
+    )
+
+    def _his_qty_in_request_uom(self):
+        """La quantite commandee dans l'unite de la demande : 10 cartons de 12
+        couvrent 120 unites, pas 10."""
+        self.ensure_one()
+        return self.product_uom_id._compute_quantity(
+            self.product_qty, self.his_request_line_id.product_uom_id, round=False
+        )
 
     def _compute_tax_id(self):
         res = super()._compute_tax_id()

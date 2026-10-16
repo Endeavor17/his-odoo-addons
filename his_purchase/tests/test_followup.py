@@ -46,13 +46,17 @@ class TestFollowup(HisPurchaseCase):
         self.assertTrue(self._notified(request, self.head))
         self.assertTrue(request.his_is_late)
         self.assertFalse(self._notified(request, self.manager))
-        # Echeance + 2 jours : le responsable achats.
+        # Echeance + 2 jours OUVRES : pas le vendredi 6, le dimanche 8.
         self._cron(date(2026, 11, 6))
+        self.assertFalse(self._notified(request, self.manager), "pas d'escalade pendant le week-end")
+        self._cron(date(2026, 11, 8))
         self.assertTrue(self._notified(request, self.manager))
         self.assertEqual(len(self._activities(request, self.manager)), 1)
         self.assertFalse(self._notified(request, self.director))
-        # + 2 jours encore : le directeur executif.
-        self._cron(date(2026, 11, 8))
+        # + 2 jours ouvres encore : le directeur executif, mardi 10.
+        self._cron(date(2026, 11, 9))
+        self.assertFalse(self._notified(request, self.director))
+        self._cron(date(2026, 11, 10))
         self.assertTrue(self._notified(request, self.director))
         self.assertEqual(request.his_reminder_count, 3)
         # Plus rien a escalader : le cron ne repete pas.
@@ -115,7 +119,10 @@ class TestFollowup(HisPurchaseCase):
         self.assertEqual(len(self._activities(order, self.manager)), 1)
         self._cron(date(2026, 11, 5))
         self.assertTrue(self._notified(order, self.manager))
+        # + 2 jours ouvres : dimanche 8, pas le vendredi 6.
         self._cron(date(2026, 11, 6))
+        self.assertFalse(self._notified(order, self.director))
+        self._cron(date(2026, 11, 8))
         self.assertTrue(self._notified(order, self.director))
 
     def test_besoin_urgent(self):
