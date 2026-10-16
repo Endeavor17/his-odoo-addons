@@ -13,3 +13,8 @@ LABEL org.opencontainers.image.source=https://github.com/Endeavor17/his-odoo-add
 # code de la nouvelle image serait masque par l'ancien. Le odoo.conf deploye
 # doit donc dire : addons_path = /opt/his-addons,/usr/lib/python3/dist-packages/odoo/addons
 COPY . /opt/his-addons
+
+# Au demarrage : -u des modules modifies (HIS_AUTO_UPGRADE=1, staging) ou
+# simple avertissement (prod), puis rechauffage. Voir deploy/image/.
+ENTRYPOINT ["bash", "/opt/his-addons/deploy/image/his-entrypoint.sh"]
+CMD ["odoo"]
