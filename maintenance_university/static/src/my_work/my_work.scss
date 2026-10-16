@@ -28,7 +28,7 @@
     width: 12px;
     height: 12px;
     flex: 0 0 auto;
-    border-radius: 999px;
+    border-radius: var(--his-radius, 0);
     background-color: var(--primary, #714b67);
 
     .o_mu_workday_paused & {
@@ -46,7 +46,7 @@
 .o_mu_workday_main {
     min-width: 13rem;
     height: 3.25rem;
-    border-radius: 999px;
+    border-radius: var(--his-radius, 0);
     font-weight: 700;
     color: #3d2803;
     background-color: var(--his-gold, #dfa22a);
@@ -63,7 +63,7 @@
 
 .o_mu_workday_secondary {
     height: 3.25rem;
-    border-radius: 999px;
+    border-radius: var(--his-radius, 0);
     font-weight: 600;
 }
 
@@ -79,7 +79,7 @@
 .o_mu_workday_tile {
     flex: 1 1 0;
     min-width: 0;
-    border-radius: 10px;
+    border-radius: var(--his-radius, 0);
     background-color: var(--his-paper, #f6f9fa);
     padding: 0.625rem 0.75rem;
 }

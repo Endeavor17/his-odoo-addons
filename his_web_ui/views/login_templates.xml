@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La page de connexion aux couleurs de l'etablissement.
+
+         Balisage seulement : un panneau de marque a cote du formulaire, une
+         classe sur le corps pour que les regles de login.scss ne touchent que
+         cette page, un titre. Rien du formulaire, de ses champs ni de son
+         action n'est touche.
+
+         Le logo de la societe reste dans la carte : il vient de la fiche
+         societe et peut differer d'une base a l'autre du Groupe. -->
+    <template id="login_layout" inherit_id="web.login_layout" name="HIS login layout">
+        <xpath expr="//t[@t-set='body_classname']" position="attributes">
+            <attribute name="t-value">'bg-100 his-login'</attribute>
+        </xpath>
+        <!-- La carte se fond dans la page, plus large que les 300 px d'origine ;
+             le logo de la societe passe a gauche, en plus petit. -->
+        <xpath expr="//div[hasclass('card-body')]/parent::div" position="attributes">
+            <attribute name="t-attf-class">card border-0 mx-auto {{login_card_classes}} o_database_list</attribute>
+            <attribute name="style">max-width: 24rem;</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('card-body')]/div[hasclass('pb-3')]" position="attributes">
+            <attribute name="class">his-login-logo mb-4</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('his-login-logo')]/img" position="attributes">
+            <attribute name="style">max-height: 4rem; max-width: 100%; width: auto;</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('container')]" position="before">
+            <div class="his-login-brand">
+                <img src="/his_theme/static/img/his_logo_white.png" alt="Higher Institute of Sciences"/>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="login" inherit_id="web.login" name="HIS login">
+        <xpath expr="//form[@data-captcha='login']/input[@name='csrf_token']" position="after">
+            <h1 class="his-login-title">Sign in</h1>
+        </xpath>
+    </template>
+
+</odoo>

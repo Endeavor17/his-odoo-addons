@@ -1,5 +1,6 @@
-// Colour only. Nothing in this file sets a size, a spacing, a radius, a shadow
-// or a font, and nothing changes what a click does.
+// Colour only. Nothing in this file sets a size, a spacing or a font, and
+// nothing changes what a click does. The shape (sharp edges) is his_theme's:
+// Odoo's radius variables are 0 there.
 //
 // Every selector was read out of point_of_sale 19.0's templates (navbar.xml,
 // order_tabs.xml, category_selector.xml, product_card.xml, orderline.xml,
@@ -7,10 +8,16 @@
 // scoped under .his-pos, the class chrome.xml adds only to a till that has a
 // theme, so an unthemed till stays exactly stock.
 //
-// Colours are set through Bootstrap's --btn-* variables AND as !important
-// declarations: Odoo's utilities (.bg-view, .bg-black, .text-dark,
-// o_colorlist_item_color_*) and his_theme's POS rules carry !important, so
-// variables alone would lose on some elements.
+// Two ways to colour, by what Odoo exposes:
+// - colour-list classes (numpad keys, product cards, category buttons) read
+//   --bg / --hover-bg / --border-color, or --background-color / --color for
+//   the print-colour ones: those variables are redefined, nothing else;
+// - buttons get Bootstrap's --btn-* variables AND !important declarations,
+//   because Odoo's utilities (.bg-view, .bg-black, .text-dark) carry
+//   !important, so variables alone would lose on some elements.
+//
+// The decisions (2026-10-15): navy is the action that completes a task, the
+// till teal marks what is selected, no coloured accent line anywhere.
 
 @mixin his-btn-colors($bg, $fg, $border, $hover-bg, $hover-fg, $active-bg, $active-fg) {
     --btn-bg: #{$bg};
@@ -41,8 +48,8 @@
 }
 
 // ------------------------------------------------------------------ top bar
-// Three classes: his_theme paints `.pos > .pos-topheader` #0d6e8c with
-// !important (and a maroon strip) and loads after this module.
+// Three classes: his_theme paints `.pos > .pos-topheader` for any till with
+// !important and loads after this module.
 .pos.his-pos > .pos-topheader {
     --background-color: var(--his-teal);
     background-color: var(--his-teal) !important;
@@ -65,9 +72,10 @@
         background-color: rgba(255, 255, 255, 0.3);
     }
 
-    // Order number tabs (.btn-secondary); the open one takes the gold.
+    // Order number tabs (.btn-secondary); the open one turns white, like the
+    // active Register / Orders button beside it.
     .floating-order-container .btn {
-        @include his-btn-colors(rgba(255, 255, 255, 0.14), #ffffff, transparent, rgba(255, 255, 255, 0.24), #ffffff, var(--his-gold), var(--his-navy-deep));
+        @include his-btn-colors(rgba(255, 255, 255, 0.14), #ffffff, transparent, rgba(255, 255, 255, 0.24), #ffffff, #ffffff, var(--his-teal));
     }
 
     .input-container {
@@ -78,10 +86,11 @@
 }
 
 .his-pos {
-    // ------------------------------------------------- taking money: gold
-    // Payment, Validate, New Order - every btn-primary on the till.
+    // ------------------------------------------- completing a task: navy
+    // Payment, Validate, New Order, the email send - every btn-primary on the
+    // till. White on the seal navy is 11.55:1.
     .btn-primary {
-        @include his-btn-colors(var(--his-gold), var(--his-navy-deep), var(--his-gold), var(--his-gold-hover), var(--his-navy-deep), var(--his-gold-press), #ffffff);
+        @include his-btn-colors(var(--his-action), var(--his-action-ink), var(--his-action), var(--his-action-hover), var(--his-action-ink), var(--his-action-press), var(--his-action-ink));
     }
 
     // -------------------------------------- module buttons: teal
@@ -90,8 +99,18 @@
         @include his-btn-colors(var(--his-teal), #ffffff, var(--his-teal), var(--his-teal-hover), #ffffff, var(--his-teal-hover), #ffffff);
     }
 
+    // ---------------------------------------------------------- numpad
+    // One calm keypad: Odoo tints +/-, comma, backspace and the quick-cash keys
+    // through o_colorlist_item_numpad_color_*, which only set these variables.
+    [class*="o_colorlist_item_numpad_color_"] {
+        --bg: var(--his-ground);
+        --hover-bg: var(--his-ground-sunk);
+        --border-color: var(--his-line);
+    }
+
     // ---------------------------------------------------------- selection
-    // The selected order line reads --orderline-selected (tokens.scss).
+    // The selected order line reads --orderline-selected (tokens.scss): a
+    // flat tint, no side bar.
     .numpad-button.active {
         --btn-active-bg: var(--his-tint);
         --btn-active-color: var(--his-teal);
@@ -111,8 +130,26 @@
         background-color: var(--his-teal) !important;
     }
 
+    // Categories and product cards carry the category's colour from the
+    // catalogue (o_colorlist_item_color_*): a pink button, a pink stripe under
+    // each card. Neutral here, so colour on a till only ever means something.
+    // The print-colour classes read --background-color / --color.
+    .category-button[class*="o_colorlist_item_color_"] {
+        --background-color: var(--his-ground-raised);
+        --color: var(--his-text);
+        border-color: var(--his-line-strong);
+    }
+
+    .product[class*="o_colorlist_item_color_transparent_"] {
+        --bg: var(--his-ground-raised);
+        --hover-bg: var(--his-ground);
+        --border-color: var(--his-line);
+    }
+
     // A selected category is the one Odoo does NOT dim: no .border-0.
     .category-list .category-button:not(.border-0) {
+        --background-color: var(--his-teal);
+        --color: #ffffff;
         background-color: var(--his-teal) !important;
         border-color: var(--his-teal) !important;
         color: #ffffff !important;
@@ -129,48 +166,66 @@
     .orderline .product-name {
         color: var(--his-navy);
     }
+
+    // Except on the ticket previewed on the receipt screen: a ticket is black
+    // (his_theme's receipt.scss), the order lines inside it included.
+    .pos-receipt .orderline,
+    .pos-receipt .orderline .product-name,
+    .pos-receipt .orderline .qty {
+        color: inherit;
+    }
+}
+
+// -------------------------------------------------------- entry screen logo
+// The company logo sits on the dark wallpaper: a navy logo vanished there.
+// Flattened to white, whatever the company's logo is.
+.his-pos .screen-login-logo img {
+    filter: brightness(0) invert(1);
 }
 
 // -------------------------------------------------------- serve-meal dialog
 // his_meal_management's dialog is portalled outside .pos, so it is matched by
-// its own classes; .modal adds the weight to beat its stylesheet.
+// its own classes; .modal adds the weight to beat its stylesheet. It sits
+// outside .his-pos too, so it reads the :root tokens.
 .modal .his_serve_meal_head {
-    background-color: #006883;
+    background-color: var(--his-till);
 }
 
 .modal .his_serve_meal_meter_kept {
-    background-color: #006883;
+    background-color: var(--his-till);
 }
 
 .modal .his_serve_meal_meter_spent {
-    background-color: #cc9900;
+    background-color: var(--his-navy-200);
 }
 
 .modal .his_serve_meal_icon {
-    color: #006883;
+    color: var(--his-till);
 }
 
+// "Serve meal" spends a credit: it is the action that completes the task, so
+// it takes the navy like Payment. The class keeps its historical name.
 .modal .btn.btn-his-gold.his_serve_meal_confirm {
-    --btn-bg: #cc9900;
-    --btn-border-color: #cc9900;
-    --btn-color: #001f45;
-    --btn-hover-bg: #b38600;
-    --btn-hover-border-color: #b38600;
-    --btn-hover-color: #001f45;
-    --btn-active-bg: #9a7300;
-    --btn-active-border-color: #9a7300;
-    --btn-active-color: #ffffff;
-    background-color: #cc9900 !important;
-    border-color: #cc9900 !important;
-    color: #001f45 !important;
+    --btn-bg: var(--his-action);
+    --btn-border-color: var(--his-action);
+    --btn-color: var(--his-action-ink);
+    --btn-hover-bg: var(--his-action-hover);
+    --btn-hover-border-color: var(--his-action-hover);
+    --btn-hover-color: var(--his-action-ink);
+    --btn-active-bg: var(--his-action-press);
+    --btn-active-border-color: var(--his-action-press);
+    --btn-active-color: var(--his-action-ink);
+    background-color: var(--his-action) !important;
+    border-color: var(--his-action) !important;
+    color: var(--his-action-ink) !important;
 
     &:hover {
-        background-color: #b38600 !important;
-        border-color: #b38600 !important;
+        background-color: var(--his-action-hover) !important;
+        border-color: var(--his-action-hover) !important;
     }
 }
 
 // The empty-card warning keeps its red header: that is a signal, not brand.
 .modal .his_serve_meal_head.his_serve_meal_head_empty {
-    background-color: #a4342a;
+    background-color: var(--his-red);
 }

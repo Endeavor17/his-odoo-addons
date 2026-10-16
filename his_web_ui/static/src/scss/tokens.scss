@@ -1,35 +1,14 @@
-// Le bleu de HIS, prélevé sur le sceau.
+// Le sceau en filigrane de la page d'accueil.
 //
-// La marque est un sceau : un bleu institutionnel gravé sur blanc. C'est un
-// langage ancien et parfaitement lisible — celui des universités — et il se
-// traduit en interface avec deux couleurs, pas dix.
+// Les couleurs de la marque ne sont plus ici : his_theme les possede toutes
+// (primary_variables.scss pour les valeurs, tokens.scss pour les proprietes
+// --his-*). Ce fichier ne garde que ce qui appartient a ce module : l'adresse
+// de son propre fichier image.
 //
-// Les deux couleurs viennent du fichier, pas d'une intention : #003874 est la
-// teinte dominante du tracé de `his_seal.png` (79 000 px sur un échantillon),
-// #00acc0 celle de la seconde déclinaison, `his_seal_teal.png`. L'échelle de
-// bleus est dérivée du #003874 en ne bougeant que la luminosité, donc toute la
-// gamme partage exactement la teinte (211°) et la saturation du sceau.
-//
-// Le bleu porte l'identité. Le turquoise ne dit qu'une chose : où l'on se
-// trouve. Un accent qui signale tout ne signale rien.
+// Fond transparent, trace bleu : la CSS l'aplatit en blanc, seule l'opacite
+// decide de sa presence.
 
 :root {
-    --his-navy-900: #001e3d;   // fond de la page d'accueil
-    --his-navy-800: #002a57;   // haut du dégradé
-    --his-navy-700: #003874;   // LA couleur du sceau : la barre du haut
-    --his-navy-500: #0051a8;   // survol
-    --his-navy-200: #7abaff;   // texte secondaire sur fond bleu (8,22:1)
-
-    // Seconde déclinaison de la marque. Réservée aux repères — soulignement de
-    // l'onglet actif, coche de l'application courante, anneau de focus — et
-    // jamais à du texte sur la barre : 4,21:1 y suffit pour un élément
-    // d'interface (seuil 3:1) mais pas pour du texte (seuil 4,5:1).
-    --his-teal: #00acc0;
-
-    --his-on-navy: #ffffff;
-
-    // Le sceau en filigrane. Fond transparent, tracé bleu : la CSS l'aplatit
-    // en blanc, seule l'opacité décide de sa présence.
     --his-seal: url('/his_web_ui/static/img/his_seal.png');
     --his-seal-opacity: 0.07;
 }

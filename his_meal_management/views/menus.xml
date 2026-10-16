@@ -2,6 +2,7 @@
 <odoo>
 
     <menuitem id="menu_meal_root" name="Meals" sequence="45"
+              web_icon="his_meal_management,static/description/icon.svg"
               groups="group_meal_cashier"/>
 
     <menuitem id="menu_meal_people" name="People" parent="menu_meal_root"

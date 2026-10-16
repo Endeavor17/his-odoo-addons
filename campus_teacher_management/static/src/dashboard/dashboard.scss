@@ -53,7 +53,7 @@
     .o_campus_kpi {
         background: var(--o-view-background-color, #fff);
         border: 1px solid var(--o-gray-300, #dee2e6);
-        border-radius: .5rem;
+        border-radius: var(--his-radius, 0);
         padding: 1.15rem 1.25rem;
         cursor: pointer;
         transition: box-shadow .15s ease, transform .15s ease;
@@ -85,7 +85,7 @@
     .o_campus_ranking {
         background: var(--o-view-background-color, #fff);
         border: 1px solid var(--o-gray-300, #dee2e6);
-        border-radius: .5rem;
+        border-radius: var(--his-radius, 0);
         padding: 1.25rem;
     }
 

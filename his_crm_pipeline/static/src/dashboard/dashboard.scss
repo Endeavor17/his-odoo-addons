@@ -26,7 +26,7 @@
 .his_tuile {
     background: var(--o-webclient-background-color, #fff);
     border: 1px solid rgba(0, 0, 0, .1);
-    border-radius: .5rem;
+    border-radius: var(--his-radius, 0);
     padding: 1rem;
 
     &.his_cliquable:hover {
@@ -68,7 +68,7 @@
 
 .his_jauge {
     height: 6px;
-    border-radius: 3px;
+    border-radius: var(--his-radius, 0);
     background: rgba(0, 0, 0, .08);
     overflow: hidden;
 }
@@ -96,7 +96,7 @@
 .his_bloc {
     background: var(--o-webclient-background-color, #fff);
     border: 1px solid rgba(0, 0, 0, .1);
-    border-radius: .5rem;
+    border-radius: var(--his-radius, 0);
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
 }
@@ -129,7 +129,7 @@
 .his_marche_barre {
     height: 20px;
     background: rgba(0, 0, 0, .05);
-    border-radius: 3px;
+    border-radius: var(--his-radius, 0);
     overflow: hidden;
 }
 
@@ -170,7 +170,7 @@
 .his_badge {
     background: #b02a37;
     color: #fff;
-    border-radius: 10px;
+    border-radius: var(--his-radius, 0);
     padding: 0 .5rem;
     font-size: .78rem;
 
@@ -241,7 +241,7 @@
 .his_donut {
     background: var(--o-webclient-background-color, #fff);
     border: 1px solid rgba(0, 0, 0, .1);
-    border-radius: .5rem;
+    border-radius: var(--his-radius, 0);
     padding: 1rem;
 }
 
@@ -296,7 +296,7 @@
 .his_pastille {
     width: .7rem;
     height: .7rem;
-    border-radius: 2px;
+    border-radius: var(--his-radius, 0);
     flex: 0 0 auto;
 }
 

@@ -1,6 +1,6 @@
 {
     "name": "HIS Web Interface",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.2.0",
     "summary": "Land on the app grid, not on whichever menu happens to sort first",
     "description": """
 HIS Web Interface
@@ -25,7 +25,7 @@ everyone else ended up in Discuss.
     "author": "Abdo Chabouti",
     "category": "Technical",
     "license": "LGPL-3",
-    "depends": ["web_responsive"],
+    "depends": ["web_responsive", "his_theme"],
     "assets": {
         "web.assets_backend": [
             # Listés et non globés : les jetons doivent être compilés avant les
@@ -34,9 +34,18 @@ everyone else ended up in Discuss.
             "his_web_ui/static/src/scss/navbar.scss",
             "his_web_ui/static/src/scss/buttons.scss",
             "his_web_ui/static/src/scss/app_grid.scss",
+            "his_web_ui/static/src/scss/views.scss",
             "his_web_ui/static/src/app/apps_menu_patch.esm.js",
         ],
+        # La page de connexion est servie par le bundle frontend.
+        "web.assets_frontend": [
+            "his_web_ui/static/src/scss/tokens.scss",
+            "his_web_ui/static/src/scss/login.scss",
+        ],
     },
+    "data": [
+        "views/login_templates.xml",
+    ],
     "post_init_hook": "post_init_hook",
     "installable": True,
 }
