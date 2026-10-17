@@ -2,6 +2,7 @@ import { _t } from "@web/core/l10n/translation";
 import { onMounted, onWillStart } from "@odoo/owl";
 import { ReceiptScreen } from "@point_of_sale/app/screens/receipt_screen/receipt_screen";
 import { patch } from "@web/core/utils/patch";
+import { formatCredits } from "./pos_store";
 
 // A sale to a customer gets a ticket, not an invoice (loi 04-02, art. 10: an
 // invoice only when the customer asks for one), and the ticket is emailed to
@@ -60,7 +61,10 @@ patch(ReceiptScreen.prototype, {
         try {
             const balance = await this.pos.data.call("res.partner", "get_meal_balance", [[partner.id]]);
             if (balance.plan || balance.credits > 0 || balance.allowance_debt > 0) {
-                order.hisMealBalance = balance;
+                order.hisMealBalance = {
+                    credits: formatCredits(balance.credits),
+                    allowance_debt: balance.allowance_debt > 0 && formatCredits(balance.allowance_debt),
+                };
             }
         } catch {
             // The balance is a courtesy; a missing one must never block a ticket.

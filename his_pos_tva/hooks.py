@@ -43,6 +43,8 @@ def appliquer_tva(env, company):
         .with_context(active_test=False)
         .search([("available_in_pos", "=", True), ("company_id", "in", (False, company.id))])
     )
+    # Les plats d'une formule sont hors grille mais vendus avec elle (recette P-09).
+    produits |= produits.combo_ids.combo_item_ids.product_id.product_tmpl_id
     for produit in produits - valeur_stockee:
         taxes_societe = produit.taxes_id.filtered(lambda t, c=company: t.company_id == c)
         # Tout ce qui est a 19 % (le defaut « production » du modele dz, ou une

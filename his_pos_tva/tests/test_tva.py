@@ -66,6 +66,13 @@ class TestTvaCaisse(TransactionCase):
         self.assertEqual(copie.taxes_id, self.services)
         self.assertEqual(manuel.taxes_id, manuel_tax)
 
+    def test_plats_des_formules_a_9_pour_cent(self):
+        """Recette P-09 : un plat choisi dans une formule est hors grille, mais vendu."""
+        plat = self.env.ref("his_meal_management.product_choix_pizza").product_tmpl_id
+        plat.taxes_id = self.production_19
+        appliquer_tva(self.env, self.company)
+        self.assertEqual(plat.taxes_id, self.biens)
+
     def test_facture_mixte_total_egal_aux_prix_affiches(self):
         """3 capsules a 70 DA + un repas a 600 DA = 810 DA, ni plus ni moins.
 

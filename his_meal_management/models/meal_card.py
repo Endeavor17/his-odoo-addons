@@ -1,3 +1,5 @@
+import re
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -65,6 +67,20 @@ class HisMealCard(models.Model):
     )
 
     _code_unique = models.Constraint("UNIQUE(code)", "This card code is already in use.")
+
+    @api.constrains("code")
+    def _check_code_format(self):
+        """Ce que les deux regles de data/barcode_rule.xml lisent comme une carte :
+        un UID de 10 chiffres, ou un code imprime HIS. Tout autre code, la caisse
+        le cherche comme un article (recette P-11)."""
+        for card in self:
+            if not (re.fullmatch(r"\d{10}", card.code) or card.code.startswith("HIS")):
+                raise ValidationError(
+                    _(
+                        "%s is not a card code: tap the card (10-digit UID) or use a printed HIS code.",
+                        card.code,
+                    )
+                )
 
     @api.constrains("partner_id")
     def _check_meal_holder_is_registered(self):

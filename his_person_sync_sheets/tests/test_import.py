@@ -201,10 +201,10 @@ class TestSheetsImport(TransactionCase):
     # --- Regle 7 : la carte est captee, et n'appartient qu'a une personne ----
 
     def test_card_number_is_imported(self):
-        wizard = self._run(",Yasmine Kaci,,yasmine@ex.ma,0600000030,CARD-9001,R-30")
+        wizard = self._run(",Yasmine Kaci,,yasmine@ex.ma,0600000030,0099009001,R-30")
         person = wizard.line_ids.person_id
         self.assertEqual(wizard.line_ids.outcome, "created")
-        self.assertEqual(person.numero_carte, "CARD-9001")
+        self.assertEqual(person.numero_carte, "0099009001")
 
     def test_card_column_is_optional(self):
         """Une feuille sans colonne carte s'importe comme avant."""
@@ -221,26 +221,26 @@ class TestSheetsImport(TransactionCase):
 
     def test_card_already_held_by_someone_else_is_a_conflict(self):
         """La caisse debiterait la mauvaise personne : on rejette la ligne."""
-        holder = self._person(name="Titulaire Carte", numero_carte="CARD-9002")
-        wizard = self._run(",Autre Personne,,autre@ex.ma,0600000031,CARD-9002,R-31")
+        holder = self._person(name="Titulaire Carte", numero_carte="0099009002")
+        wizard = self._run(",Autre Personne,,autre@ex.ma,0600000031,0099009002,R-31")
         line = wizard.line_ids
         self.assertEqual(line.outcome, "conflict")
         self.assertFalse(line.person_id, "une fiche a ete creee malgre le conflit")
-        self.assertIn("CARD-9002", line.message)
+        self.assertIn("0099009002", line.message)
         self.assertEqual(
             holder.numero_carte,
-            "CARD-9002",
+            "0099009002",
             "la carte a ete deplacee",
         )
 
     def test_reimporting_the_same_card_is_not_a_conflict(self):
         """Rejouer un import ne doit pas transformer sa propre carte en conflit."""
-        row = ",Nabil Cherif,,nabil@ex.ma,0600000032,CARD-9003,R-32"
+        row = ",Nabil Cherif,,nabil@ex.ma,0600000032,0099009003,R-32"
         first = self._run(row)
         self.assertEqual(first.line_ids.outcome, "created")
         second = self._run(row)
         self.assertEqual(second.line_ids.outcome, "updated")
-        self.assertEqual(second.line_ids.person_id.numero_carte, "CARD-9003")
+        self.assertEqual(second.line_ids.person_id.numero_carte, "0099009003")
 
     # --- Regle 6 : le fichier source n'est jamais reecrit -------------------
 
@@ -303,4 +303,4 @@ class TestSampleExport(TransactionCase):
 
         new_person = wizard.line_ids.filtered(lambda line: line.external_ref == "ADM-2024-0118").person_id
         self.assertRegex(new_person.matricule_institutionnel, r"^HIS-\d{4}-\d{6}-[0-9X]$")
-        self.assertEqual(new_person.numero_carte, "CARD-0118")
+        self.assertEqual(new_person.numero_carte, "0099000918")

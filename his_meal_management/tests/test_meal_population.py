@@ -573,30 +573,60 @@ class TestWaysToEatForFree(AccountTestInvoicingCommon):
         self.assertEqual(self.student.meal_credits_remaining, 6.0, "credits were spent on a ticket that was refused")
         self.assertFalse(self._meals_charged(), "a refused ticket wrote to the ledger")
 
-    def test_refunding_a_plan_does_not_take_the_credits_back(self):
-        """Pinned, not endorsed: this is the module's documented no-op.
+    def test_a_refused_ticket_says_what_it_needed(self):
+        """Recette P-08 : « n'a aucun credit disponible » a qui en avait 2,5."""
+        self._fund()  # 6 credits, 2 allowance meals
+        order = self._order([(self.meal_600, 9, 0.0)], partner=self.student)
+        with self.assertRaisesRegex(UserError, r"6 meal credit\(s\) left.* needs 9"), self.env.cr.savepoint():
+            order._apply_meal_credits()
 
-        A negative quantity produces an empty range, so the money goes back over
-        the counter and the credits stay on the card. An officer is supposed to
-        settle it with the correction wizard. The test exists so that the day
-        somebody changes it, they change it on purpose.
-        """
-        self._fund()
-        order = self._order([(self.plan, -1, 3000.0)], partner=self.student)
-        order._apply_meal_credits()
-        self.assertEqual(
-            self.student.meal_credits_remaining,
-            6.0,
-            "refunding a plan now moves credits - decide whether that is what you want",
+    def _refund(self, order):
+        """What the till's Refund button sends: the same lines, negated, each
+        pointing at the line it refunds."""
+        refund = self._order(
+            [(line.product_id, -line.qty, line.price_unit) for line in order.lines], partner=order.partner_id
         )
+        for new, old in zip(refund.lines, order.lines, strict=True):
+            new.refunded_orderline_id = old
+        return refund
 
-    def test_refunding_a_meal_does_not_give_a_credit_back(self):
-        self._fund()
+    def test_refunding_a_plan_takes_its_credits_back(self):
+        """Recette P-24, decision de Mohamed : l'argent rendu reprend les credits."""
+        sale = self._order([(self.plan, 1, 3000.0)], partner=self.student)
+        sale._apply_meal_credits()
+        self.assertEqual(self.student.meal_credits_remaining, 6.0)
+        self._refund(sale)._apply_meal_credits()
+        self.assertEqual(self.student.meal_credits_remaining, 0.0)
+
+    def test_a_plan_already_eaten_is_not_refunded(self):
+        sale = self._order([(self.plan, 1, 3000.0)], partner=self.student)
+        sale._apply_meal_credits()
         self._order([(self.meal_600, 1, 0.0)], partner=self.student)._apply_meal_credits()
+        refund = self._refund(sale)
+        with self.assertRaisesRegex(UserError, "already"), self.env.cr.savepoint():
+            refund._apply_meal_credits()
         self.assertEqual(self.student.meal_credits_remaining, 5.0)
-        refund = self._order([(self.meal_600, -1, 0.0)], partner=self.student)
+
+    def test_refunding_a_meal_gives_its_credit_back(self):
+        self._fund()
+        meal = self._order([(self.meal_600, 1, 0.0)], partner=self.student)
+        meal._apply_meal_credits()
+        self.assertEqual(self.student.meal_credits_remaining, 5.0)
+        self._refund(meal)._apply_meal_credits()
+        self.assertEqual(self.student.meal_credits_remaining, 6.0)
+
+    def test_a_negative_meal_line_alone_mints_no_credit(self):
+        """Only a refund of a meal really eaten by this student gives back."""
+        self._fund()
+        self._order([(self.meal_600, -1, 0.0)], partner=self.student)._apply_meal_credits()
+        self.assertEqual(self.student.meal_credits_remaining, 6.0, "a credit came from nowhere")
+        meal = self._order([(self.meal_600, 1, 0.0)], partner=self.other)
+        self._fund(self.other)
+        meal._apply_meal_credits()
+        refund = self._refund(meal)
+        refund.partner_id = self.student
         refund._apply_meal_credits()
-        self.assertEqual(self.student.meal_credits_remaining, 5.0, "a refunded meal handed a credit back")
+        self.assertEqual(self.student.meal_credits_remaining, 6.0, "someone else's meal was refunded to him")
 
     # --- who the credits belong to ---------------------------------------
     def test_a_meal_cannot_be_charged_to_somebody_else(self):

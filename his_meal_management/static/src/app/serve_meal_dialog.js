@@ -1,5 +1,6 @@
 import { Component } from "@odoo/owl";
 import { Dialog } from "@web/core/dialog/dialog";
+import { formatFloat } from "@web/core/utils/numbers";
 
 // The one screen a cashier reads before spending someone's credit.
 //
@@ -51,6 +52,10 @@ export class ServeMealDialog extends Component {
             .slice(0, 2)
             .map((part) => part[0].toUpperCase())
             .join("");
+    }
+
+    fmt(credits) {
+        return formatFloat(credits, { trailingZeros: false });
     }
 
     get after() {

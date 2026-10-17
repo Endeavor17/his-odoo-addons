@@ -3,6 +3,12 @@ from odoo.exceptions import UserError
 from odoo.tools import float_compare, float_is_zero
 
 
+def format_credits(env, amount):
+    """2.5 -> "2,5" for a French reader, 1.0 -> "1" (recette P-25)."""
+    point = env["res.lang"]._get_data(code=env.lang or "en_US").decimal_point or "."
+    return f"{amount:g}".replace(".", point)
+
+
 class PosOrder(models.Model):
     """Where credits actually move.
 
@@ -49,11 +55,14 @@ class PosOrder(models.Model):
         # user, so the ledger still records who was at the till.
         partner = self.partner_id.sudo()
 
-        # ponytail: refunds are a no-op on credits. A negative qty produces an
-        # empty range and a non-positive meal count, so refunding a plan leaves
-        # the subscription standing and refunding a meal gives no credit back -
-        # an officer settles both with the correction wizard. Handle them here
-        # only if refunds turn out to be common.
+        # Refunds (recette P-24, decision of 2026-10-17): the money going back
+        # over the counter takes the plan's credits with it; a refunded meal
+        # gives its credits back. Both run before anything is spent.
+        refunds = (plan_lines | meal_lines).filtered(lambda line: line.qty < 0)
+        refunds._his_refund_meal_credits(partner)
+        plan_lines -= refunds
+        meal_lines -= refunds
+
         for line in plan_lines:
             # Audit S-5: credits are only as good as the money taken for them.
             # A plan at 0, or at its price with the discount button pressed,
@@ -90,15 +99,30 @@ class PosOrder(models.Model):
         # refused here exactly as every meal was before. Nothing else in the
         # module passes allow_overdraft - least of all the correction wizard,
         # which uses the same method to take credits back.
-        for line in meal_lines:
-            cost = line.product_id.meal_credit_cost
-            for _i in range(int(line.qty)):
-                partner._consume_meal_credit(
-                    amount=cost,
-                    pos_order=self,
-                    product=line.product_id,
-                    allow_overdraft=True,
+        # Read before the first meal is taken, for the refusal below (recette
+        # P-08: "no meal credits available" said to a student holding 2.5).
+        left = partner.meal_credits_remaining
+        try:
+            for line in meal_lines:
+                cost = line.product_id.meal_credit_cost
+                for _i in range(int(line.qty)):
+                    partner._consume_meal_credit(
+                        amount=cost,
+                        pos_order=self,
+                        product=line.product_id,
+                        allow_overdraft=True,
+                    )
+        except UserError:
+            raise UserError(
+                _(
+                    "%(person)s has %(left)s meal credit(s) left; this order needs %(needed)s.",
+                    person=partner.display_name,
+                    left=format_credits(self.env, left),
+                    needed=format_credits(
+                        self.env, sum(line.product_id.meal_credit_cost * line.qty for line in meal_lines)
+                    ),
                 )
+            ) from None
 
     @api.model
     def _get_invoice_lines_values(self, line_values, pos_line, move_type):
@@ -114,7 +138,7 @@ class PosOrder(models.Model):
         if values.get("display_type") or not pos_line._his_is_credit_meal():
             return values
         order = pos_line.order_id
-        spent = f"{pos_line.product_id.meal_credit_cost * pos_line.qty:g}"
+        spent = format_credits(self.env, pos_line.product_id.meal_credit_cost * pos_line.qty)
         price = pos_line.product_id.lst_price
         # A formula is priced 0 (eaten on credits only): "value 0,00 DA" would
         # say it is worth nothing.
@@ -134,6 +158,50 @@ class PosOrderLine(models.Model):
     """One line, and the only question this module asks of it."""
 
     _inherit = "pos.order.line"
+
+    def _his_refund_meal_credits(self, partner):
+        """Undo what the refunded lines did to `partner`'s credits.
+
+        A plan: its credits leave the wallet, refused if they are no longer
+        there - already eaten, the refund is the officer's call. A meal: its
+        credits come back, but only for a refund of a meal this student really
+        ate on credits; a negative line typed at the till mints nothing.
+        """
+        for line in self:
+            qty = -line.qty
+            product = line.product_id
+            if product.meal_credits > 0:
+                taken = product.meal_credits * qty
+                try:
+                    partner._consume_meal_credit(
+                        amount=taken,
+                        pos_order=line.order_id,
+                        tx_type="adjust",
+                        product=product,
+                        note=_("Plan refunded"),
+                    )
+                except UserError:
+                    raise UserError(
+                        _(
+                            "%(person)s has already used credits from %(plan)s: %(left)s left, the plan gave "
+                            "%(credits)s. A meal officer settles it with a correction.",
+                            person=partner.display_name,
+                            plan=product.display_name,
+                            left=format_credits(self.env, partner.meal_credits_remaining),
+                            credits=format_credits(self.env, taken),
+                        )
+                    ) from None
+                continue
+            origin = line.refunded_orderline_id
+            if not (origin and origin.order_id.partner_id.id == partner.id and origin._his_is_credit_meal()):
+                continue
+            partner._add_meal_credits(
+                credits=product.meal_credit_cost * qty,
+                date_end=False,
+                tx_type="adjust",
+                pos_order=line.order_id,
+                note=_("Meal refunded"),
+            )
 
     def _his_meal_price_paid(self):
         """What the student hands over for one of these, discount included.
