@@ -1,60 +1,18 @@
-// The HIS till: stock Odoo 19, recoloured with the his.edu.dz palette.
+// The HIS till: what this module plugs into Odoo, nothing more.
 //
-// Only colour changes. Layout, shapes, spacing, sizes and type are Odoo's own -
-// nothing here overrides a dimension, a radius or a font. The approved preview
-// (HIS POS Preview artifact) is the reference for every value.
-//
-//   teal  #006883  top bar, module buttons, selection accents
-//   gold  #cc9900  the buttons that take money (navy text: white on this gold
-//                  is too faint to read)
-//   navy  #003876  figures and product names
-//   tint  #c6dce2  selection - what Odoo itself derives when its action colour
-//                  is teal: mix(#006883, gray-100, 20%)
-//
-// Token NAMES are kept on purpose: his_pos_copy_center's dialog reads
-// --his-ground-raised, --his-paper, --his-accent and the rest.
+// Every colour and face is his_theme's (primary_variables.scss for the values,
+// tokens.scss for the --his-* properties, including the names scoped to
+// .his-pos that this module and the Copy job dialog read). What stays here
+// belongs to this module: the hooks Odoo already exposes, and the paths of its
+// own wallpapers and logo.
 
 .his-pos {
-    // --- Brand (his.edu.dz) ------------------------------------------------
-    --his-teal: #006883;
-    --his-teal-hover: #00566d;
-    --his-navy: #003876;
-    --his-navy-deep: #001f45;
-    --his-gold: #cc9900;
-    --his-gold-hover: #b38600;
-    --his-gold-press: #9a7300;
-    --his-tint: #c6dce2;
-
-    // --- Surfaces: Odoo's own greys ----------------------------------------
-    --his-ground: #f8f9fa;
-    --his-ground-raised: #ffffff;
-    --his-ground-sunk: #e9ecef;
-    --his-line: #dee2e6;
-    --his-line-strong: #ced4da;
-    --his-paper: #ffffff;
-    --his-paper-edge: #e9ecef;
-    --his-paper-ink: #212529;
-    --his-paper-ink-muted: #495057;
-    --his-text: #212529;
-    --his-text-muted: #495057;
-
-    --his-accent: var(--his-teal);
-    --his-accent-ink: #ffffff;
-    --his-accent-dim: var(--his-tint);
-
-    // Read only by the Copy job dialog. Same faces as his_theme, so the till
-    // reads as one typeface whether or not the theme is installed.
-    --his-font-label: 600 0.72rem/1.1 "Figtree", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
-    --his-label-tracking: 0.09em;
-    --his-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-
-    // --- Hooks Odoo already exposes ------------------------------------------
     // orderline.scss paints a selected line from this variable.
     --orderline-selected: var(--his-tint);
     // navbar.scss draws the centre logo from this one.
-    --navbar-logo: url('/his_pos_ui/static/src/img/his_logo_white.png');
+    --navbar-logo: url('/his_theme/static/img/his_logo_white.png');
 
-    // --- Entry screen (read by point_of_sale's login_screen.scss) -------------
+    // Entry screen (read by point_of_sale's login_screen.scss).
     --his-wallpaper: none;
     --his-wallpaper-color: var(--his-navy-deep);
     --homeMenu-bg-color: var(--his-wallpaper-color);

@@ -4,6 +4,7 @@
     <!-- ===================== Menu racine Admission ===================== -->
 
     <menuitem id="menu_admission_root" name="Admission"
+              web_icon="his_admission,static/description/icon.svg"
               groups="his_admission.group_his_admission,his_admission.group_his_finance"
               sequence="86"/>
 

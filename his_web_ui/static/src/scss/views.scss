@@ -1,0 +1,117 @@
+// Les vues de travail : liste, fiche, kanban.
+//
+// Le parti : un papier legerement teinte du bleu du sceau, les donnees posees
+// dessus en blanc, aretes vives (le rayon vient de his_theme). Aucune ligne
+// d'accent coloree (decision du 2026-10-15) : une selection se dit par un
+// aplat, une section par un filet gris. Couleurs lues dans les jetons de
+// his_theme uniquement.
+
+// ------------------------------------------------------------------ fond
+.o_action_manager {
+    background-color: var(--his-navy-50);
+}
+
+.o_control_panel {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--his-line);
+}
+
+// Le titre de la page : la derniere miette, plus grande que les autres.
+.o_control_panel .o_last_breadcrumb_item {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--his-ink);
+}
+
+// ------------------------------------------------------------------ liste
+.o_list_renderer .o_list_table {
+    background-color: #ffffff;
+
+    thead th {
+        color: var(--his-ink-60);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .o_data_row > td {
+        padding-top: 0.625rem;
+        padding-bottom: 0.625rem;
+    }
+
+    .o_data_row:hover > td {
+        background-color: var(--his-navy-50);
+    }
+
+    .o_data_row.o_data_row_selected > td {
+        background-color: var(--his-navy-100);
+    }
+}
+
+// Les codes (matricule, numero de carte) se lisent colonne a colonne.
+.o_list_renderer td[name="matricule_institutionnel"],
+.o_list_renderer td[name="matricule_affiche"],
+.o_list_renderer td[name="numero_carte"] {
+    font-family: var(--his-font-mono);
+    font-size: 0.875rem;
+    color: var(--his-navy-700);
+}
+
+// ------------------------------------------------------------------ fiche
+.o_form_view .o_form_sheet_bg {
+    background-color: var(--his-navy-50);
+}
+
+.o_form_view .o_form_sheet {
+    border: 1px solid var(--his-line);
+}
+
+// Titres de section : petites capitales sur un filet gris neutre.
+.o_form_view .o_horizontal_separator {
+    color: var(--his-ink-60);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--his-line);
+    padding-bottom: 0.375rem;
+}
+
+// Un numero de telephone reste un nombre de gauche a droite, y compris dans une
+// fiche en arabe : sans cela « +213 550 00 000 » s'affichait « 000 00 550 213+ ».
+// Le widget phone, et les champs nommes phone / mobile affiches en simple texte
+// (la fiche personne les rend en o_field_char). Meme procede qu'Odoo pour les
+// montants (form_controller.scss) : la direction est exclue du retournement
+// rtlcss, l'alignement, lui, est retourne et colle le numero a droite en arabe.
+.o_field_phone,
+.o_field_widget[name="phone"],
+.o_field_widget[name="mobile"] {
+    input,
+    a,
+    span {
+        /*rtl:ignore*/
+        direction: ltr;
+        unicode-bidi: isolate;
+        text-align: left;
+    }
+}
+
+// ------------------------------------------------------------------ kanban
+.o_kanban_renderer {
+    background-color: var(--his-navy-50);
+}
+
+.o_kanban_record {
+    border: 1px solid var(--his-line);
+    transition: border-color 0.15s ease;
+
+    &:hover {
+        border-color: var(--his-navy-200);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_kanban_record {
+        transition: none;
+    }
+}

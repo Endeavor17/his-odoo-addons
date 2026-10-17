@@ -58,7 +58,7 @@
         min-width: 7rem;
         padding: 0 1.1rem;
         border: 1px solid var(--his-line, #1e3448);
-        border-radius: 0.5rem;
+        border-radius: var(--his-radius, 0);
         background: var(--his-ground-raised, #12202f);
         color: var(--his-text, #e8eef4);
         font-size: 1rem;
@@ -137,7 +137,7 @@
     .his-ink {
         width: 34px;
         height: 12px;
-        border-radius: 2px;
+        border-radius: var(--his-radius, 0);
         flex: 0 0 auto;
     }
 
@@ -167,7 +167,7 @@
         font-size: 1.6rem;
         line-height: 1;
         border: 1px solid var(--his-line, #1e3448);
-        border-radius: 0.5rem;
+        border-radius: var(--his-radius, 0);
         background: var(--his-ground-raised, #12202f);
         color: var(--his-text, #e8eef4);
     }
@@ -183,7 +183,7 @@
         color: var(--his-text, #e8eef4);
         background: var(--his-ground-sunk, #081120);
         border: 1px solid var(--his-line-strong, #2c4a63);
-        border-radius: 0.5rem;
+        border-radius: var(--his-radius, 0);
     }
 
     .his-quick {
@@ -201,7 +201,7 @@
         color: var(--his-text-muted, #8fa6b8);
         background: transparent;
         border: 1px dashed var(--his-line-strong, #2c4a63);
-        border-radius: 0.4rem;
+        border-radius: var(--his-radius, 0);
     }
 
     // ------------------------------------------------------- the receipt
@@ -213,7 +213,7 @@
         padding: 1rem 1.1rem 0.9rem;
         background: var(--his-paper, #f4f0e6);
         color: var(--his-paper-ink, #14212e);
-        border-radius: 0 0 4px 4px;
+        border-radius: var(--his-radius, 0);
     }
 
     // Perforation: the torn edge of a receipt, drawn rather than imaged.
@@ -298,7 +298,7 @@
 .his-footer-btn {
     min-height: 60px;
     padding: 0 1.5rem;
-    border-radius: 0.5rem;
+    border-radius: var(--his-radius, 0);
     font: var(--his-font-label, 600 0.72rem/1.1 system-ui, sans-serif);
     font-size: 0.82rem;
     letter-spacing: var(--his-label-tracking, 0.09em);

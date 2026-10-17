@@ -1,7 +1,8 @@
 """Une seule police dans l'interface : celle de his_theme.
 
-Garde-fou de CI (consigne de Mohamed, 2026-10-08). his_theme declare les deux
-familles du groupe — Figtree pour le texte, IBM Plex Mono pour les codes — et
+Garde-fou de CI (consigne de Mohamed, 2026-10-08). his_theme declare les
+familles du groupe — Figtree pour le texte (Readex Pro pour les seuls glyphes
+arabes, que Figtree n'a pas), IBM Plex Mono pour les codes — les embarque, et
 les publie en variables CSS (--his-font-sans, --his-font-mono ; Odoo expose
 aussi --font-monospace). Un module qui ecrit sa propre famille fait renaitre
 le patchwork que cette regle a supprime.

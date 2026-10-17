@@ -1,6 +1,6 @@
 {
     "name": "HIS POS Interface",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "summary": "Branded, touch-first interface shared by the HIS points of sale",
     "description": """
 HIS POS Interface
@@ -21,7 +21,7 @@ The interface may be redesigned; the transaction may not.
     "author": "Abdo Chabouti",
     "category": "Sales/Point of Sale",
     "license": "LGPL-3",
-    "depends": ["point_of_sale"],
+    "depends": ["point_of_sale", "his_theme"],
     "data": [
         "views/pos_config_views.xml",
     ],

@@ -1,0 +1,112 @@
+// La page de connexion : un panneau de marque bleu sceau, le formulaire a cote.
+//
+// Tout est limite a body.his-login (pose par views/login_templates.xml), donc
+// aucune autre page du frontend n'est touchee. Couleurs et polices viennent
+// des jetons de his_theme ; les aretes vives aussi (rayon 0).
+
+body.his-login {
+    background-color: var(--his-navy-50);
+
+    #wrapwrap > main {
+        display: flex;
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+
+    // Le panneau : logo bilingue en haut, sceau en filigrane en bas. Le
+    // filigrane est le meme fichier que la page d'accueil, aplati en blanc.
+    .his-login-brand {
+        position: relative;
+        flex: 0 0 42%;
+        display: flex;
+        align-items: flex-start;
+        padding: 3rem;
+        overflow: hidden;
+        background: linear-gradient(160deg, var(--his-navy-700) 0%, var(--his-navy-900) 65%, var(--his-navy-950) 100%);
+
+        img {
+            position: relative;
+            z-index: 1;
+            width: 14rem;
+            max-width: 70%;
+            height: auto;
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            inset: auto -18% -22% auto;
+            width: 80%;
+            aspect-ratio: 1;
+            background: var(--his-seal) center / contain no-repeat;
+            filter: brightness(0) invert(1);
+            opacity: 0.06;
+            pointer-events: none;
+        }
+    }
+
+    #wrapwrap > main > .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    // La carte se fond dans la page : le formulaire suffit (classes et
+    // largeur reposees dans le template, voir login_templates.xml).
+    .o_database_list {
+        width: 100%;
+        background-color: transparent;
+    }
+
+    .his-login-title {
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--his-ink);
+    }
+
+    .oe_login_form .form-label,
+    .oe_login_form .col-form-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--his-ink-60);
+    }
+
+    .oe_login_form .form-control {
+        min-height: 2.875rem;
+        background-color: #ffffff;
+    }
+
+    .oe_login_buttons .btn-primary {
+        min-height: 3rem;
+        font-weight: 600;
+    }
+}
+
+// Telephone et tablette en portrait : le panneau passe au-dessus, en bandeau.
+@media (max-width: 991.98px) {
+    body.his-login {
+        #wrapwrap > main {
+            flex-direction: column;
+        }
+
+        .his-login-brand {
+            flex: 0 0 auto;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+
+            img {
+                width: 12rem;
+            }
+        }
+
+        #wrapwrap > main > .container {
+            align-items: flex-start;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+    }
+}

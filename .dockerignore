@@ -12,3 +12,5 @@ deploy
 config
 docker-compose.yml
 Dockerfile
+# ... sauf le point d'entree de l'image (voir Dockerfile).
+!deploy/image

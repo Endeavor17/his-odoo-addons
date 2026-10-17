@@ -1,0 +1,24 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_web_ui
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+
+#. module: his_web_ui
+#: model_terms:ir.ui.view,arch_db:his_web_ui.login_layout
+msgid "Higher Institute of Sciences"
+msgstr "المعهد العالي للعلوم"
+
+#. module: his_web_ui
+#: model_terms:ir.ui.view,arch_db:his_web_ui.login
+msgid "Sign in"
+msgstr "تسجيل الدخول"
