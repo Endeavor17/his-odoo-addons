@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Menu de la Cafeteria (feuille « MENU CAFETERIA », lue le 2026-10-17) :
+         vente CASH, a la Cafeteria seulement. Les formules sur credits sont
+         ailleurs (his_meal_management, onglet Meal Packs). Les trois
+         « Pockets » de la feuille n'ont pas de prix : ecartees jusqu'a ce
+         qu'elles en aient un. Meme principe que menu_data.xml : prepare sur
+         place, non stocke, taxe posee par hooks.taxer_plats. -->
+    <data noupdate="1">
+        <record id="product_category_cafeteria_menu" model="product.category">
+            <field name="name">Cafeteria Menu</field>
+        </record>
+
+        <record id="pos_categ_cafe_pizzas" model="pos.category">
+            <field name="name">Pizzas</field><field name="sequence">10</field>
+        </record>
+        <record id="pos_categ_cafe_burgers" model="pos.category">
+            <field name="name">Burgers</field><field name="sequence">11</field>
+        </record>
+        <record id="pos_categ_cafe_sandwiches" model="pos.category">
+            <field name="name">Sandwiches</field><field name="sequence">12</field>
+        </record>
+        <record id="pos_categ_cafe_snacks" model="pos.category">
+            <field name="name">Hot Snacks</field><field name="sequence">13</field>
+        </record>
+        <record id="pos_categ_cafe_boxes" model="pos.category">
+            <field name="name">Boxes</field><field name="sequence">14</field>
+        </record>
+        <record id="pos_categ_cafe_extras" model="pos.category">
+            <field name="name">Extras</field><field name="sequence">15</field>
+        </record>
+
+        <record id="cafe_pizza_plain" model="product.template">
+            <field name="name">Plain Pizza</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">1</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_pizzas')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_pizza_three_cheese" model="product.template">
+            <field name="name">3 Cheese Pizza</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">2</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_pizzas')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_pizza_meat" model="product.template">
+            <field name="name">Meat Pizza</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">3</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_pizzas')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_pizza_chicken" model="product.template">
+            <field name="name">Chicken Pizza</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">4</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_pizzas')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_pizza_marina" model="product.template">
+            <field name="name">Pizza Marina</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">5</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_pizzas')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_pizza_vegetarian" model="product.template">
+            <field name="name">Vegetarian Pizza</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">6</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_pizzas')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_pizza_turquoise" model="product.template">
+            <field name="name">Pizza Turquoise</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">400.0</field>
+            <field name="sequence">7</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_pizzas')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_pizza_chef" model="product.template">
+            <field name="name">Chef's Pizza</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">600.0</field>
+            <field name="sequence">8</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_pizzas')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_pizza_mega_four_seasons" model="product.template">
+            <field name="name">Mega Four Seasons Pizza</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">1200.0</field>
+            <field name="sequence">9</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_pizzas')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_pizza_mini_mega" model="product.template">
+            <field name="name">Mini Mega Pizza</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">900.0</field>
+            <field name="sequence">10</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_pizzas')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_burger_classic_cheese" model="product.template">
+            <field name="name">Classic Cheeseburger</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">250.0</field>
+            <field name="sequence">11</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_burgers')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_burger_beef_cheese" model="product.template">
+            <field name="name">Meat Cheeseburger</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">12</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_burgers')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_burger_big_chicken_cheese" model="product.template">
+            <field name="name">Big Chicken Cheese</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">13</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_burgers')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_burger_big_beef_cheese" model="product.template">
+            <field name="name">Big Meat Cheese</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">450.0</field>
+            <field name="sequence">14</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_burgers')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_burger_forest" model="product.template">
+            <field name="name">Forest Burger</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">400.0</field>
+            <field name="sequence">15</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_burgers')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_burger_crispy" model="product.template">
+            <field name="name">Crispy Burger</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">250.0</field>
+            <field name="sequence">16</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_burgers')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_sandwich_brioche_chicken" model="product.template">
+            <field name="name">Brioche Bun - Chicken</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">17</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_sandwiches')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_sandwich_brioche_meat" model="product.template">
+            <field name="name">Brioche Bun - Meat</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">400.0</field>
+            <field name="sequence">18</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_sandwiches')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_sandwich_brioche_kebda" model="product.template">
+            <field name="name">Brioche Bun - Kebda</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">19</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_sandwiches')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_sandwich_house_chicken" model="product.template">
+            <field name="name">House Bread - Chicken</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">20</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_sandwiches')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_sandwich_house_meat" model="product.template">
+            <field name="name">House Bread - Meat</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">300.0</field>
+            <field name="sequence">21</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_sandwiches')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_sandwich_house_kebda" model="product.template">
+            <field name="name">House Bread - Kebda</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">22</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_sandwiches')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_sandwich_baker_chicken" model="product.template">
+            <field name="name">Baker's Bread - Chicken</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">23</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_sandwiches')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_sandwich_baker_meat" model="product.template">
+            <field name="name">Baker's Bread - Meat</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">350.0</field>
+            <field name="sequence">24</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_sandwiches')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_sandwich_baker_kebda" model="product.template">
+            <field name="name">Baker's Bread - Kebda</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">400.0</field>
+            <field name="sequence">25</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_sandwiches')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_sandwich_baker_crispy" model="product.template">
+            <field name="name">Baker's Bread - Crispy Chicken</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">400.0</field>
+            <field name="sequence">26</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_sandwiches')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_souffle_chicken" model="product.template">
+            <field name="name">Chicken Souffle</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">80.0</field>
+            <field name="sequence">27</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_snacks')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_souffle_tuna" model="product.template">
+            <field name="name">Tuna Souffle</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">80.0</field>
+            <field name="sequence">28</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_snacks')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_fajita" model="product.template">
+            <field name="name">Fajita</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">150.0</field>
+            <field name="sequence">29</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_snacks')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_hot_dog" model="product.template">
+            <field name="name">Hot Dog</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">200.0</field>
+            <field name="sequence">30</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_snacks')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_panini_chicken" model="product.template">
+            <field name="name">Chicken Panini</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">200.0</field>
+            <field name="sequence">31</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_snacks')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_panini_tuna" model="product.template">
+            <field name="name">Tuna Panini</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">200.0</field>
+            <field name="sequence">32</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_snacks')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_panini_three_cheese" model="product.template">
+            <field name="name">3 Cheese Panini</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">200.0</field>
+            <field name="sequence">33</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_snacks')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_box_fries" model="product.template">
+            <field name="name">Fries Box</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">500.0</field>
+            <field name="sequence">34</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_boxes')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_box_rice" model="product.template">
+            <field name="name">Rice Box</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">600.0</field>
+            <field name="sequence">35</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_boxes')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_box_fries_crispy" model="product.template">
+            <field name="name">Crispy Fries Box</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">550.0</field>
+            <field name="sequence">36</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_boxes')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_box_rice_crispy" model="product.template">
+            <field name="name">Crispy Rice Box</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">650.0</field>
+            <field name="sequence">37</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_boxes')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_extra_gruyere" model="product.template">
+            <field name="name">Extra Gruyere</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">100.0</field>
+            <field name="sequence">38</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_extras')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_extra_cheddar" model="product.template">
+            <field name="name">Extra Cheddar</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">100.0</field>
+            <field name="sequence">39</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_extras')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_extra_camembert" model="product.template">
+            <field name="name">Extra Camembert</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">100.0</field>
+            <field name="sequence">40</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_extras')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_extra_slices" model="product.template">
+            <field name="name">Extra Slices</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">50.0</field>
+            <field name="sequence">41</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_extras')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_extra_fries" model="product.template">
+            <field name="name">Extra Fries</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">50.0</field>
+            <field name="sequence">42</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_extras')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+        <record id="cafe_extra_large_fries" model="product.template">
+            <field name="name">Extra Large Fries</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product_category_cafeteria_menu"/>
+            <field name="list_price">100.0</field>
+            <field name="sequence">43</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_cafe_extras')])]"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="taxes_id" eval="[Command.clear()]"/>
+        </record>
+
+    </data>
+</odoo>

@@ -7,14 +7,22 @@ his_stock_mdm, en noupdate, donc aucun fichier de ce module ne peut les ecrire
 
 from odoo import Command
 
-ONGLETS = ("pos_categ_starters", "pos_categ_mains", "pos_categ_sides")
-CAISSES = ("his_stock_mdm.pos_config_cafeteria", "his_stock_mdm.pos_config_restaurant")
+# Chaque menu a SA caisse (2026-10-17) : le traiteur au Restaurant, le menu
+# rapide a la Cafeteria. Le hook n'enleve jamais un onglet : la migration
+# 19.0.1.1.0 retire le menu du traiteur de la Cafeteria.
+ONGLETS = {
+    "his_stock_mdm.pos_config_restaurant": ("pos_categ_starters", "pos_categ_mains", "pos_categ_sides"),
+    "his_stock_mdm.pos_config_cafeteria": tuple(
+        f"pos_categ_cafe_{x}" for x in ("pizzas", "burgers", "sandwiches", "snacks", "boxes", "extras")
+    ),
+}
+CATEGORIES = ("his_pos_menu.product_category_menu", "his_pos_menu.product_category_cafeteria_menu")
 
 
 def lier_onglets(env):
-    onglets = env["pos.category"].browse([env.ref(f"his_pos_menu.{x}").id for x in ONGLETS])
-    for xmlid in CAISSES:
+    for xmlid, noms in ONGLETS.items():
         config = env.ref(xmlid, raise_if_not_found=False)
+        onglets = env["pos.category"].browse([env.ref(f"his_pos_menu.{x}").id for x in noms])
         if config and onglets - config.iface_available_categ_ids:
             config.write({"limit_categories": True, "iface_available_categ_ids": [Command.link(o.id) for o in onglets]})
 
@@ -29,7 +37,7 @@ def taxer_plats(env):
     """
     taxe = env.company.account_sale_tax_id
     if taxe and taxe.price_include:
-        plats = env["product.template"].search([("categ_id", "=", env.ref("his_pos_menu.product_category_menu").id)])
+        plats = env["product.template"].search([("categ_id", "in", [env.ref(x).id for x in CATEGORIES])])
         plats.filtered(lambda p: not p.taxes_id).write({"taxes_id": [Command.set(taxe.ids)]})
 
 
