@@ -11,7 +11,9 @@
             <field name="padding">6</field>
             <field name="number_next">1</field>
             <field name="number_increment">1</field>
-            <field name="implementation">standard</field>
+            <!-- no_gap (recette P-23) : un numero tire dans une transaction
+                 qui echoue est rendu, au lieu d'etre perdu. -->
+            <field name="implementation">no_gap</field>
             <!-- use_date_range : un compteur par annee, remis a 1 chaque
                  janvier. L'annee du prefixe vient de sequence_date, pas de
                  la date de creation de la fiche (embauche antidatee). -->

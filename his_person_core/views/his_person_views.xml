@@ -55,6 +55,7 @@
                                    invisible="not partner_id"/>
                             <field name="source_system"/>
                             <field name="external_ref"/>
+                            <field name="his_confirmed_new" invisible="id and not his_confirmed_new"/>
                         </group>
                         <group string="Matching">
                             <field name="match_method"/>

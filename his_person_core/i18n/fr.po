@@ -1087,3 +1087,36 @@ msgstr ""
 #: model:ir.model.fields,field_description:his_person_core.field_his_person__zip
 msgid "Zip"
 msgstr "Code postal"
+
+#. module: his_person_core
+#: model:ir.model.fields,field_description:his_person_core.field_his_person__his_confirmed_new
+msgid "Confirmed New Person"
+msgstr "Nouvelle personne confirmée"
+
+#. module: his_person_core
+#: model:ir.model.fields,help:his_person_core.field_his_person__his_confirmed_new
+msgid "Ticked when the register proposed an existing record and a person confirmed this one is somebody else (a namesake)."
+msgstr "Coché quand le référentiel a proposé une fiche existante et qu'une personne a confirmé qu'il s'agit de quelqu'un d'autre (un homonyme)."
+
+#. module: his_person_core
+#. odoo-python
+#: code:addons/his_person_core/models/his_person.py:0
+msgid "%(name)s looks like %(existing)s (%(matricule)s), already in the register. Open that record; if this really is somebody else, tick “Confirmed New Person” and save again."
+msgstr "%(name)s ressemble à %(existing)s (%(matricule)s), déjà dans le référentiel. Ouvrez cette fiche ; s'il s'agit vraiment de quelqu'un d'autre, cochez « Nouvelle personne confirmée » et enregistrez à nouveau."
+
+#. module: his_person_core
+#. odoo-python
+#: code:addons/his_person_core/models/his_person.py:0
+msgid "no registration number yet"
+msgstr "pas encore de matricule"
+
+#. module: his_person_core
+#. odoo-python
+#: code:addons/his_person_core/models/base_partner_merge.py:0
+msgid "These contacts are %(people)s in the register: merging them would delete a registration number. Archive the duplicate person instead."
+msgstr "Ces contacts sont %(people)s dans le référentiel : les fusionner supprimerait un matricule. Archivez plutôt la personne en double."
+
+#. module: his_person_core
+#: model:ir.model,name:his_person_core.model_base_partner_merge_automatic_wizard
+msgid "Merge Partner Wizard"
+msgstr "Assistant de fusion de contacts"

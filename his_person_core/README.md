@@ -23,6 +23,11 @@ Concrètement :
 | `employee.matricule_institutionnel = '...'` | Créer la `his.person`, l'employé la reflète |
 | Modifier un matricule après création | Impossible : bloqué serveur dans `write()` |
 | Fusionner deux fiches sur un rapprochement automatique | Confirmation humaine explicite obligatoire |
+| Saisir à la main une personne déjà présente | Refusé à la création, la fiche trouvée est nommée ; un homonyme se confirme par « Nouvelle personne confirmée » (recette P-12) |
+| Fusionner deux contacts qui portent chacun une `his.person` | Refusé : la fusion supprimait une fiche et son matricule ; on archive le doublon (recette P-12) |
+
+Le compteur des matricules est **sans trou** (`no_gap`, 19.0.1.5.0) : un numéro
+tiré dans une création qui échoue est rendu au lieu d'être perdu (recette P-23).
 
 La règle est appliquée par des **contraintes serveur** (`create`/`write`
 surchargés, contrainte SQL d'unicité), jamais par de la validation côté vue :
