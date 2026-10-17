@@ -81,30 +81,6 @@ class HrEmployee(models.Model):
     )
     login = fields.Char(related="user_id.login", string="Login", store=False)
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        employees = super().create(vals_list)
-        # An employee created outside the Create Workers wizard (e.g. the
-        # standard Employees form) gets a user account with no maintenance
-        # group at all — invisible to our menu security, so they'd log in to
-        # a completely blank home screen. Default any such account to Worker,
-        # the least-privileged role, rather than leaving it with no access.
-        # Skipped if they already have a group (e.g. deliberately made a
-        # Manager) — Manager already implies Worker, so this never downgrades.
-        # Also skipped for a Reporter: that's a sibling role, not a lesser
-        # one — without this check, giving someone an hr.employee record
-        # after setting them up as a Reporter would silently also make them
-        # a Worker (assignable to real maintenance work), which they aren't.
-        worker_group = self.env.ref("maintenance_university.group_maintenance_worker")
-        for employee in employees:
-            user = employee.sudo().user_id
-            if user and not (
-                user.has_group("maintenance_university.group_maintenance_worker")
-                or user.has_group("maintenance_university.group_maintenance_reporter")
-            ):
-                user.sudo().write({"group_ids": [(4, worker_group.id)]})
-        return employees
-
     @api.depends()
     def _compute_maintenance_request_ids(self):
         Request = self.env["maintenance.request"]

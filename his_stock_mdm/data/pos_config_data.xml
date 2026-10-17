@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <!-- Un role par caisse (recette P-18), a donner par le poste. Il donne le
+         Point de vente ; la caisse ne s'ouvre que pour qui le porte. -->
+    <record id="group_caisse_cafeteria" model="res.groups">
+        <field name="name">Cafeteria Cashier</field>
+        <field name="implied_ids" eval="[Command.link(ref('point_of_sale.group_pos_user'))]"/>
+    </record>
+    <record id="group_caisse_restaurant" model="res.groups">
+        <field name="name">Restaurant Cashier</field>
+        <field name="implied_ids" eval="[Command.link(ref('point_of_sale.group_pos_user'))]"/>
+    </record>
+    <record id="group_caisse_copy_center" model="res.groups">
+        <field name="name">Copy Center Cashier</field>
+        <field name="implied_ids" eval="[Command.link(ref('point_of_sale.group_pos_user'))]"/>
+    </record>
+
+    <!-- Le tableau de bord POS : chacun ses caisses. -->
+    <record id="point_of_sale.action_pos_config_kanban" model="ir.actions.act_window">
+        <field name="domain">[("his_is_my_till", "=", True)]</field>
+    </record>
+
     <data noupdate="1">
         <!-- Une caisse par point de vente, chacune rattachee a son type
              d'operation (et donc a son emplacement). Le reste de la config
@@ -8,6 +28,7 @@
         <record id="pos_config_cafeteria" model="pos.config">
             <field name="name">Cafétéria</field>
             <field name="picking_type_id" ref="picking_type_pos_cafeteria"/>
+            <field name="his_group_ids" eval="[Command.set([ref('group_caisse_cafeteria')])]"/>
             <field name="limit_categories" eval="True"/>
             <field name="iface_available_categ_ids" eval="[Command.set([
                 ref('pos_categ_boissons'), ref('pos_categ_snacks'),
@@ -18,6 +39,7 @@
         <record id="pos_config_restaurant" model="pos.config">
             <field name="name">Restaurant</field>
             <field name="picking_type_id" ref="picking_type_pos_restaurant"/>
+            <field name="his_group_ids" eval="[Command.set([ref('group_caisse_restaurant')])]"/>
             <!-- Le Restaurant ne sert QUE des repas : aucune categorie de
                  vente au detail. L'onglet Repas est ajoute par
                  his_meal_management, a qui les produits appartiennent. -->
@@ -26,6 +48,7 @@
         <record id="pos_config_copy_center" model="pos.config">
             <field name="name">Copy Center</field>
             <field name="picking_type_id" ref="picking_type_pos_copy_center"/>
+            <field name="his_group_ids" eval="[Command.set([ref('group_caisse_copy_center')])]"/>
             <field name="limit_categories" eval="True"/>
             <!-- Rien de comestible au Copy Center : fournitures d'etude
                  seulement. L'onglet Recharges vient de his_meal_management. -->

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Discuss, Employees, and core Maintenance are visible to any internal
-         user in vanilla Odoo (base.group_user), and Apps/Users&Companies have
-         no restriction at all. To keep a Worker's app switcher down to just
-         University Maintenance, replace that blanket "any internal user"
-         access with our own Manager group on all four.
+    <!-- Employees and core Maintenance are visible to any internal user in
+         vanilla Odoo (base.group_user). To keep a Worker's app switcher short,
+         replace that blanket "any internal user" access with our own Manager
+         group.
 
          Maintenance specifically: we now depend on this module (our own
          request model inherits maintenance.request), but its own generic
@@ -22,8 +21,12 @@
          any other internal user who isn't a maintenance Manager also loses
          default access to these apps, not just maintenance workers. -->
 
+    <!-- Discuss and Apps: left to his_access_base (recette P-14). Discuss is
+         the one app every account keeps; Apps stays with the administrators.
+         These records only undo what earlier versions wrote here, a (6, 0, ...)
+         on Apps and Discuss taken off every internal user. -->
     <record id="mail.menu_root_discuss" model="ir.ui.menu">
-        <field name="group_ids" eval="[(3, ref('base.group_user')), (4, ref('group_maintenance_manager'))]"/>
+        <field name="group_ids" eval="[(4, ref('base.group_user')), (3, ref('group_maintenance_manager'))]"/>
     </record>
 
     <record id="hr.menu_hr_root" model="ir.ui.menu">
@@ -35,7 +38,7 @@
     </record>
 
     <record id="base.menu_management" model="ir.ui.menu">
-        <field name="group_ids" eval="[(6, 0, [ref('group_maintenance_manager')])]"/>
+        <field name="group_ids" eval="[(4, ref('base.group_system')), (3, ref('group_maintenance_manager'))]"/>
     </record>
 
 </odoo>
