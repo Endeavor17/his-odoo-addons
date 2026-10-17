@@ -36,3 +36,30 @@ def pre_init_hook(env):
                 )
                 cache[chemin] = categorie
             parent = categorie
+
+
+CAISSES = ("pos_config_cafeteria", "pos_config_restaurant", "pos_config_copy_center")
+
+
+def post_init_hook(env):
+    donner_especes(env)
+
+
+def donner_especes(env):
+    """Chaque caisse encaisse en especes, avec son propre journal de caisse.
+
+    Odoo ne donne des especes qu'a la premiere caisse creee : un moyen
+    « especes » ne se partage pas entre deux caisses. Sur une base neuve, le
+    Restaurant et le Copy Center naissaient avec la seule carte (recette P-15).
+    Idempotent. Une caisse ouverte n'est pas touchee (Odoo refuse de changer
+    ses moyens de paiement) : la fermer, puis ajouter les especes a la main.
+    """
+    for xmlid in CAISSES:
+        caisse = env.ref(f"his_stock_mdm.{xmlid}", raise_if_not_found=False)
+        if not caisse or caisse.payment_method_ids.filtered("is_cash_count") or caisse.current_session_id:
+            continue
+        if not caisse.company_id.chart_template:
+            continue  # pas de plan comptable : pas de journal possible
+        caisse = caisse.with_company(caisse.company_id)
+        especes = caisse._create_cash_payment_method({"name": f"Cash {caisse.name}"})
+        caisse.payment_method_ids = [(4, especes.id)]

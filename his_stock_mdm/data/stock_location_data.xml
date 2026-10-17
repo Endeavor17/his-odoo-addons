@@ -127,4 +127,11 @@
     <record id="base.group_user" model="res.groups">
         <field name="implied_ids" eval="[Command.link(ref('stock.group_stock_multi_locations'))]"/>
     </record>
+
+    <!-- Le catalogue est au responsable stock (MDM). Odoo 19 reserve la
+         creation d'un article au groupe « Produits / Creer », qu'aucun role ne
+         donnait : personne ne pouvait creer un article (recette P-17). -->
+    <record id="stock.group_stock_manager" model="res.groups">
+        <field name="implied_ids" eval="[Command.link(ref('product.group_product_manager'))]"/>
+    </record>
 </odoo>

@@ -20,5 +20,6 @@ Utilise par his_purchase (fournisseurs) et imprimable sur tout document.
         "views/res_partner_views.xml",
         "views/res_company_views.xml",
     ],
+    "post_init_hook": "post_init_hook",
     "installable": True,
 }

@@ -600,3 +600,55 @@ msgstr "WH/Stock → Copy Center"
 #: model:stock.rule,name:his_stock_mdm.rule_reappro_restaurant
 msgid "WH/Stock → Restaurant"
 msgstr "WH/Stock → Restaurant"
+
+#. module: his_stock_mdm
+#: model:res.groups,name:his_stock_mdm.group_caisse_cafeteria
+msgid "Cafeteria Cashier"
+msgstr "Caissier Cafétéria"
+
+#. module: his_stock_mdm
+#: model:res.groups,name:his_stock_mdm.group_caisse_copy_center
+msgid "Copy Center Cashier"
+msgstr "Caissier Copy Center"
+
+#. module: his_stock_mdm
+#: model:res.groups,name:his_stock_mdm.group_caisse_restaurant
+msgid "Restaurant Cashier"
+msgstr "Caissier Restaurant"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_pos_config__his_group_ids
+msgid "Cashier Roles"
+msgstr "Rôles de caisse"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_pos_config__his_is_my_till
+msgid "My Till"
+msgstr "Ma caisse"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,help:his_stock_mdm.field_pos_config__his_group_ids
+msgid "Roles allowed to open this till. Empty: every Point of Sale user."
+msgstr "Rôles autorisés à ouvrir cette caisse. Vide : tout utilisateur du Point de vente."
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_pos_config
+msgid "Point of Sale Configuration"
+msgstr "Configuration du point de vente"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_pos_session
+msgid "Point of Sale Session"
+msgstr "Session du point de vente"
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/pos_config.py:0
+msgid "Unsupported search on My Till."
+msgstr "Recherche non prise en charge sur « Ma caisse »."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/pos_config.py:0
+msgid "You cannot open %(till)s: it needs one of these roles: %(roles)s."
+msgstr "Vous ne pouvez pas ouvrir %(till)s : il faut l'un de ces rôles : %(roles)s."

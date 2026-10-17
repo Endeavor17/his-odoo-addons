@@ -354,11 +354,11 @@ This module owns **no** identity. It reads it.
 
 ## 10. Gotchas
 
-- **Creating any employee makes them a maintenance Worker.** If the employee has
-  a linked user and holds neither Worker nor Reporter, `hr_employee.create()`
-  adds Worker — otherwise they would log in to a blank home screen. A cashier
-  created through the Employees form is therefore also a maintenance worker
-  until you remove the group.
+- **Creating an employee no longer makes them a maintenance Worker** (recette
+  P-13, 2026-10-17). It used to, so nobody logged in to a blank home screen;
+  every account now keeps Discuss (his_access_base), and Worker is a role like
+  the others: given by Create Workers, or by the position's roles. Accounts
+  that got it the old way keep it until it is removed.
 - **A user created from Settings → Users is not an employee.** Nothing links
   `res.users` to `hr.employee` automatically. Use Create Workers, or core's
   **Create User** button on the employee form — it passes `partner_id`, so no

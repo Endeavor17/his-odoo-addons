@@ -81,6 +81,18 @@ class TestStockRbac(TransactionCase):
 
     # --- Pertes : Collaborateur propose, Manager valide ----------------------
 
+    def test_le_responsable_stock_cree_un_article(self):
+        # Recette P-17 : en Odoo 19, creer un article demande « Produits / Creer »,
+        # qu'aucun role ne donnait ; le catalogue est au responsable stock (MDM).
+        produit = (
+            self.env["product.template"]
+            .with_user(self.manager)
+            .create({"name": "Article recette P-17", "categ_id": self.boissons.id, "type": "consu"})
+        )
+        self.assertTrue(produit)
+        with self.assertRaises(AccessError):
+            self.env["product.template"].with_user(self.collaborateur).create({"name": "Refuse"})
+
     def test_collaborateur_can_create_scrap_but_not_validate(self):
         scrap = self._scrap()
         scrap.with_user(self.collaborateur).scrap_note = "Ajusté par le collaborateur"
