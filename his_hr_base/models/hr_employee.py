@@ -90,6 +90,20 @@ class HrEmployee(models.Model):
                 employee.person_id = employee._create_his_person()
         return employees
 
+    def write(self, vals):
+        # Le badge saisi sur la fiche employe atterrit sur la fiche personne
+        # (champ related). Un RH n'a qu'un droit de lecture sur his.person : on
+        # verifie son droit sur l'employe, puis on ecrit la personne en sudo
+        # (recette 2026-10-17, P-10).
+        if "barcode" in vals and not self.env.su:
+            badge = vals.pop("barcode")
+            self.check_access("write")
+            for employee in self:
+                employee.person_id.sudo().numero_carte = badge
+            if not vals:
+                return True
+        return super().write(vals)
+
     def _create_his_person(self):
         """Cree la fiche personne d'un employe, en reutilisant son partenaire."""
         self.ensure_one()

@@ -2,7 +2,7 @@
 """Demandes de prix, choix du fournisseur, approbation (AT-04 a AT-12, AT-26)."""
 
 from odoo.exceptions import UserError
-from odoo.tests import tagged
+from odoo.tests import new_test_user, tagged
 
 from .common import HisPurchaseCase
 
@@ -149,6 +149,22 @@ class TestOrder(HisPurchaseCase):
         request.with_user(self.requester).read(["order_count", "state"])
         picking = order.picking_ids
         picking.move_ids.quantity = 2
+        picking.button_validate()
+        self.assertEqual(request.state, "done")
+
+    def test_le_magasinier_receptionne_une_commande_issue_d_une_demande(self):
+        # Recette 2026-10-17 (P-02) : la reception passait par la demande avec
+        # les droits du magasinier, qui n'a aucun droit sur les demandes.
+        storekeeper = new_test_user(self.env, login="his_storekeeper", groups="stock.group_stock_user")
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 8500
+        order.with_user(self.director).button_confirm()
+        picking = order.picking_ids.with_user(storekeeper)
+        picking.move_ids.quantity = 2
+        # Sans cela le cache du test garde les lignes de demande lues en admin,
+        # et le controle d'acces ne se declenche jamais.
+        self.env.invalidate_all()
         picking.button_validate()
         self.assertEqual(request.state, "done")
 

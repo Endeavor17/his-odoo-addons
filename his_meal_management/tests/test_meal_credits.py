@@ -1501,6 +1501,18 @@ class TestMealPrivacy(TransactionCase):
     def test_a_cashier_still_finds_the_student(self):
         self.assertEqual(self.student.with_user(self.cashier).read(["name"])[0]["name"], "Samia")
 
+    def test_an_officer_issues_a_card(self):
+        """Recette 2026-10-17 (P-03) : l'officier emet les cartes (README 10),
+        mais le miroir vers res.partner.barcode s'ecrivait avec ses droits."""
+        self.env.invalidate_all()
+        card = (
+            self.env["his.meal.card"]
+            .with_user(self.officer)
+            .create({"partner_id": self.other.id, "code": "0099000777"})
+        )
+        self.assertEqual(card.state, "active")
+        self.assertEqual(self.other.barcode, "0099000777")
+
     def test_a_cashier_reads_only_the_ledger_lines_they_wrote(self):
         """Probe P3: a cashier read every student's meal history."""
         self.student.with_user(self.cashier).sudo()._consume_meal_credit()

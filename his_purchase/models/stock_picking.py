@@ -7,6 +7,7 @@ class StockPicking(models.Model):
 
     def _action_done(self):
         res = super()._action_done()
-        # Reception complete : la demande d'achat passe a « Terminee ».
-        self.purchase_id._his_requests()._his_update_progress()
+        # Reception complete : la demande d'achat passe a « Terminee ». En sudo :
+        # le magasinier receptionne sans aucun droit sur les demandes d'achat.
+        self.purchase_id.sudo()._his_requests()._his_update_progress()
         return res

@@ -315,6 +315,12 @@ class HisPerson(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        # Le droit de creer une fiche est celui de his.person (gestionnaire des
+        # personnes), pas celui de creer n'importe quel contact : une fois ce
+        # droit verifie, la fiche et son contact delegue sont crees en sudo (le
+        # createur reste l'utilisateur). Verifie AVANT la sequence, sinon chaque
+        # refus brule un matricule (recette 2026-10-17, P-04 et P-23).
+        self.check_access("create")
         sequence = self.env["ir.sequence"].sudo()
         for vals in vals_list:
             # UN CANDIDAT N'EST PAS ENCORE QUELQU'UN DE L'INSTITUTION.
@@ -358,7 +364,7 @@ class HisPerson(models.Model):
                 base,
                 _compute_matricule_checksum(base[-6:]),
             )
-        people = super().create(vals_list)
+        people = super(HisPerson, self.sudo()).create(vals_list).sudo(self.env.su)
         # Marque le partenaire cree par delegation. Ne bloque rien : c'est ce
         # qui permettra plus tard aux Ventes et aux Achats d'ecarter les
         # etudiants de leurs selecteurs de contacts par defaut.
@@ -383,7 +389,21 @@ class HisPerson(models.Model):
                     raise ValidationError(
                         _("The institutional registration number of %s cannot be changed.", person.display_name)
                     )
-        return super().write(vals)
+        partner_vals = self._his_pop_partner_vals(vals)
+        if partner_vals:
+            # Meme raison qu'a la creation : qui peut modifier la fiche peut
+            # modifier son contact, sans droit general sur les contacts.
+            self.check_access("write")
+            self.partner_id.sudo().write(partner_vals)
+        return super().write(vals) if vals else True
+
+    def _his_pop_partner_vals(self, vals):
+        """Retire de vals les champs portes par le contact delegue."""
+        return {
+            name: vals.pop(name)
+            for name in list(vals)
+            if name != "partner_id" and name in self._fields and self._fields[name].inherited
+        }
 
     # --- Rapprochement (matching) -------------------------------------------
     #
