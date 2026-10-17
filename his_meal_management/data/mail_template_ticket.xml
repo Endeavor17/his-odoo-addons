@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The emailed ticket, built on the server when the paid order is saved
+         (pos.order._his_send_ticket), queued by his_mail_async's rules. It used
+         to be a picture of the receipt rendered in the till's browser: lost on
+         a reload, and late behind the fonts the browser fetched first
+         (recette P-05). -->
+    <record id="mail_template_pos_ticket" model="mail.template">
+        <field name="name">Point of Sale: emailed ticket</field>
+        <field name="model_id" ref="point_of_sale.model_pos_order"/>
+        <field name="subject">Ticket {{ object.pos_reference or object.name }}</field>
+        <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p>Hello <t t-out="object.partner_id.name or ''"/>,</p>
+    <p>Here is your ticket <strong t-out="object.pos_reference or object.name or ''"/> from <t t-out="object.config_id.name or ''"/>, <t t-out="format_datetime(object.date_order, tz=object.config_id.company_id.partner_id.tz or 'Africa/Algiers')"/>.</p>
+    <table style="border-collapse: collapse; min-width: 320px;">
+        <t t-foreach="object._his_ticket_lines()" t-as="line">
+            <tr>
+                <td style="padding: 4px 8px;" t-out="'%g' % line.qty"/>
+                <td style="padding: 4px 8px;">
+                    <t t-out="line.full_product_name or line.product_id.display_name"/>
+                    <div t-if="line.customer_note" style="color: #6c757d; font-size: 12px;" t-out="line.customer_note"/>
+                </td>
+                <td style="padding: 4px 8px; text-align: right;" t-out="format_amount(line.price_subtotal_incl, object.currency_id)"/>
+            </tr>
+        </t>
+        <tr>
+            <td/>
+            <td style="padding: 4px 8px;"><strong>Total</strong></td>
+            <td style="padding: 4px 8px; text-align: right;"><strong t-out="format_amount(object.amount_total, object.currency_id)"/></td>
+        </tr>
+        <tr>
+            <td/>
+            <td style="padding: 4px 8px;">Including VAT</td>
+            <td style="padding: 4px 8px; text-align: right;" t-out="format_amount(object.amount_tax, object.currency_id)"/>
+        </tr>
+    </table>
+    <p t-if="object._his_ticket_credits_left()">Meal credits left: <strong t-out="object._his_ticket_credits_left()"/></p>
+    <p><t t-out="object.company_id.name or ''"/></p>
+</div>
+        </field>
+    </record>
+</odoo>

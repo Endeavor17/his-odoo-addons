@@ -262,10 +262,14 @@ invoice only when the customer asks for one. A company or an institution buying
 plans must still be invoiced (art. 10, CTCA art. 64): tick the box for them. TVA
 does not depend on the invoice — the session closing posts it for tickets too.
 
-- **The ticket is emailed** as soon as the receipt page shows, whenever the
-  customer has an `email` and the order is not invoiced (`receipt_screen.js`):
-  core's own Email button, pressed for the cashier, who sees "Ticket sent to …".
-  `his_mail_async` puts it in the mail queue so the till does not wait on SMTP.
+- **The ticket is emailed by the server** when the paid order is saved
+  (`pos.order._his_send_ticket`, 19.0.3.15.0), whenever the customer has an
+  email and the order is not invoiced: an HTML ticket (lines, total, VAT, meal
+  credits left) from the `mail_template_pos_ticket` template, queued and sent
+  by the mail cron, once per order (`his_ticket_sent`). It used to be a picture
+  of the receipt screen sent from the browser: a reload lost it, and it waited
+  behind the fonts the browser fetched first (recette P-05). Core's Email
+  button stays on the receipt screen for a resend on request.
 - **The ticket shows the balance left** after the order ("Meal credits left", and
   allowance meals owed if any), for a customer holding a plan (`receipt_screen.xml`).
 - **A meal at 0 DA says what paid for it** on the ticket: *"Paid with 1 meal

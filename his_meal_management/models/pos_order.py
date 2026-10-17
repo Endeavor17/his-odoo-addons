@@ -1,4 +1,4 @@
-from odoo import _, api, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import float_compare, float_is_zero
 
@@ -20,11 +20,44 @@ class PosOrder(models.Model):
 
     _inherit = "pos.order"
 
+    his_ticket_sent = fields.Boolean(string="Ticket Emailed", copy=False, readonly=True)
+
     def _process_saved_order(self, draft):
         res = super()._process_saved_order(draft)
         if not draft and self.state != "cancel":
             self._apply_meal_credits()
+            self._his_send_ticket()
         return res
+
+    def _his_send_ticket(self):
+        """Email the ticket from the server, once, when the paid order is saved.
+
+        A sale gets a ticket, not an invoice (loi 04-02, art. 10): skipped when
+        the order is invoiced (core emails the invoice), and for a customer
+        without an email. Queued, never sent inside the till's request
+        (his_mail_async); the queue's cron is woken after the commit.
+        """
+        self.ensure_one()
+        if self.his_ticket_sent or self.to_invoice or not self.partner_id.email:
+            return
+        template = self.env.ref("his_meal_management.mail_template_pos_ticket", raise_if_not_found=False)
+        if not template:
+            return
+        # sudo: a cashier may not read the student's balance printed on it.
+        template.sudo().send_mail(self.id, force_send=False)
+        self.his_ticket_sent = True
+        self.env.ref("mail.ir_cron_mail_scheduler_action")._trigger()
+
+    def _his_ticket_lines(self):
+        """The lines a customer reads: a formula's dish and drink are part of it."""
+        return self.lines.filtered(lambda line: not line.combo_parent_id)
+
+    def _his_ticket_credits_left(self):
+        """Balance after this order, for a customer holding a plan; else False."""
+        partner = self.partner_id.sudo()
+        if not (partner.meal_active_plan or partner.meal_credits_remaining):
+            return False
+        return format_credits(self.env, partner.meal_credits_remaining)
 
     def _already_applied(self):
         """Orders can be re-synced. Credits must move exactly once."""
