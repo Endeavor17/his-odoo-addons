@@ -143,7 +143,7 @@ class HisPurchaseRequestSource(models.TransientModel):
             "company_id": request.company_id.id,
             "user_id": request.user_id.id or self.env.user.id,
             "his_request_id": request.id,
-            "his_purchase_domain": request.his_purchase_domain,
+            "his_purchase_domain": (agreement or request).his_purchase_domain,
             "origin": request.name,
             "date_planned": planned,
             "order_line": order_lines,

@@ -12,7 +12,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import format_date
 
-from .his_purchase_followup import add_working_days
+from .his_purchase_followup import WEEKEND, add_working_days
 from .hr_department import PURCHASE_DOMAINS
 
 STATES = [
@@ -160,6 +160,7 @@ class HisPurchaseRequest(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             self._his_check_protected(vals)
+            self._his_check_department(vals, self.env["hr.employee"].browse(vals.get("requester_id")))
             if vals.get("name", _("New")) == _("New"):
                 company = self.env["res.company"].browse(vals.get("company_id")) or self.env.company
                 vals["name"] = self.env["ir.sequence"].with_company(company).next_by_code("his.purchase.request") or _(
@@ -169,6 +170,8 @@ class HisPurchaseRequest(models.Model):
 
     def write(self, vals):
         self._his_check_protected(vals)
+        for request in self:
+            request._his_check_department(vals, request.requester_id)
         # Le fil de discussion (pieces jointes, activites) reste ouvert a tous.
         business = {f for f in vals if f not in FOLLOWUP_FIELDS and not f.startswith(("message_", "activity_"))}
         if business and not self._his_is_purchasing():
@@ -196,6 +199,16 @@ class HisPurchaseRequest(models.Model):
         protected = PROTECTED_FIELDS & set(vals)
         if protected and not self._his_is_purchasing():
             raise AccessError(_("Only the purchasing team can set: %s.", ", ".join(sorted(protected))))
+
+    def _his_check_department(self, vals, requester):
+        """Le departement decide de l'approbateur et du domaine (recette P-07) :
+        hors equipe achats, c'est celui du demandeur."""
+        if "department_id" not in vals or self._his_is_purchasing():
+            return
+        if "requester_id" in vals:
+            requester = self.env["hr.employee"].browse(vals["requester_id"])
+        if (vals["department_id"] or False) != (requester.sudo().department_id.id or False):
+            raise AccessError(_("Only the purchasing team can file a request for another department."))
 
     def _his_check_requester(self):
         for request in self:
@@ -430,10 +443,13 @@ class HisPurchaseRequest(models.Model):
 
     @api.model
     def _cron_his_followup(self):
+        self.search([("state", "in", ("sourcing", "ordered"))])._his_update_progress()
+        if fields.Date.context_today(self).weekday() in WEEKEND:
+            # Ni rappel ni escalade vendredi et samedi (recette P-06) : dimanche rattrape.
+            return
         requests = self.search([("state", "in", list(OPEN_STATES))])
         requests._his_run_followup()
         requests._his_alert_urgent()
-        self.search([("state", "in", ("sourcing", "ordered"))])._his_update_progress()
         self.env["purchase.order"]._cron_his_followup()
         self.env["purchase.requisition"]._cron_his_followup()
 

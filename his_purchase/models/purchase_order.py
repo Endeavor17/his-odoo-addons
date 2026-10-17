@@ -82,7 +82,8 @@ class PurchaseOrder(models.Model):
     @api.depends("his_request_id", "requisition_id")
     def _compute_his_purchase_domain(self):
         for order in self:
-            source = order.his_request_id or order.requisition_id
+            # Le contrat est le contexte d'achat (recette P-28) : il prime sur la demande.
+            source = order.requisition_id or order.his_request_id
             order.his_purchase_domain = (
                 source.his_purchase_domain if source else (order.his_purchase_domain or "general")
             )
@@ -257,7 +258,7 @@ class PurchaseOrder(models.Model):
                 order.with_context(his_choice_write=True).write(vals)
             if order.partner_id.his_is_vat_free():
                 order.order_line.write({"tax_ids": [(5, 0, 0)]})
-        return super().button_confirm()
+        return super(PurchaseOrder, self.with_context(his_confirming=True)).button_confirm()
 
     def _his_action_choice(self):
         self.ensure_one()
@@ -296,6 +297,12 @@ class PurchaseOrder(models.Model):
         return self.env.user.has_group(self._his_approver_group())
 
     def button_approve(self, force=False):
+        # Le coeur passe un brouillon en commande sans aucun controle (recette
+        # P-01) : hors confirmation, seule une commande a approuver s'approuve.
+        if not force and not self.env.context.get("his_confirming"):
+            not_waiting = self.filtered(lambda o: o.state != "to approve")
+            if not_waiting:
+                raise UserError(_("%s is not waiting for approval: confirm it first.", not_waiting[0].name))
         # Le coeur filtre en silence ce que l'utilisateur ne peut pas approuver :
         # un clic sans effet. On le dit.
         if not force and not self.env.su:
