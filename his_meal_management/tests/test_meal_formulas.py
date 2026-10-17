@@ -5,9 +5,14 @@ restaurant formula is a single product. See the plan of 2026-10-15
 (docs/superpowers/plans/2026-10-15-formules-repas.md) for the decisions.
 """
 
+from odoo import Command
+from odoo.addons.account.tests.common import AccountTestInvoicingCommon
+from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
 from ..hooks import lier_categories_pos, taguer_produits
+from .test_meal_credit_invoice import sync_order
+from .test_meal_credits import make_person
 
 
 @tagged("post_install", "-at_install")
@@ -61,3 +66,106 @@ class TestMealFormulasData(TransactionCase):
         for xmlid in ("product_pack_300", "product_pack_600"):
             self.assertEqual(self.env.ref(f"his_meal_management.{xmlid}").pos_categ_ids, formules, xmlid)
         self.assertEqual(self.env.ref("his_meal_management.product_formule_restaurant").pos_categ_ids, repas)
+
+
+@tagged("post_install", "-at_install")
+class TestMealFormulasServer(AccountTestInvoicingCommon):
+    """A formula is a combo: the parent costs the credits, the children cost nothing."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env.user.group_ids |= cls.env.ref("point_of_sale.group_pos_manager") | cls.env.ref(
+            "his_meal_management.group_meal_officer"
+        )
+        ref = cls.env.ref
+        cls.pack_300 = ref("his_meal_management.product_pack_300").product_variant_id
+        cls.pack_600 = ref("his_meal_management.product_pack_600").product_variant_id
+        cls.restaurant = ref("his_meal_management.product_formule_restaurant").product_variant_id
+        cls.pizza = ref("his_meal_management.product_choix_pizza")
+        cls.box_riz = ref("his_meal_management.product_choix_box_riz")
+        cls.bottle = cls.env["product.product"].create(
+            {"name": "Test Ifri PM", "type": "consu", "is_storable": True, "list_price": 50.0, "available_in_pos": True}
+        )
+        cls.juice = cls.env["product.product"].create(
+            {
+                "name": "Test Jus",
+                "type": "consu",
+                "list_price": 100.0,
+                "available_in_pos": True,
+                "taxes_id": [Command.clear()],
+            }
+        )
+        cls.cash = cls.env["pos.payment.method"].create(
+            {
+                "name": "Especes",
+                "receivable_account_id": cls.company_data["default_account_receivable"].id,
+                "journal_id": cls.company_data["default_journal_cash"].id,
+            }
+        )
+        cls.config = cls.env["pos.config"].create(
+            {"name": "Formula Cafeteria", "payment_method_ids": [Command.set(cls.cash.ids)]}
+        )
+        cls.config.open_ui()
+        cls.session = cls.config.current_session_id
+        cls.plan = ref("his_meal_management.product_plan_weekly").product_variant_id  # 6 credits
+
+    def _student(self, name):
+        partner = make_person(self.env, name).partner_id
+        partner.sudo()._grant_meal_credits(self.plan)
+        return partner
+
+    def _sync(self, partner, lines, uuid):
+        return sync_order(self.env, self.session, self.cash, partner, lines, uuid, to_invoice=False)
+
+    def test_pack_600_takes_one_credit_and_its_bottle_leaves_stock(self):
+        student = self._student("Formula Amine")
+        order = self._sync(
+            student,
+            [(self.pack_600, 1, 0.0, 0.0), (self.box_riz, 1, 0.0, 0.0), (self.bottle, 1, 0.0, 0.0)],
+            "formula-0001",
+        )
+        self.assertEqual(order.state, "paid")
+        self.assertEqual(student.meal_credits_remaining, 5.0, "the dish or the bottle took a credit too")
+        ledger = self.env["his.meal.transaction"].search([("pos_order_id", "=", order.id)])
+        self.assertEqual(ledger.product_id, self.pack_600)
+        self.assertIn(self.bottle, order.picking_ids.move_ids.product_id, "the bottle never left stock")
+
+    def test_pack_300_takes_half_a_credit_and_two_take_two_halves(self):
+        student = self._student("Formula Lina")
+        self._sync(student, [(self.pack_300, 2, 0.0, 0.0), (self.pizza, 2, 0.0, 0.0)], "formula-0002")
+        self.assertEqual(student.meal_credits_remaining, 5.0)
+
+    def test_the_restaurant_formula_takes_one_credit(self):
+        student = self._student("Formula Karim")
+        self._sync(student, [(self.restaurant, 1, 0.0, 0.0)], "formula-0003")
+        self.assertEqual(student.meal_credits_remaining, 5.0)
+
+    def test_a_formula_without_a_student_is_refused(self):
+        """D1: no walk-in. A formula at 0 is a credit meal, and a credit meal needs a card."""
+        with self.assertRaises(UserError):
+            self._sync(False, [(self.pack_600, 1, 0.0, 0.0), (self.box_riz, 1, 0.0, 0.0)], "formula-0004")
+
+    def test_a_formula_without_enough_credits_is_refused(self):
+        broke = make_person(self.env, "Formula Sans Pack").partner_id
+        with self.assertRaises(UserError):
+            self._sync(broke, [(self.pack_600, 1, 0.0, 0.0), (self.box_riz, 1, 0.0, 0.0)], "formula-0005")
+        self.assertFalse(self.env["his.meal.transaction"].search([("partner_id", "=", broke.id)]))
+
+    def test_a_formula_next_to_a_paid_juice(self):
+        student = self._student("Formula Nour")
+        order = self._sync(
+            student,
+            [(self.pack_600, 1, 0.0, 0.0), (self.box_riz, 1, 0.0, 0.0), (self.juice, 1, 100.0, 0.0)],
+            "formula-0006",
+        )
+        self.assertEqual(student.meal_credits_remaining, 5.0)
+        self.assertEqual(sum(order.payment_ids.mapped("amount")), 100.0)
+
+    def test_an_invoiced_formula_does_not_claim_a_value_of_zero(self):
+        """A 0 DA formula is worth its credits, not "0,00 DA"."""
+        student = self._student("Formula Facture")
+        order = sync_order(self.env, self.session, self.cash, student, [(self.restaurant, 1, 0.0, 0.0)], "formula-0007")
+        label = order.account_move.invoice_line_ids.filtered(lambda l: l.product_id == self.restaurant).name
+        self.assertIn("Paid with 1 meal credit(s)", label)
+        self.assertNotIn("value", label)

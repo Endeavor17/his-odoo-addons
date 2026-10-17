@@ -22,6 +22,49 @@ from odoo.tests import tagged
 from .test_meal_credits import make_person
 
 
+def sync_order(env, session, cash, partner, lines, uuid, to_invoice=True):
+    """An order through the till's own entry point.
+
+    `lines` is a list of (product, qty, price_unit, discount). A meal on
+    credits comes with no payment line at all: that is what the till sends
+    now that it skips the payment screen, and core must accept it.
+    """
+    total = sum(qty * price * (1 - discount / 100) for _p, qty, price, discount in lines)
+    payload = {
+        "company_id": env.company.id,
+        "session_id": session.id,
+        "partner_id": partner.id if partner else False,
+        "uuid": uuid,
+        "to_invoice": to_invoice,
+        "lines": [
+            [
+                0,
+                0,
+                {
+                    "product_id": product.id,
+                    "qty": qty,
+                    "price_unit": price,
+                    "discount": discount,
+                    "tax_ids": [[6, False, []]],
+                    "price_subtotal": qty * price * (1 - discount / 100),
+                    "price_subtotal_incl": qty * price * (1 - discount / 100),
+                },
+            ]
+            for product, qty, price, discount in lines
+        ],
+        "payment_ids": (
+            [[0, 0, {"amount": total, "name": fields.Datetime.now(), "payment_method_id": cash.id}]] if total else []
+        ),
+        "amount_paid": total,
+        "amount_total": total,
+        "amount_tax": 0.0,
+        "amount_return": 0.0,
+        "last_order_preparation_change": "{}",
+    }
+    env["pos.order"].sync_from_ui([payload])
+    return env["pos.order"].search([("uuid", "=", uuid)])
+
+
 @tagged("post_install", "-at_install")
 class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
     """What the invoice of a meal served on credits says, and who receives it."""
@@ -35,8 +78,27 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
         cls.with_email = make_person(cls.env, "Samira", email="samira.test@his.edu.dz").partner_id
         cls.without_email = make_person(cls.env, "Yacine").partner_id
         cls.plan = cls.env.ref("his_meal_management.product_plan_weekly").product_variant_id
-        cls.meal_600 = cls.env.ref("his_meal_management.product_daily_meal").product_variant_id
-        cls.meal_300 = cls.env.ref("his_meal_management.product_meal_300").product_variant_id
+        # Meals of their own: the module's generic "Meal 300/600" are archived
+        # since the formulas (2026-10-15), and an archived product cannot be sold.
+        meal = cls.env["product.product"].create
+        cls.meal_600 = meal(
+            {
+                "name": "Test Meal 600",
+                "type": "consu",
+                "list_price": 600.0,
+                "meal_credit_cost": 1.0,
+                "taxes_id": [Command.clear()],
+            }
+        )
+        cls.meal_300 = meal(
+            {
+                "name": "Test Meal 300",
+                "type": "consu",
+                "list_price": 300.0,
+                "meal_credit_cost": 0.5,
+                "taxes_id": [Command.clear()],
+            }
+        )
         cls.cash = cls.env["pos.payment.method"].create(
             {
                 "name": "Especes",
@@ -57,48 +119,7 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
             partner.sudo()._grant_meal_credits(cls.plan)
 
     def _sync(self, partner, lines, uuid):
-        """An invoiced order through the till's own entry point.
-
-        `lines` is a list of (product, qty, price_unit, discount). A meal on
-        credits comes with no payment line at all: that is what the till sends
-        now that it skips the payment screen, and core must accept it.
-        """
-        total = sum(qty * price * (1 - discount / 100) for _p, qty, price, discount in lines)
-        payload = {
-            "company_id": self.env.company.id,
-            "session_id": self.session.id,
-            "partner_id": partner.id,
-            "uuid": uuid,
-            "to_invoice": True,
-            "lines": [
-                [
-                    0,
-                    0,
-                    {
-                        "product_id": product.id,
-                        "qty": qty,
-                        "price_unit": price,
-                        "discount": discount,
-                        "tax_ids": [[6, False, []]],
-                        "price_subtotal": qty * price * (1 - discount / 100),
-                        "price_subtotal_incl": qty * price * (1 - discount / 100),
-                    },
-                ]
-                for product, qty, price, discount in lines
-            ],
-            "payment_ids": (
-                [[0, 0, {"amount": total, "name": fields.Datetime.now(), "payment_method_id": self.cash.id}]]
-                if total
-                else []
-            ),
-            "amount_paid": total,
-            "amount_total": total,
-            "amount_tax": 0.0,
-            "amount_return": 0.0,
-            "last_order_preparation_change": "{}",
-        }
-        self.env["pos.order"].sync_from_ui([payload])
-        return self.env["pos.order"].search([("uuid", "=", uuid)])
+        return sync_order(self.env, self.session, self.cash, partner, lines, uuid)
 
     def _invoice_mails(self, invoice, partner):
         # With his_mail_async installed, PDF and email are left to the "Send

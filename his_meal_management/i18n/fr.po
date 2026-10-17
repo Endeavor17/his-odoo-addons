@@ -1632,3 +1632,9 @@ msgstr "Repas restaurant (salade + plat + dessert)"
 #: model:product.template,name:his_meal_management.product_choix_box_riz_product_template
 msgid "Rice box + crispy + cheese sauce"
 msgstr "Box riz + crispy + sauce fromage"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/pos_order.py:0
+msgid "Paid with %(credits)s meal credit(s)"
+msgstr "Payé avec %(credits)s crédit(s) repas"

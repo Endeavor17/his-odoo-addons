@@ -114,11 +114,18 @@ class PosOrder(models.Model):
         if values.get("display_type") or not pos_line._his_is_credit_meal():
             return values
         order = pos_line.order_id
-        note = _(
-            "Paid with %(credits)s meal credit(s), value %(value)s",
-            credits=f"{pos_line.product_id.meal_credit_cost * pos_line.qty:g}",
-            value=order.currency_id.format(pos_line.product_id.lst_price * pos_line.qty),
-        )
+        credits = f"{pos_line.product_id.meal_credit_cost * pos_line.qty:g}"
+        price = pos_line.product_id.lst_price
+        # A formula is priced 0 (eaten on credits only): "value 0,00 DA" would
+        # say it is worth nothing.
+        if order.currency_id.is_zero(price):
+            note = _("Paid with %(credits)s meal credit(s)", credits=credits)
+        else:
+            note = _(
+                "Paid with %(credits)s meal credit(s), value %(value)s",
+                credits=credits,
+                value=order.currency_id.format(price * pos_line.qty),
+            )
         values["name"] = f"{values['name']}\n{note}" if values.get("name") else note
         return values
 

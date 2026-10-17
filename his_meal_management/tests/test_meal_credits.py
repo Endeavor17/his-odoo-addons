@@ -1424,16 +1424,23 @@ class TestAtteignabilitéAuComptoir(TransactionCase):
         return Template.search(Template._load_pos_data_domain({}, config))
 
     def test_les_deux_points_de_restauration_servent_les_repas(self):
-        """« any food point of sale serves meals against the balance »."""
-        repas = self.env["product.template"].search([("meal_credit_cost", ">", 0)])
-        self.assertTrue(repas, "aucun repas en base : le module n'est pas charge")
-        for xmlid in ("his_stock_mdm.pos_config_cafeteria", "his_stock_mdm.pos_config_restaurant"):
-            chargeables = self._chargeables(xmlid)
-            for plat in repas:
+        """« any food point of sale serves meals against the balance ».
+
+        Chacun les SIENS depuis les formules (2026-10-15) : les packs a la
+        Cafeteria, la formule Restaurant au Restaurant.
+        """
+        ref = self.env.ref
+        for config_xmlid, formules in (
+            ("his_stock_mdm.pos_config_cafeteria", ("product_pack_300", "product_pack_600")),
+            ("his_stock_mdm.pos_config_restaurant", ("product_formule_restaurant",)),
+        ):
+            chargeables = self._chargeables(config_xmlid)
+            for xmlid in formules:
+                plat = ref(f"his_meal_management.{xmlid}")
                 self.assertIn(
                     plat,
                     chargeables,
-                    "%s ne charge pas « %s » : son bouton de service sera vide" % (self.env.ref(xmlid).name, plat.name),
+                    "%s ne charge pas « %s » : son bouton de service sera vide" % (ref(config_xmlid).name, plat.name),
                 )
 
     def test_les_packs_se_vendent_au_copy_center(self):
