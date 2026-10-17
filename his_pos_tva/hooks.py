@@ -25,7 +25,18 @@ def appliquer_tva(env, company):
     if not (biens and services):
         return
 
-    (biens | services).write({"active": True, "price_include_override": "tax_included"})
+    # N'ecrire que ce qui change : le point de vente interdit d'ecrire
+    # price_include_override sur une taxe deja vendue dans une session encore
+    # ouverte, meme a valeur egale. Une migration rejouee sur une base vivante
+    # (staging 2026-10-17, deux sessions ouvertes) ne doit pas bloquer le demarrage.
+    for taxe in biens | services:
+        vals = {}
+        if not taxe.active:
+            vals["active"] = True
+        if taxe.price_include_override != "tax_included":
+            vals["price_include_override"] = "tax_included"
+        if vals:
+            taxe.write(vals)
     company.account_sale_tax_id = biens
 
     # Valeur stockee (carte cadeau, eWallet) : pas une vente, reste sans taxe.
