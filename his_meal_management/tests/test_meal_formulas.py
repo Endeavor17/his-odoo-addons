@@ -7,6 +7,7 @@ restaurant formula is a single product. See the plan of 2026-10-15
 
 from odoo import Command
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
+from odoo.addons.point_of_sale.tests.test_frontend import TestPointOfSaleHttpCommon
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
@@ -169,3 +170,69 @@ class TestMealFormulasServer(AccountTestInvoicingCommon):
         label = order.account_move.invoice_line_ids.filtered(lambda l: l.product_id == self.restaurant).name
         self.assertIn("Paid with 1 meal credit(s)", label)
         self.assertNotIn("value", label)
+
+
+@tagged("post_install", "-at_install")
+class TestMealFormulasTill(TestPointOfSaleHttpCommon):
+    """A formula clicked through on a real till."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # Students are hidden from plain users: the till runs as a meal cashier.
+        cls.pos_user.group_ids |= cls.env.ref("his_meal_management.group_meal_cashier")
+        plan = cls.env["product.product"].create(
+            {"name": "Tour Pack", "type": "service", "list_price": 3000.0, "meal_credits": 6}
+        )
+        # A combo only takes products for sale, and a stocked product for sale
+        # needs a price (his_stock_mdm): the bottle has its cash price, and
+        # inside the formula it still costs nothing.
+        new = cls.env["product.product"].create
+        box_riz = new({"name": "Tour Box Riz", "type": "consu", "list_price": 600.0})
+        box_frites = new({"name": "Tour Box Frites", "type": "consu", "list_price": 600.0})
+        cls.bottle = new(
+            {"name": "Tour Ifri PM", "type": "consu", "is_storable": True, "list_price": 50.0, "available_in_pos": True}
+        )
+        Combo = cls.env["product.combo"]
+        dish = Combo.create(
+            {
+                "name": "Tour dish",
+                "combo_item_ids": [Command.create({"product_id": p.id}) for p in (box_riz, box_frites)],
+            }
+        )
+        drink = Combo.create({"name": "Tour drink", "combo_item_ids": [Command.create({"product_id": cls.bottle.id})]})
+        cls.pack = cls.env["product.template"].create(
+            {
+                "name": "Tour Pack 600",
+                "type": "combo",
+                "list_price": 0.0,
+                "meal_credit_cost": 1.0,
+                "combo_ids": [Command.set([dish.id, drink.id])],
+                "available_in_pos": True,
+                "taxes_id": [Command.clear()],
+            }
+        )
+        cls.student = make_person(cls.env, "AAA Tour Formule").partner_id
+        cls.student.sudo()._grant_meal_credits(plan)
+
+    def _run(self, tour):
+        self.main_pos_config.with_user(self.pos_user).open_ui()
+        self.start_pos_tour(tour)
+        return self.env["pos.order"].search([("config_id", "=", self.main_pos_config.id)], order="id desc", limit=1)
+
+    def test_a_formula_is_served_on_credits_with_its_choices(self):
+        order = self._run("his_meal_formula_tour")
+        self.assertEqual(order.state, "paid")
+        self.assertFalse(order.payment_ids, "a formula on credits was recorded as paid by something")
+        self.assertEqual(self.student.meal_credits_remaining, 5.0)
+        parent = order.lines.filtered(lambda l: l.product_id.product_tmpl_id == self.pack)
+        self.assertEqual(parent.combo_line_ids.product_id.mapped("name"), ["Tour Box Riz", "Tour Ifri PM"])
+        self.assertIn(self.bottle, order.picking_ids.move_ids.product_id)
+
+    def test_closing_the_combo_window_serves_nothing(self):
+        self._run("his_meal_formula_cancel_tour")
+        self.assertEqual(self.student.meal_credits_remaining, 6.0)
+
+    def test_a_walk_in_cannot_take_a_formula(self):
+        self._run("his_meal_formula_walkin_tour")
+        self.assertEqual(self.student.meal_credits_remaining, 6.0)

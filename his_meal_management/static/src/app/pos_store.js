@@ -168,11 +168,15 @@ patch(PosStore.prototype, {
                 // 0,00 DA" tells them nothing. Core prints a line's customer
                 // note on the receipt. Worded per meal because core merges two
                 // lines of the same meal carrying the same note.
+                const credits = product.meal_credit_cost;
                 line?.setCustomerNote(
-                    _t("Paid with %(credits)s meal credit(s) per meal, value %(value)s", {
-                        credits: product.meal_credit_cost,
-                        value: this.env.utils.formatCurrency(product.lst_price),
-                    })
+                    this.currency.isZero(product.lst_price)
+                        ? // A formula is priced 0: "value 0,00 DA" would say it is worth nothing.
+                          _t("Paid with %(credits)s meal credit(s) per meal", { credits })
+                        : _t("Paid with %(credits)s meal credit(s) per meal, value %(value)s", {
+                              credits,
+                              value: this.env.utils.formatCurrency(product.lst_price),
+                          })
                 );
             },
         });

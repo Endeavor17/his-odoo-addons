@@ -13,15 +13,21 @@ patch(PosOrder.prototype, {
     //
     // A single paid line - a drink next to the meal - is enough to make it an
     // ordinary sale with an ordinary payment screen.
+    //
+    // A combo's children (dish, bottle) at 0 DA belong to the formula above them.
     get isServedOnMealCredits() {
         return Boolean(
             this.lines.length &&
                 this.getPartner() &&
-                this.lines.every(
-                    (line) =>
-                        line.product_id.meal_credit_cost > 0 &&
+                this.lines.every((line) => {
+                    // A dish or a bottle chosen inside a formula: it is the
+                    // formula, its parent, that the credits pay for.
+                    const meal = line.combo_parent_id ? line.combo_parent_id.product_id : line.product_id;
+                    return (
+                        meal.meal_credit_cost > 0 &&
                         this.currency.isZero(line.price_unit * (1 - (line.discount || 0) / 100))
-                )
+                    );
+                })
         );
     },
 });

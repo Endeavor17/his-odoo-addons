@@ -1638,3 +1638,9 @@ msgstr "Box riz + crispy + sauce fromage"
 #: code:addons/his_meal_management/models/pos_order.py:0
 msgid "Paid with %(credits)s meal credit(s)"
 msgstr "Payé avec %(credits)s crédit(s) repas"
+
+#. module: his_meal_management
+#. odoo-javascript
+#: code:addons/his_meal_management/static/src/app/pos_store.js:0
+msgid "Paid with %(credits)s meal credit(s) per meal"
+msgstr "Payé avec %(credits)s crédit(s) repas par repas"

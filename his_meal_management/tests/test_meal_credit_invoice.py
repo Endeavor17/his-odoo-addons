@@ -186,6 +186,9 @@ class TestTheCreditMealTill(TestPointOfSaleHttpCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Students are hidden from plain users (his_person_core); a till serving
+        # meals runs as a meal cashier, or it finds no student to serve.
+        cls.pos_user.group_ids |= cls.env.ref("his_meal_management.group_meal_cashier")
         plan = cls.env["product.product"].create(
             {"name": "Tour Pack", "type": "service", "list_price": 3000.0, "meal_credits": 6}
         )
