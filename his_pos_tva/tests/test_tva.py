@@ -6,6 +6,7 @@ d'AccountTestInvoicingCommon naissent sur un plan generique.
 """
 
 from odoo import Command
+from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
 from ..hooks import TVA_BIENS, TVA_SERVICES, appliquer_tva
@@ -98,3 +99,35 @@ class TestTvaCaisse(TransactionCase):
         self.assertAlmostEqual(facture.amount_total, 810.0)
         self.assertAlmostEqual(facture.amount_untaxed + facture.amount_tax, 810.0)
         self.assertAlmostEqual(facture.amount_tax, 66.88, delta=0.02)
+
+    def test_rejouable_avec_une_session_ouverte(self):
+        """Le balayage repasse sans toucher une taxe deja vendue en session ouverte.
+
+        Le point de vente refuse toute ecriture de price_include_override sur une
+        taxe portee par une ligne de commande non cloturee ; la migration
+        19.0.1.1.0 a bloque le demarrage du staging pour cette raison.
+        """
+        config = self.env["pos.config"].create({"name": "Caisse test TVA"})
+        config.open_ui()
+        commande = self.env["pos.order"].create({
+            "session_id": config.current_session_id.id,
+            "lines": [Command.create({
+                "product_id": self.repas.product_variant_id.id,
+                "qty": 1,
+                "price_unit": 600.0,
+                "price_subtotal": 550.46,
+                "price_subtotal_incl": 600.0,
+                "tax_ids": [Command.set(self.biens.ids)],
+            })],
+            "amount_tax": 49.54,
+            "amount_total": 600.0,
+            "amount_paid": 0.0,
+            "amount_return": 0.0,
+        })
+        self.assertNotEqual(commande.session_id.state, "closed")
+        # Le garde du point de vente est bien arme : l'ecriture brute est refusee.
+        with self.assertRaises(UserError), self.env.cr.savepoint():
+            self.biens.price_include_override = "tax_included"
+        appliquer_tva(self.env, self.company)
+        self.assertTrue(self.biens.active)
+        self.assertTrue(self.biens.price_include)
