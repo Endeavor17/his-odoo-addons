@@ -34,6 +34,18 @@ class TestFollowup(HisPurchaseCase):
         self.assertFalse(self._activities(request, self.head), "l'etape passee est close")
         self.assertEqual(len(self._activities(request, self.officer)), 1)
 
+    def test_rien_le_week_end(self):
+        # Recette P-06 : un retard decouvert un vendredi attend le dimanche.
+        with freeze_time(LUNDI):
+            request = self._request()
+            request.action_submit()
+        self._cron(date(2026, 11, 6))
+        self._cron(date(2026, 11, 7))
+        self.assertFalse(self._notified(request, self.head), "vendredi et samedi : silence")
+        self.assertEqual(request.his_step_level, 0)
+        self._cron(date(2026, 11, 8))
+        self.assertTrue(self._notified(request, self.head))
+
     def test_rappel_puis_escalade(self):
         with freeze_time(LUNDI):
             request = self._request()

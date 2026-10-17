@@ -107,6 +107,21 @@ class TestOrder(HisPurchaseCase):
         order.with_user(self.manager).button_approve()
         self.assertEqual(order.state, "purchase")
 
+    def test_approuver_un_brouillon_est_refuse(self):
+        # Recette P-01 : approuver un brouillon le confirmait sans aucun controle.
+        request = self._approved_request()
+        bare = self._source_rfq(request, self.supplier_bare)
+        bare.order_line.price_unit = 8500
+        with self.assertRaisesRegex(UserError, "waiting for approval"):
+            bare.with_user(self.director).button_approve()
+        self.assertEqual(bare.state, "draft")
+        order = self._source_rfq(self._approved_request(), self.supplier_a)
+        order.order_line.price_unit = 9500
+        self._alternative(order, self.supplier_b, 9000)
+        with self.assertRaisesRegex(UserError, "waiting for approval"):
+            order.with_user(self.director).button_approve()
+        self.assertFalse(order.his_choice_criterion)
+
     def test_celui_qui_choisit_peut_approuver(self):
         request = self._approved_request()
         order = self._source_rfq(request, self.supplier_a)
@@ -190,6 +205,21 @@ class TestOrder(HisPurchaseCase):
         self.assertEqual(order.his_supplier_answer, "quoted")
         order.with_user(self.officer).button_confirm()
         self.assertEqual(order.state, "to approve", "un appel sur contrat-cadre est approuve aussi")
+
+    def test_appel_sur_contrat_suit_le_domaine_du_contrat(self):
+        # Recette P-28 : le contrat Restaurant reste un achat point de vente,
+        # meme appele depuis une demande d'un service general.
+        agreement = self._agreement()
+        agreement.his_purchase_domain = "pos"
+        request = self._approved_request()
+        self.assertEqual(request.his_purchase_domain, "general")
+        wizard = (
+            self.env["his.purchase.request.source"]
+            .with_user(self.officer)
+            .create({"request_id": request.id, "mode": "calloff", "requisition_id": agreement.id})
+        )
+        order = self.env["purchase.order"].browse(wizard.action_source()["res_id"])
+        self.assertEqual(order.his_purchase_domain, "pos")
 
     def _agreement(self):
         agreement = self.env["purchase.requisition"].create(

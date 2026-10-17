@@ -1981,3 +1981,15 @@ msgstr "Quantité avant refus"
 #: model:ir.model.fields,help:his_purchase.field_purchase_order_line__his_qty_before_answer
 msgid "Quantity set aside while the supplier answer is Declined or No Answer."
 msgstr "Quantité mise de côté tant que la réponse du fournisseur est « Refusée » ou « Sans réponse »."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "%s is not waiting for approval: confirm it first."
+msgstr "%s n'attend pas d'approbation : confirmez-la d'abord."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Only the purchasing team can file a request for another department."
+msgstr "Seule l'équipe achats peut déposer une demande pour un autre département."

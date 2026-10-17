@@ -118,6 +118,17 @@ class TestRequest(HisPurchaseCase):
         # L'acheteur corrige le domaine avant de sourcer (spec, section 5.5).
         request.with_user(self.officer).his_purchase_domain = "pos"
 
+    def test_le_demandeur_ne_choisit_pas_son_departement(self):
+        # Recette P-07 : le departement decide du domaine, donc de l'approbateur.
+        with self.assertRaises(AccessError):
+            self._request(department_id=self.restaurant.id)
+        request = self._request(department_id=self.it.id)
+        with self.assertRaises(AccessError):
+            request.write({"department_id": self.restaurant.id})
+        self.assertEqual(request.his_purchase_domain, "general")
+        request.with_user(self.officer).department_id = self.restaurant
+        self.assertEqual(request.his_purchase_domain, "pos")
+
     def test_le_nouveau_directeur_devient_l_approbateur(self):
         self.company.his_purchase_director_id = False
         request = self._request(user=self.outsider, employee=self.outsider_emp)
