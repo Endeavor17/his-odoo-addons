@@ -1,6 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 """hr.employee est un miroir du referentiel Personnes, jamais sa source."""
 
+from odoo import Command
 from odoo.addons.his_hr_base import BACKUP_TABLE, post_init_hook
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
@@ -286,6 +287,21 @@ class TestPersonLink(TransactionCase):
         employee = self._employee()
         employee.barcode = "0087654321"
         self.assertEqual(employee.person_id.numero_carte, "0087654321")
+
+    def test_hr_officer_sets_the_badge_on_the_employee(self):
+        """Recette 2026-10-17 (P-10) : un RH sans droit d'ecriture sur la fiche
+        personne ne pouvait pas poser le badge depuis la fiche employe."""
+        hr_officer = self.env["res.users"].create(
+            {
+                "name": "RH Badge",
+                "login": "rh.badge.test",
+                "group_ids": [Command.set(self.env.ref("hr.group_hr_user").ids)],
+            }
+        )
+        employee = self._employee()
+        self.env.invalidate_all()
+        employee.with_user(hr_officer).barcode = "0011223344"
+        self.assertEqual(employee.person_id.numero_carte, "0011223344")
 
     def test_badge_cannot_be_shared_by_two_people(self):
         first, second = self._employee(), self._employee()

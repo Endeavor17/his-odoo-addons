@@ -47,6 +47,25 @@ class TestPartnerPrivacy(TransactionCase):
         for partner in (self.supplier, self.employee.partner_id, self.staff.partner_id, self.env.company.partner_id):
             self.assertTrue(self._readable(self.staff, partner), partner.name)
 
+    def test_a_person_manager_registers_a_person(self):
+        """Recette 2026-10-17 (P-04) : le gestionnaire ne pouvait creer aucune
+        fiche, faute de droit de creation sur res.partner."""
+        manager = self.env["res.users"].create(
+            {
+                "name": "Gestionnaire Creation",
+                "login": "gestionnaire.creation",
+                "group_ids": [Command.set(self.env.ref("his_person_core.group_his_person_manager").ids)],
+            }
+        )
+        person = (
+            self.env["his.person"]
+            .with_user(manager)
+            .create({"name": "Etudiante Nouvelle", "type_personne": "etudiant", "source_system": "manual"})
+        )
+        self.assertTrue(person.matricule_institutionnel)
+        person.with_user(manager).write({"name": "Etudiante Renommee", "email": "nouvelle@example.com"})
+        self.assertEqual(person.partner_id.name, "Etudiante Renommee")
+
     def test_a_person_manager_reads_everyone(self):
         manager = self.env["res.users"].create(
             {

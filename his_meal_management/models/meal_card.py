@@ -134,7 +134,9 @@ class HisMealCard(models.Model):
         never writes it - this is the wallet module's own call.
         """
         for card in self:
-            partner = card.partner_id
+            # sudo: the mirror is bookkeeping. The right checked is the card's (the
+            # Meal Officer issues cards), not a general right on contacts.
+            partner = card.partner_id.sudo()
             if card.state == "active":
                 partner.barcode = card.code
             elif partner.barcode == card.code:
@@ -155,7 +157,7 @@ class HisMealCard(models.Model):
         res = super().write(vals)
         if {"code", "state", "partner_id"} & vals.keys():
             for card in stale:
-                card.partner_id.barcode = False
+                card.partner_id.sudo().barcode = False
             self._sync_partner_barcode()
         return res
 
@@ -167,7 +169,7 @@ class HisMealCard(models.Model):
         # clear a barcode a newer active card has already claimed.
         for card in self:
             if card.partner_id.barcode == card.code:
-                card.partner_id.barcode = False
+                card.partner_id.sudo().barcode = False
         return super().unlink()
 
     @api.model
