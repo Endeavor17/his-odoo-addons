@@ -109,21 +109,27 @@ class TestTvaCaisse(TransactionCase):
         """
         config = self.env["pos.config"].create({"name": "Caisse test TVA"})
         config.open_ui()
-        commande = self.env["pos.order"].create({
-            "session_id": config.current_session_id.id,
-            "lines": [Command.create({
-                "product_id": self.repas.product_variant_id.id,
-                "qty": 1,
-                "price_unit": 600.0,
-                "price_subtotal": 550.46,
-                "price_subtotal_incl": 600.0,
-                "tax_ids": [Command.set(self.biens.ids)],
-            })],
-            "amount_tax": 49.54,
-            "amount_total": 600.0,
-            "amount_paid": 0.0,
-            "amount_return": 0.0,
-        })
+        commande = self.env["pos.order"].create(
+            {
+                "session_id": config.current_session_id.id,
+                "lines": [
+                    Command.create(
+                        {
+                            "product_id": self.repas.product_variant_id.id,
+                            "qty": 1,
+                            "price_unit": 600.0,
+                            "price_subtotal": 550.46,
+                            "price_subtotal_incl": 600.0,
+                            "tax_ids": [Command.set(self.biens.ids)],
+                        }
+                    )
+                ],
+                "amount_tax": 49.54,
+                "amount_total": 600.0,
+                "amount_paid": 0.0,
+                "amount_return": 0.0,
+            }
+        )
         self.assertNotEqual(commande.session_id.state, "closed")
         # Le garde du point de vente est bien arme : l'ecriture brute est refusee.
         with self.assertRaises(UserError), self.env.cr.savepoint():
