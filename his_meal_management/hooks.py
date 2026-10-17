@@ -22,9 +22,13 @@ n'ajoute que ce qui manque et ne retire jamais un onglet pose par l'exploitant.
 #
 # Le Copy Center n'est pas un point de restauration : il ne sert donc aucun
 # repas, ce qui satisfait a la fois Abdo et la regle « rien de comestible ».
+#
+# Les REPAS (onglet Meals) sont ceux du Restaurant ; la Cafeteria a ses propres
+# formules (onglet Meal Packs, 2026-10-15). Partager « Meals » mettait la
+# formule du Restaurant a la Cafeteria et les packs au Restaurant.
 RATTACHEMENTS = [
     ("his_meal_management.pos_categ_repas", "his_stock_mdm.pos_config_restaurant"),
-    ("his_meal_management.pos_categ_repas", "his_stock_mdm.pos_config_cafeteria"),
+    ("his_meal_management.pos_categ_formules", "his_stock_mdm.pos_config_cafeteria"),
     ("his_meal_management.pos_categ_recharges", "his_stock_mdm.pos_config_copy_center"),
 ]
 
@@ -62,10 +66,16 @@ def taguer_produits(env):
     if not recharges or not repas:
         return
 
+    formules = env.ref("his_meal_management.pos_categ_formules", raise_if_not_found=False)
+    rayons_repas = repas | formules if formules else repas
+
     for champ, rayon, rayon_a_retirer in (("meal_credits", recharges, repas), ("meal_credit_cost", repas, recharges)):
         for produit in Template.search([(champ, ">", 0)]):
             commandes = []
-            if rayon not in produit.pos_categ_ids:
+            # Un repas range sous les formules de la Cafeteria y reste : lui
+            # imposer « Meals » le mettrait aussi au Restaurant.
+            deja_range = champ == "meal_credit_cost" and produit.pos_categ_ids & rayons_repas
+            if rayon not in produit.pos_categ_ids and not deja_range:
                 commandes.append((4, rayon.id))
             # Un produit qui porte les deux champs est a la fois forfait et
             # repas : on ne lui retire alors rien.

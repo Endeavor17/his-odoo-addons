@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The cafeteria's own tab. The packs do not go under "Meals": that tab is
+         the Restaurant's, and sharing it put each till's formulas on the other.
+         Outside noupdate, like pos_categ_repas: which tab exists is a module
+         decision. -->
+    <record id="pos_categ_formules" model="pos.category">
+        <field name="name">Meal Packs</field>
+        <field name="sequence">4</field>
+    </record>
+
+    <data noupdate="1">
+
+        <!-- What the caterer serves (sheet received 2026-10-15). Eaten on
+             subscription credits ONLY: every formula is priced 0, and a product
+             priced 0 with a credit cost is, on the server, a meal that needs a
+             scanned student with the credits for it
+             (pos.order.line._his_is_credit_meal). A walk-in therefore cannot
+             buy one - there is no price to pay.
+
+             The dish choices are product.product so the combo items can ref()
+             them directly. They are kept OFF the grid (available_in_pos False):
+             the till still loads them as combo items, but they cannot be sold
+             alone. Their list price is NOT what anyone pays - a child of a
+             combo priced 0 is always 0 - it only keeps the till's proration
+             (compute_combo_items.js: base_price * parent / sum of base_price)
+             away from 0/0 = NaN. Every drink on staging is priced 0, so the
+             dish must carry the non-zero one. Do not set it to 0. -->
+
+        <record id="product_choix_pizza" model="product.product">
+            <field name="name">Pizza (5 slices)</field>
+            <field name="type">consu</field>
+            <field name="list_price">300.0</field>
+            <field name="available_in_pos" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+        </record>
+        <record id="product_choix_cheeseburger" model="product.product">
+            <field name="name">Cheeseburger + fries</field>
+            <field name="type">consu</field>
+            <field name="list_price">300.0</field>
+            <field name="available_in_pos" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+        </record>
+        <record id="product_choix_box_riz" model="product.product">
+            <field name="name">Rice box + crispy + cheese sauce</field>
+            <field name="type">consu</field>
+            <field name="list_price">600.0</field>
+            <field name="available_in_pos" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+        </record>
+        <record id="product_choix_box_frites" model="product.product">
+            <field name="name">Fries box + crispy + cheese sauce</field>
+            <field name="type">consu</field>
+            <field name="list_price">600.0</field>
+            <field name="available_in_pos" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+        </record>
+
+        <record id="combo_plat_300" model="product.combo">
+            <field name="name">Pack 300 - dish</field>
+            <field name="combo_item_ids" eval="[
+                Command.create({'product_id': ref('product_choix_pizza')}),
+                Command.create({'product_id': ref('product_choix_cheeseburger')}),
+            ]"/>
+        </record>
+        <record id="combo_plat_600" model="product.combo">
+            <field name="name">Pack 600 - dish</field>
+            <field name="combo_item_ids" eval="[
+                Command.create({'product_id': ref('product_choix_box_riz')}),
+                Command.create({'product_id': ref('product_choix_box_frites')}),
+            ]"/>
+        </record>
+
+        <!-- The drink is a second combo, "Small bottle", that staff build and
+             add to both packs in the UI (Point of Sale > Products > Combo
+             Choices): which bottles qualify cannot be read from the catalogue
+             (sizes live in the names, cans and bottles share them). Until it
+             exists the packs serve the dish alone. -->
+
+        <record id="product_pack_300" model="product.template">
+            <field name="name">Pack 300 (pizza or cheeseburger, with a drink)</field>
+            <field name="type">combo</field>
+            <field name="list_price">0.0</field>
+            <field name="meal_credit_cost">0.5</field>
+            <field name="combo_ids" eval="[Command.set([ref('combo_plat_300')])]"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_formules')])]"/>
+            <field name="purchase_ok" eval="False"/>
+        </record>
+        <record id="product_pack_600" model="product.template">
+            <field name="name">Pack 600 (rice or fries box, with a drink)</field>
+            <field name="type">combo</field>
+            <field name="list_price">0.0</field>
+            <field name="meal_credit_cost">1.0</field>
+            <field name="combo_ids" eval="[Command.set([ref('combo_plat_600')])]"/>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_formules')])]"/>
+            <field name="purchase_ok" eval="False"/>
+        </record>
+
+        <!-- The day's dish changes too often to be a choice in Odoo: one
+             product, one tap. -->
+        <record id="product_formule_restaurant" model="product.template">
+            <field name="name">Restaurant meal (salad + main dish + dessert)</field>
+            <field name="type">consu</field>
+            <field name="list_price">0.0</field>
+            <field name="meal_credit_cost">1.0</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="pos_categ_ids" eval="[Command.set([ref('pos_categ_repas')])]"/>
+            <field name="purchase_ok" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

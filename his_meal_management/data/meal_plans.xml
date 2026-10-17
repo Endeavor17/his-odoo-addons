@@ -42,9 +42,9 @@
              weekly / monthly / semesterly names are package sizes now, not
              time windows.
 
-             Taxes are cleared deliberately. A plan sold at 12 000 must land 25
-             credits and take exactly 12 000, and a meal must stay at zero when
-             it is paid with a credit. -->
+             Taxes: his_pos_tva puts 9 % INCLUDED on every POS product, plans included
+             (2026-10-15), so a plan at 12 000 still takes exactly 12 000. A meal served
+             on credits is at 0 and carries none: the VAT was collected on the plan. -->
 
         <record id="product_category_meal_plans" model="product.category">
             <field name="name">Meal Plans</field>
@@ -154,6 +154,8 @@
 
         <record id="product_meal_300" model="product.template">
             <field name="name">Meal 300 (credits or cash)</field>
+            <!-- Retired 2026-10-15 for the formulas in meal_formulas.xml; kept for the ledger lines that point at it. -->
+            <field name="active" eval="False"/>
             <!-- 'consu' without is_storable: a meal is not tracked in stock.
                  (is_storable lives in the stock module, which this one does not
                  depend on, so it is deliberately not set here.) -->
@@ -171,6 +173,8 @@
              the module has always sold, renamed and given its cost. -->
         <record id="product_daily_meal" model="product.template">
             <field name="name">Meal 600 (credits or cash)</field>
+            <!-- Retired 2026-10-15 for the formulas in meal_formulas.xml; kept for the ledger lines that point at it. -->
+            <field name="active" eval="False"/>
             <field name="type">consu</field>
             <field name="list_price">600.0</field>
             <field name="meal_credit_cost">1.0</field>

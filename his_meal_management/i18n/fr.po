@@ -1592,3 +1592,43 @@ msgstr "partner_id"
 #: code:addons/his_meal_management/static/src/app/serve_meal_dialog.xml:0
 msgid "until"
 msgstr "jusqu'au"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_choix_cheeseburger_product_template
+msgid "Cheeseburger + fries"
+msgstr "Cheeseburger + frites"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_choix_box_frites_product_template
+msgid "Fries box + crispy + cheese sauce"
+msgstr "Box frites + crispy + sauce fromage"
+
+#. module: his_meal_management
+#: model:pos.category,name:his_meal_management.pos_categ_formules
+msgid "Meal Packs"
+msgstr "Formules"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_pack_300
+msgid "Pack 300 (pizza or cheeseburger, with a drink)"
+msgstr "Pack 300 (pizza ou cheeseburger, avec boisson)"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_pack_600
+msgid "Pack 600 (rice or fries box, with a drink)"
+msgstr "Pack 600 (box riz ou frites, avec boisson)"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_choix_pizza_product_template
+msgid "Pizza (5 slices)"
+msgstr "Pizza (5 tranches)"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_formule_restaurant
+msgid "Restaurant meal (salad + main dish + dessert)"
+msgstr "Repas restaurant (salade + plat + dessert)"
+
+#. module: his_meal_management
+#: model:product.template,name:his_meal_management.product_choix_box_riz_product_template
+msgid "Rice box + crispy + cheese sauce"
+msgstr "Box riz + crispy + sauce fromage"

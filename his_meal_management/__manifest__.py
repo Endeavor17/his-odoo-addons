@@ -1,6 +1,6 @@
 {
     "name": "HIS Meal Management",
-    "version": "19.0.3.13.1",
+    "version": "19.0.3.14.0",
     "summary": "HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS",
     "description": """
 HIS Meal Management
@@ -73,6 +73,7 @@ Credits do not expire; they keep until they are eaten.
         "data/his_faculty.xml",
         "data/barcode_rule.xml",
         "data/meal_plans.xml",
+        "data/meal_formulas.xml",
         "data/ir_cron.xml",
         "wizard/meal_adjust_wizard_views.xml",
         "views/meal_card_views.xml",
