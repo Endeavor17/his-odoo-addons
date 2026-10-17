@@ -107,7 +107,12 @@ class TestMealFormulasData(TransactionCase):
 
     def test_dish_choices_never_reach_the_grid(self):
         """On the grid they would be sold for cash, alone, outside any formula."""
-        for xmlid in ("product_choix_pizza", "product_choix_cheeseburger", "product_choix_box_riz", "product_choix_box_frites"):
+        for xmlid in (
+            "product_choix_pizza",
+            "product_choix_cheeseburger",
+            "product_choix_box_riz",
+            "product_choix_box_frites",
+        ):
             self.assertFalse(self.env.ref(f"his_meal_management.{xmlid}").available_in_pos, xmlid)
 
     def test_every_dish_choice_has_a_price(self):
@@ -141,7 +146,13 @@ class TestMealFormulasData(TransactionCase):
 Add `test_meal_formulas` to `his_meal_management/tests/__init__.py` (keep alphabetical order):
 
 ```python
-from . import test_meal_balance_screen, test_meal_credit_invoice, test_meal_credits, test_meal_formulas, test_meal_population
+from . import (
+    test_meal_balance_screen,
+    test_meal_credit_invoice,
+    test_meal_credits,
+    test_meal_formulas,
+    test_meal_population,
+)
 ```
 
 - [ ] **Step 2: Run them to make sure they fail**
@@ -523,7 +534,13 @@ class TestMealFormulasServer(AccountTestInvoicingCommon):
             {"name": "Test Ifri PM", "type": "consu", "is_storable": True, "list_price": 50.0, "available_in_pos": True}
         )
         cls.juice = cls.env["product.product"].create(
-            {"name": "Test Jus", "type": "consu", "list_price": 100.0, "available_in_pos": True, "taxes_id": [Command.clear()]}
+            {
+                "name": "Test Jus",
+                "type": "consu",
+                "list_price": 100.0,
+                "available_in_pos": True,
+                "taxes_id": [Command.clear()],
+            }
         )
         cls.cash = cls.env["pos.payment.method"].create(
             {
@@ -550,7 +567,9 @@ class TestMealFormulasServer(AccountTestInvoicingCommon):
     def test_pack_600_takes_one_credit_and_its_bottle_leaves_stock(self):
         student = self._student("Formula Amine")
         order = self._sync(
-            student, [(self.pack_600, 1, 0.0, 0.0), (self.box_riz, 1, 0.0, 0.0), (self.bottle, 1, 0.0, 0.0)], "formula-0001"
+            student,
+            [(self.pack_600, 1, 0.0, 0.0), (self.box_riz, 1, 0.0, 0.0), (self.bottle, 1, 0.0, 0.0)],
+            "formula-0001",
         )
         self.assertEqual(order.state, "paid")
         self.assertEqual(student.meal_credits_remaining, 5.0, "the dish or the bottle took a credit too")
@@ -582,7 +601,9 @@ class TestMealFormulasServer(AccountTestInvoicingCommon):
     def test_a_formula_next_to_a_paid_juice(self):
         student = self._student("Formula Nour")
         order = self._sync(
-            student, [(self.pack_600, 1, 0.0, 0.0), (self.box_riz, 1, 0.0, 0.0), (self.juice, 1, 100.0, 0.0)], "formula-0006"
+            student,
+            [(self.pack_600, 1, 0.0, 0.0), (self.box_riz, 1, 0.0, 0.0), (self.juice, 1, 100.0, 0.0)],
+            "formula-0006",
         )
         self.assertEqual(student.meal_credits_remaining, 5.0)
         self.assertEqual(sum(order.payment_ids.mapped("amount")), 100.0)
@@ -771,7 +792,10 @@ class TestMealFormulasTill(TestPointOfSaleHttpCommon):
         )
         Combo = cls.env["product.combo"]
         dish = Combo.create(
-            {"name": "Tour dish", "combo_item_ids": [Command.create({"product_id": p.id}) for p in (box_riz, box_frites)]}
+            {
+                "name": "Tour dish",
+                "combo_item_ids": [Command.create({"product_id": p.id}) for p in (box_riz, box_frites)],
+            }
         )
         drink = Combo.create({"name": "Tour drink", "combo_item_ids": [Command.create({"product_id": cls.bottle.id})]})
         cls.pack = cls.env["product.template"].create(

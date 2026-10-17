@@ -22,7 +22,9 @@ class TestTvaCaisse(TransactionCase):
         cls.services = cls.chart.ref(TVA_SERVICES)
         cls.production_19 = cls.chart.ref("l10n_dz_vat_sale_19_prod")
         cls.revente_19 = cls.chart.ref("l10n_dz_vat_sale_19_resale")
-        cls.repas = cls.env.ref("his_meal_management.product_daily_meal")
+        # La formule Restaurant : « Meal 600 » est archive depuis les formules
+        # (2026-10-15), et un produit archive n'a plus de variante a facturer.
+        cls.repas = cls.env.ref("his_meal_management.product_formule_restaurant")
         cls.forfait = cls.env.ref("his_meal_management.product_plan_weekly")
 
     def _produit(self, nom, prix, taxes, **vals):
@@ -71,6 +73,7 @@ class TestTvaCaisse(TransactionCase):
         arrondi derive d'un centime si le total est recompose depuis le HT.
         """
         capsule = self._produit("Caps Cafe", 70.0, self.biens)
+        repas = self._produit("Repas 600", 600.0, self.biens)
         client = self.env["res.partner"].create({"name": "Etudiant TVA"})
         ligne = {"product_id": capsule.product_variant_id.id, "quantity": 1, "price_unit": 70.0}
         facture = self.env["account.move"].create(
@@ -81,9 +84,7 @@ class TestTvaCaisse(TransactionCase):
                     Command.create(ligne),
                     Command.create(ligne),
                     Command.create(ligne),
-                    Command.create(
-                        {"product_id": self.repas.product_variant_id.id, "quantity": 1, "price_unit": 600.0}
-                    ),
+                    Command.create({"product_id": repas.product_variant_id.id, "quantity": 1, "price_unit": 600.0}),
                 ],
             }
         )
