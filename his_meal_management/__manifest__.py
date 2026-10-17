@@ -1,6 +1,6 @@
 {
     "name": "HIS Meal Management",
-    "version": "19.0.3.14.0",
+    "version": "19.0.3.15.0",
     "summary": "HIS person identity, meal cards, prepaid meal plans and credit consumption at the POS",
     "description": """
 HIS Meal Management
@@ -62,7 +62,7 @@ Credits do not expire; they keep until they are eaten.
         # explicit instead of accidental.
         "his_stock_mdm",
         # Every sale to a customer with an email ends in an emailed ticket
-        # (receipt_screen.js). his_mail_async queues it; without it core sends
+        # (pos.order._his_send_ticket). his_mail_async queues it; without it core sends
         # it by SMTP inside the till's request and the queue waits.
         "his_mail_async",
     ],
@@ -75,6 +75,7 @@ Credits do not expire; they keep until they are eaten.
         "data/meal_plans.xml",
         "data/meal_formulas.xml",
         "data/ir_cron.xml",
+        "data/mail_template_ticket.xml",
         "wizard/meal_adjust_wizard_views.xml",
         "views/meal_card_views.xml",
         "views/meal_subscription_views.xml",

@@ -118,8 +118,28 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
         for partner in (cls.with_email, cls.without_email):
             partner.sudo()._grant_meal_credits(cls.plan)
 
-    def _sync(self, partner, lines, uuid):
-        return sync_order(self.env, self.session, self.cash, partner, lines, uuid)
+    def _sync(self, partner, lines, uuid, to_invoice=True):
+        return sync_order(self.env, self.session, self.cash, partner, lines, uuid, to_invoice=to_invoice)
+
+    def _ticket_mails(self, order):
+        return self.env["mail.mail"].sudo().search([("model", "=", "pos.order"), ("res_id", "=", order.id)])
+
+    def test_the_server_emails_the_ticket_once(self):
+        """Recette P-05 : le ticket partait du navigateur, et un rechargement le perdait."""
+        order = self._sync(self.with_email, [(self.meal_600, 1, 0.0, 0.0)], "ticket-0001", to_invoice=False)
+        mail = self._ticket_mails(order)
+        self.assertEqual(len(mail), 1)
+        self.assertEqual(mail.recipient_ids, self.with_email)
+        self.assertEqual(mail.state, "outgoing", "sent inside the till's request instead of queued")
+        self.assertIn("Meal credits left", mail.body_html)
+        order._his_send_ticket()
+        self.assertEqual(len(self._ticket_mails(order)), 1, "a resync sent the ticket twice")
+
+    def test_no_ticket_without_an_address_or_with_an_invoice(self):
+        order = self._sync(self.without_email, [(self.meal_600, 1, 0.0, 0.0)], "ticket-0002", to_invoice=False)
+        self.assertFalse(self._ticket_mails(order))
+        invoiced = self._sync(self.with_email, [(self.meal_600, 1, 0.0, 0.0)], "ticket-0003")
+        self.assertFalse(invoiced.his_ticket_sent, "an invoiced order also got a ticket")
 
     def _invoice_mails(self, invoice, partner):
         # With his_mail_async installed, PDF and email are left to the "Send
@@ -234,8 +254,8 @@ class TestTheCreditMealTill(TestPointOfSaleHttpCommon):
         self.assertFalse(order.payment_ids, "a meal on credits was recorded as paid by something")
         self.assertEqual(self.with_email.meal_credits_remaining, 5.0)
         mail = self._ticket_mails(order)
-        self.assertEqual(mail.email_to, "tour.email@his.edu.dz")
-        self.assertTrue(mail.attachment_ids, "the ticket went out without its image")
+        self.assertEqual(mail.recipient_ids, self.with_email)
+        self.assertIn("Meal credits left", mail.body_html)
 
     def test_a_student_with_no_email_gets_the_receipt_and_nothing_is_sent(self):
         order = self._run("his_meal_credit_payment_no_email_tour")
