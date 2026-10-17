@@ -1752,3 +1752,13 @@ msgstr "Ticket envoyé"
 #: model:mail.template,subject:his_meal_management.mail_template_pos_ticket
 msgid "Ticket {{ object.pos_reference or object.name }}"
 msgstr "Ticket {{ object.pos_reference or object.name }}"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/pos_order.py:0
+msgid ""
+"A meal eaten on credits is not invoiced: the meal plan was invoiced when it "
+"was sold. The ticket is the student's receipt."
+msgstr ""
+"Un repas pris sur crédits n'est pas facturé : le forfait l'a été à sa vente. "
+"Le ticket fait office de reçu pour l'étudiant."

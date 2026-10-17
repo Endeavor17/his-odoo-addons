@@ -164,9 +164,20 @@ class TestMealFormulasServer(AccountTestInvoicingCommon):
         self.assertEqual(sum(order.payment_ids.mapped("amount")), 100.0)
 
     def test_an_invoiced_formula_does_not_claim_a_value_of_zero(self):
-        """A 0 DA formula is worth its credits, not "0,00 DA"."""
+        """A 0 DA formula is worth its credits, not "0,00 DA".
+
+        Invoiced only alongside something paid: a formula alone is not invoiced.
+        """
         student = self._student("Formula Facture")
-        order = sync_order(self.env, self.session, self.cash, student, [(self.restaurant, 1, 0.0, 0.0)], "formula-0007")
+        drink = self.env["product.product"].create({"name": "Formula Drink", "type": "consu", "list_price": 100.0})
+        order = sync_order(
+            self.env,
+            self.session,
+            self.cash,
+            student,
+            [(self.restaurant, 1, 0.0, 0.0), (drink, 1, 100.0, 0.0)],
+            "formula-0007",
+        )
         label = order.account_move.invoice_line_ids.filtered(lambda l: l.product_id == self.restaurant).name
         self.assertIn("Paid with 1 meal credit(s)", label)
         self.assertNotIn("value", label)
