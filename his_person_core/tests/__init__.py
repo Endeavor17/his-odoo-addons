@@ -1,3 +1,3 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from . import test_engagement, test_matricule, test_partner_privacy, test_recherche_matricule
+from . import test_engagement, test_matricule, test_partner_privacy, test_recette_identite, test_recherche_matricule

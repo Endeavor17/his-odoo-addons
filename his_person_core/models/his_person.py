@@ -3,7 +3,7 @@ import re
 import unicodedata
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 from odoo.osv import expression
 
 MATRICULE_SEQUENCE_CODE = "his.person.matricule.institutionnel"
@@ -201,7 +201,17 @@ class HisPerson(models.Model):
         ],
         string="Source System",
         required=True,
+        # Une fiche saisie a l'ecran n'a pas d'autre source ; sans defaut, la
+        # creation echouait sur une erreur SQL brute (recette P-23).
+        default="manual",
         tracking=True,
+    )
+    his_confirmed_new = fields.Boolean(
+        string="Confirmed New Person",
+        copy=False,
+        tracking=True,
+        help="Ticked when the register proposed an existing record and a person "
+        "confirmed this one is somebody else (a namesake).",
     )
     external_ref = fields.Char(
         string="Source Reference",
@@ -321,6 +331,7 @@ class HisPerson(models.Model):
         # createur reste l'utilisateur). Verifie AVANT la sequence, sinon chaque
         # refus brule un matricule (recette 2026-10-17, P-04 et P-23).
         self.check_access("create")
+        self._his_check_duplicates(vals_list)
         sequence = self.env["ir.sequence"].sudo()
         for vals in vals_list:
             # UN CANDIDAT N'EST PAS ENCORE QUELQU'UN DE L'INSTITUTION.
@@ -375,6 +386,34 @@ class HisPerson(models.Model):
         if category:
             people.partner_id.sudo().write({"category_id": [(4, category.id)]})
         return people
+
+    def _his_check_duplicates(self, vals_list):
+        """Une saisie manuelle qui ressemble a une fiche existante est arretee.
+
+        Deux fiches pour la meme personne, ce sont deux matricules et deux
+        portefeuilles (recette P-12). Le README veut un humain pour confirmer un
+        rapprochement : on lui montre la fiche trouvee ; s'il s'agit vraiment
+        d'un homonyme, il coche « Confirmed New Person ». Un appelant qui a deja
+        rapproche (match_method pose : imports, assistant InSite) a eu son
+        passage par _find_or_flag_match.
+        """
+        for vals in vals_list:
+            if vals.get("source_system", "manual") != "manual" or vals.get("matricule_institutionnel"):
+                continue
+            if vals.get("his_confirmed_new") or vals.get("match_method"):
+                continue
+            match = self.sudo()._find_or_flag_match(vals, types=None)
+            existing = match["person"]
+            if existing:
+                raise UserError(
+                    _(
+                        "%(name)s looks like %(existing)s (%(matricule)s), already in the register. Open that "
+                        "record; if this really is somebody else, tick “Confirmed New Person” and save again.",
+                        name=vals.get("name") or "",
+                        existing=existing.display_name,
+                        matricule=existing.matricule_institutionnel or _("no registration number yet"),
+                    )
+                )
 
     def write(self, vals):
         # readonly=True bloque l'UI mais pas un write() serveur ni un import.
