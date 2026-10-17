@@ -2,8 +2,14 @@ import { _t } from "@web/core/l10n/translation";
 import { PosStore } from "@point_of_sale/app/services/pos_store";
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { patch } from "@web/core/utils/patch";
+import { formatFloat } from "@web/core/utils/numbers";
 import OrderPaymentValidation from "@point_of_sale/app/utils/order_payment_validation";
 import { ServeMealDialog } from "./serve_meal_dialog";
+
+// "2,5" and not "2.5" for a French cashier, "1" and not "1,00" (recette P-25).
+export const formatCredits = (credits) => formatFloat(credits, { trailingZeros: false });
+// "[INV-000013] Pack 600": the internal reference means nothing at the till.
+const withoutRef = (name) => name.replace(/^\[[^\]]*\]\s*/, "");
 
 // Serving a student meal is a convenience, not a control. It shows the cashier
 // who the student is and what they have left, then drops a zero-priced meal line
@@ -95,16 +101,32 @@ patch(PosStore.prototype, {
         }
 
         const balance = await this.data.call("res.partner", "get_meal_balance", [[partner.id]]);
+        // What the meals already on this order will take (recette P-08): three
+        // packs on 2,5 credits each looked affordable on their own, and only the
+        // server refused, after Payment.
+        // ponytail: the allowance is not counted against the order the same way;
+        // the server still refuses what it cannot cover.
+        const committed = order.lines
+            .filter(
+                (other) =>
+                    other !== line &&
+                    !other.combo_parent_id &&
+                    other.product_id.meal_credit_cost > 0 &&
+                    order.currency.isZero(other.price_unit * (1 - (other.discount || 0) / 100))
+            )
+            .reduce((sum, other) => sum + other.product_id.meal_credit_cost * other.getQuantity(), 0);
+        const credits = Math.max(0, Math.round((balance.credits - committed) * 100) / 100);
 
         // Against this meal's own cost, not merely "has some credit": with a
         // 300 and a 600 meal sharing one wallet, half a credit is enough for
         // one of them and not the other. A line already rung may carry several.
         const qty = line ? line.getQuantity() : 1;
         const cost = product.meal_credit_cost * qty;
-        const mealName = qty === 1 ? product.display_name : `${qty} × ${product.display_name}`;
+        const label = withoutRef(product.display_name);
+        const mealName = qty === 1 ? label : `${qty} × ${label}`;
         // Short of credits: refused, unless the advance is switched on (system
         // parameter, off by default) and the student still has some of it.
-        const onAllowance = balance.credits < cost;
+        const onAllowance = credits < cost;
         if (onAllowance && balance.allowance_left < 1) {
             // Not a subscriber: the meal rung up earlier simply stays a sale.
             if (line && !balance.plan) {
@@ -116,9 +138,9 @@ patch(PosStore.prototype, {
                     "%(name)s has %(credits)s credit(s) left and %(meal)s costs %(cost)s. Sell the meal at its normal price, or sell a new plan at the student centre.",
                     {
                         name: balance.name,
-                        credits: balance.credits,
+                        credits: formatCredits(credits),
                         meal: mealName,
-                        cost: cost,
+                        cost: formatCredits(cost),
                     }
                 ),
             });
@@ -138,9 +160,9 @@ patch(PosStore.prototype, {
         this.dialog.add(ServeMealDialog, {
             name: balance.name,
             cardCode: partner.barcode || "",
-            plan: balance.plan,
+            plan: balance.plan && withoutRef(balance.plan),
             expires: balance.expires,
-            credits: balance.credits,
+            credits: credits,
             mealName: mealName,
             cost: cost,
             onAllowance: onAllowance,
@@ -168,7 +190,7 @@ patch(PosStore.prototype, {
                 // 0,00 DA" tells them nothing. Core prints a line's customer
                 // note on the receipt. Worded per meal because core merges two
                 // lines of the same meal carrying the same note.
-                const credits = product.meal_credit_cost;
+                const credits = formatCredits(product.meal_credit_cost);
                 line?.setCustomerNote(
                     this.currency.isZero(product.lst_price)
                         ? // A formula is priced 0: "value 0,00 DA" would say it is worth nothing.

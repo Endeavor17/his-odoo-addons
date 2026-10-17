@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="d-flex align-items-baseline gap-2 mt-3">
-                        <span class="his_serve_meal_figure his_serve_meal_figure_owed" t-esc="owedAfter"/>
+                        <span class="his_serve_meal_figure his_serve_meal_figure_owed" t-esc="fmt(owedAfter)"/>
                         <span class="his_serve_meal_muted">
                             credit(s) will be owed, taken off the next top-up
                         </span>
@@ -55,9 +55,9 @@
                     </div>
 
                     <div class="d-flex align-items-baseline gap-2 mt-2">
-                        <span class="his_serve_meal_figure" t-esc="props.credits"/>
+                        <span class="his_serve_meal_figure" t-esc="fmt(props.credits)"/>
                         <span class="his_serve_meal_muted">
-                            credits left · <t t-esc="after"/> after this meal
+                            credits left · <t t-esc="fmt(after)"/> after this meal
                         </span>
                     </div>
                 </t>
@@ -69,10 +69,10 @@
                     <div>
                         <div class="his_serve_meal_ask_title">Serve <t t-esc="props.mealName"/>?</div>
                         <div class="his_serve_meal_muted" t-if="props.onAllowance">
-                            Takes <t t-esc="props.cost"/> credit(s) the card does not have.
+                            Takes <t t-esc="fmt(props.cost)"/> credit(s) the card does not have.
                         </div>
                         <div class="his_serve_meal_muted" t-else="">
-                            Takes <t t-esc="props.cost"/> credit(s) from this wallet.
+                            Takes <t t-esc="fmt(props.cost)"/> credit(s) from this wallet.
                         </div>
                     </div>
                 </div>

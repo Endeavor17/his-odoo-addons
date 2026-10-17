@@ -1088,7 +1088,7 @@ msgstr "Session de caisse"
 #. odoo-javascript
 #: code:addons/his_meal_management/static/src/app/pos_store.js:0
 msgid "Paid with %(credits)s meal credit(s) per meal, value %(value)s"
-msgstr "Payé avec %(credits)s crédit(s) repas par repas, valeur %(value)s"
+msgstr "Payé avec %(credits)s crédit(s) par repas, valeur %(value)s"
 
 #. module: his_meal_management
 #. odoo-python
@@ -1643,4 +1643,34 @@ msgstr "Payé avec %(credits)s crédit(s) repas"
 #. odoo-javascript
 #: code:addons/his_meal_management/static/src/app/pos_store.js:0
 msgid "Paid with %(credits)s meal credit(s) per meal"
-msgstr "Payé avec %(credits)s crédit(s) repas par repas"
+msgstr "Payé avec %(credits)s crédit(s) par repas"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/pos_order.py:0
+msgid "%(person)s has %(left)s meal credit(s) left; this order needs %(needed)s."
+msgstr "%(person)s n'a plus que %(left)s crédit(s) repas ; cette commande en demande %(needed)s."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/pos_order.py:0
+msgid "%(person)s has already used credits from %(plan)s: %(left)s left, the plan gave %(credits)s. A meal officer settles it with a correction."
+msgstr "%(person)s a déjà utilisé des crédits de %(plan)s : il en reste %(left)s, le forfait en a donné %(credits)s. L'officier repas règle le cas par une correction."
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/pos_order.py:0
+msgid "Plan refunded"
+msgstr "Forfait remboursé"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/pos_order.py:0
+msgid "Meal refunded"
+msgstr "Repas remboursé"
+
+#. module: his_meal_management
+#. odoo-python
+#: code:addons/his_meal_management/models/meal_card.py:0
+msgid "%s is not a card code: tap the card (10-digit UID) or use a printed HIS code."
+msgstr "%s n'est pas un code de carte : passez la carte (UID à 10 chiffres) ou utilisez un code imprimé HIS."

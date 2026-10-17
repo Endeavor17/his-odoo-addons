@@ -227,11 +227,13 @@ ledger line on the order: POS orders re-sync, and credits must move exactly once
 An order carrying a plan or a student meal with **no customer** is refused
 outright — the cashier is told to scan the card.
 
-> **Refunds are a deliberate no-op on credits.** A negative quantity produces an
-> empty range and a non-positive meal count, so refunding a plan leaves the
-> subscription standing and refunding a meal gives no credit back. An officer
-> settles both with the correction wizard. Marked in the source with a
-> `ponytail:` comment — handle it properly only if refunds turn out to be common.
+> **Refunds move credits back (recette P-24, decided 2026-10-17).** Refunding a
+> plan takes its credits out of the wallet, and is refused when they are no
+> longer there (already eaten: the meal officer settles it with a correction).
+> Refunding a meal gives its credits back — only for a refund line pointing at a
+> meal this same student ate on credits, so a negative line typed at the till
+> mints nothing. Both are "Correction" lines on the ledger
+> (`pos.order.line._his_refund_meal_credits`).
 
 ### At the till
 
@@ -267,7 +269,9 @@ does not depend on the invoice — the session closing posts it for tickets too.
 - **The ticket shows the balance left** after the order ("Meal credits left", and
   allowance meals owed if any), for a customer holding a plan (`receipt_screen.xml`).
 - **A meal at 0 DA says what paid for it** on the ticket: *"Paid with 1 meal
-  credit(s) per meal, value 600,00 DA"*, as the line's customer note.
+  credit(s) per meal, value 600,00 DA"*, as the line's customer note. A
+  formula is priced 0, so it says *"Paid with 1 meal credit(s) per meal"*
+  without a value. Credits print with the reader's decimal comma ("2,5").
 - **An invoice, when asked for, stays at 0 DA.** The money came in when the pack
   was sold, and invoicing the meal at its price would book that revenue twice.
   Each meal line carries the same statement (`pos.order._get_invoice_lines_values`).

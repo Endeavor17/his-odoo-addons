@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "POS - TVA algerienne a 9 %",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Sales/Point of Sale",
     "summary": "Les caisses encaissent la TVA a 9 %, comprise dans le prix affiche",
     "description": """
@@ -34,7 +34,8 @@ la declaration G50 — le comptable peut les reaffecter sans toucher un dinar) :
   - carte cadeau, recharge eWallet   -> aucune (valeur stockee : la TVA est
                                         due quand elle est depensee)
 
-Tout produit de caisse a 19 % passe a 9 %. Un produit qui porte un autre taux
+Tout produit de caisse a 19 % passe a 9 %, y compris les plats choisis dans
+une formule (hors grille, mais vendus avec elle). Un produit qui porte un autre taux
 choisi a la main (0 %, par exemple) n'est pas touche.
 
 Hors perimetre : le droit de timbre sur les paiements en especes (Code du

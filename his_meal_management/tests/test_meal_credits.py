@@ -386,6 +386,17 @@ class TestMealCredits(TransactionCase):
                 }
             )
 
+    def test_card_code_is_what_the_till_reads_as_a_card(self):
+        # Recette P-11 : FIC-0001 etait accepte, et la caisse le lisait comme un article.
+        with self.assertRaises(ValidationError):
+            self.env["his.meal.card"].create({"partner_id": self.student.id, "code": "FIC-0001"})
+        with self.assertRaises(ValidationError):
+            self.env["his.meal.card"].create({"partner_id": self.student.id, "code": "099000001"})
+        card = self.env["his.meal.card"].create({"partner_id": self.student.id, "code": card_uid(90)})
+        nomenclature = self.env.ref("barcodes.default_barcode_nomenclature")
+        self.assertEqual(nomenclature.parse_barcode(card.code)["type"], "client")
+        self.assertEqual(nomenclature.parse_barcode("HIS-CARD-000001")["type"], "client")
+
     def test_ledger_is_append_only(self):
         self.student._grant_meal_credits(self.weekly)
         line = self.env["his.meal.transaction"].search([("partner_id", "=", self.student.id)])
