@@ -2,11 +2,13 @@
 
 Two halves, because the feature has two:
 
-* `TestTheCreditMealInvoice` is the server, for the student who ASKS for an
-  invoice (the cashier ticks the box; nothing is invoiced otherwise). It is core
-  that invoices the order and emails the invoice. What this module adds is the
-  line on that invoice saying which credits paid for a 0 DA meal - and the
-  promise that nothing about the credits themselves moved.
+* `TestTheCreditMealInvoice` is the server. A meal eaten on credits is never
+  invoiced on its own (decision of 2026-10-17: the plan is an advance payment,
+  invoiced and taxed when it is sold; serving the meal is not a sale), so an
+  order at 0 DA gets its ticket even with the box ticked, and the back office
+  refuses to invoice it. An order with something to pay is still invoiced when
+  asked: the meal rides along at 0 DA with a line saying which credits paid for
+  it - and nothing about the credits themselves moved.
 
 * `TestTheCreditMealTill` drives a real till: Payment on a meal served on
   credits must land on the receipt without ever showing the payment screen, the
@@ -17,6 +19,7 @@ Two halves, because the feature has two:
 from odoo import Command, fields
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 from odoo.addons.point_of_sale.tests.test_frontend import TestPointOfSaleHttpCommon
+from odoo.exceptions import UserError
 from odoo.tests import tagged
 
 from .test_meal_credits import make_person
@@ -99,6 +102,14 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
                 "taxes_id": [Command.clear()],
             }
         )
+        cls.drink = meal(
+            {
+                "name": "Test Drink",
+                "type": "consu",
+                "list_price": 100.0,
+                "taxes_id": [Command.clear()],
+            }
+        )
         cls.cash = cls.env["pos.payment.method"].create(
             {
                 "name": "Especes",
@@ -138,7 +149,10 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
     def test_no_ticket_without_an_address_or_with_an_invoice(self):
         order = self._sync(self.without_email, [(self.meal_600, 1, 0.0, 0.0)], "ticket-0002", to_invoice=False)
         self.assertFalse(self._ticket_mails(order))
-        invoiced = self._sync(self.with_email, [(self.meal_600, 1, 0.0, 0.0)], "ticket-0003")
+        invoiced = self._sync(
+            self.with_email, [(self.meal_600, 1, 0.0, 0.0), (self.drink, 1, 100.0, 0.0)], "ticket-0003"
+        )
+        self.assertTrue(invoiced.account_move)
         self.assertFalse(invoiced.his_ticket_sent, "an invoiced order also got a ticket")
 
     def _invoice_mails(self, invoice, partner):
@@ -149,31 +163,51 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
             self.env["account.move.send"]._generate_and_send_invoices(pending, from_cron=True)
         return invoice.message_ids.filtered(lambda message: partner in message.partner_ids)
 
-    def test_a_credit_meal_is_invoiced_at_zero_with_its_credits_stated(self):
+    def test_a_meal_on_credits_alone_gets_a_ticket_not_an_invoice(self):
+        """Ticked box or not: 0 DA invoices were numbered invoices with no sale behind them."""
         order = self._sync(self.with_email, [(self.meal_600, 1, 0.0, 0.0)], "credit-invoice-0001")
-        invoice = order.account_move
-
-        self.assertTrue(invoice, "the order was not invoiced")
-        self.assertEqual(invoice.state, "posted")
-        self.assertEqual(invoice.amount_total, 0.0, "the meal was already paid for when the pack was sold")
-        label = invoice.invoice_line_ids.name
-        self.assertIn("Paid with 1 meal credit(s)", label)
-        self.assertIn(invoice.currency_id.format(600.0), label, "the line does not say what the credit was worth")
-        # Invoicing is a document, not a second charge.
+        self.assertFalse(order.account_move, "a meal eaten on credits was invoiced at 0 DA")
+        self.assertFalse(order.to_invoice)
+        self.assertEqual(order.state, "paid")
+        self.assertTrue(order.his_ticket_sent, "the student got neither an invoice nor a ticket")
+        # Credits move as before.
         self.assertEqual(self.with_email.meal_credits_remaining, 5.0)
         self.assertEqual(
             self.env["his.meal.transaction"].search_count([("pos_order_id", "=", order.id), ("type", "=", "consume")]),
             1,
         )
 
+    def test_the_back_office_refuses_to_invoice_a_meal_on_credits(self):
+        """The "Invoice" button and the receipt's QR both end in action_pos_order_invoice."""
+        order = self._sync(self.with_email, [(self.meal_600, 1, 0.0, 0.0)], "credit-invoice-0007", to_invoice=False)
+        with self.assertRaises(UserError):
+            order.action_pos_order_invoice()
+        self.assertFalse(order.account_move)
+
+    def test_a_mixed_order_is_invoiced_with_its_credits_stated(self):
+        order = self._sync(
+            self.with_email, [(self.meal_600, 1, 0.0, 0.0), (self.drink, 1, 100.0, 0.0)], "credit-invoice-0008"
+        )
+        invoice = order.account_move
+        self.assertEqual(invoice.state, "posted")
+        self.assertEqual(invoice.amount_total, 100.0, "the meal was already paid for when the pack was sold")
+        label = invoice.invoice_line_ids.filtered(lambda line: line.product_id == self.meal_600).name
+        self.assertIn("Paid with 1 meal credit(s)", label)
+        self.assertIn(invoice.currency_id.format(600.0), label, "the line does not say what the credit was worth")
+        self.assertEqual(self.with_email.meal_credits_remaining, 5.0)
+
     def test_half_credits_and_quantities_are_stated_as_they_are(self):
-        order = self._sync(self.with_email, [(self.meal_300, 3, 0.0, 0.0)], "credit-invoice-0002")
-        label = order.account_move.invoice_line_ids.name
+        order = self._sync(
+            self.with_email, [(self.meal_300, 3, 0.0, 0.0), (self.drink, 1, 100.0, 0.0)], "credit-invoice-0002"
+        )
+        label = order.account_move.invoice_line_ids.filtered(lambda line: line.product_id == self.meal_300).name
         self.assertIn("Paid with 1.5 meal credit(s)", label)
         self.assertIn(order.currency_id.format(900.0), label)
 
     def test_the_invoice_is_emailed_to_a_student_who_has_an_address(self):
-        order = self._sync(self.with_email, [(self.meal_600, 1, 0.0, 0.0)], "credit-invoice-0003")
+        order = self._sync(
+            self.with_email, [(self.meal_600, 1, 0.0, 0.0), (self.drink, 1, 100.0, 0.0)], "credit-invoice-0003"
+        )
         mails = self._invoice_mails(order.account_move, self.with_email)
         self.assertTrue(mails, "core did not email the invoice")
         self.assertTrue(
@@ -182,7 +216,9 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
         )
 
     def test_a_student_with_no_address_is_invoiced_and_nothing_is_sent(self):
-        order = self._sync(self.without_email, [(self.meal_600, 1, 0.0, 0.0)], "credit-invoice-0004")
+        order = self._sync(
+            self.without_email, [(self.meal_600, 1, 0.0, 0.0), (self.drink, 1, 100.0, 0.0)], "credit-invoice-0004"
+        )
         self.assertEqual(order.account_move.state, "posted")
         self.assertFalse(self._invoice_mails(order.account_move, self.without_email))
 
@@ -194,8 +230,11 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
 
     def test_a_meal_discounted_to_nothing_says_what_paid_for_it(self):
         """The 100% discount is a credit meal since 19.0.3.6.0; the invoice agrees."""
-        order = self._sync(self.with_email, [(self.meal_600, 1, 600.0, 100.0)], "credit-invoice-0006")
-        self.assertIn("Paid with 1 meal credit(s)", order.account_move.invoice_line_ids.name)
+        order = self._sync(
+            self.with_email, [(self.meal_600, 1, 600.0, 100.0), (self.drink, 1, 100.0, 0.0)], "credit-invoice-0006"
+        )
+        label = order.account_move.invoice_line_ids.filtered(lambda line: line.product_id == self.meal_600).name
+        self.assertIn("Paid with 1 meal credit(s)", label)
         self.assertEqual(self.with_email.meal_credits_remaining, 5.0)
 
 

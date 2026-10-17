@@ -23,6 +23,11 @@ class PosOrder(models.Model):
     his_ticket_sent = fields.Boolean(string="Ticket Emailed", copy=False, readonly=True)
 
     def _process_saved_order(self, draft):
+        # A ticked "Invoice" box on a meal eaten on credits gets the ticket
+        # instead (see _generate_pos_order_invoice); refusing would roll back
+        # the whole sync and the meal already served.
+        if self.to_invoice and self._his_on_credits_only():
+            self.to_invoice = False
         res = super()._process_saved_order(draft)
         if not draft and self.state != "cancel":
             self._apply_meal_credits()
@@ -47,6 +52,28 @@ class PosOrder(models.Model):
         template.sudo().send_mail(self.id, force_send=False)
         self.his_ticket_sent = True
         self.env.ref("mail.ir_cron_mail_scheduler_action")._trigger()
+
+    def _his_on_credits_only(self):
+        """Nothing to pay: every meal on it was eaten on credits."""
+        self.ensure_one()
+        return self.currency_id.is_zero(self.amount_total) and any(line._his_is_credit_meal() for line in self.lines)
+
+    def _generate_pos_order_invoice(self):
+        """No invoice for a meal eaten on credits (decision of 2026-10-17).
+
+        The plan is an advance payment: invoiced and taxed when it is sold.
+        Serving the meal is not a sale, and a 0 DA invoice was a numbered
+        invoice with nothing behind it. Every way in - the till, the back
+        office's button, the receipt's QR - ends here.
+        """
+        if any(order._his_on_credits_only() for order in self):
+            raise UserError(
+                _(
+                    "A meal eaten on credits is not invoiced: the meal plan was invoiced "
+                    "when it was sold. The ticket is the student's receipt."
+                )
+            )
+        return super()._generate_pos_order_invoice()
 
     def _his_ticket_lines(self):
         """The lines a customer reads: a formula's dish and drink are part of it."""
@@ -161,7 +188,8 @@ class PosOrder(models.Model):
     def _get_invoice_lines_values(self, line_values, pos_line, move_type):
         """Say on the invoice what a meal at 0 DA was really paid with.
 
-        A meal served on credits is invoiced at zero, and rightly so: the money
+        Only on an order with something else to pay: a meal eaten on credits
+        alone is never invoiced. On the invoice it stays at zero: the money
         came in when the pack was sold, and invoicing the meal at its price
         would book the same revenue twice. But a line reading "Repas 600 -
         0,00" tells the student nothing, so the credits it took and what they
