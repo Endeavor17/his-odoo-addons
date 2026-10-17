@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_groups_privilege_purchase_request" model="res.groups.privilege">
+        <field name="name">Purchase Requests</field>
+        <field name="sequence">9</field>
+        <field name="category_id" ref="base.module_category_supply_chain"/>
+    </record>
+
+    <!-- Pas d'ACL sur base.group_user (politique his_access_base) : demander un
+         achat est un role, donne a qui en a besoin, chefs de departement compris
+         (ils approuvent les demandes de leur departement). -->
+    <record id="group_requester" model="res.groups">
+        <field name="name">Requester</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_purchase_request"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Creates purchase requests and follows them. A department head
+            with this role also approves the requests of their department.</field>
+    </record>
+
+    <!-- Echelon au-dessus de l'administrateur achats : il approuve les achats
+         generaux (decision de Mohamed, 2026-10-15). -->
+    <record id="group_purchase_director" model="res.groups">
+        <field name="name">Executive Director</field>
+        <field name="sequence">30</field>
+        <field name="privilege_id" ref="purchase.res_groups_privilege_purchase"/>
+        <field name="implied_ids" eval="[(4, ref('purchase.group_purchase_manager')), (4, ref('group_requester'))]"/>
+        <field name="comment">Approves general purchase orders (everything except the points of
+            sale), and may approve point-of-sale orders too.</field>
+    </record>
+
+    <record id="purchase.group_purchase_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_requester'))]"/>
+    </record>
+
+    <record id="rule_request_company" model="ir.rule">
+        <field name="name">Purchase request: multi-company</field>
+        <field name="model_id" ref="model_his_purchase_request"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_request_line_company" model="ir.rule">
+        <field name="name">Purchase request line: multi-company</field>
+        <field name="model_id" ref="model_his_purchase_request_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Le demandeur voit ses demandes ; le chef de departement celles de son
+         departement (et celles qu'il doit approuver). -->
+    <record id="rule_request_own" model="ir.rule">
+        <field name="name">Purchase request: own and department</field>
+        <field name="model_id" ref="model_his_purchase_request"/>
+        <field name="groups" eval="[(4, ref('group_requester'))]"/>
+        <field name="domain_force">['|', '|', ('requester_user_id', '=', user.id), ('department_id.manager_id.user_id', '=', user.id), ('approver_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_request_line_own" model="ir.rule">
+        <field name="name">Purchase request line: own and department</field>
+        <field name="model_id" ref="model_his_purchase_request_line"/>
+        <field name="groups" eval="[(4, ref('group_requester'))]"/>
+        <field name="domain_force">['|', '|', ('request_id.requester_user_id', '=', user.id), ('request_id.department_id.manager_id.user_id', '=', user.id), ('request_id.approver_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_request_purchase_user" model="ir.rule">
+        <field name="name">Purchase request: all (purchasing)</field>
+        <field name="model_id" ref="model_his_purchase_request"/>
+        <field name="groups" eval="[(4, ref('purchase.group_purchase_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_request_line_purchase_user" model="ir.rule">
+        <field name="name">Purchase request line: all (purchasing)</field>
+        <field name="model_id" ref="model_his_purchase_request_line"/>
+        <field name="groups" eval="[(4, ref('purchase.group_purchase_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+</odoo>

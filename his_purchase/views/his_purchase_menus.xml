@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Application propre aux demandeurs : ils n'ont pas acces aux Achats. -->
+    <menuitem id="menu_request_root" name="Purchase Requests" sequence="26"
+        web_icon="purchase,static/description/icon.png"
+        groups="his_purchase.group_requester"/>
+    <menuitem id="menu_my_requests" name="My Requests" parent="menu_request_root"
+        action="action_my_requests" sequence="10"/>
+    <menuitem id="menu_requests_to_approve" name="To Approve" parent="menu_request_root"
+        action="action_requests_to_approve" sequence="20"/>
+    <menuitem id="menu_all_requests" name="All Requests" parent="menu_request_root"
+        action="action_all_requests" sequence="30" groups="purchase.group_purchase_user"/>
+
+    <menuitem id="menu_purchase_requests" name="Purchase Requests" parent="purchase.menu_procurement_management"
+        action="action_all_requests" sequence="0"/>
+</odoo>

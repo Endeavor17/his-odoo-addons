@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_his_dz" model="ir.ui.view">
+        <field name="name">res.partner.form.his_dz</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="string">NIF</attribute>
+                <attribute name="placeholder"/>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="his_rc" invisible="not is_company" readonly="parent_id"/>
+                <field name="his_nis" readonly="parent_id"/>
+                <field name="his_ai" readonly="parent_id"/>
+                <field name="his_nin" invisible="is_company"/>
+                <field name="his_tax_regime" readonly="parent_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

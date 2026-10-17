@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_requisition_form_his" model="ir.ui.view">
+        <field name="name">purchase.requisition.form.his</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vendor_id']" position="after">
+                <field name="his_purchase_domain"/>
+                <field name="his_recurring" invisible="requisition_type != 'blanket_order'"/>
+                <field name="his_delivery_day" invisible="not his_recurring" required="his_recurring"/>
+                <field name="his_prepare_days" invisible="not his_recurring" required="his_recurring"/>
+                <field name="his_owner_id" invisible="not his_recurring" required="his_recurring"/>
+                <field name="his_next_delivery" invisible="not his_recurring"/>
+                <field name="his_last_period" invisible="not his_recurring"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='price_unit']" position="after">
+                <field name="his_recurring_qty" column_invisible="not parent.his_recurring"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form_his_dz" model="ir.ui.view">
+        <field name="name">res.company.form.his_dz</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="string">NIF</attribute>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="his_rc"/>
+                <field name="his_nis"/>
+                <field name="his_ai"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

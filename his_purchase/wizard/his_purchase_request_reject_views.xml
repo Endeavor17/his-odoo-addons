@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="his_purchase_request_reject_form" model="ir.ui.view">
+        <field name="name">his.purchase.request.reject.form</field>
+        <field name="model">his.purchase.request.reject</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="request_id" invisible="1"/>
+                <group>
+                    <field name="reason" placeholder="Why is this request rejected? The requester will receive it."/>
+                </group>
+                <footer>
+                    <button name="action_reject" type="object" string="Reject" class="btn-primary"/>
+                    <button special="cancel" string="Discard"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,1983 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_purchase
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid "%(agreement)s does not cover: %(products)s."
+msgstr "%(agreement)s ne couvre pas : %(products)s."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "%(order)s can only be approved by %(role)s."
+msgstr "%(order)s ne peut être approuvée que par %(role)s."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "%(order)s cannot be confirmed: the supplier answer is “%(answer)s”."
+msgstr ""
+"%(order)s ne peut pas être confirmée : la réponse du fournisseur est « "
+"%(answer)s »."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid ""
+"%(order)s is marked as quoted but has lines without a price: %(lines)s."
+msgstr ""
+"%(order)s est marquée comme chiffrée mais des lignes n'ont pas de prix : "
+"%(lines)s."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid ""
+"%(order)s orders more than requested on %(request)s. Only a purchase manager"
+" can authorise a top-up."
+msgstr ""
+"%(order)s commande plus que demandé sur %(request)s. Seul un responsable "
+"achats peut autoriser un complément."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "%(request)s can only be approved by %(approver)s."
+msgstr "%(request)s ne peut être approuvée que par %(approver)s."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "%(request)s is needed by %(date)s and nothing is ordered yet."
+msgstr ""
+"%(request)s est nécessaire pour le %(date)s et rien n'est encore commandé."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid ""
+"%(supplier)s is missing %(fields)s: complete the supplier before confirming "
+"%(order)s."
+msgstr ""
+"Il manque à %(supplier)s : %(fields)s. Complétez le fournisseur avant de "
+"confirmer %(order)s."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "%(user)s is waiting on %(request)s."
+msgstr "%(user)s attend sur %(request)s."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "%s has been submitted: only the purchasing team can change it now."
+msgstr "%s a été soumise : seule l'équipe achats peut maintenant la modifier."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "%s has competing offers: confirm it on its own to record the choice."
+msgstr ""
+"%s a des offres concurrentes : confirmez-la seule pour enregistrer le choix."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid ""
+"%s has no approver: set a head on the department, or an executive director "
+"in the Purchase settings."
+msgstr ""
+"%s n'a pas d'approbateur : indiquez un responsable sur le département, ou un"
+" directeur exécutif dans les paramètres Achats."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid "%s has no monthly order."
+msgstr "%s n'a pas de commande mensuelle."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "%s is already ordered: cancel its purchase orders first."
+msgstr "%s est déjà commandée : annulez d'abord ses bons de commande."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "%s is not a draft."
+msgstr "%s n'est pas un brouillon."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "%s is not waiting for approval."
+msgstr "%s n'attend pas d'approbation."
+
+#. module: his_purchase
+#: model:ir.actions.report,print_report_name:his_purchase.action_report_goods_receipt
+msgid "'Goods Receipt - %s' % object.name"
+msgstr "'Bon de réception - %s' % object.name"
+
+#. module: his_purchase
+#: model:ir.actions.report,print_report_name:his_purchase.action_report_proforma_request
+msgid "'Pro Forma Request - %s' % object.name"
+msgstr "'Demande de proforma - %s' % object.name"
+
+#. module: his_purchase
+#: model:ir.actions.report,print_report_name:his_purchase.action_report_purchase_order
+msgid "'Purchase Order - %s' % object.name"
+msgstr "'Bon de commande - %s' % object.name"
+
+#. module: his_purchase
+#: model:ir.actions.report,print_report_name:his_purchase.action_report_supplier_choice
+msgid "'Supplier Choice - %s' % object.name"
+msgstr "'Fiche de choix fournisseur - %s' % object.name"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_followup_mixin__his_step_level
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__his_step_level
+#: model:ir.model.fields,help:his_purchase.field_purchase_order__his_step_level
+#: model:ir.model.fields,help:his_purchase.field_purchase_requisition__his_step_level
+msgid "0: on time; 1: owner reminded; 2 and more: escalated."
+msgstr "0 : dans les temps ; 1 : responsable relancé ; 2 et plus : escaladé."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid ""
+"<br/>\n"
+"                        <strong>Approved by:</strong>"
+msgstr ""
+"<br/>\n"
+"                        <strong>Approuvé par :</strong>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid ""
+"<br/>\n"
+"                        <strong>Criterion:</strong>"
+msgstr ""
+"<br/>\n"
+"                        <strong>Critère :</strong>"
+
+#. module: his_purchase
+#: model:mail.template,body_html:his_purchase.mail_template_supplier_reminder
+msgid ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p>Hello,</p>\n"
+"    <p>We sent you our request for pro forma <strong t-out=\"object.name or ''\"/> and have not received your answer yet.\n"
+"    Could you send us your pro forma (prices, VAT, delivery lead time), or tell us if you cannot supply these items?</p>\n"
+"    <p>You will find the request attached again.</p>\n"
+"    <p>Best regards,<br/><t t-out=\"object.user_id.name or object.company_id.name or ''\"/></p>\n"
+"</div>\n"
+"        "
+msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Nous vous avons adressé notre demande de proforma <strong t-out=\"object.name or ''\"/> et n'avons pas encore reçu votre réponse.\n"
+"    Pourriez-vous nous envoyer votre proforma (prix, TVA, délai de livraison), ou nous indiquer si vous ne pouvez pas fournir ces articles ?</p>\n"
+"    <p>Vous trouverez la demande à nouveau en pièce jointe.</p>\n"
+"    <p>Cordialement,<br/><t t-out=\"object.user_id.name or object.company_id.name or ''\"/></p>\n"
+"</div>\n"
+"        "
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.parties_block
+msgid "<strong>Buyer</strong>"
+msgstr "<strong>Acheteur</strong>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "<strong>Chosen by:</strong>"
+msgstr "<strong>Choisi par :</strong>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "<strong>Chosen supplier:</strong>"
+msgstr "<strong>Fournisseur retenu :</strong>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_goods_receipt_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+msgid "<strong>Date</strong><br/>"
+msgstr "<strong>Date</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "<strong>Delivery address</strong>"
+msgstr "<strong>Adresse de livraison</strong>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+msgid "<strong>Delivery wanted</strong><br/>"
+msgstr "<strong>Livraison souhaitée</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "<strong>Delivery</strong><br/>"
+msgstr "<strong>Livraison</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "<strong>Department</strong><br/>"
+msgstr "<strong>Département</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "<strong>Note:</strong>"
+msgstr "<strong>Note :</strong>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "<strong>Order date</strong><br/>"
+msgstr "<strong>Date de commande</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_goods_receipt_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "<strong>Order</strong><br/>"
+msgstr "<strong>Commande</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "<strong>Our request</strong><br/>"
+msgstr "<strong>Notre demande</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "<strong>Payment terms:</strong>"
+msgstr "<strong>Conditions de paiement :</strong>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_goods_receipt_document
+msgid "<strong>Received at</strong><br/>"
+msgstr "<strong>Reçu à</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+msgid "<strong>Reply by</strong><br/>"
+msgstr "<strong>Réponse avant le</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "<strong>Request</strong><br/>"
+msgstr "<strong>Demande</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "<strong>Requester</strong><br/>"
+msgstr "<strong>Demandeur</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.parties_block
+msgid "<strong>Supplier</strong>"
+msgstr "<strong>Fournisseur</strong>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_goods_receipt_document
+msgid "<strong>Supplier</strong><br/>"
+msgstr "<strong>Fournisseur</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "<strong>Total untaxed</strong>"
+msgstr "<strong>Total HT</strong>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "<strong>Total with VAT</strong>"
+msgstr "<strong>Total TTC</strong>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+msgid "<strong>Your contact</strong><br/>"
+msgstr "<strong>Votre contact</strong><br/>"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "<strong>Your pro forma</strong><br/>"
+msgstr "<strong>Votre proforma</strong><br/>"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_requisition.py:0
+msgid "A monthly order needs a blanket order with a vendor."
+msgstr "Une commande mensuelle exige un contrat-cadre avec un fournisseur."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "A submitted request can only be changed by the purchasing team."
+msgstr "Une demande soumise ne peut être modifiée que par l'équipe achats."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.legal_block
+msgid "AI:"
+msgstr "AI :"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__message_needaction
+msgid "Action Needed"
+msgstr "Action nécessaire"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Décoration d'activité d'exception"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_state
+msgid "Activity State"
+msgstr "Statut de l'activité"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request_source__mode__monthly
+msgid "Add to the next monthly order"
+msgstr "Ajouter à la prochaine commande mensuelle"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid "Added to the next monthly order of %s."
+msgstr "Ajoutée à la prochaine commande mensuelle de %s."
+
+#. module: his_purchase
+#: model:ir.ui.menu,name:his_purchase.menu_all_requests
+msgid "All Requests"
+msgstr "Toutes les demandes"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "Amounts compared with VAT included."
+msgstr "Montants comparés TTC."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "Answer"
+msgstr "Réponse"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Approve"
+msgstr "Approuver"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "Approve purchase order %s"
+msgstr "Approuver le bon de commande %s"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Approve purchase request %s"
+msgstr "Approuver la demande d'achat %s"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__state__approved
+msgid "Approved"
+msgstr "Approuvée"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__approved_by_id
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_approved_by_id
+msgid "Approved By"
+msgstr "Approuvé par"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__approved_on
+msgid "Approved On"
+msgstr "Approuvé le"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__approver_id
+msgid "Approver"
+msgstr "Approbateur"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_res_company__his_purchase_director_id
+#: model:ir.model.fields,help:his_purchase.field_res_config_settings__his_purchase_director_id
+msgid "Approves general orders; last level of escalation."
+msgstr "Approuve les commandes générales ; dernier niveau d'escalade."
+
+#. module: his_purchase
+#: model:res.groups,comment:his_purchase.group_purchase_director
+msgid ""
+"Approves general purchase orders (everything except the points of\n"
+"            sale), and may approve point-of-sale orders too."
+msgstr ""
+"Approuve les commandes générales (tout sauf les points de\n"
+"            vente), et peut aussi approuver celles des points de vente."
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_res_company__his_purchase_manager_id
+#: model:ir.model.fields,help:his_purchase.field_res_config_settings__his_purchase_manager_id
+msgid "Approves point-of-sale orders; first level of escalation."
+msgstr ""
+"Approuve les commandes des points de vente ; premier niveau d'escalade."
+
+#. module: his_purchase
+#: model_terms:ir.actions.act_window,help:his_purchase.action_my_requests
+msgid "Ask for a purchase"
+msgstr "Demander un achat"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Ask the purchasing team to cancel %s."
+msgstr "Demandez à l'équipe achats d'annuler %s."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__requisition_id
+msgid "Blanket Order"
+msgstr "Contrat-cadre"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__state__cancel
+msgid "Cancelled"
+msgstr "Annulée"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "Chase supplier %(supplier)s for %(order)s"
+msgstr "Relancer le fournisseur %(supplier)s pour %(order)s"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__is_cheapest
+msgid "Cheapest Offer"
+msgstr "Offre la moins chère"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.purchase_order_form_his
+msgid "Choice"
+msgstr "Choix"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_choice_criterion
+msgid "Choice Criterion"
+msgstr "Critère de choix"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_choice_note
+msgid "Choice Note"
+msgstr "Note de choix"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid "Choose a product for these lines first: %s."
+msgstr "Choisissez d'abord un article pour ces lignes : %s."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid "Choose the blanket order."
+msgstr "Choisissez le contrat-cadre."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid "Choose the supplier."
+msgstr "Choisissez le fournisseur."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_chosen_by_id
+msgid "Chosen By"
+msgstr "Choisi par"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_chosen_on
+msgid "Chosen On"
+msgstr "Choisi le"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__company_id
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__company_id
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_choice_form
+msgid "Confirm Order"
+msgstr "Confirmer la commande"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid "Covered by %s: order now on the blanket order."
+msgstr "Couvert par %s : commandez tout de suite sur le contrat-cadre."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__create_uid
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__create_uid
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__create_uid
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_reject__create_uid
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__create_date
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__create_date
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__create_date
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_reject__create_date
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_purchase
+#: model:res.groups,comment:his_purchase.group_requester
+msgid ""
+"Creates purchase requests and follows them. A department head\n"
+"            with this role also approves the requests of their department."
+msgstr ""
+"Crée des demandes d'achat et les suit. Un chef de département\n"
+"            ayant ce rôle approuve aussi les demandes de son département."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__criterion
+msgid "Criterion"
+msgstr "Critère"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__currency_id
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_purchase_order__his_reply_by
+msgid "Date by which the supplier should send its pro forma."
+msgstr "Date à laquelle le fournisseur doit envoyer sa proforma."
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_purchase_requisition__his_delivery_day
+msgid "Day of the month the supplier delivers."
+msgstr "Jour du mois où le fournisseur livre."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.weekly_digest_body
+msgid "Days in this step"
+msgstr "Jours à cette étape"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_purchase_order__his_purchase_domain
+msgid ""
+"Decides who approves: the executive director for General, the purchase "
+"manager or the director for Points of Sale."
+msgstr ""
+"Décide qui approuve : le directeur exécutif pour Général, le responsable "
+"achats ou le directeur pour Points de vente."
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_supplier_answer__declined
+msgid "Declined"
+msgstr "Refusée"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_delivery_day
+msgid "Delivery Day"
+msgstr "Jour de livraison"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_hr_department
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__department_id
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_search
+msgid "Department"
+msgstr "Département"
+
+#. module: his_purchase
+#: model_terms:ir.actions.act_window,help:his_purchase.action_my_requests
+msgid ""
+"Describe what you need and why; your head of department approves it, then "
+"the purchasing team buys it."
+msgstr ""
+"Décrivez ce dont vous avez besoin et pourquoi ; votre chef de département "
+"l'approuve, puis l'équipe achats l'achète."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__description
+msgid "Description"
+msgstr "Description"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_choice_form
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_reject_form
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_source_form
+msgid "Discard"
+msgstr "Abandonner"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_followup_mixin__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_reject__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_hr_department__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order_line__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition_create_alternative__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition_line__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_res_company__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:his_purchase.field_stock_picking__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__state__done
+msgid "Done"
+msgstr "Terminée"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_res_company__po_double_validation_amount
+msgid "Double validation amount"
+msgstr "Montant de double validation"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Each line needs a product or a description."
+msgstr "Chaque ligne demande un article ou une description."
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__earliest_delivery
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__earliest_delivery
+msgid "Earliest delivery"
+msgstr "Livraison la plus rapide"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_followup.py:0
+msgid "Escalated: %(step)s"
+msgstr "Escaladé : %(step)s"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_followup.py:0
+msgid ""
+"Escalation: “%(step)s” was due on %(due)s and is still waiting on %(owner)s."
+msgstr ""
+"Escalade : « %(step)s » était attendu pour le %(due)s et attend toujours "
+"%(owner)s."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__estimated_amount
+msgid "Estimated Amount"
+msgstr "Montant estimé"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__estimated_subtotal
+msgid "Estimated Subtotal"
+msgstr "Sous-total estimé"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__estimated_price_unit
+msgid "Estimated Unit Price"
+msgstr "Prix unitaire estimé"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid "Every line of %s is already being sourced."
+msgstr "Toutes les lignes de %s sont déjà en cours d'achat."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_res_company__his_purchase_director_id
+#: model:ir.model.fields,field_description:his_purchase.field_res_config_settings__his_purchase_director_id
+#: model:res.groups,name:his_purchase.group_purchase_director
+msgid "Executive Director"
+msgstr "Directeur exécutif"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Follow-up"
+msgstr "Suivi"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_followup_mixin__his_step
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_step
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_step
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_step
+msgid "Follow-up Step"
+msgstr "Étape de suivi"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome, par ex. fa-tasks"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__his_purchase_domain__general
+#: model:ir.model.fields.selection,name:his_purchase.selection__hr_department__his_purchase_domain__general
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_purchase_domain__general
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_requisition__his_purchase_domain__general
+msgid "General"
+msgstr "Général"
+
+#. module: his_purchase
+#: model:ir.actions.report,name:his_purchase.action_report_goods_receipt
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_goods_receipt_document
+msgid "Goods Receipt"
+msgstr "Bon de réception"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__approver_id
+msgid ""
+"Head of the department; the executive director when the requester is the "
+"head."
+msgstr ""
+"Chef du département ; le directeur exécutif quand le demandeur est le chef."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__mode
+msgid "How"
+msgstr "Comment"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__id
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_followup_mixin__id
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__id
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__id
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_reject__id
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__id
+#: model:ir.model.fields,field_description:his_purchase.field_hr_department__id
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__id
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order_line__id
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__id
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition_create_alternative__id
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition_line__id
+#: model:ir.model.fields,field_description:his_purchase.field_res_company__id
+#: model:ir.model.fields,field_description:his_purchase.field_res_config_settings__id
+#: model:ir.model.fields,field_description:his_purchase.field_stock_picking__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__message_has_error
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_list
+msgid "In This Step Since"
+msgstr "À cette étape depuis"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_goods_receipt_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "Item"
+msgstr "Désignation"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__justification
+msgid "Justification"
+msgstr "Justification"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_last_period
+msgid "Last Monthly Order"
+msgstr "Dernière commande mensuelle"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_last_nudge
+msgid "Last Reminder by Requester"
+msgstr "Dernière relance du demandeur"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__write_uid
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__write_uid
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__write_uid
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_reject__write_uid
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__write_date
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__write_date
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__write_date
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_reject__write_date
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_followup_mixin__his_is_late
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_is_late
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_is_late
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_is_late
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_search
+msgid "Late"
+msgstr "En retard"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.purchase_order_view_search_his
+msgid "Late Follow-up"
+msgstr "Suivi en retard"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "Late delivery on %s"
+msgstr "Livraison en retard sur %s"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_res_company__po_double_validation
+msgid "Levels of Approvals"
+msgstr "Niveaux d'approbation"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__line_ids
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Lines"
+msgstr "Lignes"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__lowest_price
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__lowest_price
+msgid "Lowest price"
+msgstr "Prix le plus bas"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_res_company__po_double_validation_amount
+msgid "Minimum amount for which a double validation is required"
+msgstr "Montant minimum pour lequel une double validation est requise"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_purchase_requisition__his_last_period
+msgid "Month (YYYY-MM) of the last monthly order created."
+msgstr "Mois (AAAA-MM) de la dernière commande mensuelle créée."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_monthly
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_recurring
+msgid "Monthly Order"
+msgstr "Commande mensuelle"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_owner_id
+msgid "Monthly Order Owner"
+msgstr "Responsable de la commande mensuelle"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.purchase_order_view_search_his
+msgid "Monthly Orders"
+msgstr "Commandes mensuelles"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition_line__his_recurring_qty
+msgid "Monthly Quantity"
+msgstr "Quantité mensuelle"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_requisition.py:0
+msgid ""
+"Monthly order for the delivery of %(date)s, created from %(agreement)s."
+msgstr ""
+"Commande mensuelle pour la livraison du %(date)s, créée depuis "
+"%(agreement)s."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: his_purchase
+#: model:ir.actions.act_window,name:his_purchase.action_my_requests
+msgid "My Purchase Requests"
+msgstr "Mes demandes d'achat"
+
+#. module: his_purchase
+#: model:ir.ui.menu,name:his_purchase.menu_my_requests
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_search
+msgid "My Requests"
+msgstr "Mes demandes"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.legal_block
+msgid "NIF:"
+msgstr "NIF :"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.legal_block
+msgid "NIN:"
+msgstr "NIN :"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.legal_block
+msgid "NIS:"
+msgstr "NIS :"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid ""
+"Needed after the next monthly delivery (%s): add it to the monthly order."
+msgstr ""
+"Nécessaire après la prochaine livraison mensuelle (%s) : ajoutez-la à la "
+"commande mensuelle."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "New"
+msgstr "Nouveau"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Activité suivante de l'événement du calendrier"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_next_delivery
+msgid "Next Delivery"
+msgstr "Prochaine livraison"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__his_monthly_requisition_id
+msgid "Next Monthly Order"
+msgstr "Prochaine commande mensuelle"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_supplier_answer__no_answer
+msgid "No Answer"
+msgstr "Sans réponse"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "No VAT"
+msgstr "Sans TVA"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "No offer"
+msgstr "Pas d'offre"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.weekly_digest_body
+msgid "No open request."
+msgstr "Aucune demande en cours."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Nobody holds this request yet: contact the purchasing team."
+msgstr "Personne ne tient encore cette demande : contactez l'équipe achats."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__note
+msgid "Note"
+msgstr "Note"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec erreur d'envoi"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__offer_summary
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_choice_form
+msgid "Offers"
+msgstr "Offres"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Only a cancelled request can be reset to draft."
+msgstr "Seule une demande annulée peut être remise en brouillon."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Only an approved request can be sourced."
+msgstr "Seule une demande approuvée peut être achetée."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Only an open request can be reminded."
+msgstr "Seule une demande en cours peut être relancée."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Only draft or cancelled purchase requests can be deleted."
+msgstr ""
+"Seules les demandes d'achat en brouillon ou annulées peuvent être "
+"supprimées."
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__only_supplier
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__only_supplier
+msgid "Only supplier"
+msgstr "Seul fournisseur"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid "Only the purchasing team can source a request."
+msgstr "Seule l'équipe achats peut acheter une demande."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Only the requester or the purchasing team can do this on %s."
+msgstr "Seul le demandeur ou l'équipe achats peut faire cela sur %s."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_search
+msgid "Open"
+msgstr "En cours"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.weekly_digest_body
+msgid "Open purchase requests, oldest first."
+msgstr "Demandes d'achat en cours, de la plus ancienne à la plus récente."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Open purchase requests: %s"
+msgstr "Demandes d'achat en cours : %s"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_choice__order_id
+msgid "Order"
+msgstr "Commande"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__order_count
+msgid "Order Count"
+msgstr "Nombre de commandes"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__purchase_line_ids
+msgid "Order Lines"
+msgstr "Lignes de commande"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request_source__mode__calloff
+msgid "Order now on a blanket order"
+msgstr "Commander tout de suite sur un contrat-cadre"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__qty_ordered
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__state__ordered
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_goods_receipt_document
+msgid "Ordered"
+msgstr "Commandée"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__other
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_supplier_answer__pending
+msgid "Pending"
+msgstr "En attente"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+msgid ""
+"Please send us your pro forma invoice for the items below, with unit prices,"
+" VAT, delivery lead time and validity."
+msgstr ""
+"Merci de nous adresser votre facture proforma pour les articles ci-dessous, "
+"avec les prix unitaires, la TVA, le délai de livraison et la durée de "
+"validité."
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__his_purchase_domain__pos
+#: model:ir.model.fields.selection,name:his_purchase.selection__hr_department__his_purchase_domain__pos
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_purchase_domain__pos
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_requisition__his_purchase_domain__pos
+msgid "Points of Sale"
+msgstr "Points de vente"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_hr_department__his_purchase_domain
+msgid ""
+"Points of Sale (Cafeteria, Restaurant, Copy Center): orders approved by the "
+"purchase manager or the executive director. General: by the executive "
+"director only."
+msgstr ""
+"Points de vente (Cafétéria, Restaurant, Copy Center) : commandes approuvées "
+"par le responsable achats ou le directeur exécutif. Général : par le "
+"directeur exécutif seulement."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_prepare_days
+msgid "Prepare Days Before"
+msgstr "Jours de préparation avant"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_requisition.py:0
+msgid "Prepare at least one day before delivery."
+msgstr "Préparez au moins un jour avant la livraison."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_quote_date
+msgid "Pro Forma Date"
+msgstr "Date de la proforma"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_quote_ref
+msgid "Pro Forma Number"
+msgstr "Numéro de proforma"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_quote_valid_until
+msgid "Pro Forma Valid Until"
+msgstr "Proforma valable jusqu'au"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "Pro forma"
+msgstr "Proforma"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__product_id
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_search
+msgid "Product"
+msgstr "Article"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "Promised"
+msgstr "Promis le"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_res_company__po_double_validation
+msgid "Provide a double validation mechanism for purchases"
+msgstr "Fournir un mécanisme de double validation pour les achats"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_purchase_domain
+#: model:ir.model.fields,field_description:his_purchase.field_hr_department__his_purchase_domain
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_purchase_domain
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_purchase_domain
+msgid "Purchase Domain"
+msgstr "Domaine d'achat"
+
+#. module: his_purchase
+#: model:mail.activity.type,name:his_purchase.mail_act_followup
+msgid "Purchase Follow-up"
+msgstr "Suivi des achats"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_res_company__his_purchase_manager_id
+#: model:ir.model.fields,field_description:his_purchase.field_res_config_settings__his_purchase_manager_id
+msgid "Purchase Manager"
+msgstr "Responsable achats"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_purchase_order
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "Purchase Order"
+msgstr "Bon de commande"
+
+#. module: his_purchase
+#: model:ir.actions.report,name:his_purchase.action_report_purchase_order
+msgid "Purchase Order (HIS)"
+msgstr "Bon de commande (HIS)"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Ligne de bon de commande"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__order_ids
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Purchase Orders"
+msgstr "Bons de commande"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_his_purchase_request
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_request_id
+msgid "Purchase Request"
+msgstr "Demande d'achat"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_his_purchase_request_line
+msgid "Purchase Request Line"
+msgstr "Ligne de demande d'achat"
+
+#. module: his_purchase
+#: model:ir.actions.act_window,name:his_purchase.action_all_requests
+#: model:ir.ui.menu,name:his_purchase.menu_purchase_requests
+#: model:ir.ui.menu,name:his_purchase.menu_request_root
+#: model:res.groups.privilege,name:his_purchase.res_groups_privilege_purchase_request
+msgid "Purchase Requests"
+msgstr "Demandes d'achat"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_purchase_requisition
+msgid "Purchase Requisition"
+msgstr "Contrat d'achat"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_purchase_requisition_line
+msgid "Purchase Requisition Line"
+msgstr "Ligne de contrat d'achat"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_his_purchase_followup_mixin
+msgid "Purchase follow-up (reminders and escalation)"
+msgstr "Suivi des achats (relances et escalade)"
+
+#. module: his_purchase
+#: model:mail.template,name:his_purchase.mail_template_supplier_reminder
+msgid "Purchase: pro forma reminder"
+msgstr "Achats : relance de proforma"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__user_id
+#: model:ir.model.fields,field_description:his_purchase.field_res_company__his_purchase_officer_id
+#: model:ir.model.fields,field_description:his_purchase.field_res_config_settings__his_purchase_officer_id
+msgid "Purchasing Officer"
+msgstr "Acheteur"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.res_config_settings_view_form_his_purchase
+msgid "Purchasing Team"
+msgstr "Équipe achats"
+
+#. module: his_purchase
+#: model:ir.actions.server,name:his_purchase.cron_monthly_orders_ir_actions_server
+msgid "Purchasing: monthly orders on blanket orders"
+msgstr "Achats : commandes mensuelles sur contrats-cadres"
+
+#. module: his_purchase
+#: model:ir.actions.server,name:his_purchase.cron_followup_ir_actions_server
+msgid "Purchasing: reminders and escalation"
+msgstr "Achats : relances et escalade"
+
+#. module: his_purchase
+#: model:ir.actions.server,name:his_purchase.cron_weekly_digest_ir_actions_server
+msgid "Purchasing: weekly digest of open requests"
+msgstr "Achats : récapitulatif hebdomadaire des demandes en cours"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__quality
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__quality
+msgid "Quality"
+msgstr "Qualité"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__product_qty
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "Quantity"
+msgstr "Quantité"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__qty_in_progress
+msgid "Quantity Being Sourced"
+msgstr "Quantité en cours d'achat"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid ""
+"Quantity top-up authorised by %(user)s: %(total)s ordered for %(requested)s "
+"requested (%(line)s)."
+msgstr ""
+"Complément de quantité autorisé par %(user)s : %(total)s commandé(s) pour "
+"%(requested)s demandé(s) (%(line)s)."
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_supplier_answer__quoted
+msgid "Quoted"
+msgstr "Chiffrée"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.legal_block
+msgid "RC:"
+msgstr "RC :"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_reject__reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_goods_receipt_document
+msgid "Received"
+msgstr "Reçu"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "Record the Supplier Choice"
+msgstr "Enregistrer le choix du fournisseur"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__name
+msgid "Reference"
+msgstr "Référence"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_reject_form
+msgid "Reject"
+msgstr "Refuser"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+#: model:ir.model,name:his_purchase.model_his_purchase_request_reject
+msgid "Reject Purchase Request"
+msgstr "Refuser la demande d'achat"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Rejected by %(user)s: %(reason)s"
+msgstr "Refusée par %(user)s : %(reason)s"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__requester_user_id
+msgid "Related user name for the resource to manage its access."
+msgstr "Nom de l'utilisateur lié à la ressource pour gérer son accès."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Remind"
+msgstr "Relancer"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_followup_mixin__his_step_level
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_step_level
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_step_level
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_step_level
+msgid "Reminder Level"
+msgstr "Niveau de relance"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "Reminder sent to %s for the pro forma."
+msgstr "Relance envoyée à %s pour la proforma."
+
+#. module: his_purchase
+#: model:mail.template,subject:his_purchase.mail_template_supplier_reminder
+msgid "Reminder: request for pro forma {{ object.name }}"
+msgstr "Relance : demande de proforma {{ object.name }}"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_followup.py:0
+msgid "Reminder: “%(step)s” was due on %(due)s."
+msgstr "Rappel : « %(step)s » était attendu pour le %(due)s."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_followup_mixin__his_reminder_count
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_reminder_count
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_reminder_count
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_reminder_count
+msgid "Reminders Sent"
+msgstr "Relances envoyées"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_requisition.py:0
+msgid "Renew agreement %(name)s (ends %(date)s)"
+msgstr "Renouveler le contrat %(name)s (fin le %(date)s)"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_reply_by
+msgid "Reply By"
+msgstr "Réponse avant le"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__request_id
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_reject__request_id
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__request_id
+#: model_terms:ir.ui.view,arch_db:his_purchase.weekly_digest_body
+msgid "Request"
+msgstr "Demande"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order_line__his_request_line_id
+msgid "Request Line"
+msgstr "Ligne de demande"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request_source__mode__rfq
+msgid "Request a quotation from a supplier"
+msgstr "Demander un prix à un fournisseur"
+
+#. module: his_purchase
+#: model:ir.actions.report,name:his_purchase.action_report_proforma_request
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+msgid "Request for Pro Forma"
+msgstr "Demande de proforma"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__requester_id
+#: model:res.groups,name:his_purchase.group_requester
+#: model_terms:ir.ui.view,arch_db:his_purchase.weekly_digest_body
+msgid "Requester"
+msgstr "Demandeur"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__requester_user_id
+msgid "Requester User"
+msgstr "Utilisateur demandeur"
+
+#. module: his_purchase
+#: model:ir.actions.act_window,name:his_purchase.action_requests_to_approve
+msgid "Requests to Approve"
+msgstr "Demandes à approuver"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__date_required
+msgid "Required By"
+msgstr "Nécessaire pour le"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.weekly_digest_body
+msgid "Required by"
+msgstr "Nécessaire pour le"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Reset to Draft"
+msgstr "Remettre en brouillon"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "Review monthly order %s"
+msgstr "Vérifier la commande mensuelle %s"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_purchase_requisition__his_owner_id
+msgid ""
+"Reviews and confirms each monthly order (the warehouse manager). Needs "
+"purchasing access."
+msgstr ""
+"Vérifie et confirme chaque commande mensuelle (le responsable magasin). Doit"
+" avoir l'accès Achats."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_requisition.py:0
+msgid "Set who owns the monthly order."
+msgstr "Indiquez qui tient la commande mensuelle."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_source_form
+msgid "Source"
+msgstr "Acheter"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+#: model:ir.model,name:his_purchase.model_his_purchase_request_source
+msgid "Source Purchase Request"
+msgstr "Acheter la demande d'achat"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Source purchase request %s"
+msgstr "Acheter la demande d'achat %s"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_res_company__his_purchase_officer_id
+#: model:ir.model.fields,help:his_purchase.field_res_config_settings__his_purchase_officer_id
+msgid "Sources approved purchase requests and chases suppliers."
+msgstr "Achète les demandes approuvées et relance les fournisseurs."
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__state__sourcing
+msgid "Sourcing"
+msgstr "En cours d'achat"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__state
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__state
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_search
+#: model_terms:ir.ui.view,arch_db:his_purchase.weekly_digest_body
+msgid "Status"
+msgstr "Statut"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà passée\n"
+"Aujourd'hui : la date de l'activité est aujourd'hui\n"
+"Planifiée : activités futures."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_followup_mixin__his_step_since
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_step_since
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_step_since
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_requisition__his_step_since
+msgid "Step Since"
+msgstr "Étape depuis"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_followup.py:0
+msgid "Step completed."
+msgstr "Étape terminée."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Submit"
+msgstr "Soumettre"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__state__submitted
+msgid "Submitted"
+msgstr "Soumise"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__suggestion
+msgid "Suggestion"
+msgstr "Suggestion"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_source__partner_id
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "Supplier"
+msgstr "Fournisseur"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_supplier_answer
+#: model_terms:ir.ui.view,arch_db:his_purchase.purchase_order_form_his
+msgid "Supplier Answer"
+msgstr "Réponse du fournisseur"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.purchase_order_form_his
+msgid "Supplier Answer and Choice"
+msgstr "Réponse et choix du fournisseur"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_his_purchase_choice
+msgid "Supplier Choice"
+msgstr "Choix du fournisseur"
+
+#. module: his_purchase
+#: model:ir.actions.report,name:his_purchase.action_report_supplier_choice
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "Supplier Choice Sheet"
+msgstr "Fiche de choix fournisseur"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_answer_note
+msgid "Supplier Observations"
+msgstr "Observations du fournisseur"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_supplier_reminded_on
+msgid "Supplier Reminded On"
+msgstr "Fournisseur relancé le"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order__his_supplier_reminder_count
+msgid "Supplier Reminders"
+msgstr "Relances fournisseur"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.purchase_order_form_his
+msgid "Supplier observations (available from stock, brand...)"
+msgstr "Observations du fournisseur (disponible en stock, marque...)"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_requisition.py:0
+msgid "The delivery day must be between 1 and 28."
+msgstr "Le jour de livraison doit être compris entre 1 et 28."
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_purchase_requisition__his_prepare_days
+msgid "The draft monthly order is created this many days before delivery."
+msgstr ""
+"Le brouillon de commande mensuelle est créé ce nombre de jours avant la "
+"livraison."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "The estimated price cannot be negative."
+msgstr "Le prix estimé ne peut pas être négatif."
+
+#. module: his_purchase
+#: model:ir.model.constraint,message:his_purchase.constraint_his_purchase_request_line_check_qty
+msgid "The quantity must be greater than zero."
+msgstr "La quantité doit être supérieure à zéro."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "The required date of %s is in the past."
+msgstr "La date de besoin de %s est dans le passé."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid ""
+"The supplier choice is recorded at confirmation and cannot be changed "
+"afterwards."
+msgstr ""
+"Le choix du fournisseur est enregistré à la confirmation et ne peut plus "
+"être modifié ensuite."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_choice_form
+msgid "This offer is not the cheapest: say why it is chosen."
+msgstr ""
+"Cette offre n'est pas la moins chère : dites pourquoi elle est retenue."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_choice_form
+msgid "This offer is the cheapest."
+msgstr "Cette offre est la moins chère."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "This order is set at the sum of:"
+msgstr "Arrêté le présent bon de commande à la somme de :"
+
+#. module: his_purchase
+#: model:ir.ui.menu,name:his_purchase.menu_requests_to_approve
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_search
+msgid "To Approve"
+msgstr "À approuver"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "To submit %(request)s, fill in: %(fields)s."
+msgstr "Pour soumettre %(request)s, renseignez : %(fields)s."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_list
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "Total"
+msgstr "Total"
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_stock_picking
+msgid "Transfer"
+msgstr "Transfert"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité d'exception sur l'enregistrement."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__product_uom_id
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_goods_receipt_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_proforma_request_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "Unit"
+msgstr "Unité"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+msgid "Unit price"
+msgstr "Prix unitaire"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "Untaxed"
+msgstr "HT"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_urgent_alert_sent
+msgid "Urgent Alert Sent"
+msgstr "Alerte urgente envoyée"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Urgent: %s needed soon"
+msgstr "Urgent : %s nécessaire bientôt"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_purchase_requisition_line__his_recurring_qty
+msgid "Usual quantity of the monthly order."
+msgstr "Quantité habituelle de la commande mensuelle."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_purchase_order_document
+#: model_terms:ir.ui.view,arch_db:his_purchase.report_supplier_choice_document
+msgid "VAT"
+msgstr "TVA"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.weekly_digest_body
+msgid "Waiting on"
+msgstr "En attente de"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request_line__his_monthly_requisition_id
+msgid "Waiting to be added to the next monthly order of this blanket order."
+msgstr ""
+"En attente d'ajout à la prochaine commande mensuelle de ce contrat-cadre."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des échanges sur le site web"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.res_config_settings_view_form_his_purchase
+msgid "Who sources requests, approves orders and receives escalations"
+msgstr ""
+"Qui achète les demandes, approuve les commandes et reçoit les escalades"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Why is this purchase needed?"
+msgstr "Pourquoi cet achat est-il nécessaire ?"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_reject_form
+msgid "Why is this request rejected? The requester will receive it."
+msgstr ""
+"Pourquoi cette demande est-elle refusée ? Le demandeur recevra ce motif."
+
+#. module: his_purchase
+#: model:ir.model,name:his_purchase.model_purchase_requisition_create_alternative
+msgid "Wizard to preset values for alternative PO"
+msgstr "Assistant de préremplissage des commandes alternatives"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "You already sent a reminder in the last 24 hours."
+msgstr "Vous avez déjà envoyé une relance ces dernières 24 heures."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "a purchase manager or the executive director"
+msgstr "un responsable achats ou le directeur exécutif"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "at least one line"
+msgstr "au moins une ligne"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_followup.py:0
+msgid "nobody"
+msgstr "personne"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "the executive director"
+msgstr "le directeur exécutif"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "the head of department"
+msgstr "le chef de département"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Only the purchasing team can set: %s."
+msgstr "Seule l'équipe achats peut renseigner : %s."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_choice.py:0
+msgid "%s is not the cheapest offer: choose another criterion."
+msgstr "%s n'est pas l'offre la moins chère : choisissez un autre critère."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_purchase_order_line__his_qty_before_answer
+msgid "Quantity Before Refusal"
+msgstr "Quantité avant refus"
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_purchase_order_line__his_qty_before_answer
+msgid "Quantity set aside while the supplier answer is Declined or No Answer."
+msgstr "Quantité mise de côté tant que la réponse du fournisseur est « Refusée » ou « Sans réponse »."

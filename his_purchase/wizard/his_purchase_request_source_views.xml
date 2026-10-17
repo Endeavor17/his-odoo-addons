@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="his_purchase_request_source_form" model="ir.ui.view">
+        <field name="name">his.purchase.request.source.form</field>
+        <field name="model">his.purchase.request.source</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="request_id" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <div class="alert alert-info" role="alert" invisible="not suggestion">
+                    <field name="suggestion"/>
+                </div>
+                <group>
+                    <field name="mode" widget="radio"/>
+                    <field name="partner_id" invisible="mode != 'rfq'" required="mode == 'rfq'"/>
+                    <field name="requisition_id" invisible="mode == 'rfq'" required="mode != 'rfq'"/>
+                </group>
+                <footer>
+                    <button name="action_source" type="object" string="Source" class="btn-primary"/>
+                    <button special="cancel" string="Discard"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

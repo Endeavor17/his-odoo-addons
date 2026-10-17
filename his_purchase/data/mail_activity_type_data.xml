@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Un seul type : le resume dit quelle etape attend (approuver, sourcer,
+         relancer...). Les relances le reconnaissent pour clore l'etape passee. -->
+    <record id="mail_act_followup" model="mail.activity.type">
+        <field name="name">Purchase Follow-up</field>
+        <field name="icon">fa-shopping-cart</field>
+        <field name="delay_count">2</field>
+        <field name="category">default</field>
+        <field name="res_model" eval="False"/>
+    </record>
+</odoo>

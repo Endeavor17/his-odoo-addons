@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_followup" model="ir.cron">
+        <field name="name">Purchasing: reminders and escalation</field>
+        <field name="model_id" ref="model_his_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_his_followup()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=6, minute=0, second=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
+    <record id="cron_monthly_orders" model="ir.cron">
+        <field name="name">Purchasing: monthly orders on blanket orders</field>
+        <field name="model_id" ref="purchase_requisition.model_purchase_requisition"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_his_monthly_orders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=5, minute=0, second=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
+    <record id="cron_weekly_digest" model="ir.cron">
+        <field name="name">Purchasing: weekly digest of open requests</field>
+        <field name="model_id" ref="model_his_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_his_weekly_digest()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="nextcall" eval="(DateTime.now() + relativedelta(weekday=0, hour=7, minute=0, second=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+</odoo>

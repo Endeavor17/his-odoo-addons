@@ -1,0 +1,243 @@
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+"""Demandes de prix, choix du fournisseur, approbation (AT-04 a AT-12, AT-26)."""
+
+from odoo.exceptions import UserError
+from odoo.tests import tagged
+
+from .common import HisPurchaseCase
+
+
+@tagged("post_install", "-at_install")
+class TestOrder(HisPurchaseCase):
+    def test_un_seul_fournisseur_sans_assistant(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        self.assertEqual(request.state, "sourcing")
+        self.assertEqual(order.his_request_id, request)
+        self.assertEqual(order.order_line.his_request_line_id, request.line_ids)
+        self.assertEqual(order.his_purchase_domain, "general")
+        self.assertTrue(order.his_reply_by)
+        order.order_line.price_unit = 8500
+        res = order.with_user(self.officer).button_confirm()
+        self.assertIs(res, True, "pas d'assistant de choix sans concurrence")
+        self.assertEqual(order.his_choice_criterion, "only_supplier")
+        self.assertEqual(order.his_supplier_answer, "quoted")
+        self.assertEqual(order.state, "to approve", "toute commande est approuvee")
+
+    def test_concurrence_ouvre_l_assistant_prerempli(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 9500
+        cheaper = self._alternative(order, self.supplier_b, 9000)
+        self.assertEqual(cheaper.his_request_id, request)
+        self.assertEqual(cheaper.order_line.his_request_line_id, request.line_ids)
+        action = cheaper.with_user(self.officer).button_confirm()
+        self.assertEqual(action["res_model"], "his.purchase.choice")
+        self.assertEqual(action["context"]["default_criterion"], "lowest_price")
+        action = order.with_user(self.officer).button_confirm()
+        self.assertFalse(action["context"]["default_criterion"], "la plus chere n'est pas preremplie")
+
+    def test_choisir_plus_cher_est_permis_et_trace(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 9500
+        self._alternative(order, self.supplier_b, 9000)
+        choice = (
+            self.env["his.purchase.choice"]
+            .with_user(self.officer)
+            .create({"order_id": order.id, "criterion": "quality", "note": "Original cartridges only."})
+        )
+        self.assertFalse(choice.is_cheapest)
+        action = choice.action_confirm()
+        # Puis Odoo demande quoi faire des offres concurrentes : on les annule.
+        self.assertEqual(action["res_model"], "purchase.requisition.alternative.warning")
+        self.env[action["res_model"]].with_context(action["context"]).create({}).action_cancel_alternatives()
+        self.assertEqual(order.his_choice_criterion, "quality")
+        self.assertEqual(order.his_chosen_by_id, self.officer)
+        self.assertEqual(order.state, "to approve")
+        self.assertEqual(order.alternative_po_ids.filtered(lambda o: o != order).state, "cancel")
+
+    def test_refus_du_fournisseur(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 9500
+        declined = self._alternative(order, self.supplier_b, 100)
+        declined.his_supplier_answer = "declined"
+        self.assertEqual(declined.amount_total, 0, "hors comparaison : quantites a zero")
+        with self.assertRaises(UserError):
+            declined.button_confirm()
+        self.assertTrue(order.button_confirm(), "un refus n'est pas une offre concurrente")
+        self.assertNotIn(declined, order._his_competitors())
+
+    def test_offre_marquee_chiffree_sans_prix(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        with self.assertRaises(UserError):
+            order.his_supplier_answer = "quoted"
+
+    def test_le_choix_est_fige(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 8500
+        order.button_confirm()
+        with self.assertRaises(UserError):
+            order.with_user(self.manager).his_choice_note = "rewritten"
+
+    def test_approbation_generale_par_le_directeur(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 8500
+        order.with_user(self.manager).button_confirm()
+        self.assertEqual(order.state, "to approve", "un responsable achats ne passe pas un achat general")
+        with self.assertRaisesRegex(UserError, "executive director"):
+            order.with_user(self.manager).button_approve()
+        order.with_user(self.director).button_approve()
+        self.assertEqual(order.state, "purchase")
+        self.assertEqual(order.his_approved_by_id, self.director)
+
+    def test_approbation_point_de_vente(self):
+        request = self._approved_request(
+            user=self.cook, employee=self.cook_emp, lines=[{"product_id": self.tomatoes.id, "product_qty": 50}]
+        )
+        order = self._source_rfq(request, self.supplier_a)
+        self.assertEqual(order.his_purchase_domain, "pos")
+        order.order_line.price_unit = 120
+        order.with_user(self.officer).button_confirm()
+        self.assertEqual(order.state, "to approve")
+        order.with_user(self.manager).button_approve()
+        self.assertEqual(order.state, "purchase")
+
+    def test_celui_qui_choisit_peut_approuver(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 8500
+        order.with_user(self.director).button_confirm()
+        self.assertEqual(order.state, "purchase", "decision du 2026-10-15 : pas de separation des taches")
+
+    def test_pas_plus_que_demande(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.write({"price_unit": 8500, "product_qty": 5})
+        with self.assertRaisesRegex(UserError, "purchase manager"):
+            order.with_user(self.officer).button_confirm()
+        order.with_user(self.manager).button_confirm()
+        self.assertTrue(order.message_ids.filtered(lambda m: "top-up" in m.body))
+
+    def test_fournisseur_ifu_sans_tva(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_ifu)
+        self.assertFalse(order.order_line.tax_ids)
+        normal = self._alternative(order, self.supplier_a, 9000)
+        self.assertEqual(normal.order_line.tax_ids, self.tva19)
+
+    def test_identifiants_obligatoires(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_bare)
+        order.order_line.price_unit = 8500
+        with self.assertRaisesRegex(UserError, "NIF, Trade Register"):
+            order.button_confirm()
+
+    def test_demande_commandee_puis_terminee(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 8500
+        order.with_user(self.director).button_confirm()
+        self.assertEqual(request.state, "ordered")
+        # Le demandeur rouvre sa demande sans avoir acces aux commandes.
+        lu = request.with_user(self.requester).line_ids.read(["qty_ordered", "qty_in_progress"])
+        self.assertEqual(lu[0]["qty_ordered"], 2)
+        request.with_user(self.requester).read(["order_count", "state"])
+        picking = order.picking_ids
+        picking.move_ids.quantity = 2
+        picking.button_validate()
+        self.assertEqual(request.state, "done")
+
+    def test_un_service_est_termine_a_la_commande(self):
+        repair = self.env["product.product"].create({"name": "Printer repair", "type": "service", "purchase_ok": True})
+        request = self._approved_request(lines=[{"product_id": repair.id, "product_qty": 1}])
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 15000
+        order.with_user(self.director).button_confirm()
+        self.assertEqual(request.state, "done", "rien a recevoir pour un service")
+
+    def test_appel_sur_contrat_cadre_sans_comparaison(self):
+        agreement = self._agreement()
+        request = self._approved_request()
+        wizard = (
+            self.env["his.purchase.request.source"]
+            .with_user(self.officer)
+            .create({"request_id": request.id, "mode": "calloff", "requisition_id": agreement.id})
+        )
+        order = self.env["purchase.order"].browse(wizard.action_source()["res_id"])
+        self.assertEqual(order.partner_id, self.supplier_a)
+        self.assertEqual(order.order_line.price_unit, 8000)
+        self.assertEqual(order.his_supplier_answer, "quoted")
+        order.with_user(self.officer).button_confirm()
+        self.assertEqual(order.state, "to approve", "un appel sur contrat-cadre est approuve aussi")
+
+    def _agreement(self):
+        agreement = self.env["purchase.requisition"].create(
+            {
+                "requisition_type": "blanket_order",
+                "vendor_id": self.supplier_a.id,
+                "his_purchase_domain": "general",
+                "line_ids": [(0, 0, {"product_id": self.toner.id, "product_qty": 100, "price_unit": 8000})],
+            }
+        )
+        agreement.action_confirm()
+        return agreement
+
+    def test_une_reponse_corrigee_rend_les_quantites(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 8500
+        order.his_supplier_answer = "no_answer"
+        self.assertEqual(order.order_line.product_qty, 0)
+        order.his_supplier_answer = "quoted"
+        self.assertEqual(order.order_line.product_qty, 2)
+        self.assertEqual(order.amount_untaxed, 17000)
+
+    def test_le_moins_cher_doit_l_etre(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 9500
+        self._alternative(order, self.supplier_b, 9000)
+        choice = (
+            self.env["his.purchase.choice"]
+            .with_user(self.officer)
+            .create({"order_id": order.id, "criterion": "lowest_price"})
+        )
+        with self.assertRaisesRegex(UserError, "not the cheapest"):
+            choice.action_confirm()
+        self.assertFalse(order.his_choice_criterion)
+
+    def test_appel_en_douzaines_converti(self):
+        dozen = self.env.ref("uom.product_uom_dozen")
+        dozen.active = True
+        eggs = self.env["product.product"].create({"name": "Eggs", "type": "consu", "purchase_ok": True})
+        agreement = self.env["purchase.requisition"].create(
+            {
+                "requisition_type": "blanket_order",
+                "vendor_id": self.supplier_a.id,
+                "his_purchase_domain": "general",
+                "line_ids": [
+                    (0, 0, {"product_id": eggs.id, "product_qty": 100, "price_unit": 300, "product_uom_id": dozen.id})
+                ],
+            }
+        )
+        agreement.action_confirm()
+        request = self._approved_request(lines=[{"product_id": eggs.id, "product_qty": 24}])
+        wizard = (
+            self.env["his.purchase.request.source"]
+            .with_user(self.officer)
+            .create({"request_id": request.id, "mode": "calloff", "requisition_id": agreement.id})
+        )
+        order = self.env["purchase.order"].browse(wizard.action_source()["res_id"])
+        self.assertEqual(order.order_line.product_uom_id, dozen)
+        self.assertEqual(order.order_line.product_qty, 2, "24 oeufs = 2 douzaines")
+        self.assertEqual(order.order_line.price_unit, 300)
+        self.assertEqual(request.line_ids.qty_in_progress, 24)
+        # 3 douzaines = 36 oeufs pour 24 demandes : depassement detecte.
+        order.order_line.product_qty = 3
+        with self.assertRaisesRegex(UserError, "more than requested"):
+            order.with_user(self.officer).button_confirm()
