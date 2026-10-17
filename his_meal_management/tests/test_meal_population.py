@@ -40,6 +40,21 @@ from odoo.tools import float_compare
 from ..models.meal_subscription import ALLOWANCE_PARAM
 from .test_meal_credits import make_person
 
+
+def stand_in_meals(env):
+    """Meal 300 and Meal 600 as they were sold, credits or cash.
+
+    The module's own are archived since the formulas (2026-10-15), and an
+    archived product cannot be sold: these stand in, same price and cost.
+    """
+    meal = env["product.product"].create
+    common = {"type": "consu", "taxes_id": [Command.clear()]}
+    return (
+        meal({"name": "Test Meal 300", "list_price": 300.0, "meal_credit_cost": 0.5, **common}),
+        meal({"name": "Test Meal 600", "list_price": 600.0, "meal_credit_cost": 1.0, **common}),
+    )
+
+
 # One credit is one 600 DA meal, a half credit is one 300 DA meal. The money
 # assertions below convert with this and nothing else: if the price sheet ever
 # stops lining up with the credit scheme, they are what says so.
@@ -147,8 +162,7 @@ class TestFiftyStudentsOverATerm(AccountTestInvoicingCommon):
                 "product_plan_semester",
             )
         ]
-        cls.meal_300 = ref("his_meal_management.product_meal_300").product_variant_id
-        cls.meal_600 = ref("his_meal_management.product_daily_meal").product_variant_id
+        cls.meal_300, cls.meal_600 = stand_in_meals(cls.env)
 
         cls.config = cls.env["pos.config"].create({"name": "Population Restaurant"})
         cls.config.open_ui()
@@ -430,8 +444,7 @@ class TestWaysToEatForFree(AccountTestInvoicingCommon):
         cls.other = make_person(cls.env, "Nadia").partner_id
         cls.walkin = cls.env["res.partner"].create({"name": "Passant"})
         cls.plan = cls.env.ref("his_meal_management.product_plan_weekly").product_variant_id
-        cls.meal_300 = cls.env.ref("his_meal_management.product_meal_300").product_variant_id
-        cls.meal_600 = cls.env.ref("his_meal_management.product_daily_meal").product_variant_id
+        cls.meal_300, cls.meal_600 = stand_in_meals(cls.env)
         cls.config = cls.env["pos.config"].create({"name": "Adversary Restaurant"})
         cls.config.open_ui()
         cls.session = cls.config.current_session_id
@@ -785,7 +798,7 @@ class TestWhatTheTillReallySends(AccountTestInvoicingCommon):
         )
         cls.student = make_person(cls.env, "Lamia").partner_id
         cls.plan = cls.env.ref("his_meal_management.product_plan_weekly").product_variant_id
-        cls.meal_600 = cls.env.ref("his_meal_management.product_daily_meal").product_variant_id
+        _meal_300, cls.meal_600 = stand_in_meals(cls.env)
         cls.cash = cls.env["pos.payment.method"].create(
             {
                 "name": "Especes",

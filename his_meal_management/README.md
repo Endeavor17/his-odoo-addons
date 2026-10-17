@@ -325,16 +325,26 @@ A product with `meal_credits > 0` **is** a meal plan. There is no separate plan
 model to keep in sync, so price, POS sellability, invoicing and accounting are
 all stock Odoo.
 
-| Plan | Price | Credits | Valid |
+| Product | Price | Credits | Till |
 |---|---|---|---|
-| Weekly | 3 000 | 6 (5 paid + 1 free) | 7 days |
-| Monthly | 12 000 | 25 (20 + 5) | 30 days |
-| Semester | 36 000 | 80 (60 + 20) | 180 days |
-| Daily Meal | 600 | 0 | — |
+| Plans 300: 6 / 25 / 80 meals | 1 500 / 6 000 / 18 000 | grants 3 / 12.5 / 40 | Copy Center |
+| Plans 600: 6 / 25 / 80 meals | 3 000 / 12 000 / 36 000 | grants 6 / 25 / 80 | Copy Center |
+| Pack 300 (combo: pizza or cheeseburger, + bottle) | 0 | costs 0.5 | Cafeteria |
+| Pack 600 (combo: rice or fries box, + bottle) | 0 | costs 1 | Cafeteria |
+| Restaurant meal (salad + main dish + dessert) | 0 | costs 1 | Restaurant |
 
-Taxes are cleared deliberately: a plan sold at 12 000 must land 25 credits and
-take exactly 12 000, and the student meal must stay at zero when paid with a
-credit. **Set the company currency to DZD before going live.**
+**The formulas are priced 0 on purpose**: they are bought only through a plan
+(2026-10-15), and a product at 0 with a credit cost is, on the server, a meal that
+needs a scanned student with the credits for it. The dish choices inside the packs
+carry a list price only so the till's combo proration never divides 0 by 0; nobody
+pays it.
+
+**The drink is a combo staff maintain**: create "Small bottle" under Point of Sale >
+Products > Combo Choices with the bottles allowed (small bottles only, no cans), then
+add it to both packs' Combo Choices. The bottle chosen leaves stock.
+
+Taxes: `his_pos_tva` puts 9 % included on every POS product, plans included; a meal on
+credits is at 0 and carries none. **Set the company currency to DZD before going live.**
 
 Validity counts from the day of purchase and is inclusive: a 7-day plan bought
 today is usable today through day 7, not day 8 — hence `date_end = today +

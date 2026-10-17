@@ -145,3 +145,253 @@ msgstr "Tagliatelles"
 #: model:product.template,name:his_pos_menu.dish_gratin
 msgid "Gratin"
 msgstr "Gratin"
+
+#. module: his_pos_menu
+#: model:product.category,name:his_pos_menu.product_category_cafeteria_menu
+msgid "Cafeteria Menu"
+msgstr "Menu Cafétéria"
+
+#. module: his_pos_menu
+#: model:pos.category,name:his_pos_menu.pos_categ_cafe_pizzas
+msgid "Pizzas"
+msgstr "Pizzas"
+
+#. module: his_pos_menu
+#: model:pos.category,name:his_pos_menu.pos_categ_cafe_burgers
+msgid "Burgers"
+msgstr "Burgers"
+
+#. module: his_pos_menu
+#: model:pos.category,name:his_pos_menu.pos_categ_cafe_sandwiches
+msgid "Sandwiches"
+msgstr "Sandwichs"
+
+#. module: his_pos_menu
+#: model:pos.category,name:his_pos_menu.pos_categ_cafe_snacks
+msgid "Hot Snacks"
+msgstr "Snacks chauds"
+
+#. module: his_pos_menu
+#: model:pos.category,name:his_pos_menu.pos_categ_cafe_boxes
+msgid "Boxes"
+msgstr "Box"
+
+#. module: his_pos_menu
+#: model:pos.category,name:his_pos_menu.pos_categ_cafe_extras
+msgid "Extras"
+msgstr "Suppléments"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_pizza_plain
+msgid "Plain Pizza"
+msgstr "Pizza simple"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_pizza_three_cheese
+msgid "3 Cheese Pizza"
+msgstr "Pizza 3 fromages"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_pizza_meat
+msgid "Meat Pizza"
+msgstr "Pizza viande"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_pizza_chicken
+msgid "Chicken Pizza"
+msgstr "Pizza poulet"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_pizza_marina
+msgid "Pizza Marina"
+msgstr "Pizza marina"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_pizza_vegetarian
+msgid "Vegetarian Pizza"
+msgstr "Pizza végétarienne"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_pizza_turquoise
+msgid "Pizza Turquoise"
+msgstr "Pizza turquoise"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_pizza_chef
+msgid "Chef's Pizza"
+msgstr "Pizza du chef"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_pizza_mega_four_seasons
+msgid "Mega Four Seasons Pizza"
+msgstr "Pizza Méga Quatre Saisons"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_pizza_mini_mega
+msgid "Mini Mega Pizza"
+msgstr "Pizza Mini Méga"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_burger_classic_cheese
+msgid "Classic Cheeseburger"
+msgstr "Cheese classique"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_burger_beef_cheese
+msgid "Meat Cheeseburger"
+msgstr "Cheese viande"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_burger_big_chicken_cheese
+msgid "Big Chicken Cheese"
+msgstr "Big cheese poulet"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_burger_big_beef_cheese
+msgid "Big Meat Cheese"
+msgstr "Big cheese viande"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_burger_forest
+msgid "Forest Burger"
+msgstr "Burger forest"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_burger_crispy
+msgid "Crispy Burger"
+msgstr "Burger crispy"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_sandwich_brioche_chicken
+msgid "Brioche Bun - Chicken"
+msgstr "Pain brioché - poulet"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_sandwich_brioche_meat
+msgid "Brioche Bun - Meat"
+msgstr "Pain brioché - viande"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_sandwich_brioche_kebda
+msgid "Brioche Bun - Kebda"
+msgstr "Pain brioché - kebda"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_sandwich_house_chicken
+msgid "House Bread - Chicken"
+msgstr "Pain spécial maison - poulet"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_sandwich_house_meat
+msgid "House Bread - Meat"
+msgstr "Pain spécial maison - viande"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_sandwich_house_kebda
+msgid "House Bread - Kebda"
+msgstr "Pain spécial maison - kebda"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_sandwich_baker_chicken
+msgid "Baker's Bread - Chicken"
+msgstr "Pain boulanger - poulet"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_sandwich_baker_meat
+msgid "Baker's Bread - Meat"
+msgstr "Pain boulanger - viande"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_sandwich_baker_kebda
+msgid "Baker's Bread - Kebda"
+msgstr "Pain boulanger - kebda"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_sandwich_baker_crispy
+msgid "Baker's Bread - Crispy Chicken"
+msgstr "Pain boulanger - poulet crispy"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_souffle_chicken
+msgid "Chicken Souffle"
+msgstr "Soufflé poulet"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_souffle_tuna
+msgid "Tuna Souffle"
+msgstr "Soufflé thon"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_fajita
+msgid "Fajita"
+msgstr "Fajita"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_hot_dog
+msgid "Hot Dog"
+msgstr "Hot-dog"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_panini_chicken
+msgid "Chicken Panini"
+msgstr "Panini poulet"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_panini_tuna
+msgid "Tuna Panini"
+msgstr "Panini thon"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_panini_three_cheese
+msgid "3 Cheese Panini"
+msgstr "Panini 3 fromages"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_box_fries
+msgid "Fries Box"
+msgstr "Box frites"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_box_rice
+msgid "Rice Box"
+msgstr "Box riz"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_box_fries_crispy
+msgid "Crispy Fries Box"
+msgstr "Box frites crispy"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_box_rice_crispy
+msgid "Crispy Rice Box"
+msgstr "Box riz crispy"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_extra_gruyere
+msgid "Extra Gruyere"
+msgstr "Supplément gruyère"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_extra_cheddar
+msgid "Extra Cheddar"
+msgstr "Supplément cheddar"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_extra_camembert
+msgid "Extra Camembert"
+msgstr "Supplément camembert"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_extra_slices
+msgid "Extra Slices"
+msgstr "Supplément tranches"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_extra_fries
+msgid "Extra Fries"
+msgstr "Supplément frites"
+
+#. module: his_pos_menu
+#: model:product.template,name:his_pos_menu.cafe_extra_large_fries
+msgid "Extra Large Fries"
+msgstr "Supplément grande frite"
