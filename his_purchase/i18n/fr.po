@@ -502,12 +502,6 @@ msgstr "Note de choix"
 #. module: his_purchase
 #. odoo-python
 #: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
-msgid "Choose a product for these lines first: %s."
-msgstr "Choisissez d'abord un article pour ces lignes : %s."
-
-#. module: his_purchase
-#. odoo-python
-#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
 msgid "Choose the blanket order."
 msgstr "Choisissez le contrat-cadre."
 
@@ -1993,3 +1987,58 @@ msgstr "%s n'attend pas d'approbation : confirmez-la d'abord."
 #: code:addons/his_purchase/models/his_purchase_request.py:0
 msgid "Only the purchasing team can file a request for another department."
 msgstr "Seule l'équipe achats peut déposer une demande pour un autre département."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid ""
+"A line describes an item that is not in the catalogue yet: the stock "
+"managers create it, then the purchasing team can request quotes."
+msgstr "Une ligne décrit un article absent du catalogue : les gestionnaires de stock le créent, puis les achats peuvent demander des devis."
+
+#. module: his_purchase
+#: model:ir.model.fields,help:his_purchase.field_his_purchase_request__his_needs_product
+msgid ""
+"A line describes an item that is not in the catalogue yet: the stock "
+"managers create it."
+msgstr "Une ligne décrit un article absent du catalogue : les gestionnaires de stock le créent."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Catalogue Item"
+msgstr "Article du catalogue"
+
+#. module: his_purchase
+#: model:mail.activity.type,name:his_purchase.mail_act_catalogue
+msgid "Catalogue Item to Create"
+msgstr "Article à créer au catalogue"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Catalogue item set."
+msgstr "Article du catalogue renseigné."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
+msgid ""
+"Choose a catalogue item for these lines, or wait for the stock managers to "
+"create it: %s."
+msgstr "Choisissez un article du catalogue pour ces lignes, ou attendez que les gestionnaires de stock le créent : %s."
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Create a catalogue item for: %s"
+msgstr "Créer un article au catalogue pour : %s"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+msgid "Or Describe a New Item"
+msgstr "Ou décrivez un nouvel article"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_needs_product
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_search
+msgid "Waiting for a Catalogue Item"
+msgstr "En attente d'un article du catalogue"

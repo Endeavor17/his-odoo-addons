@@ -59,7 +59,10 @@ class HisPurchaseRequestSource(models.TransientModel):
         sans_produit = lines.filtered(lambda line: not line.product_id)
         if sans_produit:
             raise UserError(
-                _("Choose a product for these lines first: %s.", ", ".join(sans_produit.mapped("description")))
+                _(
+                    "Choose a catalogue item for these lines, or wait for the stock managers to create it: %s.",
+                    ", ".join(sans_produit.mapped("description")),
+                )
             )
         return lines
 
