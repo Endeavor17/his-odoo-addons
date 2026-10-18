@@ -53,8 +53,8 @@ class HelpdeskTicket(models.Model):
         compute="_compute_his_engagement_etat",
     )
 
-    # Le formulaire ne propose que les categories de l'equipe choisie.
-    his_team_category_ids = fields.Many2many(related="team_id.category_ids", string="Team Categories")
+    # Une seule equipe a HIS : chaque ticket y entre, courriels compris.
+    team_id = fields.Many2one(default=lambda self: self.env.ref("his_helpdesk_identity_bridge.team_support", False))
 
     @api.depends("his_person_id.engagement_ids.etat")
     def _compute_his_engagement_etat(self):

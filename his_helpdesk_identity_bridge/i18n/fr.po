@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: his_helpdesk_identity_bridge
-#: model:helpdesk.ticket.team,name:his_helpdesk_identity_bridge.team_admissions
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_adm
 msgid "Admissions"
 msgstr "Admissions"
 
@@ -31,7 +31,7 @@ msgid "Display Name"
 msgstr "Nom affiché"
 
 #. module: his_helpdesk_identity_bridge
-#: model:helpdesk.ticket.team,name:his_helpdesk_identity_bridge.team_finance
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_fin
 msgid "Finance / Cashier"
 msgstr "Finance / Caisse"
 
@@ -58,7 +58,7 @@ msgid "ID"
 msgstr "ID"
 
 #. module: his_helpdesk_identity_bridge
-#: model:helpdesk.ticket.team,name:his_helpdesk_identity_bridge.team_informatique
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_it
 msgid "IT"
 msgstr "Informatique"
 
@@ -78,7 +78,7 @@ msgid "Person Type"
 msgstr "Type de personne"
 
 #. module: his_helpdesk_identity_bridge
-#: model:helpdesk.ticket.team,name:his_helpdesk_identity_bridge.team_scolarite
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_scol
 msgid "Registrar"
 msgstr "Scolarité"
 
@@ -117,10 +117,6 @@ msgid "Tags"
 msgstr "Étiquettes"
 
 #. module: his_helpdesk_identity_bridge
-#: model:ir.model.fields,field_description:his_helpdesk_identity_bridge.field_helpdesk_ticket__his_team_category_ids
-msgid "Team Categories"
-msgstr "Catégories de l'équipe"
-
 #. module: his_helpdesk_identity_bridge
 #: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_it_compte
 msgid "Account & Password"
@@ -210,3 +206,27 @@ msgstr "Remboursement"
 #: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_autre
 msgid "Other"
 msgstr "Autre"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.team,name:his_helpdesk_identity_bridge.team_support
+msgid "Support"
+msgstr "Support"
+
+#. module: his_helpdesk_identity_bridge
+#: model:hr.job,name:his_helpdesk_identity_bridge.job_support
+msgid "Support Officer"
+msgstr "Chargé du support"
+
+#. module: his_helpdesk_identity_bridge
+#: model:ir.model.fields,field_description:his_helpdesk_identity_bridge.field_helpdesk_ticket_team__his_job_id
+msgid "Position"
+msgstr "Poste"
+
+#. module: his_helpdesk_identity_bridge
+#: model:ir.model.fields,help:his_helpdesk_identity_bridge.field_helpdesk_ticket_team__his_job_id
+msgid ""
+"Whoever holds this position is a member of the team. Members follow the "
+"position: set it, and they are kept in sync."
+msgstr ""
+"Les titulaires de ce poste sont membres de l'équipe. Les membres suivent le "
+"poste : une fois renseigné, ils sont tenus à jour."

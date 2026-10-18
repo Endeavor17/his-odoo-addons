@@ -24,7 +24,7 @@ class TestFormulaire(TransactionCase):
                 "email": "amel.saidi@example.com",
             }
         )
-        cls.equipe_it = cls.env.ref("his_helpdesk_identity_bridge.team_informatique")
+        cls.support = cls.env.ref("his_helpdesk_identity_bridge.team_support")
         vues = cls.env["helpdesk.ticket"].get_views([(False, "form")])
         cls.arch = etree.fromstring(vues["views"]["form"]["arch"])
 
@@ -58,14 +58,14 @@ class TestFormulaire(TransactionCase):
         for bouton in boutons:
             self.assertEqual(bouton.get("invisible"), "1")
 
-    def test_l_equipe_porte_ses_categories(self):
-        compte = self.env.ref("his_helpdesk_identity_bridge.categ_it_compte")
-        repas = self.env.ref("his_helpdesk_identity_bridge.categ_fin_repas")
-        ticket = self.env["helpdesk.ticket"].create(
-            {"name": "Wi-Fi", "description": "<p>?</p>", "team_id": self.equipe_it.id}
-        )
-        self.assertIn(compte, ticket.his_team_category_ids)
-        self.assertNotIn(repas, ticket.his_team_category_ids)
+    def test_tout_ticket_va_a_support(self):
+        ticket = self.env["helpdesk.ticket"].create({"name": "Wi-Fi", "description": "<p>?</p>"})
+        self.assertEqual(ticket.team_id, self.support)
+        self.assertEqual(self._champ("team_id").get("invisible"), "1")
+
+    def test_la_categorie_dit_le_service(self):
+        categorie = self.env.ref("his_helpdesk_identity_bridge.categ_it_reseau")
+        self.assertEqual(categorie.complete_name, "IT / Wi-Fi & Network")
 
     def test_canal_web_archive(self):
         self.assertFalse(self.env.ref("helpdesk_mgmt.helpdesk_ticket_channel_web").active)

@@ -22,6 +22,10 @@ class TestAcces(TransactionCase):
         # sans droits encaisses. L'en-tete ne fait que lire l'etat.
         cls.env["his.engagement"].create({"person_id": cls.etudiant.id, "etat": "prospect"})
         cls.agent = new_test_user(cls.env, login="agent_hd", groups="helpdesk_mgmt.group_helpdesk_user_own")
+        # L'agent de support est membre de l'equipe Support (par son poste) :
+        # sans cela la regle « tickets personnels » lui cache ses tickets.
+        cls.env.ref("his_helpdesk_identity_bridge.team_support").his_job_id = False
+        cls.env.ref("his_helpdesk_identity_bridge.team_support").user_ids = cls.agent
         cls.sans_role = new_test_user(cls.env, login="sans_role_hd", groups="base.group_user")
 
     def test_un_agent_voit_l_etudiant(self):

@@ -54,18 +54,17 @@
                 <attribute name="invisible">his_person_id or not partner_email</attribute>
             </field>
 
+            <!-- Une seule equipe (Support), posee par defaut : rien a choisir. -->
+            <field name="team_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
             <field name="team_id" position="after">
-                <field name="his_team_category_ids" invisible="1"/>
                 <xpath expr="//field[@name='category_id']" position="move"/>
             </field>
+            <!-- Categories et canaux se creent dans la configuration, pas par
+                 une faute de frappe dans un ticket. -->
             <field name="category_id" position="attributes">
-                <attribute name="domain">[('id', 'in', his_team_category_ids)] if his_team_category_ids else []</attribute>
                 <attribute name="options">{'no_create': True}</attribute>
-            </field>
-            <!-- Equipes et canaux se creent dans la configuration, pas par une
-                 faute de frappe dans un ticket. -->
-            <field name="team_id" position="attributes">
-                <attribute name="options">{'always_reload': True, 'no_create': True}</attribute>
             </field>
             <field name="channel_id" position="attributes">
                 <attribute name="options">{'no_create': True}</attribute>
@@ -92,6 +91,22 @@
             <xpath expr="//button[@name='action_open_leads']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+        </field>
+    </record>
+
+    <!-- Les membres suivent le poste : les saisir a la main serait defait a
+         la prochaine synchronisation. -->
+    <record id="view_helpdesk_team_form_his_job" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.team.form.his.job</field>
+        <field name="model">helpdesk.ticket.team</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_team_form"/>
+        <field name="arch" type="xml">
+            <field name="category_ids" position="after">
+                <field name="his_job_id" options="{'no_create': True}"/>
+            </field>
+            <field name="user_ids" position="attributes">
+                <attribute name="readonly">his_job_id</attribute>
+            </field>
         </field>
     </record>
 

@@ -16,6 +16,7 @@ est un defaut du referentiel, corrige a sa source.
     "license": "LGPL-3",
     "depends": [
         "helpdesk_mgmt_crm",
+        "his_access_base",
         "his_person_core",
     ],
     "data": [

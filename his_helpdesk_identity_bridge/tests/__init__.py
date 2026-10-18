@@ -4,6 +4,7 @@ from . import (
     test_acces,
     test_cloture,
     test_courriel_entrant,
+    test_equipe_poste,
     test_formulaire,
     test_lien_personne,
     test_personne_et_lead,
