@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_dashboard_maintenance" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">his_metabase_dashboard</field>
+        <field name="params" eval="{'code': 'maintenance'}"/>
+    </record>
+    <record id="action_dashboard_helpdesk" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">his_metabase_dashboard</field>
+        <field name="params" eval="{'code': 'helpdesk'}"/>
+    </record>
+    <record id="action_dashboard_pos" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">his_metabase_dashboard</field>
+        <field name="params" eval="{'code': 'pos'}"/>
+    </record>
+    <record id="action_dashboard_purchase" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">his_metabase_dashboard</field>
+        <field name="params" eval="{'code': 'purchase'}"/>
+    </record>
+    <record id="action_dashboard_inventory" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">his_metabase_dashboard</field>
+        <field name="params" eval="{'code': 'inventory'}"/>
+    </record>
+
+    <menuitem id="menu_dashboard_maintenance" name="Dashboard" parent="maintenance_university.menu_maintenance_root"
+              action="action_dashboard_maintenance" sequence="8"
+              groups="maintenance_university.group_maintenance_manager"/>
+    <menuitem id="menu_dashboard_helpdesk" name="Dashboard" parent="helpdesk_mgmt.helpdesk_ticket_main_menu"
+              action="action_dashboard_helpdesk" sequence="1"
+              groups="helpdesk_mgmt.group_helpdesk_manager"/>
+    <menuitem id="menu_dashboard_pos" name="Dashboard" parent="point_of_sale.menu_point_root"
+              action="action_dashboard_pos" sequence="1"
+              groups="point_of_sale.group_pos_manager"/>
+    <menuitem id="menu_dashboard_purchase" name="Dashboard" parent="purchase.menu_purchase_root"
+              action="action_dashboard_purchase" sequence="1"
+              groups="purchase.group_purchase_manager"/>
+    <menuitem id="menu_dashboard_inventory" name="Dashboard" parent="stock.menu_stock_root"
+              action="action_dashboard_inventory" sequence="1"
+              groups="stock.group_stock_manager"/>
+</odoo>

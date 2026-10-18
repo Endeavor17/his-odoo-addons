@@ -21,7 +21,14 @@ his_metabase.secret_key, set per server and never committed.
     ],
     "data": [
         "security/ir.model.access.csv",
+        "data/his_metabase_dashboard_data.xml",
         "views/his_metabase_dashboard_views.xml",
+        "views/menus.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "his_metabase/static/src/**/*",
+        ],
+    },
     "installable": True,
 }

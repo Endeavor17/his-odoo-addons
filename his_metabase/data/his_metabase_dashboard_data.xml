@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sans numero Metabase : il differe d'un serveur a l'autre et se saisit
+         dans Reglages > Technique > Tableaux de bord Metabase. -->
+    <data noupdate="1">
+        <record id="dashboard_maintenance" model="his.metabase.dashboard">
+            <field name="name">Maintenance</field>
+            <field name="code">maintenance</field>
+            <field name="group_ids" eval="[Command.set([ref('maintenance_university.group_maintenance_manager')])]"/>
+        </record>
+        <record id="dashboard_helpdesk" model="his.metabase.dashboard">
+            <field name="name">Helpdesk</field>
+            <field name="code">helpdesk</field>
+            <field name="group_ids" eval="[Command.set([ref('helpdesk_mgmt.group_helpdesk_manager')])]"/>
+        </record>
+        <record id="dashboard_pos" model="his.metabase.dashboard">
+            <field name="name">Point of Sale</field>
+            <field name="code">pos</field>
+            <field name="group_ids" eval="[Command.set([ref('point_of_sale.group_pos_manager')])]"/>
+        </record>
+        <record id="dashboard_purchase" model="his.metabase.dashboard">
+            <field name="name">Purchasing</field>
+            <field name="code">purchase</field>
+            <field name="group_ids" eval="[Command.set([ref('purchase.group_purchase_manager')])]"/>
+        </record>
+        <record id="dashboard_inventory" model="his.metabase.dashboard">
+            <field name="name">Inventory</field>
+            <field name="code">inventory</field>
+            <field name="group_ids" eval="[Command.set([ref('stock.group_stock_manager')])]"/>
+        </record>
+    </data>
+</odoo>
