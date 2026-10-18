@@ -33,3 +33,12 @@ class TestMenus(TransactionCase):
             self.env.ref("maintenance_university.action_maintenance_university_metabase", raise_if_not_found=False)
         )
         self.assertFalse(hasattr(self.env["maintenance.university.dashboard"], "get_metabase_url"))
+
+    def test_pas_de_doublon_de_nom_dans_l_application(self):
+        # Assistance et Point de vente ont deja un « Dashboard » : le notre ne
+        # doit pas se confondre avec lui (revue finale, 2026-10-18).
+        for code in ATTENDU:
+            with self.subTest(code=code):
+                menu = self.env.ref(f"his_metabase.menu_dashboard_{code}")
+                freres = menu.parent_id.child_id - menu
+                self.assertNotIn(menu.name, freres.mapped("name"))
