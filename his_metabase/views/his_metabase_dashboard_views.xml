@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="his_metabase_dashboard_view_list" model="ir.ui.view">
+        <field name="name">his.metabase.dashboard.list</field>
+        <field name="model">his.metabase.dashboard</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="metabase_id"/>
+                <field name="group_ids" widget="many2many_tags"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="his_metabase_dashboard_action" model="ir.actions.act_window">
+        <field name="name">Metabase Dashboards</field>
+        <field name="res_model">his.metabase.dashboard</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="his_metabase_dashboard_menu"
+              name="Metabase Dashboards"
+              parent="base.menu_custom"
+              action="his_metabase_dashboard_action"
+              sequence="100"
+              groups="base.group_system"/>
+</odoo>
