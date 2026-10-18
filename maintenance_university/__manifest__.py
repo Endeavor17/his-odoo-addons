@@ -1,6 +1,6 @@
 {
     "name": "University Maintenance",
-    "version": "19.0.4.0.2",
+    "version": "19.0.4.0.3",
     "summary": "University maintenance management system",
     "description": """
 University Maintenance
@@ -46,7 +46,6 @@ Manage maintenance requests for university buildings:
         "web.assets_backend": [
             "maintenance_university/static/src/dashboard/**/*",
             "maintenance_university/static/src/my_work/**/*",
-            "maintenance_university/static/src/metabase/**/*",
         ],
     },
     "post_init_hook": "post_init_hook",

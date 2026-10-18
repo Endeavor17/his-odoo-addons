@@ -26,3 +26,11 @@ class TestMenus(TransactionCase):
                 self.assertEqual(menu.group_ids, self.env.ref(groupe))
                 self.assertEqual(menu.action.tag, "his_metabase_dashboard")
                 self.assertEqual(menu.action.params, {"code": code})
+
+    def test_l_ancien_ecran_maintenance_a_disparu(self):
+        # Un seul chemin vers le tableau de bord maintenance : le notre.
+        self.assertFalse(self.env.ref("maintenance_university.menu_maintenance_metabase", raise_if_not_found=False))
+        self.assertFalse(
+            self.env.ref("maintenance_university.action_maintenance_university_metabase", raise_if_not_found=False)
+        )
+        self.assertFalse(hasattr(self.env["maintenance.university.dashboard"], "get_metabase_url"))
