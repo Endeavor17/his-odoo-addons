@@ -14,14 +14,14 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: his_helpdesk_identity_bridge
-#: model:helpdesk.ticket.team,name:his_helpdesk_identity_bridge.team_admissions
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_adm
 msgid "Admissions"
 msgstr "Admissions"
 
 #. module: his_helpdesk_identity_bridge
 #: model:ir.model.fields,field_description:his_helpdesk_identity_bridge.field_helpdesk_ticket__his_engagement_etat
-msgid "Current Engagement"
-msgstr "Engagement en cours"
+msgid "Status"
+msgstr "Statut"
 
 #. module: his_helpdesk_identity_bridge
 #: model:ir.model.fields,field_description:his_helpdesk_identity_bridge.field_helpdesk_ticket__display_name
@@ -31,7 +31,7 @@ msgid "Display Name"
 msgstr "Nom affiché"
 
 #. module: his_helpdesk_identity_bridge
-#: model:helpdesk.ticket.team,name:his_helpdesk_identity_bridge.team_finance
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_fin
 msgid "Finance / Cashier"
 msgstr "Finance / Caisse"
 
@@ -58,7 +58,7 @@ msgid "ID"
 msgstr "ID"
 
 #. module: his_helpdesk_identity_bridge
-#: model:helpdesk.ticket.team,name:his_helpdesk_identity_bridge.team_informatique
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_it
 msgid "IT"
 msgstr "Informatique"
 
@@ -78,7 +78,7 @@ msgid "Person Type"
 msgstr "Type de personne"
 
 #. module: his_helpdesk_identity_bridge
-#: model:helpdesk.ticket.team,name:his_helpdesk_identity_bridge.team_scolarite
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_scol
 msgid "Registrar"
 msgstr "Scolarité"
 
@@ -99,3 +99,149 @@ msgstr "Tickets"
 #: code:addons/his_helpdesk_identity_bridge/models/his_person.py:0
 msgid "his_person_id"
 msgstr "his_person_id"
+
+#. module: his_helpdesk_identity_bridge
+#: model_terms:ir.ui.view,arch_db:his_helpdesk_identity_bridge.helpdesk_ticket_view_search_his_person
+#: model_terms:ir.ui.view,arch_db:his_helpdesk_identity_bridge.ticket_view_form_his_person
+msgid "Requester"
+msgstr "Demandeur"
+
+#. module: his_helpdesk_identity_bridge
+#: model_terms:ir.ui.view,arch_db:his_helpdesk_identity_bridge.ticket_view_form_his_person
+msgid "Sender Email"
+msgstr "Email de l'expéditeur"
+
+#. module: his_helpdesk_identity_bridge
+#: model_terms:ir.ui.view,arch_db:his_helpdesk_identity_bridge.ticket_view_form_his_person
+msgid "Tags"
+msgstr "Étiquettes"
+
+#. module: his_helpdesk_identity_bridge
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_it_compte
+msgid "Account & Password"
+msgstr "Compte et mot de passe"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_it_courriel
+msgid "Email"
+msgstr "Messagerie"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_it_reseau
+msgid "Wi-Fi & Network"
+msgstr "Wi-Fi et réseau"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_it_materiel
+msgid "Computer & Printer"
+msgstr "Ordinateur et imprimante"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_it_logiciel
+msgid "Software & Online Platforms"
+msgstr "Logiciels et plateformes en ligne"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_scol_attestation
+msgid "Enrolment Certificate"
+msgstr "Attestation de scolarité"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_scol_notes
+msgid "Grades & Transcripts"
+msgstr "Notes et relevés"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_scol_emploi_du_temps
+msgid "Timetable & Exams"
+msgstr "Emploi du temps et examens"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_scol_carte
+msgid "Student Card"
+msgstr "Carte d'étudiant"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_scol_dossier
+msgid "Personal Details Change"
+msgstr "Modification des informations personnelles"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_adm_candidature
+msgid "Application Follow-up"
+msgstr "Suivi de candidature"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_adm_pieces
+msgid "Missing Documents"
+msgstr "Pièces manquantes"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_adm_inscription
+msgid "Registration"
+msgstr "Inscription"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_fin_frais
+msgid "Tuition Fees & Payment"
+msgstr "Frais de scolarité et paiement"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_fin_recu
+msgid "Receipt"
+msgstr "Reçu"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_fin_repas
+msgid "Meal Credits"
+msgstr "Crédits repas"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_fin_remboursement
+msgid "Refund"
+msgstr "Remboursement"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.category,name:his_helpdesk_identity_bridge.categ_autre
+msgid "Other"
+msgstr "Autre"
+
+#. module: his_helpdesk_identity_bridge
+#: model:helpdesk.ticket.team,name:his_helpdesk_identity_bridge.team_support
+msgid "Support"
+msgstr "Support"
+
+#. module: his_helpdesk_identity_bridge
+#: model:hr.job,name:his_helpdesk_identity_bridge.job_support
+msgid "Support Officer"
+msgstr "Chargé du support"
+
+#. module: his_helpdesk_identity_bridge
+#: model:ir.model.fields,field_description:his_helpdesk_identity_bridge.field_helpdesk_ticket_team__his_job_id
+msgid "Position"
+msgstr "Poste"
+
+#. module: his_helpdesk_identity_bridge
+#: model:ir.model.fields,help:his_helpdesk_identity_bridge.field_helpdesk_ticket_team__his_job_id
+msgid ""
+"Whoever holds this position is a member of the team. Members follow the "
+"position: set it, and they are kept in sync."
+msgstr ""
+"Les titulaires de ce poste sont membres de l'équipe. Les membres suivent le "
+"poste : une fois renseigné, ils sont tenus à jour."
+
+#. module: his_helpdesk_identity_bridge
+#: model:ir.model,name:his_helpdesk_identity_bridge.model_hr_employee
+msgid "Employee"
+msgstr "Employé"
+
+#. module: his_helpdesk_identity_bridge
+#: model:ir.model,name:his_helpdesk_identity_bridge.model_helpdesk_ticket_team
+msgid "Helpdesk Ticket Team"
+msgstr "Équipe de ticket d'assistance"
+
+#. module: his_helpdesk_identity_bridge
+#: model:ir.model.fields,field_description:his_helpdesk_identity_bridge.field_helpdesk_ticket__team_id
+msgid "Team"
+msgstr "Équipe"

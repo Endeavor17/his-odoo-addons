@@ -49,9 +49,12 @@ class HelpdeskTicket(models.Model):
     # sa personne, ce qui ne dit rien a l'agent.
     his_engagement_etat = fields.Selection(
         selection=lambda self: self.env["his.engagement"]._fields["etat"].selection,
-        string="Current Engagement",
+        string="Status",
         compute="_compute_his_engagement_etat",
     )
+
+    # Une seule equipe a HIS : chaque ticket y entre, courriels compris.
+    team_id = fields.Many2one(default=lambda self: self.env.ref("his_helpdesk_identity_bridge.team_support", False))
 
     @api.depends("his_person_id.engagement_ids.etat")
     def _compute_his_engagement_etat(self):
