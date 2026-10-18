@@ -230,3 +230,18 @@ msgid ""
 msgstr ""
 "Les titulaires de ce poste sont membres de l'équipe. Les membres suivent le "
 "poste : une fois renseigné, ils sont tenus à jour."
+
+#. module: his_helpdesk_identity_bridge
+#: model:ir.model,name:his_helpdesk_identity_bridge.model_hr_employee
+msgid "Employee"
+msgstr "Employé"
+
+#. module: his_helpdesk_identity_bridge
+#: model:ir.model,name:his_helpdesk_identity_bridge.model_helpdesk_ticket_team
+msgid "Helpdesk Ticket Team"
+msgstr "Équipe de ticket d'assistance"
+
+#. module: his_helpdesk_identity_bridge
+#: model:ir.model.fields,field_description:his_helpdesk_identity_bridge.field_helpdesk_ticket__team_id
+msgid "Team"
+msgstr "Équipe"
