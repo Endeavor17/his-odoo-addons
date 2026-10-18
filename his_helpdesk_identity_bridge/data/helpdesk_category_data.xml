@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Premier jet de categories par equipe (demande par Mohamed le
+         2026-10-18, a corriger par les equipes). noupdate : un renommage ou
+         un archivage fait par l'administrateur survit aux mises a jour. -->
+    <data noupdate="1">
+        <!-- IT -->
+        <record id="categ_it_compte" model="helpdesk.ticket.category">
+            <field name="name">Account &amp; Password</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="categ_it_courriel" model="helpdesk.ticket.category">
+            <field name="name">Email</field>
+            <field name="sequence">11</field>
+        </record>
+        <record id="categ_it_reseau" model="helpdesk.ticket.category">
+            <field name="name">Wi-Fi &amp; Network</field>
+            <field name="sequence">12</field>
+        </record>
+        <record id="categ_it_materiel" model="helpdesk.ticket.category">
+            <field name="name">Computer &amp; Printer</field>
+            <field name="sequence">13</field>
+        </record>
+        <record id="categ_it_logiciel" model="helpdesk.ticket.category">
+            <field name="name">Software &amp; Online Platforms</field>
+            <field name="sequence">14</field>
+        </record>
+
+        <!-- Scolarite -->
+        <record id="categ_scol_attestation" model="helpdesk.ticket.category">
+            <field name="name">Enrolment Certificate</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="categ_scol_notes" model="helpdesk.ticket.category">
+            <field name="name">Grades &amp; Transcripts</field>
+            <field name="sequence">21</field>
+        </record>
+        <record id="categ_scol_emploi_du_temps" model="helpdesk.ticket.category">
+            <field name="name">Timetable &amp; Exams</field>
+            <field name="sequence">22</field>
+        </record>
+        <record id="categ_scol_carte" model="helpdesk.ticket.category">
+            <field name="name">Student Card</field>
+            <field name="sequence">23</field>
+        </record>
+        <record id="categ_scol_dossier" model="helpdesk.ticket.category">
+            <field name="name">Personal Details Change</field>
+            <field name="sequence">24</field>
+        </record>
+
+        <!-- Admissions -->
+        <record id="categ_adm_candidature" model="helpdesk.ticket.category">
+            <field name="name">Application Follow-up</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="categ_adm_pieces" model="helpdesk.ticket.category">
+            <field name="name">Missing Documents</field>
+            <field name="sequence">31</field>
+        </record>
+        <record id="categ_adm_inscription" model="helpdesk.ticket.category">
+            <field name="name">Registration</field>
+            <field name="sequence">32</field>
+        </record>
+
+        <!-- Finance / Caisse -->
+        <record id="categ_fin_frais" model="helpdesk.ticket.category">
+            <field name="name">Tuition Fees &amp; Payment</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="categ_fin_recu" model="helpdesk.ticket.category">
+            <field name="name">Receipt</field>
+            <field name="sequence">41</field>
+        </record>
+        <record id="categ_fin_repas" model="helpdesk.ticket.category">
+            <field name="name">Meal Credits</field>
+            <field name="sequence">42</field>
+        </record>
+        <record id="categ_fin_remboursement" model="helpdesk.ticket.category">
+            <field name="name">Refund</field>
+            <field name="sequence">43</field>
+        </record>
+
+        <!-- Commune a toutes les equipes -->
+        <record id="categ_autre" model="helpdesk.ticket.category">
+            <field name="name">Other</field>
+            <field name="sequence">99</field>
+        </record>
+    </data>
+
+    <!-- Hors noupdate : les equipes existent deja (installees en noupdate),
+         il faut une mise a jour pour leur rattacher les categories. Des
+         liens (Command.link) seulement : rien d'autre n'est reecrit. -->
+    <data>
+        <record id="team_informatique" model="helpdesk.ticket.team">
+            <field name="category_ids" eval="[Command.link(ref('categ_it_compte')), Command.link(ref('categ_it_courriel')), Command.link(ref('categ_it_reseau')), Command.link(ref('categ_it_materiel')), Command.link(ref('categ_it_logiciel')), Command.link(ref('categ_autre'))]"/>
+        </record>
+        <record id="team_scolarite" model="helpdesk.ticket.team">
+            <field name="category_ids" eval="[Command.link(ref('categ_scol_attestation')), Command.link(ref('categ_scol_notes')), Command.link(ref('categ_scol_emploi_du_temps')), Command.link(ref('categ_scol_carte')), Command.link(ref('categ_scol_dossier')), Command.link(ref('categ_autre'))]"/>
+        </record>
+        <record id="team_admissions" model="helpdesk.ticket.team">
+            <field name="category_ids" eval="[Command.link(ref('categ_adm_candidature')), Command.link(ref('categ_adm_pieces')), Command.link(ref('categ_adm_inscription')), Command.link(ref('categ_autre'))]"/>
+        </record>
+        <record id="team_finance" model="helpdesk.ticket.team">
+            <field name="category_ids" eval="[Command.link(ref('categ_fin_frais')), Command.link(ref('categ_fin_recu')), Command.link(ref('categ_fin_repas')), Command.link(ref('categ_fin_remboursement')), Command.link(ref('categ_autre'))]"/>
+        </record>
+
+        <!-- Seul le personnel ouvre des tickets : aucun ne vient du web. -->
+        <record id="helpdesk_mgmt.helpdesk_ticket_channel_web" model="helpdesk.ticket.channel">
+            <field name="active" eval="False"/>
+        </record>
+    </data>
+</odoo>

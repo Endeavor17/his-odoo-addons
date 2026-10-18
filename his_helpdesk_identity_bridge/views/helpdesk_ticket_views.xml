@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- groups= sur chaque champ : un abonne sans role helpdesk peut ouvrir
-         un ticket qu'il suit ; il ne doit pas buter sur une personne qu'il
-         n'a pas le droit de lire. -->
+    <!-- Le formulaire OCA est pense pour des clients : Contact, nom et email
+         saisis a la main. A HIS tout ticket parle d'une personne du
+         referentiel (decision de Mohamed, 2026-10-18) : elle seule est
+         saisie, a gauche ; le routage passe a droite.
+         groups= sur chaque champ HIS : un abonne sans role helpdesk peut
+         ouvrir un ticket qu'il suit ; il ne doit pas buter sur une personne
+         qu'il n'a pas le droit de lire. -->
     <record id="ticket_view_form_his_person" model="ir.ui.view">
         <field name="name">helpdesk.ticket.form.his.person</field>
         <field name="model">helpdesk.ticket</field>
         <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//group[@name='main']/group[1]" position="attributes">
+                <attribute name="name">his_routing</attribute>
+            </xpath>
+            <xpath expr="//group[@name='main']/group[2]" position="attributes">
+                <attribute name="name">his_requester</attribute>
+            </xpath>
+            <xpath expr="//group[@name='his_routing']" position="before">
+                <xpath expr="//group[@name='his_requester']" position="move"/>
+            </xpath>
+
             <field name="partner_id" position="before">
-                <!-- no_create : le helpdesk ne cree jamais de personne. -->
-                <field name="his_person_id" groups="helpdesk_mgmt.group_helpdesk_user_own"
+                <!-- no_create : le helpdesk ne cree jamais de personne.
+                     Requis sauf pour un courriel d'expediteur inconnu : le
+                     ticket existe deja, l'agent le rattache ensuite. -->
+                <field name="his_person_id" string="Requester"
+                       groups="helpdesk_mgmt.group_helpdesk_user_own"
+                       required="not partner_email"
                        options="{'no_create': True}"/>
                 <field name="his_matricule" groups="helpdesk_mgmt.group_helpdesk_user_own"
                        invisible="not his_person_id"/>
@@ -20,6 +38,60 @@
                 <field name="his_engagement_etat" groups="helpdesk_mgmt.group_helpdesk_user_own"
                        invisible="not his_engagement_etat"/>
             </field>
+            <!-- Recopies de la personne : gardes dans la vue (invisibles) pour
+                 que le changement de personne les remplisse en cascade. -->
+            <field name="partner_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="partner_name" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <!-- Seul cas visible : le courriel d'un expediteur que le
+                 referentiel ne connait pas. -->
+            <field name="partner_email" position="attributes">
+                <attribute name="string">Sender Email</attribute>
+                <attribute name="readonly">1</attribute>
+                <attribute name="invisible">his_person_id or not partner_email</attribute>
+            </field>
+
+            <field name="team_id" position="after">
+                <field name="his_team_category_ids" invisible="1"/>
+                <xpath expr="//field[@name='category_id']" position="move"/>
+            </field>
+            <field name="category_id" position="attributes">
+                <attribute name="domain">[('id', 'in', his_team_category_ids)] if his_team_category_ids else []</attribute>
+                <attribute name="options">{'no_create': True}</attribute>
+            </field>
+            <!-- Equipes et canaux se creent dans la configuration, pas par une
+                 faute de frappe dans un ticket. -->
+            <field name="team_id" position="attributes">
+                <attribute name="options">{'always_reload': True, 'no_create': True}</attribute>
+            </field>
+            <field name="channel_id" position="attributes">
+                <attribute name="options">{'no_create': True}</attribute>
+            </field>
+            <field name="channel_id" position="after">
+                <xpath expr="//field[@name='tag_ids']" position="move"/>
+            </field>
+            <field name="tag_ids" position="attributes">
+                <attribute name="string">Tags</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- Pas de conversion en opportunite (decision de Mohamed, 2026-10-18) :
+         les tickets viennent du personnel, pas de prospects. -->
+    <record id="ticket_view_form_his_no_lead" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.his.no.lead</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt_crm.ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@icon='fa-arrow-right']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_open_leads']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
 
@@ -29,7 +101,7 @@
         <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search"/>
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
-                <field name="his_person_id" groups="helpdesk_mgmt.group_helpdesk_user_own"/>
+                <field name="his_person_id" string="Requester" groups="helpdesk_mgmt.group_helpdesk_user_own"/>
             </field>
         </field>
     </record>

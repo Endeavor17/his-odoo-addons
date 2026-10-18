@@ -49,9 +49,12 @@ class HelpdeskTicket(models.Model):
     # sa personne, ce qui ne dit rien a l'agent.
     his_engagement_etat = fields.Selection(
         selection=lambda self: self.env["his.engagement"]._fields["etat"].selection,
-        string="Current Engagement",
+        string="Status",
         compute="_compute_his_engagement_etat",
     )
+
+    # Le formulaire ne propose que les categories de l'equipe choisie.
+    his_team_category_ids = fields.Many2many(related="team_id.category_ids", string="Team Categories")
 
     @api.depends("his_person_id.engagement_ids.etat")
     def _compute_his_engagement_etat(self):
