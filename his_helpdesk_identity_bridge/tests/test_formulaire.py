@@ -7,7 +7,6 @@ comme le navigateur.
 """
 
 from lxml import etree
-
 from odoo.tests import TransactionCase, tagged
 
 
@@ -44,7 +43,7 @@ class TestFormulaire(TransactionCase):
     def test_la_personne_remplit_contact_nom_et_email(self):
         # Caches, ils restent recopies : la cloture et les destinataires
         # suggeres s'en servent.
-        spec = dict.fromkeys(("his_person_id", "partner_id", "partner_name", "partner_email"), {})
+        spec = {champ: {} for champ in ("his_person_id", "partner_id", "partner_name", "partner_email")}
         valeurs = self.env["helpdesk.ticket"].onchange({"his_person_id": self.etudiant.id}, ["his_person_id"], spec)[
             "value"
         ]
