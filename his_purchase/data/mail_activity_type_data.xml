@@ -9,4 +9,13 @@
         <field name="category">default</field>
         <field name="res_model" eval="False"/>
     </record>
+
+    <!-- Article absent du catalogue : a-faire des gestionnaires de stock,
+         clos quand chaque ligne a son article (2026-10-18). -->
+    <record id="mail_act_catalogue" model="mail.activity.type">
+        <field name="name">Catalogue Item to Create</field>
+        <field name="icon">fa-cube</field>
+        <field name="category">default</field>
+        <field name="res_model">his.purchase.request</field>
+    </record>
 </odoo>

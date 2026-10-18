@@ -76,4 +76,48 @@
         <field name="domain_force">[(1, '=', 1)]</field>
     </record>
 
+    <!-- Gestionnaires de stock : ils creent les articles absents du catalogue
+         (2026-10-18). Lecture de toutes les demandes (l'a-faire y mene, et la
+         fiche se recharge apres leur saisie) ; ecriture sur les demandes
+         approuvees seulement, et le code limite aux champs de l'article. -->
+    <record id="rule_request_stock_manager_read" model="ir.rule">
+        <field name="name">Purchase request: read (stock managers)</field>
+        <field name="model_id" ref="model_his_purchase_request"/>
+        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_request_stock_manager_write" model="ir.rule">
+        <field name="name">Purchase request: approved (stock managers)</field>
+        <field name="model_id" ref="model_his_purchase_request"/>
+        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        <field name="domain_force">[('state', '=', 'approved')]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_request_line_stock_manager_read" model="ir.rule">
+        <field name="name">Purchase request line: read (stock managers)</field>
+        <field name="model_id" ref="model_his_purchase_request_line"/>
+        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_request_line_stock_manager_write" model="ir.rule">
+        <field name="name">Purchase request line: approved (stock managers)</field>
+        <field name="model_id" ref="model_his_purchase_request_line"/>
+        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        <field name="domain_force">[('request_id.state', '=', 'approved')]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
 </odoo>

@@ -86,11 +86,11 @@ class HisPurchaseFollowupMixin(models.AbstractModel):
                 subtype_xmlid="mail.mt_note",
             )
 
-    def _his_schedule(self, users, label, due):
+    def _his_schedule(self, users, label, due, activity=ACTIVITY_XMLID):
         for record, group in self._his_by_lang(users):
             summary = label(record) if callable(label) else label
             for user in group:
-                record.activity_schedule(ACTIVITY_XMLID, date_deadline=due, summary=summary, user_id=user.id)
+                record.activity_schedule(activity, date_deadline=due, summary=summary, user_id=user.id)
 
     def _his_label(self):
         step = self._his_step()

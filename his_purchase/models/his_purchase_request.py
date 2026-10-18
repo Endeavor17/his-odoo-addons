@@ -44,6 +44,10 @@ PROTECTED_FIELDS = {
     "his_last_nudge",
     "his_urgent_alert_sent",
 }
+# Article absent du catalogue : seuls les gestionnaires de stock le creent
+# (regle MDM, recette P-17). Ils posent l'article sur la ligne, rien d'autre.
+CATALOGUE_ACTIVITY_XMLID = "his_purchase.mail_act_catalogue"
+CATALOGUE_FIELDS = {"product_id", "product_uom_id"}
 
 
 class HisPurchaseRequest(models.Model):
@@ -112,10 +116,21 @@ class HisPurchaseRequest(models.Model):
     order_count = fields.Integer(compute="_compute_order_ids", compute_sudo=True)
     his_last_nudge = fields.Datetime(string="Last Reminder by Requester", readonly=True, copy=False)
     his_urgent_alert_sent = fields.Boolean(string="Urgent Alert Sent", readonly=True, copy=False)
+    his_needs_product = fields.Boolean(
+        string="Waiting for a Catalogue Item",
+        compute="_compute_his_needs_product",
+        store=True,
+        help="A line describes an item that is not in the catalogue yet: the stock managers create it.",
+    )
 
     # ------------------------------------------------------------------
     # Calculs
     # ------------------------------------------------------------------
+
+    @api.depends("line_ids.product_id")
+    def _compute_his_needs_product(self):
+        for request in self:
+            request.his_needs_product = any(not line.product_id for line in request.line_ids)
 
     @api.depends("requester_id")
     def _compute_department_id(self):
@@ -174,6 +189,10 @@ class HisPurchaseRequest(models.Model):
             request._his_check_department(vals, request.requester_id)
         # Le fil de discussion (pieces jointes, activites) reste ouvert a tous.
         business = {f for f in vals if f not in FOLLOWUP_FIELDS and not f.startswith(("message_", "activity_"))}
+        # Le gestionnaire de stock passe par le formulaire : ses lignes arrivent
+        # en line_ids, et la ligne verifie elle-meme ce qu'il peut y changer.
+        if business == {"line_ids"} and self.env.user.has_group("stock.group_stock_manager"):
+            business = set()
         if business and not self._his_is_purchasing():
             locked = self.filtered(lambda r: r.state != "draft")
             if locked:
@@ -283,7 +302,26 @@ class HisPurchaseRequest(models.Model):
             )
             if officer:
                 request.sudo().message_subscribe(partner_ids=officer.partner_id.ids)
+        self.filtered("his_needs_product")._his_ask_catalogue()
         return True
+
+    def _his_ask_catalogue(self):
+        """Une ligne decrit un article absent du catalogue : un a-faire pour
+        chaque gestionnaire de stock (decision de Mohamed, 2026-10-18)."""
+        users = self.env.ref("stock.group_stock_manager").all_user_ids.filtered(lambda u: u.active and not u.share)
+        today = fields.Date.context_today(self)
+        for request in self:
+            request.sudo()._his_schedule(
+                users, lambda r: r._his_text_catalogue(), today, activity=CATALOGUE_ACTIVITY_XMLID
+            )
+
+    def _his_text_catalogue(self):
+        items = self.line_ids.filtered(lambda line: not line.product_id).mapped("description")
+        return _("Create a catalogue item for: %s", ", ".join(items))
+
+    def _his_close_catalogue(self):
+        for request in self.filtered(lambda r: not r.his_needs_product):
+            request.sudo().activity_feedback([CATALOGUE_ACTIVITY_XMLID], feedback=_("Catalogue item set."))
 
     def action_open_reject(self):
         self._his_check_approver()
@@ -564,8 +602,10 @@ class HisPurchaseRequestLine(models.Model):
         if any(line.estimated_price_unit < 0 for line in self):
             raise ValidationError(_("The estimated price cannot be negative."))
 
-    def _his_check_editable(self):
+    def _his_check_editable(self, vals=None):
         if self.env.su or self.env.user.has_group("purchase.group_purchase_user"):
+            return
+        if vals is not None and self._his_catalogue_may_write(vals):
             return
         if any(line.request_id.state != "draft" for line in self):
             raise UserError(_("A submitted request can only be changed by the purchasing team."))
@@ -576,9 +616,21 @@ class HisPurchaseRequestLine(models.Model):
         lines._his_check_editable()
         return lines
 
+    def _his_catalogue_may_write(self, vals):
+        """Le gestionnaire de stock pose l'article d'une ligne qui n'en a pas,
+        sur une demande approuvee ; il ne touche ni quantite ni prix."""
+        return (
+            set(vals) <= CATALOGUE_FIELDS
+            and self.env.user.has_group("stock.group_stock_manager")
+            and all(not line.product_id and line.request_id.state == "approved" for line in self)
+        )
+
     def write(self, vals):
-        self._his_check_editable()
-        return super().write(vals)
+        self._his_check_editable(vals)
+        res = super().write(vals)
+        if "product_id" in vals:
+            self.request_id._his_close_catalogue()
+        return res
 
     @api.ondelete(at_uninstall=False)
     def _unlink_if_editable(self):
