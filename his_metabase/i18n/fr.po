@@ -1,0 +1,165 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_metabase
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260810\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-18 14:34+0000\n"
+"PO-Revision-Date: 2026-10-18 14:34+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__group_ids
+msgid "Allowed Groups"
+msgstr "Groupes autorisés"
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__code
+msgid "Code"
+msgstr "Code"
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_metabase
+#. odoo-javascript
+#: code:addons/his_metabase/static/src/dashboard.xml:0
+#: model:ir.actions.client,name:his_metabase.action_dashboard_helpdesk
+#: model:ir.actions.client,name:his_metabase.action_dashboard_inventory
+#: model:ir.actions.client,name:his_metabase.action_dashboard_maintenance
+#: model:ir.actions.client,name:his_metabase.action_dashboard_pos
+#: model:ir.actions.client,name:his_metabase.action_dashboard_purchase
+#: model:ir.ui.menu,name:his_metabase.menu_dashboard_helpdesk
+#: model:ir.ui.menu,name:his_metabase.menu_dashboard_inventory
+#: model:ir.ui.menu,name:his_metabase.menu_dashboard_maintenance
+#: model:ir.ui.menu,name:his_metabase.menu_dashboard_pos
+#: model:ir.ui.menu,name:his_metabase.menu_dashboard_purchase
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_metabase
+#: model:ir.model.constraint,message:his_metabase.constraint_his_metabase_dashboard_code_unique
+msgid "Each dashboard code must be unique."
+msgstr "Chaque code de tableau de bord doit être unique."
+
+#. module: his_metabase
+#: model:his.metabase.dashboard,name:his_metabase.dashboard_helpdesk
+msgid "Helpdesk"
+msgstr "Assistance"
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_metabase
+#: model:his.metabase.dashboard,name:his_metabase.dashboard_inventory
+msgid "Inventory"
+msgstr "Inventaire"
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_metabase
+#: model:his.metabase.dashboard,name:his_metabase.dashboard_maintenance
+msgid "Maintenance"
+msgstr "Maintenance"
+
+#. module: his_metabase
+#: model:ir.model,name:his_metabase.model_his_metabase_dashboard
+msgid "Metabase Dashboard"
+msgstr "Tableau de bord Metabase"
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__metabase_id
+msgid "Metabase Dashboard Number"
+msgstr "Numéro du tableau de bord Metabase"
+
+#. module: his_metabase
+#: model:ir.actions.act_window,name:his_metabase.his_metabase_dashboard_action
+#: model:ir.ui.menu,name:his_metabase.his_metabase_dashboard_menu
+msgid "Metabase Dashboards"
+msgstr "Tableaux de bord Metabase"
+
+#. module: his_metabase
+#. odoo-python
+#: code:addons/his_metabase/models/his_metabase_dashboard.py:0
+msgid ""
+"Metabase is not configured: set the %(site)s and %(key)s system parameters."
+msgstr "Metabase n'est pas configuré : renseignez les paramètres système %(site)s et %(key)s."
+
+#. module: his_metabase
+#: model:ir.model.fields,field_description:his_metabase.field_his_metabase_dashboard__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: his_metabase
+#: model:his.metabase.dashboard,name:his_metabase.dashboard_pos
+msgid "Point of Sale"
+msgstr "Point de vente"
+
+#. module: his_metabase
+#: model:his.metabase.dashboard,name:his_metabase.dashboard_purchase
+msgid "Purchasing"
+msgstr "Achats"
+
+#. module: his_metabase
+#: model:ir.model.fields,help:his_metabase.field_his_metabase_dashboard__code
+msgid "Stable key used by the app menus."
+msgstr "Clé stable utilisée par les menus des applications."
+
+#. module: his_metabase
+#. odoo-python
+#: code:addons/his_metabase/models/his_metabase_dashboard.py:0
+msgid ""
+"The %s dashboard has no Metabase number yet: set it in Settings > Technical "
+"> Metabase Dashboards."
+msgstr "Le tableau de bord %s n'a pas encore de numéro Metabase : renseignez-le dans Paramètres > Technique > Tableaux de bord Metabase."
+
+#. module: his_metabase
+#: model:ir.model.fields,help:his_metabase.field_his_metabase_dashboard__metabase_id
+msgid "The dashboard's number on this server's Metabase."
+msgstr "Le numéro du tableau de bord dans le Metabase de ce serveur."
+
+#. module: his_metabase
+#. odoo-python
+#: code:addons/his_metabase/models/his_metabase_dashboard.py:0
+msgid "This dashboard does not exist or has been archived."
+msgstr "Ce tableau de bord n'existe pas ou a été archivé."
+
+#. module: his_metabase
+#. odoo-python
+#: code:addons/his_metabase/models/his_metabase_dashboard.py:0
+msgid "You are not allowed to open the %s dashboard."
+msgstr "Vous n'êtes pas autorisé à ouvrir le tableau de bord %s."
