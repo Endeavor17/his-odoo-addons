@@ -1991,16 +1991,16 @@ msgstr "Seule l'équipe achats peut déposer une demande pour un autre départem
 #. module: his_purchase
 #: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
 msgid ""
-"A line describes an item that is not in the catalogue yet: the stock "
-"managers create it, then the purchasing team can request quotes."
-msgstr "Une ligne décrit un article absent du catalogue : les gestionnaires de stock le créent, puis les achats peuvent demander des devis."
+"A line describes an item that is not in the catalogue yet: the catalogue "
+"team creates it, then the purchasing team can request quotes."
+msgstr "Une ligne décrit un article absent du catalogue : les responsables catalogue le créent, puis les achats peuvent demander des devis."
 
 #. module: his_purchase
 #: model:ir.model.fields,help:his_purchase.field_his_purchase_request__his_needs_product
 msgid ""
-"A line describes an item that is not in the catalogue yet: the stock "
-"managers create it."
-msgstr "Une ligne décrit un article absent du catalogue : les gestionnaires de stock le créent."
+"A line describes an item that is not in the catalogue yet: the catalogue "
+"team creates it."
+msgstr "Une ligne décrit un article absent du catalogue : les responsables catalogue le créent."
 
 #. module: his_purchase
 #: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
@@ -2022,9 +2022,9 @@ msgstr "Article du catalogue renseigné."
 #. odoo-python
 #: code:addons/his_purchase/wizard/his_purchase_request_source.py:0
 msgid ""
-"Choose a catalogue item for these lines, or wait for the stock managers to "
+"Choose a catalogue item for these lines, or wait for the catalogue team to "
 "create it: %s."
-msgstr "Choisissez un article du catalogue pour ces lignes, ou attendez que les gestionnaires de stock le créent : %s."
+msgstr "Choisissez un article du catalogue pour ces lignes, ou attendez que les responsables catalogue le créent : %s."
 
 #. module: his_purchase
 #. odoo-python
@@ -2042,3 +2042,20 @@ msgstr "Ou décrivez un nouvel article"
 #: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_search
 msgid "Waiting for a Catalogue Item"
 msgstr "En attente d'un article du catalogue"
+
+#. module: his_purchase
+#: model:res.groups.privilege,name:his_purchase.res_groups_privilege_catalogue
+msgid "Catalogue"
+msgstr "Catalogue"
+
+#. module: his_purchase
+#: model:res.groups,name:his_purchase.group_catalogue
+msgid "Catalogue Manager"
+msgstr "Responsable catalogue"
+
+#. module: his_purchase
+#: model:res.groups,comment:his_purchase.group_catalogue
+msgid ""
+"Creates the items that purchase requests describe but the catalogue\n"
+"            does not have yet, and receives the to-do when such a request is approved."
+msgstr "Crée les articles que les demandes d'achat décrivent mais que le catalogue n'a pas encore, et reçoit l'à-faire quand une telle demande est approuvée."

@@ -7,5 +7,5 @@ access_request_manager,his.purchase.request manager,model_his_purchase_request,p
 access_request_source,his.purchase.request.source,model_his_purchase_request_source,purchase.group_purchase_user,1,1,1,1
 access_request_reject,his.purchase.request.reject,model_his_purchase_request_reject,group_requester,1,1,1,1
 access_choice,his.purchase.choice,model_his_purchase_choice,purchase.group_purchase_user,1,1,1,1
-access_request_stock_manager,his.purchase.request stock manager,model_his_purchase_request,stock.group_stock_manager,1,1,0,0
-access_request_line_stock_manager,his.purchase.request.line stock manager,model_his_purchase_request_line,stock.group_stock_manager,1,1,0,0
+access_request_catalogue,his.purchase.request catalogue,model_his_purchase_request,group_catalogue,1,1,0,0
+access_request_line_catalogue,his.purchase.request.line catalogue,model_his_purchase_request_line,group_catalogue,1,1,0,0

@@ -62,7 +62,7 @@
                     </group>
                     <field name="his_needs_product" invisible="1"/>
                     <div class="alert alert-info" role="alert" invisible="not his_needs_product or state != 'approved'">
-                        A line describes an item that is not in the catalogue yet: the stock managers create it, then the purchasing team can request quotes.
+                        A line describes an item that is not in the catalogue yet: the catalogue team creates it, then the purchasing team can request quotes.
                     </div>
                     <field name="justification" placeholder="Why is this purchase needed?" readonly="state != 'draft'"/>
                     <notebook>
