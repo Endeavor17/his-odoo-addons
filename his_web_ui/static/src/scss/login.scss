@@ -32,14 +32,14 @@ body.his-login {
             height: auto;
         }
 
-        // Centre dans le panneau, seul le bas deborde : le monogramme reste
-        // entier au lieu d'etre coupe par le bord du formulaire.
+        // Centre dans le panneau, entier : le plus petit cote decide de sa taille.
         &::after {
             content: "";
             position: absolute;
-            inset: auto 0 -14% 0;
-            margin-inline: auto;
-            width: 85%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(80%, 80vh);
             aspect-ratio: 1;
             background: var(--his-seal) center / contain no-repeat;
             filter: brightness(0) invert(1);
