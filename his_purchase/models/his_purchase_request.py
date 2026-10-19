@@ -174,6 +174,7 @@ class HisPurchaseRequest(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            self._his_drop_form_defaults(vals)
             self._his_check_protected(vals)
             self._his_check_department(vals, self.env["hr.employee"].browse(vals.get("requester_id")))
             if vals.get("name", _("New")) == _("New"):
@@ -213,6 +214,20 @@ class HisPurchaseRequest(models.Model):
 
     def _his_is_purchasing(self):
         return self.env.su or self.env.user.has_group("purchase.group_purchase_user")
+
+    def _his_drop_form_defaults(self, vals):
+        """Le formulaire envoie, sur une demande neuve, l'etat par defaut et les
+        champs calcules depuis le departement : hors equipe achats, on les
+        ignore et le serveur les recalcule (staging 2026-10-19)."""
+        if self._his_is_purchasing():
+            return
+        if vals.get("state") == "draft":
+            del vals["state"]
+        for field in ("approver_id", "his_purchase_domain"):
+            vals.pop(field, None)
+        for field in PROTECTED_FIELDS & set(vals):
+            if not vals[field]:
+                del vals[field]
 
     def _his_check_protected(self, vals):
         protected = PROTECTED_FIELDS & set(vals)

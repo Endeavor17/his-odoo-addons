@@ -4,7 +4,7 @@
 from datetime import date
 
 from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tests import tagged
+from odoo.tests import Form, tagged
 
 from .common import HisPurchaseCase
 
@@ -117,6 +117,24 @@ class TestRequest(HisPurchaseCase):
         self.assertEqual(request.state, "draft")
         # L'acheteur corrige le domaine avant de sourcer (spec, section 5.5).
         request.with_user(self.officer).his_purchase_domain = "pos"
+
+    def test_le_demandeur_enregistre_sa_demande_par_le_formulaire(self):
+        # Staging 2026-10-19 : le formulaire envoie l'etat par defaut et les
+        # champs calcules ; la garde refusait toute demande neuve du demandeur.
+        with Form(self.env["his.purchase.request"].with_user(self.requester)) as form:
+            form.justification = "The printer of room 12 is empty."
+            form.date_required = date(2026, 11, 30)
+            with form.line_ids.new() as line:
+                line.product_id = self.toner
+                line.product_qty = 2
+        request = form.record
+        self.assertEqual(request.state, "draft")
+        self.assertEqual(request.approver_id, self.head)
+
+    def test_le_demandeur_ne_choisit_pas_son_approbateur_a_la_creation(self):
+        request = self._request(approver_id=self.requester.id, his_purchase_domain="pos")
+        self.assertEqual(request.approver_id, self.head)
+        self.assertEqual(request.his_purchase_domain, "general")
 
     def test_le_demandeur_ne_choisit_pas_son_departement(self):
         # Recette P-07 : le departement decide du domaine, donc de l'approbateur.
