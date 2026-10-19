@@ -40,3 +40,15 @@ class TestEquipePoste(TransactionCase):
         equipe = self.env["helpdesk.ticket.team"].create({"name": "Libre", "user_ids": [self.nadia.id]})
         self._employe(self.karim, self.poste)
         self.assertEqual(equipe.user_ids, self.nadia)
+
+    def _ticket(self):
+        return self.env["helpdesk.ticket"].create({"name": "Wi-Fi", "description": "<p>Pas de reseau</p>"})
+
+    def test_l_agent_unique_recoit_le_ticket(self):
+        self._employe(self.karim, self.poste)
+        self.assertEqual(self._ticket().user_id, self.karim)
+
+    def test_deux_agents_le_ticket_reste_a_attribuer(self):
+        self._employe(self.karim, self.poste)
+        self._employe(self.nadia, self.poste)
+        self.assertFalse(self._ticket().user_id)

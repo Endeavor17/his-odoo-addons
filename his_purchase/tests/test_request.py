@@ -154,3 +154,11 @@ class TestRequest(HisPurchaseCase):
         self.company.his_purchase_director_id = self.director
         self.assertEqual(request.approver_id, self.director)
         request.action_submit()
+
+    def test_l_acheteur_suit_le_poste(self):
+        # Remplacer l'acheteur = changer l'occupant du poste, rien a choisir sur la demande.
+        self.env["hr.employee"].search([("user_id", "=", self.officer.id)]).job_id = False
+        self.env["hr.employee"].create(
+            {"name": self.manager.name, "user_id": self.manager.id, "job_id": self.officer_job.id}
+        )
+        self.assertEqual(self._approved_request().user_id, self.manager)

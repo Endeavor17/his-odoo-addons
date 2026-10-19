@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Achats - Groupe HIS-HTC-IRA",
-    "version": "19.0.1.2.1",
+    "version": "19.0.1.3.0",
     "category": "Supply Chain/Purchase",
     "summary": "Demande d'achat, relances, choix fournisseur, commande mensuelle et documents algeriens",
     "description": """
@@ -27,10 +27,12 @@ Ajoute autour des achats standard d'Odoo les regles du Groupe
         "purchase_stock",
         "purchase_requisition",
         "his_partner_dz",
+        "his_access_base",
     ],
     "data": [
         "security/his_purchase_security.xml",
         "security/ir.model.access.csv",
+        "data/hr_job_data.xml",
         "data/ir_sequence_data.xml",
         "data/mail_activity_type_data.xml",
         "data/ir_cron_data.xml",
