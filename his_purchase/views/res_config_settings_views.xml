@@ -11,7 +11,7 @@
                         <div class="content-group">
                             <div class="row mt8">
                                 <label for="his_purchase_officer_id" class="col-lg-4 o_light_label"/>
-                                <field name="his_purchase_officer_id"/>
+                                <field name="his_purchase_officer_id" placeholder="Nobody holds the Purchasing Officer position"/>
                             </div>
                             <div class="row">
                                 <label for="his_purchase_manager_id" class="col-lg-4 o_light_label"/>

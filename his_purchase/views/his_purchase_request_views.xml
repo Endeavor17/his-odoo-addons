@@ -56,7 +56,7 @@
                             <field name="date_required" readonly="state not in ('draft', 'approved')"/>
                             <field name="his_purchase_domain" readonly="state != 'approved'"/>
                             <field name="estimated_amount"/>
-                            <field name="user_id" readonly="state in ('done', 'cancel')"/>
+                            <field name="user_id" readonly="state in ('done', 'cancel')" invisible="state in ('draft', 'submitted')"/>
                             <field name="currency_id" invisible="1"/>
                         </group>
                     </group>

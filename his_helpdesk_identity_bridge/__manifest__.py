@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Helpdesk - Referentiel Personnes (pont)",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.2.0",
     "category": "Services/Helpdesk",
     "summary": "Chaque ticket est rattache a une personne du referentiel",
     "description": """

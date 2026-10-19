@@ -1372,6 +1372,7 @@ msgstr "Achats : relance de proforma"
 #: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__user_id
 #: model:ir.model.fields,field_description:his_purchase.field_res_company__his_purchase_officer_id
 #: model:ir.model.fields,field_description:his_purchase.field_res_config_settings__his_purchase_officer_id
+#: model:hr.job,name:his_purchase.job_purchasing_officer
 msgid "Purchasing Officer"
 msgstr "Acheteur"
 
@@ -1643,8 +1644,17 @@ msgstr "Acheter la demande d'achat %s"
 #. module: his_purchase
 #: model:ir.model.fields,help:his_purchase.field_res_company__his_purchase_officer_id
 #: model:ir.model.fields,help:his_purchase.field_res_config_settings__his_purchase_officer_id
-msgid "Sources approved purchase requests and chases suppliers."
-msgstr "Achète les demandes approuvées et relance les fournisseurs."
+msgid ""
+"Holder of the Purchasing Officer position: sources approved purchase "
+"requests and chases suppliers."
+msgstr ""
+"Occupant du poste Acheteur : achète les demandes approuvées et relance les "
+"fournisseurs."
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.res_config_settings_view_form_his_purchase
+msgid "Nobody holds the Purchasing Officer position"
+msgstr "Personne n'occupe le poste Acheteur"
 
 #. module: his_purchase
 #: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__state__sourcing

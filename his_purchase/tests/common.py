@@ -60,12 +60,16 @@ class HisPurchaseCase(TransactionCase):
         )
         cls.company.write(
             {
-                "his_purchase_officer_id": cls.officer.id,
                 "his_purchase_manager_id": cls.manager.id,
                 "his_purchase_director_id": cls.director.id,
             }
         )
         Employee = cls.env["hr.employee"]
+        # L'acheteur est l'occupant du poste ; les roles du poste (administrateur
+        # achats) changeraient les circuits testes ici, d'ou le poste sans role.
+        cls.officer_job = cls.env.ref("his_purchase.job_purchasing_officer")
+        cls.officer_job.group_ids = False
+        Employee.create({"name": "Nadia Officer", "user_id": cls.officer.id, "job_id": cls.officer_job.id})
         cls.head_emp = Employee.create({"name": "Karim Head", "user_id": cls.head.id})
         cls.it = cls.env["hr.department"].create(
             {"name": "IT", "manager_id": cls.head_emp.id, "his_purchase_domain": "general"}
