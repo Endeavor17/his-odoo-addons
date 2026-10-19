@@ -61,11 +61,12 @@ class HelpdeskTicket(models.Model):
         # Un seul agent dans l'equipe : le ticket est a lui, personne n'a a le
         # choisir (Mohamed, 2026-10-19). L'equipe suit le poste, donc le
         # nouvel occupant recoit les tickets suivants sans autre geste.
-        super()._compute_user_id()
+        res = super()._compute_user_id()
         for ticket in self:
             agents = ticket.team_id.sudo().user_ids
             if not ticket.user_id and len(agents) == 1:
                 ticket.user_id = agents
+        return res
 
     @api.depends("his_person_id.engagement_ids.etat")
     def _compute_his_engagement_etat(self):
