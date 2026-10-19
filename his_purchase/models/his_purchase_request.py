@@ -120,7 +120,7 @@ class HisPurchaseRequest(models.Model):
         string="Waiting for a Catalogue Item",
         compute="_compute_his_needs_product",
         store=True,
-        help="A line describes an item that is not in the catalogue yet: the stock managers create it.",
+        help="A line describes an item that is not in the catalogue yet: the catalogue team creates it.",
     )
 
     # ------------------------------------------------------------------
@@ -189,9 +189,9 @@ class HisPurchaseRequest(models.Model):
             request._his_check_department(vals, request.requester_id)
         # Le fil de discussion (pieces jointes, activites) reste ouvert a tous.
         business = {f for f in vals if f not in FOLLOWUP_FIELDS and not f.startswith(("message_", "activity_"))}
-        # Le gestionnaire de stock passe par le formulaire : ses lignes arrivent
+        # Le responsable catalogue passe par le formulaire : ses lignes arrivent
         # en line_ids, et la ligne verifie elle-meme ce qu'il peut y changer.
-        if business == {"line_ids"} and self.env.user.has_group("stock.group_stock_manager"):
+        if business == {"line_ids"} and self.env.user.has_group("his_purchase.group_catalogue"):
             business = set()
         if business and not self._his_is_purchasing():
             locked = self.filtered(lambda r: r.state != "draft")
@@ -307,12 +307,13 @@ class HisPurchaseRequest(models.Model):
 
     def _his_ask_catalogue(self):
         """Une ligne decrit un article absent du catalogue : un a-faire pour
-        chaque gestionnaire de stock (decision de Mohamed, 2026-10-18)."""
-        users = self.env.ref("stock.group_stock_manager").all_user_ids.filtered(lambda u: u.active and not u.share)
+        chaque responsable catalogue (2026-10-18), a defaut pour l'acheteur de
+        la demande, pour que la ligne n'attende pas en silence."""
+        users = self.env.ref("his_purchase.group_catalogue").all_user_ids.filtered(lambda u: u.active and not u.share)
         today = fields.Date.context_today(self)
         for request in self:
             request.sudo()._his_schedule(
-                users, lambda r: r._his_text_catalogue(), today, activity=CATALOGUE_ACTIVITY_XMLID
+                users or request.user_id, lambda r: r._his_text_catalogue(), today, activity=CATALOGUE_ACTIVITY_XMLID
             )
 
     def _his_text_catalogue(self):
@@ -617,11 +618,11 @@ class HisPurchaseRequestLine(models.Model):
         return lines
 
     def _his_catalogue_may_write(self, vals):
-        """Le gestionnaire de stock pose l'article d'une ligne qui n'en a pas,
+        """Le responsable catalogue pose l'article d'une ligne qui n'en a pas,
         sur une demande approuvee ; il ne touche ni quantite ni prix."""
         return (
             set(vals) <= CATALOGUE_FIELDS
-            and self.env.user.has_group("stock.group_stock_manager")
+            and self.env.user.has_group("his_purchase.group_catalogue")
             and all(not line.product_id and line.request_id.state == "approved" for line in self)
         )
 

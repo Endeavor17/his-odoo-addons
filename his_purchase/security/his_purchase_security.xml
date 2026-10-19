@@ -30,6 +30,24 @@
             sale), and may approve point-of-sale orders too.</field>
     </record>
 
+    <!-- Le magasinier cree les articles absents du catalogue (2026-10-19) :
+         role a part de Inventaire / Administrateur, que portent aussi le
+         gestionnaire de stock et les directeurs. -->
+    <record id="res_groups_privilege_catalogue" model="res.groups.privilege">
+        <field name="name">Catalogue</field>
+        <field name="sequence">10</field>
+        <field name="category_id" ref="base.module_category_supply_chain"/>
+    </record>
+
+    <record id="group_catalogue" model="res.groups">
+        <field name="name">Catalogue Manager</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_catalogue"/>
+        <field name="implied_ids" eval="[(4, ref('stock.group_stock_user')), (4, ref('product.group_product_manager'))]"/>
+        <field name="comment">Creates the items that purchase requests describe but the catalogue
+            does not have yet, and receives the to-do when such a request is approved.</field>
+    </record>
+
     <record id="purchase.group_purchase_user" model="res.groups">
         <field name="implied_ids" eval="[(4, ref('group_requester'))]"/>
     </record>
@@ -76,44 +94,44 @@
         <field name="domain_force">[(1, '=', 1)]</field>
     </record>
 
-    <!-- Gestionnaires de stock : ils creent les articles absents du catalogue
-         (2026-10-18). Lecture de toutes les demandes (l'a-faire y mene, et la
+    <!-- Responsables catalogue : ils creent les articles absents du catalogue
+         (2026-10-18, role dedie le 2026-10-19). Lecture de toutes les demandes (l'a-faire y mene, et la
          fiche se recharge apres leur saisie) ; ecriture sur les demandes
          approuvees seulement, et le code limite aux champs de l'article. -->
-    <record id="rule_request_stock_manager_read" model="ir.rule">
-        <field name="name">Purchase request: read (stock managers)</field>
+    <record id="rule_request_catalogue_read" model="ir.rule">
+        <field name="name">Purchase request: read (catalogue)</field>
         <field name="model_id" ref="model_his_purchase_request"/>
-        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        <field name="groups" eval="[(4, ref('group_catalogue'))]"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="perm_write" eval="False"/>
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
 
-    <record id="rule_request_stock_manager_write" model="ir.rule">
-        <field name="name">Purchase request: approved (stock managers)</field>
+    <record id="rule_request_catalogue_write" model="ir.rule">
+        <field name="name">Purchase request: approved (catalogue)</field>
         <field name="model_id" ref="model_his_purchase_request"/>
-        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        <field name="groups" eval="[(4, ref('group_catalogue'))]"/>
         <field name="domain_force">[('state', '=', 'approved')]</field>
         <field name="perm_read" eval="False"/>
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
 
-    <record id="rule_request_line_stock_manager_read" model="ir.rule">
-        <field name="name">Purchase request line: read (stock managers)</field>
+    <record id="rule_request_line_catalogue_read" model="ir.rule">
+        <field name="name">Purchase request line: read (catalogue)</field>
         <field name="model_id" ref="model_his_purchase_request_line"/>
-        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        <field name="groups" eval="[(4, ref('group_catalogue'))]"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="perm_write" eval="False"/>
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
 
-    <record id="rule_request_line_stock_manager_write" model="ir.rule">
-        <field name="name">Purchase request line: approved (stock managers)</field>
+    <record id="rule_request_line_catalogue_write" model="ir.rule">
+        <field name="name">Purchase request line: approved (catalogue)</field>
         <field name="model_id" ref="model_his_purchase_request_line"/>
-        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        <field name="groups" eval="[(4, ref('group_catalogue'))]"/>
         <field name="domain_force">[('request_id.state', '=', 'approved')]</field>
         <field name="perm_read" eval="False"/>
         <field name="perm_create" eval="False"/>

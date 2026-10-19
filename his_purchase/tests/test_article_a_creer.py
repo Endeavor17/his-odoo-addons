@@ -1,8 +1,9 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-"""Article absent du catalogue : les gestionnaires de stock le creent (2026-10-18).
+"""Article absent du catalogue : le magasinier le cree (2026-10-18, role
+dedie le 2026-10-19).
 
-Le demandeur decrit l'article ; a l'approbation, chaque gestionnaire de stock
-recoit un a-faire ; il pose l'article sur la ligne, rien d'autre ; l'a-faire se
+Le demandeur decrit l'article ; a l'approbation, chaque responsable catalogue
+recoit un a-faire (a defaut, l'acheteur de la demande) ; il pose l'article sur la ligne, rien d'autre ; l'a-faire se
 clot quand plus aucune ligne n'attend.
 """
 
@@ -19,26 +20,41 @@ class TestArticleACreer(HisPurchaseCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # product.group_product_manager : his_stock_mdm le donne aux gestionnaires
-        # de stock (recette P-17) ; ce module n'est pas installe ici.
-        cls.magasinier = new_test_user(
+        cls.magasinier = new_test_user(cls.env, login="his_catalogue", groups="his_purchase.group_catalogue")
+        cls.magasinier_2 = new_test_user(cls.env, login="his_catalogue2", groups="his_purchase.group_catalogue")
+        # Les directeurs portent Inventaire / Administrateur sur le staging : le
+        # role de gestion du stock ne fait plus recevoir l'a-faire.
+        cls.stock_manager = new_test_user(
             cls.env, login="his_stock_mgr", groups="stock.group_stock_manager,product.group_product_manager"
-        )
-        cls.magasinier_2 = new_test_user(
-            cls.env, login="his_stock_mgr2", groups="stock.group_stock_manager,product.group_product_manager"
         )
 
     def _catalogue_activities(self, request):
         type_ = self.env.ref("his_purchase.mail_act_catalogue")
         return request.activity_ids.filtered(lambda a: a.activity_type_id == type_)
 
-    def test_approbation_previent_chaque_gestionnaire_de_stock(self):
+    def test_approbation_previent_chaque_responsable_catalogue(self):
         request = self._approved_request(lines=[LIGNE_LIBRE])
         self.assertTrue(request.his_needs_product)
         activities = self._catalogue_activities(request)
-        self.assertIn(self.magasinier, activities.user_id)
-        self.assertIn(self.magasinier_2, activities.user_id)
+        self.assertEqual(activities.user_id, self.magasinier | self.magasinier_2)
         self.assertIn("Epson EB-X41", activities[0].summary)
+
+    def test_le_gestionnaire_de_stock_ne_recoit_pas_l_a_faire(self):
+        request = self._approved_request(lines=[LIGNE_LIBRE])
+        self.assertNotIn(self.stock_manager, self._catalogue_activities(request).user_id)
+
+    def test_sans_responsable_catalogue_l_acheteur_est_prevenu(self):
+        (self.magasinier | self.magasinier_2).write(
+            {"group_ids": [(3, self.env.ref("his_purchase.group_catalogue").id)]}
+        )
+        request = self._approved_request(lines=[LIGNE_LIBRE])
+        self.assertEqual(self._catalogue_activities(request).user_id, self.officer)
+
+    def test_le_gestionnaire_de_stock_ne_pose_pas_l_article(self):
+        request = self._approved_request(lines=[LIGNE_LIBRE])
+        self.env.invalidate_all()
+        with self.assertRaises(UserError):
+            request.line_ids.with_user(self.stock_manager).write({"product_id": self.toner.id})
 
     def test_pas_d_a_faire_quand_tout_est_au_catalogue(self):
         request = self._approved_request()
@@ -94,5 +110,5 @@ class TestArticleACreer(HisPurchaseCase):
 
     def test_l_acheteur_est_prevenu_de_l_attente(self):
         request = self._approved_request(lines=[LIGNE_LIBRE])
-        with self.assertRaisesRegex(UserError, "stock managers"):
+        with self.assertRaisesRegex(UserError, "catalogue team"):
             self._source_rfq(request, self.supplier_a)

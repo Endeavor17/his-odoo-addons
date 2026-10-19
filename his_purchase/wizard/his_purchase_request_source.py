@@ -60,7 +60,7 @@ class HisPurchaseRequestSource(models.TransientModel):
         if sans_produit:
             raise UserError(
                 _(
-                    "Choose a catalogue item for these lines, or wait for the stock managers to create it: %s.",
+                    "Choose a catalogue item for these lines, or wait for the catalogue team to create it: %s.",
                     ", ".join(sans_produit.mapped("description")),
                 )
             )
