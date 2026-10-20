@@ -118,3 +118,9 @@ msgstr ""
 #: code:addons/his_patrimoine/models/stock_lot.py:0
 msgid "row %(index)s: %(error)s"
 msgstr "ligne %(index)s : %(error)s"
+
+#. module: his_patrimoine
+#. odoo-python
+#: code:addons/his_patrimoine/models/stock_lot.py:0
+msgid "The internal reference (default_code) is required."
+msgstr "La référence interne (default_code) est obligatoire."

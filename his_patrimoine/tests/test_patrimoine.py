@@ -2,7 +2,7 @@
 """Patrimoine : un bien = un numero de serie, range dans une salle, compte chaque annee."""
 
 from odoo.exceptions import ValidationError
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import Form, TransactionCase, new_test_user, tagged
 
 
 @tagged("post_install", "-at_install")
@@ -61,6 +61,17 @@ class TestPatrimoine(TransactionCase):
             {"name": "Rayon", "location_id": self.env.ref("stock.warehouse0").lot_stock_id.id}
         )
         self.assertEqual(autre.cyclic_inventory_frequency, 0)
+
+    def test_une_salle_creee_par_le_formulaire_est_comptee_chaque_annee(self):
+        # Revue finale : le formulaire envoie la frequence par defaut (0).
+        gestionnaire = new_test_user(
+            self.env, login="his_stock_admin", groups="stock.group_stock_manager,stock.group_stock_multi_locations"
+        )
+        batiment = self._batiment()
+        with Form(self.env["stock.location"].with_user(gestionnaire)) as form:
+            form.name = "Salle 14"
+            form.location_id = batiment.his_location_id
+        self.assertEqual(form.record.cyclic_inventory_frequency, 365)
 
     def test_la_reception_range_les_biens_a_affecter(self):
         bureau = self._bien().product_variant_id
@@ -162,6 +173,21 @@ class TestPatrimoine(TransactionCase):
         self.assertEqual(created, 1)
         lot = self.env["stock.lot"].search([("product_id.default_code", "=", "PAT-HP-450")])
         self.assertTrue(lot.name.startswith("PAT-"), lot.name)
+
+    def test_relancer_un_import_sans_numeros_ne_double_pas(self):
+        # Revue finale : le modele de fichier laisse les numeros vides.
+        ligne = {
+            "building_code": "C",
+            "room": "Salle 1",
+            "category_xmlid": "his_patrimoine.categ_mobilier",
+            "default_code": "PAT-CHAISE",
+            "product_name": "Chaise",
+            "serial": "",
+        }
+        Lot = self.env["stock.lot"]
+        self.assertEqual(Lot._his_import_patrimoine([ligne, ligne, ligne])[0], 3)
+        self.assertEqual(Lot._his_import_patrimoine([ligne, ligne, ligne])[0], 0, "deja en salle : rien de plus")
+        self.assertEqual(Lot._his_import_patrimoine([ligne] * 4)[0], 1, "une 4e chaise dans le fichier : une de plus")
 
     def test_les_autres_categories_ne_changent_pas(self):
         boisson = self.env["product.template"].create(

@@ -213,7 +213,16 @@ class HisPurchaseRequest(models.Model):
             locked = self.filtered(lambda r: r.state != "draft")
             if locked:
                 raise UserError(_("%s has been submitted: only the purchasing team can change it now.", locked[0].name))
+        # Un achat courant deja approuve qui devient un investissement repart
+        # chez le directeur : il n'a rien approuve (revue finale 2026-10-20).
+        back_to_director = self.browse()
+        if vals.get("his_purchase_type") == "investment":
+            back_to_director = self.filtered(lambda r: r.state == "approved" and r.his_purchase_type != "investment")
         res = super().write(vals)
+        if back_to_director:
+            back_to_director.sudo().write({"state": "submitted", "approved_by_id": False, "approved_on": False})
+            for request in back_to_director:
+                request.sudo().message_subscribe(partner_ids=request.approver_id.partner_id.ids)
         if "state" in vals or "his_purchase_type" in vals:
             self._his_sync_step()
         return res
@@ -259,6 +268,17 @@ class HisPurchaseRequest(models.Model):
                 _(
                     "%s was approved by the director as an investment: only the director can change its type.",
                     locked[0].name,
+                )
+            )
+        # Des commandes existent deja : elles ont ete approuvees sous l'ancien type.
+        started = self.filtered(
+            lambda r: r.state in ("sourcing", "ordered", "done") and r.his_purchase_type != vals["his_purchase_type"]
+        )
+        if started:
+            raise UserError(
+                _(
+                    "%s is already being purchased: its type can no longer change. Ask the executive director.",
+                    started[0].name,
                 )
             )
 

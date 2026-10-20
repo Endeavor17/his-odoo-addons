@@ -108,6 +108,26 @@ class TestRequest(HisPurchaseCase):
         request.with_user(self.officer).his_purchase_type = "usual"
         self.assertEqual(request.approver_id, self.officer)
 
+    def test_passer_en_investissement_apres_approbation_renvoie_au_directeur(self):
+        # Revue finale : sinon la demande serait figee comme investissement
+        # sans que le directeur ait rien approuve.
+        request = self._approved_request(purchase_type="usual")
+        request.with_user(self.officer).his_purchase_type = "investment"
+        self.assertEqual(request.state, "submitted")
+        self.assertEqual(request.approver_id, self.director)
+        self.assertFalse(request.approved_by_id)
+        self.assertFalse(request._his_director_approved())
+        # Une erreur de clic se corrige encore : le directeur n'a rien approuve.
+        request.with_user(self.officer).his_purchase_type = "usual"
+        self.assertEqual(request.approver_id, self.officer)
+
+    def test_le_type_est_fige_une_fois_l_achat_lance(self):
+        request = self._approved_request(purchase_type="usual")
+        self._source_rfq(request, self.supplier_a)
+        self.assertEqual(request.state, "sourcing")
+        with self.assertRaisesRegex(UserError, "already being purchased"):
+            request.with_user(self.officer).his_purchase_type = "investment"
+
     def test_le_chef_de_departement_n_approuve_plus(self):
         request = self._request()
         request.action_submit()

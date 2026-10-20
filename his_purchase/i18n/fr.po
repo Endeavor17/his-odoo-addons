@@ -2104,3 +2104,9 @@ msgstr "personne"
 #: code:addons/his_purchase/models/his_purchase_request.py:0
 msgid "the purchasing team"
 msgstr "l'équipe achats"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "%s is already being purchased: its type can no longer change. Ask the executive director."
+msgstr "%s est déjà en cours d'achat : son type ne peut plus changer. Adressez-vous au directeur exécutif."
