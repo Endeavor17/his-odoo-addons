@@ -13,7 +13,13 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import format_date
 
 from .his_purchase_followup import WEEKEND, add_working_days
-from .hr_department import PURCHASE_DOMAINS
+
+# Achat courant : l'acheteur le mene seul. Investissement : le directeur
+# l'approuve d'abord (reunion du 2026-10-20, spec 2026-10-20 section 4).
+PURCHASE_TYPES = [
+    ("usual", "Usual Purchase"),
+    ("investment", "Investment"),
+]
 
 STATES = [
     ("draft", "Draft"),
@@ -40,7 +46,7 @@ PROTECTED_FIELDS = {
     "approver_id",
     "approved_by_id",
     "approved_on",
-    "his_purchase_domain",
+    "his_purchase_type",
     "his_last_nudge",
     "his_urgent_alert_sent",
 }
@@ -89,15 +95,13 @@ class HisPurchaseRequest(models.Model):
         precompute=True,
         help="Head of the department; the executive director when the requester is the head.",
     )
-    his_purchase_domain = fields.Selection(
-        PURCHASE_DOMAINS,
-        string="Purchase Domain",
-        compute="_compute_his_purchase_domain",
-        store=True,
-        precompute=True,
-        readonly=False,
-        required=True,
+    his_purchase_type = fields.Selection(
+        PURCHASE_TYPES,
+        string="Purchase Type",
         tracking=True,
+        copy=False,
+        help="Set by the purchasing officer. Usual: he handles it alone. Investment: the executive "
+        "director approves the request first.",
     )
     date_required = fields.Date(string="Required By", tracking=True)
     justification = fields.Text(string="Justification")
@@ -150,11 +154,6 @@ class HisPurchaseRequest(models.Model):
             if not head or head == request.requester_user_id:
                 head = request.company_id.his_purchase_director_id
             request.approver_id = head
-
-    @api.depends("department_id")
-    def _compute_his_purchase_domain(self):
-        for request in self:
-            request.his_purchase_domain = request.department_id.his_purchase_domain or "general"
 
     @api.depends("line_ids.estimated_subtotal")
     def _compute_estimated_amount(self):
@@ -223,7 +222,7 @@ class HisPurchaseRequest(models.Model):
             return
         if vals.get("state") == "draft":
             del vals["state"]
-        for field in ("approver_id", "his_purchase_domain"):
+        for field in ("approver_id", "his_purchase_type"):
             vals.pop(field, None)
         for field in PROTECTED_FIELDS & set(vals):
             if not vals[field]:

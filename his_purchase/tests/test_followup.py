@@ -123,7 +123,7 @@ class TestFollowup(HisPurchaseCase):
     def test_commande_point_de_vente_monte_au_directeur(self):
         with freeze_time(LUNDI):
             request = self._approved_request(
-                user=self.cook, employee=self.cook_emp, lines=[{"product_id": self.tomatoes.id, "product_qty": 50}]
+                user=self.cook, employee=self.cook_emp, purchase_type="usual", lines=[{"product_id": self.tomatoes.id, "product_qty": 50}]
             )
             order = self._source_rfq(request, self.supplier_a)
             order.order_line.price_unit = 120

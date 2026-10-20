@@ -21,7 +21,7 @@ class TestMonthly(HisPurchaseCase):
                 "vendor_id": cls.supplier_a.id,
                 "date_start": date(2026, 9, 1),
                 "date_end": date(2027, 8, 31),
-                "his_purchase_domain": "pos",
+                "his_purchase_type": "usual",
                 "his_recurring": True,
                 "his_delivery_day": 1,
                 "his_prepare_days": 7,
@@ -69,7 +69,7 @@ class TestMonthly(HisPurchaseCase):
         self.assertEqual(order.order_line.product_qty, 100)
         self.assertEqual(order.order_line.price_unit, 120)
         self.assertEqual(order.date_planned.date(), date(2026, 12, 1))
-        self.assertEqual(order.his_purchase_domain, "pos")
+        self.assertEqual(order.his_purchase_type, "usual")
         self.assertEqual(len(order.activity_ids.filtered(lambda a: a.user_id == self.warehouse_manager)), 1)
         self.assertFalse(self._cron(date(2026, 11, 25)), "un seul par mois")
         self.assertFalse(self._cron(date(2026, 12, 1)))
@@ -83,7 +83,7 @@ class TestMonthly(HisPurchaseCase):
 
     def test_besoin_ponctuel_ajoute_a_la_prochaine_commande(self):
         request = self._approved_request(
-            user=self.cook, employee=self.cook_emp, lines=[{"product_id": self.tomatoes.id, "product_qty": 20}]
+            user=self.cook, employee=self.cook_emp, purchase_type="usual", lines=[{"product_id": self.tomatoes.id, "product_qty": 20}]
         )
         wizard = (
             self.env["his.purchase.request.source"]
@@ -100,7 +100,7 @@ class TestMonthly(HisPurchaseCase):
     def test_besoin_ponctuel_rejoint_le_brouillon_ouvert(self):
         order = self._cron(date(2026, 11, 24))
         request = self._approved_request(
-            user=self.cook, employee=self.cook_emp, lines=[{"product_id": self.tomatoes.id, "product_qty": 15}]
+            user=self.cook, employee=self.cook_emp, purchase_type="usual", lines=[{"product_id": self.tomatoes.id, "product_qty": 15}]
         )
         wizard = (
             self.env["his.purchase.request.source"]
@@ -123,7 +123,7 @@ class TestMonthly(HisPurchaseCase):
 
     def _add_to_monthly(self, qty):
         request = self._approved_request(
-            user=self.cook, employee=self.cook_emp, lines=[{"product_id": self.tomatoes.id, "product_qty": qty}]
+            user=self.cook, employee=self.cook_emp, purchase_type="usual", lines=[{"product_id": self.tomatoes.id, "product_qty": qty}]
         )
         self.env["his.purchase.request.source"].with_user(self.officer).create(
             {"request_id": request.id, "mode": "monthly", "requisition_id": self.agreement.id}

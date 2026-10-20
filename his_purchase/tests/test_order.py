@@ -15,7 +15,7 @@ class TestOrder(HisPurchaseCase):
         self.assertEqual(request.state, "sourcing")
         self.assertEqual(order.his_request_id, request)
         self.assertEqual(order.order_line.his_request_line_id, request.line_ids)
-        self.assertEqual(order.his_purchase_domain, "general")
+        self.assertEqual(order.his_purchase_type, "investment", "la commande reprend le type de la demande")
         self.assertTrue(order.his_reply_by)
         order.order_line.price_unit = 8500
         res = order.with_user(self.officer).button_confirm()
@@ -97,10 +97,13 @@ class TestOrder(HisPurchaseCase):
 
     def test_approbation_point_de_vente(self):
         request = self._approved_request(
-            user=self.cook, employee=self.cook_emp, lines=[{"product_id": self.tomatoes.id, "product_qty": 50}]
+            user=self.cook,
+            employee=self.cook_emp,
+            lines=[{"product_id": self.tomatoes.id, "product_qty": 50}],
+            purchase_type="usual",
         )
         order = self._source_rfq(request, self.supplier_a)
-        self.assertEqual(order.his_purchase_domain, "pos")
+        self.assertEqual(order.his_purchase_type, "usual")
         order.order_line.price_unit = 120
         order.with_user(self.officer).button_confirm()
         self.assertEqual(order.state, "to approve")
@@ -210,23 +213,23 @@ class TestOrder(HisPurchaseCase):
         # Recette P-28 : le contrat Restaurant reste un achat point de vente,
         # meme appele depuis une demande d'un service general.
         agreement = self._agreement()
-        agreement.his_purchase_domain = "pos"
+        agreement.his_purchase_type = "usual"
         request = self._approved_request()
-        self.assertEqual(request.his_purchase_domain, "general")
+        self.assertEqual(request.his_purchase_type, "investment")
         wizard = (
             self.env["his.purchase.request.source"]
             .with_user(self.officer)
             .create({"request_id": request.id, "mode": "calloff", "requisition_id": agreement.id})
         )
         order = self.env["purchase.order"].browse(wizard.action_source()["res_id"])
-        self.assertEqual(order.his_purchase_domain, "pos")
+        self.assertEqual(order.his_purchase_type, "usual")
 
     def _agreement(self):
         agreement = self.env["purchase.requisition"].create(
             {
                 "requisition_type": "blanket_order",
                 "vendor_id": self.supplier_a.id,
-                "his_purchase_domain": "general",
+                "his_purchase_type": "investment",
                 "line_ids": [(0, 0, {"product_id": self.toner.id, "product_qty": 100, "price_unit": 8000})],
             }
         )
@@ -265,7 +268,7 @@ class TestOrder(HisPurchaseCase):
             {
                 "requisition_type": "blanket_order",
                 "vendor_id": self.supplier_a.id,
-                "his_purchase_domain": "general",
+                "his_purchase_type": "investment",
                 "line_ids": [
                     (0, 0, {"product_id": eggs.id, "product_qty": 100, "price_unit": 300, "product_uom_id": dozen.id})
                 ],

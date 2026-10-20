@@ -15,7 +15,7 @@ from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
-from .hr_department import PURCHASE_DOMAINS
+from .his_purchase_request import PURCHASE_TYPES
 from .purchase_order import to_planned_datetime
 
 RENEWAL_NOTICE_DAYS = 30
@@ -26,8 +26,8 @@ class PurchaseRequisition(models.Model):
     _name = "purchase.requisition"
     _inherit = ["purchase.requisition", "his.purchase.followup.mixin"]
 
-    his_purchase_domain = fields.Selection(
-        PURCHASE_DOMAINS, string="Purchase Domain", default="pos", required=True, tracking=True
+    his_purchase_type = fields.Selection(
+        PURCHASE_TYPES, string="Purchase Type", default="usual", required=True, tracking=True
     )
     his_recurring = fields.Boolean(string="Monthly Order", tracking=True)
     his_delivery_day = fields.Integer(
@@ -163,7 +163,7 @@ class PurchaseRequisition(models.Model):
                 "user_id": self.his_owner_id.id,
                 "currency_id": self.currency_id.id,
                 "his_monthly": True,
-                "his_purchase_domain": self.his_purchase_domain,
+                "his_purchase_type": self.his_purchase_type,
                 "his_supplier_answer": "quoted",
                 "origin": self.name,
                 "date_planned": planned,

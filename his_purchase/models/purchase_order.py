@@ -17,7 +17,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 from .his_purchase_followup import add_working_days
-from .hr_department import PURCHASE_DOMAINS
+from .his_purchase_request import PURCHASE_TYPES
 
 ANSWERS = [
     ("pending", "Pending"),
@@ -47,16 +47,16 @@ class PurchaseOrder(models.Model):
     his_request_id = fields.Many2one(
         "his.purchase.request", string="Purchase Request", copy=True, index="btree_not_null", readonly=True
     )
-    his_purchase_domain = fields.Selection(
-        PURCHASE_DOMAINS,
-        string="Purchase Domain",
-        compute="_compute_his_purchase_domain",
+    his_purchase_type = fields.Selection(
+        PURCHASE_TYPES,
+        string="Purchase Type",
+        compute="_compute_his_purchase_type",
         store=True,
         readonly=False,
         precompute=True,
         tracking=True,
-        help="Decides who approves: the executive director for General, the purchase manager or the "
-        "director for Points of Sale.",
+        help="Decides who approves: the purchase manager for a usual purchase; for an investment, "
+        "the executive director unless it stays within the amount he approved on the request.",
     )
     his_monthly = fields.Boolean(string="Monthly Order", readonly=True, copy=False)
     his_supplier_answer = fields.Selection(
@@ -80,13 +80,11 @@ class PurchaseOrder(models.Model):
     his_approved_by_id = fields.Many2one("res.users", string="Approved By", readonly=True, copy=False)
 
     @api.depends("his_request_id", "requisition_id")
-    def _compute_his_purchase_domain(self):
+    def _compute_his_purchase_type(self):
         for order in self:
             # Le contrat est le contexte d'achat (recette P-28) : il prime sur la demande.
             source = order.requisition_id or order.his_request_id
-            order.his_purchase_domain = (
-                source.his_purchase_domain if source else (order.his_purchase_domain or "general")
-            )
+            order.his_purchase_type = (source.his_purchase_type if source else order.his_purchase_type) or "usual"
 
     # ------------------------------------------------------------------
     # Offres concurrentes
@@ -280,7 +278,7 @@ class PurchaseOrder(models.Model):
 
     def _his_approver_group(self):
         self.ensure_one()
-        if self.his_purchase_domain == "pos":
+        if self.his_purchase_type == "usual":
             return "purchase.group_purchase_manager"
         return "his_purchase.group_purchase_director"
 
@@ -310,7 +308,7 @@ class PurchaseOrder(models.Model):
             if refused:
                 role = (
                     _("the executive director")
-                    if refused[0].his_purchase_domain == "general"
+                    if refused[0].his_purchase_type == "investment"
                     else _("a purchase manager or the executive director")
                 )
                 raise UserError(_("%(order)s can only be approved by %(role)s.", order=refused[0].name, role=role))
@@ -348,7 +346,7 @@ class PurchaseOrder(models.Model):
                 "chain": [(3, manager - officer)],
             }
         if self.state == "to approve":
-            if self.his_purchase_domain == "pos":
+            if self.his_purchase_type == "usual":
                 owner, chain = manager or director, [(2, director - manager)]
             else:
                 owner, chain = director, []

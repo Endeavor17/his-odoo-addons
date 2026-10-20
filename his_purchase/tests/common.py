@@ -72,11 +72,11 @@ class HisPurchaseCase(TransactionCase):
         Employee.create({"name": "Nadia Officer", "user_id": cls.officer.id, "job_id": cls.officer_job.id})
         cls.head_emp = Employee.create({"name": "Karim Head", "user_id": cls.head.id})
         cls.it = cls.env["hr.department"].create(
-            {"name": "IT", "manager_id": cls.head_emp.id, "his_purchase_domain": "general"}
+            {"name": "IT", "manager_id": cls.head_emp.id}
         )
         cls.head_emp.department_id = cls.it
         cls.restaurant = cls.env["hr.department"].create(
-            {"name": "Restaurant", "manager_id": cls.head_emp.id, "his_purchase_domain": "pos"}
+            {"name": "Restaurant", "manager_id": cls.head_emp.id}
         )
         cls.req_emp = Employee.create(
             {"name": "Amina Requester", "user_id": cls.requester.id, "department_id": cls.it.id}
@@ -119,9 +119,10 @@ class HisPurchaseCase(TransactionCase):
             )
         )
 
-    def _approved_request(self, **kwargs):
+    def _approved_request(self, purchase_type="investment", **kwargs):
         request = self._request(**kwargs)
         request.with_user(request.requester_user_id).action_submit()
+        request.with_user(self.officer).his_purchase_type = purchase_type
         request.with_user(self.head).action_approve()
         return request
 

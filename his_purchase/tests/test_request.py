@@ -16,7 +16,7 @@ class TestRequest(HisPurchaseCase):
         self.assertTrue(request.name.startswith("DA/"), request.name)
         self.assertEqual(request.department_id, self.it)
         self.assertEqual(request.approver_id, self.head)
-        self.assertEqual(request.his_purchase_domain, "general")
+        self.assertFalse(request.his_purchase_type, "l'acheteur choisit le type, pas le departement")
         self.assertEqual(request.estimated_amount, 18000)
         request.action_submit()
         self.assertEqual(request.state, "submitted")
@@ -93,9 +93,10 @@ class TestRequest(HisPurchaseCase):
         request.action_draft()
         self.assertEqual(request.state, "draft")
 
-    def test_departement_point_de_vente(self):
+    def test_le_departement_ne_porte_plus_de_domaine_achat(self):
+        self.assertNotIn("his_purchase_domain", self.env["hr.department"]._fields)
         request = self._request(user=self.cook, employee=self.cook_emp)
-        self.assertEqual(request.his_purchase_domain, "pos")
+        self.assertFalse(request.his_purchase_type)
 
     def test_le_demandeur_ne_peut_pas_sourcer(self):
         request = self._approved_request()
@@ -108,15 +109,15 @@ class TestRequest(HisPurchaseCase):
             {"state": "approved"},
             {"approved_by_id": self.requester.id},
             {"approver_id": self.requester.id},
-            {"his_purchase_domain": "pos"},
+            {"his_purchase_type": "usual"},
         ):
             with self.assertRaises(AccessError, msg=vals):
                 request.write(vals)
         with self.assertRaises(AccessError):
             self._request(state="approved")
         self.assertEqual(request.state, "draft")
-        # L'acheteur corrige le domaine avant de sourcer (spec, section 5.5).
-        request.with_user(self.officer).his_purchase_domain = "pos"
+        # L'acheteur choisit le type (spec 2026-10-20, section 4.1).
+        request.with_user(self.officer).his_purchase_type = "usual"
 
     def test_le_demandeur_enregistre_sa_demande_par_le_formulaire(self):
         # Staging 2026-10-19 : le formulaire envoie l'etat par defaut et les
@@ -132,9 +133,9 @@ class TestRequest(HisPurchaseCase):
         self.assertEqual(request.approver_id, self.head)
 
     def test_le_demandeur_ne_choisit_pas_son_approbateur_a_la_creation(self):
-        request = self._request(approver_id=self.requester.id, his_purchase_domain="pos")
+        request = self._request(approver_id=self.requester.id, his_purchase_type="usual")
         self.assertEqual(request.approver_id, self.head)
-        self.assertEqual(request.his_purchase_domain, "general")
+        self.assertFalse(request.his_purchase_type)
 
     def test_le_demandeur_ne_choisit_pas_son_departement(self):
         # Recette P-07 : le departement decide du domaine, donc de l'approbateur.
@@ -143,9 +144,8 @@ class TestRequest(HisPurchaseCase):
         request = self._request(department_id=self.it.id)
         with self.assertRaises(AccessError):
             request.write({"department_id": self.restaurant.id})
-        self.assertEqual(request.his_purchase_domain, "general")
         request.with_user(self.officer).department_id = self.restaurant
-        self.assertEqual(request.his_purchase_domain, "pos")
+        self.assertEqual(request.department_id, self.restaurant)
 
     def test_le_nouveau_directeur_devient_l_approbateur(self):
         self.company.his_purchase_director_id = False
