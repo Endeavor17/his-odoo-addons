@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Biens durables (2026-10-20) : un numero de serie par bien, aucune
+         ecriture de stock (valorisation periodique) ; la facture fournisseur
+         reste sur le compte de charge par defaut, le comptable reclasse.
+         Le MDM impose une categorie feuille : les biens vont dans les enfants. -->
+    <record id="categ_patrimoine" model="product.category">
+        <field name="name">Patrimoine</field>
+        <field name="default_tracking">serial</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">periodic</field>
+    </record>
+
+    <record id="categ_mobilier" model="product.category">
+        <field name="name">Furniture</field>
+        <field name="parent_id" ref="categ_patrimoine"/>
+        <field name="default_tracking">serial</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">periodic</field>
+    </record>
+    <record id="categ_informatique" model="product.category">
+        <field name="name">IT Equipment</field>
+        <field name="parent_id" ref="categ_patrimoine"/>
+        <field name="default_tracking">serial</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">periodic</field>
+    </record>
+    <record id="categ_reseau" model="product.category">
+        <field name="name">Network &amp; Security</field>
+        <field name="parent_id" ref="categ_patrimoine"/>
+        <field name="default_tracking">serial</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">periodic</field>
+    </record>
+    <record id="categ_climatisation" model="product.category">
+        <field name="name">Air Conditioning</field>
+        <field name="parent_id" ref="categ_patrimoine"/>
+        <field name="default_tracking">serial</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">periodic</field>
+    </record>
+    <record id="categ_vehicules" model="product.category">
+        <field name="name">Vehicles</field>
+        <field name="parent_id" ref="categ_patrimoine"/>
+        <field name="default_tracking">serial</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">periodic</field>
+    </record>
+    <record id="categ_cuisine" model="product.category">
+        <field name="name">Kitchen Equipment</field>
+        <field name="parent_id" ref="categ_patrimoine"/>
+        <field name="default_tracking">serial</field>
+        <field name="property_cost_method">average</field>
+        <field name="property_valuation">periodic</field>
+    </record>
+</odoo>
