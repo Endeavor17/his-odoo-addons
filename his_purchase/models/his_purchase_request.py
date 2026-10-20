@@ -502,7 +502,7 @@ class HisPurchaseRequest(models.Model):
                 "label": _("Approve purchase request %s", self.name),
                 "owner": owner,
                 "due": add_working_days(since, DAYS_TO_APPROVE),
-                "chain": [(DAYS_TO_ESCALATE, manager - owner), (DAYS_TO_ESCALATE, director - owner)],
+                "chain": [] if self.his_purchase_type == "investment" else [(DAYS_TO_ESCALATE, manager - owner)],
             }
         if self.state == "approved":
             owner = self.user_id or manager
@@ -511,7 +511,9 @@ class HisPurchaseRequest(models.Model):
                 "label": _("Source purchase request %s", self.name),
                 "owner": owner,
                 "due": add_working_days(since, DAYS_TO_SOURCE),
-                "chain": [(DAYS_TO_ESCALATE, manager - owner), (DAYS_TO_ESCALATE, director - owner)],
+                # Un achat courant ne monte jamais au directeur (2026-10-20).
+                "chain": [(DAYS_TO_ESCALATE, manager - owner)]
+                + ([(DAYS_TO_ESCALATE, director - owner)] if self.his_purchase_type == "investment" else []),
             }
         return None
 

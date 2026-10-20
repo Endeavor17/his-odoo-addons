@@ -413,16 +413,15 @@ class PurchaseOrder(models.Model):
                 "chain": [(3, manager - officer)],
             }
         if self.state == "to approve":
-            if self.his_purchase_type == "usual":
-                owner, chain = manager or director, [(2, director - manager)]
-            else:
-                owner, chain = director, []
+            # Le directeur ne voit que ce qui l'attend vraiment (2026-10-20).
+            director_needed = bool(self._his_director_reason())
+            owner = director if director_needed else manager or officer
             return {
-                "key": "order_approve",
+                "key": "order_director" if director_needed else "order_approve",
                 "label": _("Approve purchase order %s", self.name),
                 "owner": owner,
                 "due": add_working_days(since, DAYS_TO_APPROVE),
-                "chain": chain,
+                "chain": [],
             }
         if self.state == "purchase" and self.receipt_status in ("pending", "partial") and self.date_planned:
             return {

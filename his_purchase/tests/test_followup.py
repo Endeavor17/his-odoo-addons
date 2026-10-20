@@ -67,16 +67,28 @@ class TestFollowup(HisPurchaseCase):
         self._cron(date(2026, 11, 8))
         self.assertTrue(self._notified(request, self.manager))
         self.assertEqual(len(self._activities(request, self.manager)), 1)
-        self.assertFalse(self._notified(request, self.director))
-        # + 2 jours ouvres encore : le directeur executif, mardi 10.
-        self._cron(date(2026, 11, 9))
-        self.assertFalse(self._notified(request, self.director))
+        # Un achat courant ne monte jamais au directeur (2026-10-20).
         self._cron(date(2026, 11, 10))
-        self.assertTrue(self._notified(request, self.director))
-        self.assertEqual(request.his_reminder_count, 3)
-        # Plus rien a escalader : le cron ne repete pas.
         self._cron(date(2026, 11, 20))
-        self.assertEqual(request.his_reminder_count, 3)
+        self.assertFalse(self._notified(request, self.director))
+        self.assertFalse(self._activities(request, self.director))
+        self.assertEqual(request.his_reminder_count, 2, "plus rien a escalader : le cron ne repete pas")
+
+    def test_demande_courante_a_sourcer_ne_monte_pas_au_directeur(self):
+        with freeze_time(LUNDI):
+            request = self._approved_request(purchase_type="usual")
+        for day in (5, 8, 10, 12, 20):
+            self._cron(date(2026, 11, day))
+        self.assertTrue(self._notified(request, self.manager))
+        self.assertFalse(self._notified(request, self.director))
+        self.assertFalse(self._activities(request, self.director))
+
+    def test_investissement_a_sourcer_monte_au_directeur(self):
+        with freeze_time(LUNDI):
+            request = self._approved_request(purchase_type="investment")
+        for day in (5, 8, 10, 12, 20):
+            self._cron(date(2026, 11, day))
+        self.assertTrue(self._notified(request, self.director))
 
     def test_chacun_lit_ses_rappels_dans_sa_langue(self):
         self.env["res.lang"]._activate_lang("fr_FR")
@@ -123,7 +135,7 @@ class TestFollowup(HisPurchaseCase):
         self._cron(date(2026, 11, 20))
         self.assertEqual(len(mails()), 2, "deux relances au plus")
 
-    def test_commande_point_de_vente_monte_au_directeur(self):
+    def test_commande_courante_ne_monte_jamais_au_directeur(self):
         with freeze_time(LUNDI):
             request = self._approved_request(
                 user=self.cook, employee=self.cook_emp, purchase_type="usual", lines=[{"product_id": self.tomatoes.id, "product_qty": 50}]
@@ -134,11 +146,26 @@ class TestFollowup(HisPurchaseCase):
         self.assertEqual(len(self._activities(order, self.manager)), 1)
         self._cron(date(2026, 11, 5))
         self.assertTrue(self._notified(order, self.manager))
-        # + 2 jours ouvres : dimanche 8, pas le vendredi 6.
-        self._cron(date(2026, 11, 6))
+        for day in (6, 8, 10, 20):
+            self._cron(date(2026, 11, day))
         self.assertFalse(self._notified(order, self.director))
-        self._cron(date(2026, 11, 8))
-        self.assertTrue(self._notified(order, self.director))
+        self.assertFalse(self._activities(order, self.director))
+
+    def test_investissement_hors_plafond_a_faire_au_directeur(self):
+        request = self._approved_request(purchase_type="investment")
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 10801  # 21602 HT > 18000 + 20 %
+        order.with_user(self.officer).button_confirm()
+        self.assertEqual(len(self._activities(order, self.director)), 1)
+        self.assertFalse(self._activities(order, self.manager))
+
+    def test_investissement_dans_le_plafond_a_faire_a_l_acheteur(self):
+        request = self._approved_request(purchase_type="investment")
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 10000
+        order.with_user(self.officer).button_confirm()
+        self.assertEqual(len(self._activities(order, self.manager)), 1)
+        self.assertFalse(self._activities(order, self.director))
 
     def test_besoin_urgent(self):
         with freeze_time(LUNDI):
