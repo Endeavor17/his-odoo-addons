@@ -23,6 +23,14 @@ class TestPatrimoine(TransactionCase):
         self.assertEqual(bureau.lot_sequence_id, self.sequence)
         self.assertFalse(bureau.sale_ok)
 
+    def test_un_bien_cree_comme_variante_est_suivi_aussi(self):
+        # Ligne de commande « Creer » ou import : passe par product.product.
+        portable = self.env["product.product"].create(
+            {"name": "HP ProBook", "categ_id": self.env.ref("his_patrimoine.categ_informatique").id}
+        )
+        self.assertEqual(portable.tracking, "serial")
+        self.assertEqual(portable.lot_sequence_id, self.sequence)
+
     def test_un_bien_reste_suivi_par_numero(self):
         bureau = self._bien()
         with self.assertRaises(ValidationError):
@@ -92,6 +100,38 @@ class TestPatrimoine(TransactionCase):
         stock = self.env.ref("stock.warehouse0").lot_stock_id
         self.assertEqual(bureau.with_context(location=stock.id).qty_available, 0)
         self.assertEqual(bureau.with_context(location=salle.id).qty_available, 1)
+
+    def test_import_des_biens_existants(self):
+        rows = [
+            {"building_code": "A", "room": "Salle 12", "category_xmlid": "his_patrimoine.categ_mobilier",
+             "default_code": "PAT-BUR-120", "product_name": "Bureau 120 cm", "serial": "PAT-900001"},
+            {"building_code": "A", "room": "Salle 12", "category_xmlid": "his_patrimoine.categ_mobilier",
+             "default_code": "PAT-BUR-120", "product_name": "Bureau 120 cm", "serial": "PAT-900002"},
+            {"building_code": "A", "room": "Salle 12", "category_xmlid": "his_stock_mdm.categ_cafe_boissons",
+             "default_code": "X-1", "product_name": "Eau", "serial": "PAT-900003"},
+        ]
+        Lot = self.env["stock.lot"]
+        created, rejected = Lot._his_import_patrimoine(rows)
+        self.assertEqual(created, 2, rejected)
+        self.assertEqual(len(rejected), 1)
+        self.assertIn("row 3", rejected[0])
+        en_salle = [("lot_id.name", "in", ["PAT-900001", "PAT-900002"]), ("location_id.usage", "=", "internal")]
+        quants = self.env["stock.quant"].search(en_salle)
+        self.assertEqual(len(quants), 2)
+        self.assertEqual(quants.location_id.name, "Salle 12")
+        self.assertEqual(quants.location_id.location_id.location_id, self.env.ref("his_patrimoine.loc_patrimoine"))
+        created, rejected = Lot._his_import_patrimoine(rows[:2])
+        self.assertEqual(created, 0, "relancer l'import ne cree pas de doublon")
+        self.assertEqual(self.env["stock.quant"].search_count(en_salle), 2)
+
+    def test_import_sans_numero_en_attribue_un(self):
+        created, _rejected = self.env["stock.lot"]._his_import_patrimoine(
+            [{"building_code": "B", "room": "Bureau 1", "category_xmlid": "his_patrimoine.categ_informatique",
+              "default_code": "PAT-HP-450", "product_name": "HP ProBook 450", "serial": ""}]
+        )
+        self.assertEqual(created, 1)
+        lot = self.env["stock.lot"].search([("product_id.default_code", "=", "PAT-HP-450")])
+        self.assertTrue(lot.name.startswith("PAT-"), lot.name)
 
     def test_les_autres_categories_ne_changent_pas(self):
         boisson = self.env["product.template"].create(

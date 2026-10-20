@@ -14,7 +14,7 @@
              enfant de la destination de la reception (WH/Stock). Les biens n'y
              attendent que le temps d'etre places dans leur salle. -->
         <record id="loc_a_affecter" model="stock.location">
-            <field name="name">To Assign (Patrimoine)</field>
+            <field name="name">À affecter (Patrimoine)</field>
             <field name="location_id" model="stock.location"
                    eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
         </record>
