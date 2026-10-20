@@ -9,7 +9,8 @@ class ProductTemplate(models.Model):
     def _his_is_patrimoine(self):
         self.ensure_one()
         root = self.env.ref("his_patrimoine.categ_patrimoine", raise_if_not_found=False)
-        return bool(root) and self.categ_id.parent_path.startswith(root.parent_path)
+        # Odoo 19 admet un article sans categorie (pas de parent_path).
+        return bool(root and self.categ_id) and self.categ_id.parent_path.startswith(root.parent_path)
 
     @api.model
     def _his_patrimoine_defaults(self, vals_list):

@@ -189,4 +189,4 @@ class TestFollowup(HisPurchaseCase):
         body = str(mail.body_html)
         self.assertIn(old.name, body)
         self.assertLess(body.index(old.name), body.index(new.name), "la plus ancienne d'abord")
-        self.assertIn("Karim Head", body, "on voit qui tient la demande")
+        self.assertIn("Nadia Officer", body, "on voit qui tient la demande : l'acheteur trie (2026-10-20)")

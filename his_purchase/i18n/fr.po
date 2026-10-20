@@ -2110,3 +2110,8 @@ msgstr "l'équipe achats"
 #: code:addons/his_purchase/models/his_purchase_request.py:0
 msgid "%s is already being purchased: its type can no longer change. Ask the executive director."
 msgstr "%s est déjà en cours d'achat : son type ne peut plus changer. Adressez-vous au directeur exécutif."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Activité suivante de l'événement du calendrier"

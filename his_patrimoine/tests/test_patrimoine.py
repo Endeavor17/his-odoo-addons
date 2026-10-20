@@ -189,6 +189,11 @@ class TestPatrimoine(TransactionCase):
         self.assertEqual(Lot._his_import_patrimoine([ligne, ligne, ligne])[0], 0, "deja en salle : rien de plus")
         self.assertEqual(Lot._his_import_patrimoine([ligne] * 4)[0], 1, "une 4e chaise dans le fichier : une de plus")
 
+    def test_un_article_sans_categorie_se_cree(self):
+        # CI 2026-10-20 : Odoo 19 permet un article sans categorie ; le controle plantait.
+        toner = self.env["product.product"].create({"name": "Toner HP 85A", "type": "consu", "categ_id": False})
+        self.assertFalse(toner.categ_id)
+
     def test_les_autres_categories_ne_changent_pas(self):
         boisson = self.env["product.template"].create(
             {"name": "Eau 50 cl", "categ_id": self.env.ref("his_stock_mdm.categ_cafe_boissons").id}

@@ -64,12 +64,15 @@ Each line has its test in the owning task (marked RF1..RF5).
 def test_new_request_has_no_type(self):
     self.assertFalse(self._request().his_purchase_type)
 
+
 def test_department_has_no_purchase_field(self):
     self.assertNotIn("his_purchase_domain", self.env["hr.department"]._fields)
+
 
 def test_order_takes_request_type(self):  # from a request typed investment
     request = self._approved_request(purchase_type="investment")
     self.assertEqual(self._source_rfq(request, self.supplier_a).his_purchase_type, "investment")
+
 
 def test_agreement_type_wins_and_defaults_usual(self): ...  # adapt test_order.py:213-222
 ```

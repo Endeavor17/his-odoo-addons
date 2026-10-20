@@ -43,7 +43,7 @@ msgstr "Comptage annuel"
 #: model:ir.model.fields,field_description:his_patrimoine.field_stock_location__display_name
 #: model:ir.model.fields,field_description:his_patrimoine.field_stock_lot__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nom d'affichage"
 
 #. module: his_patrimoine
 #: model_terms:ir.actions.act_window,help:his_patrimoine.action_patrimoine_items
@@ -59,12 +59,12 @@ msgstr "Chaque bureau, portable ou climatiseur reçoit son numéro PAT- à la r�
 #: model:ir.model.fields,field_description:his_patrimoine.field_stock_location__id
 #: model:ir.model.fields,field_description:his_patrimoine.field_stock_lot__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: his_patrimoine
 #: model:ir.model,name:his_patrimoine.model_stock_location
 msgid "Inventory Locations"
-msgstr ""
+msgstr "Emplacements d'inventaire"
 
 #. module: his_patrimoine
 #: model:ir.actions.act_window,name:his_patrimoine.action_patrimoine_items
@@ -75,7 +75,7 @@ msgstr "Biens"
 #. module: his_patrimoine
 #: model:ir.model,name:his_patrimoine.model_stock_lot
 msgid "Lot/Serial"
-msgstr ""
+msgstr "Lot/Numéro de série"
 
 #. module: his_patrimoine
 #: model_terms:ir.actions.act_window,help:his_patrimoine.action_patrimoine_items
@@ -95,12 +95,12 @@ msgstr "Emplacement Patrimoine"
 #. module: his_patrimoine
 #: model:ir.model,name:his_patrimoine.model_product_template
 msgid "Product"
-msgstr ""
+msgstr "Produit"
 
 #. module: his_patrimoine
 #: model:ir.model,name:his_patrimoine.model_product_product
 msgid "Product Variant"
-msgstr ""
+msgstr "Variante de produit"
 
 #. module: his_patrimoine
 #: model:ir.actions.act_window,name:his_patrimoine.action_patrimoine_rooms
@@ -111,7 +111,7 @@ msgstr "Salles"
 #. module: his_patrimoine
 #: model:ir.model,name:his_patrimoine.model_maintenance_building
 msgid "University Building"
-msgstr ""
+msgstr "Bâtiment universitaire"
 
 #. module: his_patrimoine
 #. odoo-python
