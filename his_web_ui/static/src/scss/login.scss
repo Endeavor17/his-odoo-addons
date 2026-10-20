@@ -39,7 +39,9 @@ body.his-login {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: min(80%, 80vh);
+            // Interpolation : comme app_grid.scss, SCSS refuse min(%, vh) et casse
+            // tout web.assets_frontend (« Style error » sur la page de connexion).
+            width: #{"min(80%, 80vh)"};
             aspect-ratio: 1;
             background: var(--his-seal) center / contain no-repeat;
             filter: brightness(0) invert(1);
