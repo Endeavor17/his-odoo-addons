@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Les salles vivent HORS de WH/Stock : aucune caisse, aucun reappro
+             ne voit un bureau ou un portable comme du stock disponible. -->
+        <record id="loc_patrimoine" model="stock.location">
+            <field name="name">Patrimoine</field>
+            <field name="location_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').view_location_id.id"/>
+            <field name="cyclic_inventory_frequency">365</field>
+        </record>
+
+        <!-- Exception assumee : une regle de rangement ne peut viser qu'un
+             enfant de la destination de la reception (WH/Stock). Les biens n'y
+             attendent que le temps d'etre places dans leur salle. -->
+        <record id="loc_a_affecter" model="stock.location">
+            <field name="name">To Assign (Patrimoine)</field>
+            <field name="location_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+        </record>
+
+        <record id="putaway_patrimoine" model="stock.putaway.rule">
+            <field name="category_id" ref="categ_patrimoine"/>
+            <field name="location_in_id" model="stock.location"
+                   eval="obj().env.ref('stock.warehouse0').lot_stock_id.id"/>
+            <field name="location_out_id" ref="loc_a_affecter"/>
+        </record>
+    </data>
+</odoo>

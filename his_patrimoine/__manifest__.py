@@ -17,6 +17,8 @@ Spec : docs/superpowers/specs/2026-10-20-investment-purchases-and-fixed-assets-d
     "data": [
         "data/ir_sequence_data.xml",
         "data/product_category_data.xml",
+        "data/stock_location_data.xml",
     ],
+    "post_init_hook": "post_init_hook",
     "installable": True,
 }

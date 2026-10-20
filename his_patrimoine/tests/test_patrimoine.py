@@ -28,6 +28,71 @@ class TestPatrimoine(TransactionCase):
         with self.assertRaises(ValidationError):
             bureau.tracking = "none"
 
+    def _batiment(self, name="Bloc A"):
+        return self.env["maintenance.building"].create({"name": name, "code": name[-1]})
+
+    def test_un_batiment_cree_son_emplacement(self):
+        batiment = self._batiment()
+        location = batiment.his_location_id
+        self.assertEqual(location.location_id, self.env.ref("his_patrimoine.loc_patrimoine"))
+        self.assertEqual(location.name, "Bloc A")
+        self.assertEqual(location.cyclic_inventory_frequency, 365)
+
+    def test_renommer_le_batiment_renomme_l_emplacement(self):
+        batiment = self._batiment()
+        batiment.name = "Bloc B"
+        self.assertEqual(batiment.his_location_id.name, "Bloc B")
+
+    def test_une_salle_est_comptee_chaque_annee(self):
+        # Revue RF5 : une salle creee a la main herite du rythme annuel.
+        salle = self.env["stock.location"].create({"name": "Salle 12", "location_id": self._batiment().his_location_id.id})
+        self.assertEqual(salle.cyclic_inventory_frequency, 365)
+        autre = self.env["stock.location"].create(
+            {"name": "Rayon", "location_id": self.env.ref("stock.warehouse0").lot_stock_id.id}
+        )
+        self.assertEqual(autre.cyclic_inventory_frequency, 0)
+
+    def test_la_reception_range_les_biens_a_affecter(self):
+        bureau = self._bien().product_variant_id
+        warehouse = self.env.ref("stock.warehouse0")
+        picking = self.env["stock.picking"].create(
+            {
+                "picking_type_id": warehouse.in_type_id.id,
+                "location_id": self.env.ref("stock.stock_location_suppliers").id,
+                "location_dest_id": warehouse.lot_stock_id.id,
+                "move_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": bureau.id,
+                            "product_uom_qty": 2,
+                            "location_id": self.env.ref("stock.stock_location_suppliers").id,
+                            "location_dest_id": warehouse.lot_stock_id.id,
+                        },
+                    )
+                ],
+            }
+        )
+        picking.action_confirm()
+        for i, line in enumerate(picking.move_line_ids):
+            line.lot_name = "PAT-TEST-%d" % i
+        picking.move_ids.picked = True
+        picking.button_validate()
+        quants = self.env["stock.quant"].search([("product_id", "=", bureau.id), ("quantity", ">", 0)])
+        self.assertEqual(len(quants), 2)
+        self.assertEqual(quants.location_id, self.env.ref("his_patrimoine.loc_a_affecter"))
+
+    def test_un_bien_en_salle_n_est_pas_du_stock(self):
+        # Revue RF5 : rien de la salle n'apparait dans le stock des caisses.
+        bureau = self._bien().product_variant_id
+        salle = self.env["stock.location"].create({"name": "Salle 3", "location_id": self._batiment().his_location_id.id})
+        lot = self.env["stock.lot"].create({"name": "PAT-TEST-9", "product_id": bureau.id})
+        self.env["stock.quant"]._update_available_quantity(bureau, salle, 1, lot_id=lot)
+        stock = self.env.ref("stock.warehouse0").lot_stock_id
+        self.assertEqual(bureau.with_context(location=stock.id).qty_available, 0)
+        self.assertEqual(bureau.with_context(location=salle.id).qty_available, 1)
+
     def test_les_autres_categories_ne_changent_pas(self):
         boisson = self.env["product.template"].create(
             {"name": "Eau 50 cl", "categ_id": self.env.ref("his_stock_mdm.categ_cafe_boissons").id}
