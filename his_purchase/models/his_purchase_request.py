@@ -200,6 +200,7 @@ class HisPurchaseRequest(models.Model):
 
     def write(self, vals):
         self._his_check_protected(vals)
+        self._his_check_type_lock(vals)
         for request in self:
             request._his_check_department(vals, request.requester_id)
         # Le fil de discussion (pieces jointes, activites) reste ouvert a tous.
@@ -242,6 +243,22 @@ class HisPurchaseRequest(models.Model):
         for field in PROTECTED_FIELDS & set(vals):
             if not vals[field]:
                 del vals[field]
+
+    def _his_check_type_lock(self, vals):
+        """Investissement approuve par le directeur : lui seul le requalifie
+        (2026-10-20), sinon le plafond de 20 % ne protegerait rien."""
+        if "his_purchase_type" not in vals or self.env.su:
+            return
+        if self.env.user.has_group("his_purchase.group_purchase_director"):
+            return
+        locked = self.filtered(lambda r: r._his_director_approved() and r.his_purchase_type != vals["his_purchase_type"])
+        if locked:
+            raise UserError(
+                _(
+                    "%s was approved by the director as an investment: only the director can change its type.",
+                    locked[0].name,
+                )
+            )
 
     def _his_check_protected(self, vals):
         protected = PROTECTED_FIELDS & set(vals)

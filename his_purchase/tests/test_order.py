@@ -209,13 +209,12 @@ class TestOrder(HisPurchaseCase):
         order.with_user(self.officer).button_confirm()
         self.assertEqual(order.state, "to approve", "un appel sur contrat-cadre est approuve aussi")
 
-    def test_appel_sur_contrat_suit_le_domaine_du_contrat(self):
-        # Recette P-28 : le contrat Restaurant reste un achat point de vente,
-        # meme appele depuis une demande d'un service general.
+    def test_appel_sur_contrat_suit_le_type_du_contrat(self):
+        # Recette P-28 : le contrat Restaurant reste un achat courant, meme
+        # appele depuis une demande courante d'un autre service.
         agreement = self._agreement()
         agreement.his_purchase_type = "usual"
-        request = self._approved_request()
-        self.assertEqual(request.his_purchase_type, "investment")
+        request = self._approved_request(purchase_type="usual")
         wizard = (
             self.env["his.purchase.request.source"]
             .with_user(self.officer)
@@ -223,6 +222,25 @@ class TestOrder(HisPurchaseCase):
         )
         order = self.env["purchase.order"].browse(wizard.action_source()["res_id"])
         self.assertEqual(order.his_purchase_type, "usual")
+
+    def test_l_acheteur_ne_requalifie_pas_la_commande_d_un_investissement(self):
+        # Revue RF1 : la commande ne contourne pas le verrou de la demande.
+        order = self._source_rfq(self._approved_request(purchase_type="investment"), self.supplier_a)
+        with self.assertRaisesRegex(UserError, "only the director"):
+            order.with_user(self.officer).his_purchase_type = "usual"
+        self.assertEqual(order.his_purchase_type, "investment")
+
+    def test_un_contrat_courant_ne_declasse_pas_un_investissement_approuve(self):
+        agreement = self._agreement()
+        agreement.his_purchase_type = "usual"
+        request = self._approved_request(purchase_type="investment")
+        wizard = (
+            self.env["his.purchase.request.source"]
+            .with_user(self.officer)
+            .create({"request_id": request.id, "mode": "calloff", "requisition_id": agreement.id})
+        )
+        order = self.env["purchase.order"].browse(wizard.action_source()["res_id"])
+        self.assertEqual(order.his_purchase_type, "investment")
 
     def _agreement(self):
         agreement = self.env["purchase.requisition"].create(

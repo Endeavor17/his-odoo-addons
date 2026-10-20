@@ -90,6 +90,24 @@ class TestRequest(HisPurchaseCase):
         self.assertEqual(request.state, "approved")
         self.assertEqual(request.his_approved_amount, 18000, "2 x 9000, le montant que le directeur a vu")
 
+    def test_l_acheteur_ne_requalifie_pas_un_investissement_approuve(self):
+        request = self._approved_request(purchase_type="investment")
+        with self.assertRaisesRegex(UserError, "only the director"):
+            request.with_user(self.officer).his_purchase_type = "usual"
+        self.assertEqual(request.his_purchase_type, "investment")
+
+    def test_le_directeur_peut_requalifier(self):
+        request = self._approved_request(purchase_type="investment")
+        request.with_user(self.director).his_purchase_type = "usual"
+        self.assertEqual(request.his_purchase_type, "usual")
+
+    def test_l_acheteur_requalifie_avant_le_directeur(self):
+        request = self._request()
+        request.action_submit()
+        request.with_user(self.officer).his_purchase_type = "investment"
+        request.with_user(self.officer).his_purchase_type = "usual"
+        self.assertEqual(request.approver_id, self.officer)
+
     def test_le_chef_de_departement_n_approuve_plus(self):
         request = self._request()
         request.action_submit()

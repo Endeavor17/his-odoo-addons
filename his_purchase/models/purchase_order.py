@@ -79,12 +79,19 @@ class PurchaseOrder(models.Model):
     his_chosen_on = fields.Datetime(string="Chosen On", readonly=True, copy=False)
     his_approved_by_id = fields.Many2one("res.users", string="Approved By", readonly=True, copy=False)
 
-    @api.depends("his_request_id", "requisition_id")
+    @api.depends("his_request_id", "requisition_id", "order_line.his_request_line_id")
     def _compute_his_purchase_type(self):
         for order in self:
+            if order._his_type_locked():
+                order.his_purchase_type = "investment"
+                continue
             # Le contrat est le contexte d'achat (recette P-28) : il prime sur la demande.
             source = order.requisition_id or order.his_request_id
             order.his_purchase_type = (source.his_purchase_type if source else order.his_purchase_type) or "usual"
+
+    def _his_type_locked(self):
+        """Sert un investissement deja approuve par le directeur : reste un investissement."""
+        return any(request._his_director_approved() for request in self._his_requests())
 
     # ------------------------------------------------------------------
     # Offres concurrentes
@@ -119,6 +126,19 @@ class PurchaseOrder(models.Model):
     # ------------------------------------------------------------------
 
     def write(self, vals):
+        if (
+            vals.get("his_purchase_type", "investment") != "investment"
+            and not self.env.su
+            and not self.env.user.has_group("his_purchase.group_purchase_director")
+        ):
+            locked = self.filtered(lambda o: o._his_type_locked())
+            if locked:
+                raise UserError(
+                    _(
+                        "%s serves an investment approved by the director: only the director can change its type.",
+                        locked[0].name,
+                    )
+                )
         if CHOICE_FIELDS & set(vals) and not self.env.context.get("his_choice_write"):
             raise UserError(_("The supplier choice is recorded at confirmation and cannot be changed afterwards."))
         if vals.get("his_supplier_answer") in ("declined", "no_answer"):
@@ -146,6 +166,10 @@ class PurchaseOrder(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         orders = super().create(vals_list)
+        # Le type passe explicitement (contrat courant) ne declasse pas un investissement approuve.
+        orders.filtered(
+            lambda o: o.his_purchase_type != "investment" and o._his_type_locked()
+        ).his_purchase_type = "investment"
         orders.filtered(
             lambda o: o.his_request_id and not o.his_reply_by and o.state in ("draft", "sent")
         )._his_set_reply_by()
