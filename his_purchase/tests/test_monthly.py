@@ -83,7 +83,10 @@ class TestMonthly(HisPurchaseCase):
 
     def test_besoin_ponctuel_ajoute_a_la_prochaine_commande(self):
         request = self._approved_request(
-            user=self.cook, employee=self.cook_emp, purchase_type="usual", lines=[{"product_id": self.tomatoes.id, "product_qty": 20}]
+            user=self.cook,
+            employee=self.cook_emp,
+            purchase_type="usual",
+            lines=[{"product_id": self.tomatoes.id, "product_qty": 20}],
         )
         wizard = (
             self.env["his.purchase.request.source"]
@@ -100,7 +103,10 @@ class TestMonthly(HisPurchaseCase):
     def test_besoin_ponctuel_rejoint_le_brouillon_ouvert(self):
         order = self._cron(date(2026, 11, 24))
         request = self._approved_request(
-            user=self.cook, employee=self.cook_emp, purchase_type="usual", lines=[{"product_id": self.tomatoes.id, "product_qty": 15}]
+            user=self.cook,
+            employee=self.cook_emp,
+            purchase_type="usual",
+            lines=[{"product_id": self.tomatoes.id, "product_qty": 15}],
         )
         wizard = (
             self.env["his.purchase.request.source"]
@@ -123,7 +129,10 @@ class TestMonthly(HisPurchaseCase):
 
     def _add_to_monthly(self, qty):
         request = self._approved_request(
-            user=self.cook, employee=self.cook_emp, purchase_type="usual", lines=[{"product_id": self.tomatoes.id, "product_qty": qty}]
+            user=self.cook,
+            employee=self.cook_emp,
+            purchase_type="usual",
+            lines=[{"product_id": self.tomatoes.id, "product_qty": qty}],
         )
         self.env["his.purchase.request.source"].with_user(self.officer).create(
             {"request_id": request.id, "mode": "monthly", "requisition_id": self.agreement.id}

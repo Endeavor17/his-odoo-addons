@@ -71,13 +71,9 @@ class HisPurchaseCase(TransactionCase):
         cls.officer_job.group_ids = False
         Employee.create({"name": "Nadia Officer", "user_id": cls.officer.id, "job_id": cls.officer_job.id})
         cls.head_emp = Employee.create({"name": "Karim Head", "user_id": cls.head.id})
-        cls.it = cls.env["hr.department"].create(
-            {"name": "IT", "manager_id": cls.head_emp.id}
-        )
+        cls.it = cls.env["hr.department"].create({"name": "IT", "manager_id": cls.head_emp.id})
         cls.head_emp.department_id = cls.it
-        cls.restaurant = cls.env["hr.department"].create(
-            {"name": "Restaurant", "manager_id": cls.head_emp.id}
-        )
+        cls.restaurant = cls.env["hr.department"].create({"name": "Restaurant", "manager_id": cls.head_emp.id})
         cls.req_emp = Employee.create(
             {"name": "Amina Requester", "user_id": cls.requester.id, "department_id": cls.it.id}
         )

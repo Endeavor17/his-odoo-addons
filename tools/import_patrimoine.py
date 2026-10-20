@@ -16,8 +16,8 @@ CSV_PATH = os.environ.get("PATRIMOINE_CSV", "/mnt/extra-addons/tools/seed/patrim
 with open(CSV_PATH, encoding="utf-8-sig", newline="") as f:
     rows = list(csv.DictReader(f))
 
-created, rejected = env["stock.lot"]._his_import_patrimoine(rows)  # noqa: F821 - env fourni par odoo shell
-env.cr.commit()  # noqa: F821
+created, rejected = env["stock.lot"]._his_import_patrimoine(rows)
+env.cr.commit()
 print(f"OK {created} / REJECTED {len(rejected)}")
 for reason in rejected:
     print("  " + reason)

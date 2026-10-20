@@ -21,7 +21,7 @@ class StockLot(models.Model):
             try:
                 with self.env.cr.savepoint():
                     created += self._his_import_row(row)
-            except Exception as error:  # noqa: BLE001 - le motif est rapporte, la ligne suivante continue
+            except Exception as error:  # pylint: disable=broad-exception-caught  # le motif est rapporte
                 rejected.append(_("row %(index)s: %(error)s", index=index, error=error))
         return created, rejected
 

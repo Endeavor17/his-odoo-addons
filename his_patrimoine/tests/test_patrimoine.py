@@ -53,7 +53,9 @@ class TestPatrimoine(TransactionCase):
 
     def test_une_salle_est_comptee_chaque_annee(self):
         # Revue RF5 : une salle creee a la main herite du rythme annuel.
-        salle = self.env["stock.location"].create({"name": "Salle 12", "location_id": self._batiment().his_location_id.id})
+        salle = self.env["stock.location"].create(
+            {"name": "Salle 12", "location_id": self._batiment().his_location_id.id}
+        )
         self.assertEqual(salle.cyclic_inventory_frequency, 365)
         autre = self.env["stock.location"].create(
             {"name": "Rayon", "location_id": self.env.ref("stock.warehouse0").lot_stock_id.id}
@@ -94,7 +96,9 @@ class TestPatrimoine(TransactionCase):
     def test_un_bien_en_salle_n_est_pas_du_stock(self):
         # Revue RF5 : rien de la salle n'apparait dans le stock des caisses.
         bureau = self._bien().product_variant_id
-        salle = self.env["stock.location"].create({"name": "Salle 3", "location_id": self._batiment().his_location_id.id})
+        salle = self.env["stock.location"].create(
+            {"name": "Salle 3", "location_id": self._batiment().his_location_id.id}
+        )
         lot = self.env["stock.lot"].create({"name": "PAT-TEST-9", "product_id": bureau.id})
         self.env["stock.quant"]._update_available_quantity(bureau, salle, 1, lot_id=lot)
         stock = self.env.ref("stock.warehouse0").lot_stock_id
@@ -103,12 +107,30 @@ class TestPatrimoine(TransactionCase):
 
     def test_import_des_biens_existants(self):
         rows = [
-            {"building_code": "A", "room": "Salle 12", "category_xmlid": "his_patrimoine.categ_mobilier",
-             "default_code": "PAT-BUR-120", "product_name": "Bureau 120 cm", "serial": "PAT-900001"},
-            {"building_code": "A", "room": "Salle 12", "category_xmlid": "his_patrimoine.categ_mobilier",
-             "default_code": "PAT-BUR-120", "product_name": "Bureau 120 cm", "serial": "PAT-900002"},
-            {"building_code": "A", "room": "Salle 12", "category_xmlid": "his_stock_mdm.categ_cafe_boissons",
-             "default_code": "X-1", "product_name": "Eau", "serial": "PAT-900003"},
+            {
+                "building_code": "A",
+                "room": "Salle 12",
+                "category_xmlid": "his_patrimoine.categ_mobilier",
+                "default_code": "PAT-BUR-120",
+                "product_name": "Bureau 120 cm",
+                "serial": "PAT-900001",
+            },
+            {
+                "building_code": "A",
+                "room": "Salle 12",
+                "category_xmlid": "his_patrimoine.categ_mobilier",
+                "default_code": "PAT-BUR-120",
+                "product_name": "Bureau 120 cm",
+                "serial": "PAT-900002",
+            },
+            {
+                "building_code": "A",
+                "room": "Salle 12",
+                "category_xmlid": "his_stock_mdm.categ_cafe_boissons",
+                "default_code": "X-1",
+                "product_name": "Eau",
+                "serial": "PAT-900003",
+            },
         ]
         Lot = self.env["stock.lot"]
         created, rejected = Lot._his_import_patrimoine(rows)
@@ -126,8 +148,16 @@ class TestPatrimoine(TransactionCase):
 
     def test_import_sans_numero_en_attribue_un(self):
         created, _rejected = self.env["stock.lot"]._his_import_patrimoine(
-            [{"building_code": "B", "room": "Bureau 1", "category_xmlid": "his_patrimoine.categ_informatique",
-              "default_code": "PAT-HP-450", "product_name": "HP ProBook 450", "serial": ""}]
+            [
+                {
+                    "building_code": "B",
+                    "room": "Bureau 1",
+                    "category_xmlid": "his_patrimoine.categ_informatique",
+                    "default_code": "PAT-HP-450",
+                    "product_name": "HP ProBook 450",
+                    "serial": "",
+                }
+            ]
         )
         self.assertEqual(created, 1)
         lot = self.env["stock.lot"].search([("product_id.default_code", "=", "PAT-HP-450")])

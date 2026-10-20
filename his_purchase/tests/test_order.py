@@ -51,7 +51,9 @@ class TestOrder(HisPurchaseCase):
         action = choice.action_confirm()
         # Puis Odoo demande quoi faire des offres concurrentes : on les annule.
         self.assertEqual(action["res_model"], "purchase.requisition.alternative.warning")
-        self.env[action["res_model"]].with_user(self.officer).with_context(action["context"]).create({}).action_cancel_alternatives()
+        self.env[action["res_model"]].with_user(self.officer).with_context(action["context"]).create(
+            {}
+        ).action_cancel_alternatives()
         self.assertEqual(order.his_choice_criterion, "quality")
         self.assertEqual(order.his_chosen_by_id, self.officer)
         self.assertEqual(order.state, "to approve")
@@ -131,7 +133,9 @@ class TestOrder(HisPurchaseCase):
             .create({"order_id": order.id, "criterion": "lowest_price"})
         )
         action = choice.action_confirm()
-        self.env[action["res_model"]].with_user(self.officer).with_context(action["context"]).create({}).action_keep_alternatives()
+        self.env[action["res_model"]].with_user(self.officer).with_context(action["context"]).create(
+            {}
+        ).action_keep_alternatives()
         self.assertEqual(order.state, "to approve")
         order.with_user(self.manager).button_approve()
         self.assertEqual(order.state, "purchase")

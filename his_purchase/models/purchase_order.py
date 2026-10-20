@@ -328,8 +328,10 @@ class PurchaseOrder(models.Model):
                 )
             )
             own = self.order_line.filtered(
-                lambda line, request=request: line.his_request_line_id.request_id == request
-                or (not line.his_request_line_id and self.his_request_id == request)
+                lambda line, request=request: (
+                    line.his_request_line_id.request_id == request
+                    or (not line.his_request_line_id and self.his_request_id == request)
+                )
             )
             committed = sum(line._his_subtotal_in(request.currency_id) for line in others | own)
             ceiling = request.his_approved_amount * (1 + INVESTMENT_MARGIN)

@@ -251,7 +251,9 @@ class HisPurchaseRequest(models.Model):
             return
         if self.env.user.has_group("his_purchase.group_purchase_director"):
             return
-        locked = self.filtered(lambda r: r._his_director_approved() and r.his_purchase_type != vals["his_purchase_type"])
+        locked = self.filtered(
+            lambda r: r._his_director_approved() and r.his_purchase_type != vals["his_purchase_type"]
+        )
         if locked:
             raise UserError(
                 _(
