@@ -6,13 +6,17 @@
     "summary": "Demande d'achat, relances, choix fournisseur, commande mensuelle et documents algeriens",
     "description": """
 Ajoute autour des achats standard d'Odoo les regles du Groupe
-(docs/superpowers/specs/2026-10-15-purchasing-design.md) :
+(docs/superpowers/specs/2026-10-15-purchasing-design.md, amende par
+docs/superpowers/specs/2026-10-20-investment-purchases-and-fixed-assets-design.md) :
 
-- demande d'achat interne, approuvee par le chef de departement ;
+- demande d'achat interne, faite par les responsables, triee par l'acheteur :
+  achat courant (il le mene seul) ou investissement (le directeur executif
+  approuve d'abord la demande, et le type est fige ensuite) ;
 - reponse du fournisseur sur chaque demande de prix (un refus n'est jamais une
   offre a 0 DA) et choix du fournisseur trace, fige a la confirmation ;
-- approbation de toute commande, routee : directeur executif pour les achats
-  generaux, responsable achats ou directeur pour les achats des points de vente ;
+- approbation de toute commande, routee : responsable achats pour un achat
+  courant ou un investissement qui reste a +20 % du montant approuve, directeur
+  executif au-dela ;
 - relances et escalade a chaque etape, relance automatique des fournisseurs,
   recapitulatif hebdomadaire ;
 - commande mensuelle generee sur un contrat-cadre annuel, besoins ponctuels
