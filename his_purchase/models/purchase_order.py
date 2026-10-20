@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools.misc import format_amount
 
 from .his_purchase_followup import add_working_days
 from .his_purchase_request import PURCHASE_TYPES
@@ -38,6 +39,10 @@ DAYS_TO_APPROVE = 2
 DAYS_TO_REVIEW_MONTHLY = 2
 SUPPLIER_REMINDER_EVERY = 3
 SUPPLIER_REMINDER_MAX = 2
+# Marge d'un investissement sur le montant approuve par le directeur (2026-10-20).
+INVESTMENT_MARGIN = 0.20
+# Seules les commandes engagees comptent : pas les devis en concurrence.
+COMMITTED_STATES = ("to approve", "purchase", "done")
 
 
 class PurchaseOrder(models.Model):
@@ -300,11 +305,44 @@ class PurchaseOrder(models.Model):
     # Approbation routee
     # ------------------------------------------------------------------
 
-    def _his_approver_group(self):
+    def _his_director_reason(self):
+        """Pourquoi la commande attend le directeur ; None si l'acheteur
+        (responsable achats) peut l'approuver. Le plafond se lit par demande,
+        commandes engagees cumulees : decouper ne le contourne pas."""
         self.ensure_one()
-        if self.his_purchase_type == "usual":
-            return "purchase.group_purchase_manager"
-        return "his_purchase.group_purchase_director"
+        if self.his_purchase_type != "investment":
+            return None
+        requests = self._his_requests()
+        if not requests or not all(requests.mapped("his_approved_amount")):
+            return _("%s is an investment with no amount approved by the director.", self.name)
+        for request in requests:
+            others = (
+                self.env["purchase.order.line"]
+                .sudo()
+                .search(
+                    [
+                        ("his_request_line_id.request_id", "=", request.id),
+                        ("order_id.state", "in", COMMITTED_STATES),
+                        ("order_id", "!=", self.id),
+                    ]
+                )
+            )
+            own = self.order_line.filtered(
+                lambda line, request=request: line.his_request_line_id.request_id == request
+                or (not line.his_request_line_id and self.his_request_id == request)
+            )
+            committed = sum(line._his_subtotal_in(request.currency_id) for line in others | own)
+            ceiling = request.his_approved_amount * (1 + INVESTMENT_MARGIN)
+            if request.currency_id.compare_amounts(committed, ceiling) > 0:
+                return _(
+                    "%(order)s is more than 20%% above the amount the director approved on %(request)s: "
+                    "%(approved)s approved, %(ordered)s ordered.",
+                    order=self.name,
+                    request=request.name,
+                    approved=format_amount(self.env, request.his_approved_amount, request.currency_id),
+                    ordered=format_amount(self.env, committed, request.currency_id),
+                )
+        return None
 
     def _approval_allowed(self):
         self.ensure_one()
@@ -316,7 +354,9 @@ class PurchaseOrder(models.Model):
         )
         if self.amount_total < seuil:
             return True
-        return self.env.user.has_group(self._his_approver_group())
+        if self._his_director_reason():
+            return self.env.user.has_group("his_purchase.group_purchase_director")
+        return self.env.user.has_group("purchase.group_purchase_manager")
 
     def button_approve(self, force=False):
         # Le coeur passe un brouillon en commande sans aucun controle (recette
@@ -330,12 +370,15 @@ class PurchaseOrder(models.Model):
         if not force and not self.env.su:
             refused = self.filtered(lambda o: o.state == "to approve" and not o._approval_allowed())
             if refused:
-                role = (
-                    _("the executive director")
-                    if refused[0].his_purchase_type == "investment"
-                    else _("a purchase manager or the executive director")
+                reason = refused[0]._his_director_reason()
+                if reason:
+                    raise UserError(_("%s Only the executive director can approve it.", reason))
+                raise UserError(
+                    _(
+                        "%s can only be approved by a purchase manager or the executive director.",
+                        refused[0].name,
+                    )
                 )
-                raise UserError(_("%(order)s can only be approved by %(role)s.", order=refused[0].name, role=role))
         res = super().button_approve(force=force)
         self.filtered(lambda o: o.state == "purchase" and not o.his_approved_by_id).with_context(
             his_choice_write=True
@@ -459,6 +502,14 @@ class PurchaseOrderLine(models.Model):
         self.ensure_one()
         return self.product_uom_id._compute_quantity(
             self.product_qty, self.his_request_line_id.product_uom_id, round=False
+        )
+
+    def _his_subtotal_in(self, currency):
+        """Montant HT de la ligne dans la devise de la demande (les estimations sont HT)."""
+        self.ensure_one()
+        order = self.order_id
+        return order.currency_id._convert(
+            self.price_subtotal, currency, order.company_id, order.date_order or fields.Date.today()
         )
 
     def _compute_tax_id(self):
