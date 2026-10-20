@@ -26,12 +26,15 @@ class TestFollowup(HisPurchaseCase):
         with freeze_time(LUNDI):
             request = self._request()
             request.action_submit()
-            activity = self._activities(request, self.head)
+            activity = self._activities(request, self.officer)
             self.assertEqual(len(activity), 1)
             # Lundi + 2 jours ouvres = mercredi.
             self.assertEqual(activity.date_deadline, date(2026, 11, 4))
-            request.with_user(self.head).action_approve()
-        self.assertFalse(self._activities(request, self.head), "l'etape passee est close")
+            request.with_user(self.officer).his_purchase_type = "investment"
+            self.assertFalse(self._activities(request, self.officer), "l'investissement passe au directeur")
+            self.assertEqual(len(self._activities(request, self.director)), 1)
+            request.with_user(self.director).action_approve()
+        self.assertFalse(self._activities(request, self.director), "l'etape passee est close")
         self.assertEqual(len(self._activities(request, self.officer)), 1)
 
     def test_rien_le_week_end(self):
@@ -41,10 +44,10 @@ class TestFollowup(HisPurchaseCase):
             request.action_submit()
         self._cron(date(2026, 11, 6))
         self._cron(date(2026, 11, 7))
-        self.assertFalse(self._notified(request, self.head), "vendredi et samedi : silence")
+        self.assertFalse(self._notified(request, self.officer), "vendredi et samedi : silence")
         self.assertEqual(request.his_step_level, 0)
         self._cron(date(2026, 11, 8))
-        self.assertTrue(self._notified(request, self.head))
+        self.assertTrue(self._notified(request, self.officer))
 
     def test_rappel_puis_escalade(self):
         with freeze_time(LUNDI):
@@ -52,10 +55,10 @@ class TestFollowup(HisPurchaseCase):
             request.action_submit()
         # Echeance mercredi 4 : rien avant.
         self._cron(date(2026, 11, 4))
-        self.assertFalse(self._notified(request, self.head))
-        # Jeudi 5 : rappel au chef de departement.
+        self.assertFalse(self._notified(request, self.officer))
+        # Jeudi 5 : rappel a l'acheteur.
         self._cron(date(2026, 11, 5))
-        self.assertTrue(self._notified(request, self.head))
+        self.assertTrue(self._notified(request, self.officer))
         self.assertTrue(request.his_is_late)
         self.assertFalse(self._notified(request, self.manager))
         # Echeance + 2 jours OUVRES : pas le vendredi 6, le dimanche 8.
@@ -78,20 +81,20 @@ class TestFollowup(HisPurchaseCase):
     def test_chacun_lit_ses_rappels_dans_sa_langue(self):
         self.env["res.lang"]._activate_lang("fr_FR")
         self.env["ir.module.module"]._load_module_terms(["his_purchase"], ["fr_FR"], overwrite=True)
-        self.head.lang = "fr_FR"
+        self.officer.lang = "fr_FR"
         with freeze_time(LUNDI):
             request = self._request()
             request.action_submit()
-        self.assertIn("Approuver la demande d'achat", self._activities(request, self.head).summary)
+        self.assertIn("Approuver la demande d'achat", self._activities(request, self.officer).summary)
         # Le cron tourne en anglais : le rappel part quand meme en francais.
         self._cron(date(2026, 11, 5))
-        self.assertIn("Rappel", self._notified(request, self.head)[0].body)
+        self.assertIn("Rappel", self._notified(request, self.officer)[0].body)
 
     def test_le_demandeur_relance_une_fois_par_jour(self):
         request = self._request()
         request.action_submit()
         request.action_remind()
-        self.assertTrue(self._notified(request, self.head))
+        self.assertTrue(self._notified(request, self.officer))
         with self.assertRaises(UserError):
             request.action_remind()
 

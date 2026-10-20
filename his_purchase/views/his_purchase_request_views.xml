@@ -88,6 +88,7 @@
                             <group>
                                 <group>
                                     <field name="approved_by_id"/>
+                                    <field name="his_approved_amount" invisible="not his_approved_amount"/>
                                     <field name="approved_on"/>
                                 </group>
                                 <group>

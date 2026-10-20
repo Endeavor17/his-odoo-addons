@@ -8,15 +8,15 @@
     </record>
 
     <!-- Pas d'ACL sur base.group_user (politique his_access_base) : demander un
-         achat est un role, donne a qui en a besoin, chefs de departement compris
-         (ils approuvent les demandes de leur departement). -->
+         achat est un role, donne par poste aux seuls responsables (reunion du
+         2026-10-20) ; l'acheteur trie leurs demandes, sans etape chef de departement. -->
     <record id="group_requester" model="res.groups">
         <field name="name">Requester</field>
         <field name="sequence">10</field>
         <field name="privilege_id" ref="res_groups_privilege_purchase_request"/>
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
-        <field name="comment">Creates purchase requests and follows them. A department head
-            with this role also approves the requests of their department.</field>
+        <field name="comment">Creates purchase requests and follows them. Give it to the
+            Responsable positions only.</field>
     </record>
 
     <!-- Echelon au-dessus de l'administrateur achats : il approuve les achats

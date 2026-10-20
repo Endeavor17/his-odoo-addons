@@ -123,7 +123,8 @@ class HisPurchaseCase(TransactionCase):
         request = self._request(**kwargs)
         request.with_user(request.requester_user_id).action_submit()
         request.with_user(self.officer).his_purchase_type = purchase_type
-        request.with_user(self.head).action_approve()
+        approver = self.director if purchase_type == "investment" else self.officer
+        request.with_user(approver).action_approve()
         return request
 
     def _source_rfq(self, request, supplier):

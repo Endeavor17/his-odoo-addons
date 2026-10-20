@@ -1,8 +1,9 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 """Demande d'achat interne : le besoin d'un employe, avant tout fournisseur.
 
-Brouillon -> Soumise (chef de departement) -> Approuvee (acheteur) -> En cours
-d'achat -> Commandee -> Terminee. Un refus renvoie en brouillon, motif au
+Brouillon -> Soumise (acheteur ; directeur si investissement) -> Approuvee ->
+En cours d'achat -> Commandee -> Terminee. Seuls les responsables demandent :
+pas d'approbation du chef de departement (reunion du 2026-10-20). Un refus renvoie en brouillon, motif au
 fil de discussion. Une fois soumise, seule l'equipe achats la modifie.
 """
 
@@ -93,7 +94,7 @@ class HisPurchaseRequest(models.Model):
         compute="_compute_approver_id",
         store=True,
         precompute=True,
-        help="Head of the department; the executive director when the requester is the head.",
+        help="The purchasing officer; the executive director once the request is an investment.",
     )
     his_purchase_type = fields.Selection(
         PURCHASE_TYPES,
@@ -114,6 +115,14 @@ class HisPurchaseRequest(models.Model):
     )
     approved_by_id = fields.Many2one("res.users", string="Approved By", readonly=True, copy=False)
     approved_on = fields.Datetime(string="Approved On", readonly=True, copy=False)
+    his_approved_amount = fields.Monetary(
+        string="Amount Approved by the Director",
+        readonly=True,
+        copy=False,
+        tracking=True,
+        help="Estimated amount of the investment when the director approved it. An order more than 20% "
+        "above it goes back to the director.",
+    )
     order_ids = fields.Many2many(
         "purchase.order", string="Purchase Orders", compute="_compute_order_ids", compute_sudo=True
     )
@@ -142,18 +151,24 @@ class HisPurchaseRequest(models.Model):
             request.department_id = request.requester_id.department_id
 
     @api.depends(
-        "department_id",
-        "department_id.manager_id.user_id",
-        "requester_user_id",
+        "his_purchase_type",
         "company_id",
         "company_id.his_purchase_director_id",
+        "company_id.his_purchase_manager_id",
     )
     def _compute_approver_id(self):
+        # L'acheteur trie chaque demande ; l'investissement monte au directeur.
+        # L'acheteur suit le poste (calcule, non stocke) : hors des dependances.
         for request in self:
-            head = request.department_id.manager_id.user_id
-            if not head or head == request.requester_user_id:
-                head = request.company_id.his_purchase_director_id
-            request.approver_id = head
+            company = request.company_id
+            if request.his_purchase_type == "investment":
+                request.approver_id = company.his_purchase_director_id
+            else:
+                request.approver_id = company.his_purchase_officer_id or company.his_purchase_manager_id
+
+    def _his_director_approved(self):
+        self.ensure_one()
+        return self.his_purchase_type == "investment" and self.state not in ("draft", "submitted", "cancel")
 
     @api.depends("line_ids.estimated_subtotal")
     def _compute_estimated_amount(self):
@@ -198,7 +213,7 @@ class HisPurchaseRequest(models.Model):
             if locked:
                 raise UserError(_("%s has been submitted: only the purchasing team can change it now.", locked[0].name))
         res = super().write(vals)
-        if "state" in vals:
+        if "state" in vals or "his_purchase_type" in vals:
             self._his_sync_step()
         return res
 
@@ -251,18 +266,17 @@ class HisPurchaseRequest(models.Model):
     def _his_check_approver(self):
         user = self.env.user
         for request in self:
-            allowed = (
-                self.env.su
-                or user == request.approver_id
-                or user == request.department_id.manager_id.user_id
-                or user.has_group("his_purchase.group_purchase_director")
-            )
+            director = user.has_group("his_purchase.group_purchase_director")
+            if request.his_purchase_type == "investment":
+                allowed = self.env.su or director
+            else:
+                allowed = self._his_is_purchasing() or director
             if not allowed:
                 raise AccessError(
                     _(
                         "%(request)s can only be approved by %(approver)s.",
                         request=request.name,
-                        approver=request.approver_id.name or _("the head of department"),
+                        approver=request.approver_id.name or _("the purchasing team"),
                     )
                 )
 
@@ -305,13 +319,17 @@ class HisPurchaseRequest(models.Model):
         for request in self:
             if request.state != "submitted":
                 raise UserError(_("%s is not waiting for approval.", request.name))
+            if not request.his_purchase_type:
+                raise UserError(_("Set the purchase type of %s first: usual purchase or investment.", request.name))
             officer = request.user_id or request.company_id.his_purchase_officer_id
+            investment = request.his_purchase_type == "investment"
             request.sudo().write(
                 {
                     "state": "approved",
                     "approved_by_id": self.env.user.id,
                     "approved_on": fields.Datetime.now(),
                     "user_id": officer.id,
+                    "his_approved_amount": request.estimated_amount if investment else 0,
                 }
             )
             if officer:
@@ -461,8 +479,9 @@ class HisPurchaseRequest(models.Model):
         since = self.his_step_since or fields.Date.context_today(self)
         if self.state == "submitted":
             owner = self.approver_id
+            # Cle distincte : passer en investissement change l'etape, donc l'a-faire.
             return {
-                "key": "request_approve",
+                "key": "request_director" if self.his_purchase_type == "investment" else "request_approve",
                 "label": _("Approve purchase request %s", self.name),
                 "owner": owner,
                 "due": add_working_days(since, DAYS_TO_APPROVE),
@@ -556,7 +575,7 @@ class HisPurchaseRequestLine(models.Model):
         precompute=True,
     )
     currency_id = fields.Many2one(related="request_id.currency_id")
-    estimated_price_unit = fields.Monetary(string="Estimated Unit Price")
+    estimated_price_unit = fields.Monetary(string="Estimated Unit Price (excl. tax)")
     estimated_subtotal = fields.Monetary(
         string="Estimated Subtotal", compute="_compute_estimated_subtotal", store=True, precompute=True
     )
