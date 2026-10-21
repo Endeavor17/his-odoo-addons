@@ -21,11 +21,24 @@ class ProductTemplate(models.Model):
         categories = self.env["product.category"].search([("id", "child_of", root.id)])
         for vals in vals_list:
             if vals.get("categ_id") in categories.ids:
-                vals.setdefault("is_storable", True)
-                vals.setdefault("tracking", "serial")
+                # Le formulaire envoie ses defauts (suivi aucun, prefixe vide
+                # qui remet la sequence du coeur) : on impose, pas setdefault.
+                vals.pop("serial_prefix_format", None)
+                vals.update(
+                    is_storable=True,
+                    tracking="serial",
+                    lot_sequence_id=self.env.ref("his_patrimoine.seq_patrimoine").id,
+                )
                 vals.setdefault("sale_ok", False)
-                vals.setdefault("lot_sequence_id", self.env.ref("his_patrimoine.seq_patrimoine").id)
         return vals_list
+
+    @api.onchange("categ_id")
+    def _onchange_his_patrimoine_categ(self):
+        if self._his_is_patrimoine():
+            self.is_storable = True
+            self.tracking = "serial"
+            self.sale_ok = False
+            self.lot_sequence_id = self.env.ref("his_patrimoine.seq_patrimoine")
 
     @api.model_create_multi
     def create(self, vals_list):
