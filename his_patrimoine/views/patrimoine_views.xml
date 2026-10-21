@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Ecrans standard d'Odoo, filtres sur le Patrimoine : rien a maintenir,
+         sauf la liste des biens, qui dit ou se trouve chacun. -->
+    <record id="view_patrimoine_items_list" model="ir.ui.view">
+        <field name="name">stock.lot.list.patrimoine</field>
+        <field name="model">stock.lot</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="location_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_patrimoine_items" model="ir.actions.act_window">
+        <field name="name">Items</field>
+        <field name="res_model">stock.lot</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_patrimoine_items_list"/>
+        <field name="domain" eval="[('product_id.categ_id', 'child_of', ref('his_patrimoine.categ_patrimoine'))]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No durable item yet</p>
+            <p>Each desk, laptop or air conditioner gets its PAT- serial number when it is received,
+                or through the initial import (tools/import_patrimoine.py).</p>
+        </field>
+    </record>
+
+    <record id="action_patrimoine_rooms" model="ir.actions.act_window">
+        <field name="name">Rooms</field>
+        <field name="res_model">stock.location</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain" eval="[('location_id', 'child_of', ref('his_patrimoine.loc_patrimoine'))]"/>
+        <field name="context" eval="{'default_location_id': ref('his_patrimoine.loc_patrimoine')}"/>
+    </record>
+
+    <!-- Le comptage annuel : la feuille d'inventaire standard, salle par salle.
+         Appliquer les ecarts reste reserve a l'administrateur (regle standard). -->
+    <record id="action_patrimoine_count" model="ir.actions.act_window">
+        <field name="name">Annual Count</field>
+        <field name="res_model">stock.quant</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="stock.view_stock_quant_tree_inventory_editable"/>
+        <field name="search_view_id" ref="stock.quant_search_view"/>
+        <field name="domain" eval="[('location_id', 'child_of', ref('his_patrimoine.loc_patrimoine'))]"/>
+        <field name="context">{'inventory_mode': True, 'search_default_internal_loc': 1}</field>
+    </record>
+
+    <menuitem id="menu_patrimoine" name="Patrimoine" parent="stock.menu_stock_root" sequence="25"
+              groups="stock.group_stock_user"/>
+    <menuitem id="menu_patrimoine_items" action="action_patrimoine_items" parent="menu_patrimoine" sequence="10"/>
+    <menuitem id="menu_patrimoine_rooms" action="action_patrimoine_rooms" parent="menu_patrimoine" sequence="20"/>
+    <menuitem id="menu_patrimoine_count" action="action_patrimoine_count" parent="menu_patrimoine" sequence="30"/>
+</odoo>

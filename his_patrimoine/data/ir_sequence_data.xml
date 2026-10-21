@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Numero de serie des biens, celui que porte l'etiquette. -->
+        <record id="seq_patrimoine" model="ir.sequence">
+            <field name="name">Patrimoine Serial Numbers</field>
+            <field name="code">his.patrimoine</field>
+            <field name="prefix">PAT-</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

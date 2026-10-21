@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='vendor_id']" position="after">
-                <field name="his_purchase_domain"/>
+                <field name="his_purchase_type"/>
                 <field name="his_recurring" invisible="requisition_type != 'blanket_order'"/>
                 <field name="his_delivery_day" invisible="not his_recurring" required="his_recurring"/>
                 <field name="his_prepare_days" invisible="not his_recurring" required="his_recurring"/>

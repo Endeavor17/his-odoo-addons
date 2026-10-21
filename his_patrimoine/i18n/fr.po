@@ -1,0 +1,126 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_patrimoine
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260810\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-20 14:25+0000\n"
+"PO-Revision-Date: 2026-10-20 14:25+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_patrimoine
+#. odoo-python
+#: code:addons/his_patrimoine/models/product_template.py:0
+msgid ""
+"\"%s\" is a durable item (Patrimoine): it must be storable and tracked by "
+"serial number."
+msgstr "« %s » est un bien durable (Patrimoine) : il doit être stockable et suivi par numéro de série."
+
+#. module: his_patrimoine
+#. odoo-python
+#: code:addons/his_patrimoine/models/stock_lot.py:0
+msgid "%s is not a Patrimoine category."
+msgstr "%s n'est pas une catégorie Patrimoine."
+
+#. module: his_patrimoine
+#: model:ir.actions.act_window,name:his_patrimoine.action_patrimoine_count
+#: model:ir.ui.menu,name:his_patrimoine.menu_patrimoine_count
+msgid "Annual Count"
+msgstr "Comptage annuel"
+
+#. module: his_patrimoine
+#: model:ir.model.fields,field_description:his_patrimoine.field_maintenance_building__display_name
+#: model:ir.model.fields,field_description:his_patrimoine.field_product_product__display_name
+#: model:ir.model.fields,field_description:his_patrimoine.field_product_template__display_name
+#: model:ir.model.fields,field_description:his_patrimoine.field_stock_location__display_name
+#: model:ir.model.fields,field_description:his_patrimoine.field_stock_lot__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: his_patrimoine
+#: model_terms:ir.actions.act_window,help:his_patrimoine.action_patrimoine_items
+msgid ""
+"Each desk, laptop or air conditioner gets its PAT- serial number when it is received,\n"
+"                or through the initial import (tools/import_patrimoine.py)."
+msgstr "Chaque bureau, portable ou climatiseur reçoit son numéro PAT- à la réception,\n                ou par l'import initial (tools/import_patrimoine.py)."
+
+#. module: his_patrimoine
+#: model:ir.model.fields,field_description:his_patrimoine.field_maintenance_building__id
+#: model:ir.model.fields,field_description:his_patrimoine.field_product_product__id
+#: model:ir.model.fields,field_description:his_patrimoine.field_product_template__id
+#: model:ir.model.fields,field_description:his_patrimoine.field_stock_location__id
+#: model:ir.model.fields,field_description:his_patrimoine.field_stock_lot__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_patrimoine
+#: model:ir.model,name:his_patrimoine.model_stock_location
+msgid "Inventory Locations"
+msgstr "Emplacements d'inventaire"
+
+#. module: his_patrimoine
+#: model:ir.actions.act_window,name:his_patrimoine.action_patrimoine_items
+#: model:ir.ui.menu,name:his_patrimoine.menu_patrimoine_items
+msgid "Items"
+msgstr "Biens"
+
+#. module: his_patrimoine
+#: model:ir.model,name:his_patrimoine.model_stock_lot
+msgid "Lot/Serial"
+msgstr "Lot/Numéro de série"
+
+#. module: his_patrimoine
+#: model_terms:ir.actions.act_window,help:his_patrimoine.action_patrimoine_items
+msgid "No durable item yet"
+msgstr "Aucun bien durable pour l'instant"
+
+#. module: his_patrimoine
+#: model:ir.ui.menu,name:his_patrimoine.menu_patrimoine
+msgid "Patrimoine"
+msgstr "Patrimoine"
+
+#. module: his_patrimoine
+#: model:ir.model.fields,field_description:his_patrimoine.field_maintenance_building__his_location_id
+msgid "Patrimoine Location"
+msgstr "Emplacement Patrimoine"
+
+#. module: his_patrimoine
+#: model:ir.model,name:his_patrimoine.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: his_patrimoine
+#: model:ir.model,name:his_patrimoine.model_product_product
+msgid "Product Variant"
+msgstr "Variante de produit"
+
+#. module: his_patrimoine
+#: model:ir.actions.act_window,name:his_patrimoine.action_patrimoine_rooms
+#: model:ir.ui.menu,name:his_patrimoine.menu_patrimoine_rooms
+msgid "Rooms"
+msgstr "Salles"
+
+#. module: his_patrimoine
+#: model:ir.model,name:his_patrimoine.model_maintenance_building
+msgid "University Building"
+msgstr "Bâtiment universitaire"
+
+#. module: his_patrimoine
+#. odoo-python
+#: code:addons/his_patrimoine/models/stock_lot.py:0
+msgid "row %(index)s: %(error)s"
+msgstr "ligne %(index)s : %(error)s"
+
+#. module: his_patrimoine
+#. odoo-python
+#: code:addons/his_patrimoine/models/stock_lot.py:0
+msgid "The internal reference (default_code) is required."
+msgstr "La référence interne (default_code) est obligatoire."

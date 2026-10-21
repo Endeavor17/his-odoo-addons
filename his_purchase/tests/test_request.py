@@ -15,8 +15,8 @@ class TestRequest(HisPurchaseCase):
         request = self._request()
         self.assertTrue(request.name.startswith("DA/"), request.name)
         self.assertEqual(request.department_id, self.it)
-        self.assertEqual(request.approver_id, self.head)
-        self.assertEqual(request.his_purchase_domain, "general")
+        self.assertEqual(request.approver_id, self.officer, "la demande part chez l'acheteur, pas chez le chef")
+        self.assertFalse(request.his_purchase_type, "l'acheteur choisit le type, pas le departement")
         self.assertEqual(request.estimated_amount, 18000)
         request.action_submit()
         self.assertEqual(request.state, "submitted")
@@ -58,28 +58,89 @@ class TestRequest(HisPurchaseCase):
         with self.assertRaises(AccessError):
             request.with_user(self.outsider).read(["name"])
 
-    def test_seul_l_approbateur_approuve(self):
+    def test_l_acheteur_approuve_l_achat_courant(self):
         request = self._request()
         request.action_submit()
+        request.with_user(self.officer).his_purchase_type = "usual"
         with self.assertRaises(AccessError):
             request.with_user(self.requester).action_approve()
+        request.with_user(self.officer).action_approve()
+        self.assertEqual(request.state, "approved")
+        self.assertEqual(request.approved_by_id, self.officer)
+        self.assertEqual(request.user_id, self.officer, "l'acheteur de la societe reprend la demande")
+        self.assertFalse(request.his_approved_amount, "rien a plafonner sur un achat courant")
+        self.assertNotIn(self.director.partner_id, request.message_partner_ids)
+
+    def test_pas_d_approbation_sans_type(self):
+        request = self._request()
+        request.action_submit()
+        with self.assertRaisesRegex(UserError, "Set the purchase type"):
+            request.with_user(self.officer).action_approve()
+
+    def test_l_investissement_passe_par_le_directeur(self):
+        request = self._request()
+        request.action_submit()
+        request.with_user(self.officer).his_purchase_type = "investment"
+        self.assertEqual(request.approver_id, self.director)
         with self.assertRaises(AccessError):
             request.with_user(self.officer).action_approve()
-        request.with_user(self.head).action_approve()
+        with self.assertRaises(AccessError):
+            request.with_user(self.manager).action_approve()
+        request.with_user(self.director).action_approve()
         self.assertEqual(request.state, "approved")
-        self.assertEqual(request.approved_by_id, self.head)
-        self.assertEqual(request.user_id, self.officer, "l'acheteur de la societe reprend la demande")
+        self.assertEqual(request.his_approved_amount, 18000, "2 x 9000, le montant que le directeur a vu")
 
-    def test_le_chef_qui_demande_est_approuve_par_le_directeur(self):
-        request = self._request(user=self.head, employee=self.head_emp)
+    def test_l_acheteur_ne_requalifie_pas_un_investissement_approuve(self):
+        request = self._approved_request(purchase_type="investment")
+        with self.assertRaisesRegex(UserError, "only the director"):
+            request.with_user(self.officer).his_purchase_type = "usual"
+        self.assertEqual(request.his_purchase_type, "investment")
+
+    def test_le_directeur_peut_requalifier(self):
+        request = self._approved_request(purchase_type="investment")
+        request.with_user(self.director).his_purchase_type = "usual"
+        self.assertEqual(request.his_purchase_type, "usual")
+
+    def test_l_acheteur_requalifie_avant_le_directeur(self):
+        request = self._request()
+        request.action_submit()
+        request.with_user(self.officer).his_purchase_type = "investment"
+        request.with_user(self.officer).his_purchase_type = "usual"
+        self.assertEqual(request.approver_id, self.officer)
+
+    def test_passer_en_investissement_apres_approbation_renvoie_au_directeur(self):
+        # Revue finale : sinon la demande serait figee comme investissement
+        # sans que le directeur ait rien approuve.
+        request = self._approved_request(purchase_type="usual")
+        request.with_user(self.officer).his_purchase_type = "investment"
+        self.assertEqual(request.state, "submitted")
         self.assertEqual(request.approver_id, self.director)
+        self.assertFalse(request.approved_by_id)
+        self.assertFalse(request._his_director_approved())
+        # Une erreur de clic se corrige encore : le directeur n'a rien approuve.
+        request.with_user(self.officer).his_purchase_type = "usual"
+        self.assertEqual(request.approver_id, self.officer)
+
+    def test_le_type_est_fige_une_fois_l_achat_lance(self):
+        request = self._approved_request(purchase_type="usual")
+        self._source_rfq(request, self.supplier_a)
+        self.assertEqual(request.state, "sourcing")
+        with self.assertRaisesRegex(UserError, "already being purchased"):
+            request.with_user(self.officer).his_purchase_type = "investment"
+
+    def test_le_chef_de_departement_n_approuve_plus(self):
+        request = self._request()
+        request.action_submit()
+        request.with_user(self.officer).his_purchase_type = "usual"
+        with self.assertRaises(AccessError):
+            request.with_user(self.head).action_approve()
 
     def test_refus_renvoie_en_brouillon_avec_motif(self):
         request = self._request()
         request.action_submit()
         wizard = (
             self.env["his.purchase.request.reject"]
-            .with_user(self.head)
+            .with_user(self.officer)
             .create({"request_id": request.id, "reason": "Use the stock toner first."})
         )
         wizard.action_reject()
@@ -93,9 +154,10 @@ class TestRequest(HisPurchaseCase):
         request.action_draft()
         self.assertEqual(request.state, "draft")
 
-    def test_departement_point_de_vente(self):
+    def test_le_departement_ne_porte_plus_de_domaine_achat(self):
+        self.assertNotIn("his_purchase_domain", self.env["hr.department"]._fields)
         request = self._request(user=self.cook, employee=self.cook_emp)
-        self.assertEqual(request.his_purchase_domain, "pos")
+        self.assertFalse(request.his_purchase_type)
 
     def test_le_demandeur_ne_peut_pas_sourcer(self):
         request = self._approved_request()
@@ -108,15 +170,15 @@ class TestRequest(HisPurchaseCase):
             {"state": "approved"},
             {"approved_by_id": self.requester.id},
             {"approver_id": self.requester.id},
-            {"his_purchase_domain": "pos"},
+            {"his_purchase_type": "usual"},
         ):
             with self.assertRaises(AccessError, msg=vals):
                 request.write(vals)
         with self.assertRaises(AccessError):
             self._request(state="approved")
         self.assertEqual(request.state, "draft")
-        # L'acheteur corrige le domaine avant de sourcer (spec, section 5.5).
-        request.with_user(self.officer).his_purchase_domain = "pos"
+        # L'acheteur choisit le type (spec 2026-10-20, section 4.1).
+        request.with_user(self.officer).his_purchase_type = "usual"
 
     def test_le_demandeur_enregistre_sa_demande_par_le_formulaire(self):
         # Staging 2026-10-19 : le formulaire envoie l'etat par defaut et les
@@ -129,12 +191,13 @@ class TestRequest(HisPurchaseCase):
                 line.product_qty = 2
         request = form.record
         self.assertEqual(request.state, "draft")
-        self.assertEqual(request.approver_id, self.head)
+        self.assertFalse(request.his_purchase_type)
+        self.assertEqual(request.approver_id, self.officer)
 
     def test_le_demandeur_ne_choisit_pas_son_approbateur_a_la_creation(self):
-        request = self._request(approver_id=self.requester.id, his_purchase_domain="pos")
-        self.assertEqual(request.approver_id, self.head)
-        self.assertEqual(request.his_purchase_domain, "general")
+        request = self._request(approver_id=self.requester.id, his_purchase_type="usual")
+        self.assertEqual(request.approver_id, self.officer)
+        self.assertFalse(request.his_purchase_type)
 
     def test_le_demandeur_ne_choisit_pas_son_departement(self):
         # Recette P-07 : le departement decide du domaine, donc de l'approbateur.
@@ -143,17 +206,17 @@ class TestRequest(HisPurchaseCase):
         request = self._request(department_id=self.it.id)
         with self.assertRaises(AccessError):
             request.write({"department_id": self.restaurant.id})
-        self.assertEqual(request.his_purchase_domain, "general")
         request.with_user(self.officer).department_id = self.restaurant
-        self.assertEqual(request.his_purchase_domain, "pos")
+        self.assertEqual(request.department_id, self.restaurant)
 
     def test_le_nouveau_directeur_devient_l_approbateur(self):
         self.company.his_purchase_director_id = False
         request = self._request(user=self.outsider, employee=self.outsider_emp)
+        request.action_submit()
+        request.with_user(self.officer).his_purchase_type = "investment"
         self.assertFalse(request.approver_id)
         self.company.his_purchase_director_id = self.director
         self.assertEqual(request.approver_id, self.director)
-        request.action_submit()
 
     def test_l_acheteur_suit_le_poste(self):
         # Remplacer l'acheteur = changer l'occupant du poste, rien a choisir sur la demande.

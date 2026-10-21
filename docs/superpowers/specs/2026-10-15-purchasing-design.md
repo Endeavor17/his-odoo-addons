@@ -1,5 +1,9 @@
 # Purchasing for the Groupe HIS-HTC-IRA
 
+> **Amended 2026-10-20:** the general/points-of-sale domain and the department-head
+> approval are replaced by usual/investment purchases. See
+> `2026-10-20-investment-purchases-and-fixed-assets-design.md`.
+
 Design for the purchasing flow of the Groupe HIS-HTC-IRA on Odoo 19 Community.
 
 It replaces a first draft that had been written from a recording of another

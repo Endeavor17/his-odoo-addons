@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet//field[@name='partner_ref']" position="after">
                 <field name="his_request_id" invisible="not his_request_id"/>
-                <field name="his_purchase_domain" readonly="state not in ('draft', 'sent')"/>
+                <field name="his_purchase_type" readonly="state not in ('draft', 'sent')"/>
                 <field name="his_monthly" invisible="not his_monthly"/>
             </xpath>
             <xpath expr="//page[@name='products']" position="after">

@@ -14,7 +14,7 @@ class PurchaseRequisitionCreateAlternative(models.TransientModel):
             vals.update(
                 {
                     "his_request_id": origin.his_request_id.id,
-                    "his_purchase_domain": origin.his_purchase_domain,
+                    "his_purchase_type": origin.his_purchase_type,
                     "his_reply_by": origin.his_reply_by,
                 }
             )

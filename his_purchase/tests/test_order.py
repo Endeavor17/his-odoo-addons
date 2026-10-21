@@ -15,7 +15,7 @@ class TestOrder(HisPurchaseCase):
         self.assertEqual(request.state, "sourcing")
         self.assertEqual(order.his_request_id, request)
         self.assertEqual(order.order_line.his_request_line_id, request.line_ids)
-        self.assertEqual(order.his_purchase_domain, "general")
+        self.assertEqual(order.his_purchase_type, "investment", "la commande reprend le type de la demande")
         self.assertTrue(order.his_reply_by)
         order.order_line.price_unit = 8500
         res = order.with_user(self.officer).button_confirm()
@@ -51,7 +51,9 @@ class TestOrder(HisPurchaseCase):
         action = choice.action_confirm()
         # Puis Odoo demande quoi faire des offres concurrentes : on les annule.
         self.assertEqual(action["res_model"], "purchase.requisition.alternative.warning")
-        self.env[action["res_model"]].with_context(action["context"]).create({}).action_cancel_alternatives()
+        self.env[action["res_model"]].with_user(self.officer).with_context(action["context"]).create(
+            {}
+        ).action_cancel_alternatives()
         self.assertEqual(order.his_choice_criterion, "quality")
         self.assertEqual(order.his_chosen_by_id, self.officer)
         self.assertEqual(order.state, "to approve")
@@ -83,24 +85,88 @@ class TestOrder(HisPurchaseCase):
         with self.assertRaises(UserError):
             order.with_user(self.manager).his_choice_note = "rewritten"
 
-    def test_approbation_generale_par_le_directeur(self):
-        request = self._approved_request()
+    def _investment_order(self, price, qty=None):
+        """Investissement approuve a 2 x 9000 = 18000 DA HT, plafond 21600."""
+        request = self._approved_request(purchase_type="investment")
         order = self._source_rfq(request, self.supplier_a)
-        order.order_line.price_unit = 8500
-        order.with_user(self.manager).button_confirm()
-        self.assertEqual(order.state, "to approve", "un responsable achats ne passe pas un achat general")
-        with self.assertRaisesRegex(UserError, "executive director"):
+        order.order_line.price_unit = price
+        if qty:
+            order.order_line.product_qty = qty
+        order.with_user(self.officer).button_confirm()
+        self.assertEqual(order.state, "to approve")
+        return request, order
+
+    def test_investissement_dans_les_20_pourcents_l_acheteur_approuve(self):
+        _request, order = self._investment_order(10800)  # 21600 HT, pile +20 %
+        order.with_user(self.manager).button_approve()
+        self.assertEqual(order.state, "purchase")
+        self.assertEqual(order.his_approved_by_id, self.manager)
+
+    def test_investissement_au_dela_des_20_pourcents_remonte_au_directeur(self):
+        _request, order = self._investment_order(10801)  # 21602 HT
+        with self.assertRaisesRegex(UserError, "more than 20% above"):
             order.with_user(self.manager).button_approve()
         order.with_user(self.director).button_approve()
         self.assertEqual(order.state, "purchase")
         self.assertEqual(order.his_approved_by_id, self.director)
 
+    def test_decouper_la_commande_ne_contourne_pas_le_plafond(self):
+        # Revue RF2 : deux commandes chacune sous le plafond, ensemble au-dessus.
+        request, first = self._investment_order(10800, qty=1)
+        first.with_user(self.manager).button_approve()
+        second = self._source_rfq(request, self.supplier_b)
+        self.assertEqual(second.order_line.product_qty, 1)
+        second.order_line.price_unit = 10801
+        second.with_user(self.officer).button_confirm()
+        with self.assertRaisesRegex(UserError, "more than 20% above"):
+            second.with_user(self.manager).button_approve()
+
+    def test_les_devis_en_brouillon_ne_comptent_pas(self):
+        # Revue RF3 : les 3 devis ne s'additionnent pas.
+        request = self._approved_request(purchase_type="investment")
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 10000
+        self._alternative(order, self.supplier_b, 10500)
+        choice = (
+            self.env["his.purchase.choice"]
+            .with_user(self.officer)
+            .create({"order_id": order.id, "criterion": "lowest_price"})
+        )
+        action = choice.action_confirm()
+        self.env[action["res_model"]].with_user(self.officer).with_context(action["context"]).create(
+            {}
+        ).action_keep_alternatives()
+        self.assertEqual(order.state, "to approve")
+        order.with_user(self.manager).button_approve()
+        self.assertEqual(order.state, "purchase")
+
+    def test_investissement_sans_demande_approuvee_par_le_directeur(self):
+        order = (
+            self.env["purchase.order"]
+            .with_user(self.officer)
+            .create(
+                {
+                    "partner_id": self.supplier_a.id,
+                    "his_purchase_type": "investment",
+                    "order_line": [(0, 0, {"product_id": self.toner.id, "product_qty": 1, "price_unit": 100})],
+                }
+            )
+        )
+        order.button_confirm()
+        with self.assertRaisesRegex(UserError, "no amount approved by the director"):
+            order.with_user(self.manager).button_approve()
+        order.with_user(self.director).button_approve()
+        self.assertEqual(order.state, "purchase")
+
     def test_approbation_point_de_vente(self):
         request = self._approved_request(
-            user=self.cook, employee=self.cook_emp, lines=[{"product_id": self.tomatoes.id, "product_qty": 50}]
+            user=self.cook,
+            employee=self.cook_emp,
+            lines=[{"product_id": self.tomatoes.id, "product_qty": 50}],
+            purchase_type="usual",
         )
         order = self._source_rfq(request, self.supplier_a)
-        self.assertEqual(order.his_purchase_domain, "pos")
+        self.assertEqual(order.his_purchase_type, "usual")
         order.order_line.price_unit = 120
         order.with_user(self.officer).button_confirm()
         self.assertEqual(order.state, "to approve")
@@ -206,27 +272,45 @@ class TestOrder(HisPurchaseCase):
         order.with_user(self.officer).button_confirm()
         self.assertEqual(order.state, "to approve", "un appel sur contrat-cadre est approuve aussi")
 
-    def test_appel_sur_contrat_suit_le_domaine_du_contrat(self):
-        # Recette P-28 : le contrat Restaurant reste un achat point de vente,
-        # meme appele depuis une demande d'un service general.
+    def test_appel_sur_contrat_suit_le_type_du_contrat(self):
+        # Recette P-28 : le contrat Restaurant reste un achat courant, meme
+        # appele depuis une demande courante d'un autre service.
         agreement = self._agreement()
-        agreement.his_purchase_domain = "pos"
-        request = self._approved_request()
-        self.assertEqual(request.his_purchase_domain, "general")
+        agreement.his_purchase_type = "usual"
+        request = self._approved_request(purchase_type="usual")
         wizard = (
             self.env["his.purchase.request.source"]
             .with_user(self.officer)
             .create({"request_id": request.id, "mode": "calloff", "requisition_id": agreement.id})
         )
         order = self.env["purchase.order"].browse(wizard.action_source()["res_id"])
-        self.assertEqual(order.his_purchase_domain, "pos")
+        self.assertEqual(order.his_purchase_type, "usual")
+
+    def test_l_acheteur_ne_requalifie_pas_la_commande_d_un_investissement(self):
+        # Revue RF1 : la commande ne contourne pas le verrou de la demande.
+        order = self._source_rfq(self._approved_request(purchase_type="investment"), self.supplier_a)
+        with self.assertRaisesRegex(UserError, "only the director"):
+            order.with_user(self.officer).his_purchase_type = "usual"
+        self.assertEqual(order.his_purchase_type, "investment")
+
+    def test_un_contrat_courant_ne_declasse_pas_un_investissement_approuve(self):
+        agreement = self._agreement()
+        agreement.his_purchase_type = "usual"
+        request = self._approved_request(purchase_type="investment")
+        wizard = (
+            self.env["his.purchase.request.source"]
+            .with_user(self.officer)
+            .create({"request_id": request.id, "mode": "calloff", "requisition_id": agreement.id})
+        )
+        order = self.env["purchase.order"].browse(wizard.action_source()["res_id"])
+        self.assertEqual(order.his_purchase_type, "investment")
 
     def _agreement(self):
         agreement = self.env["purchase.requisition"].create(
             {
                 "requisition_type": "blanket_order",
                 "vendor_id": self.supplier_a.id,
-                "his_purchase_domain": "general",
+                "his_purchase_type": "investment",
                 "line_ids": [(0, 0, {"product_id": self.toner.id, "product_qty": 100, "price_unit": 8000})],
             }
         )
@@ -265,7 +349,7 @@ class TestOrder(HisPurchaseCase):
             {
                 "requisition_type": "blanket_order",
                 "vendor_id": self.supplier_a.id,
-                "his_purchase_domain": "general",
+                "his_purchase_type": "investment",
                 "line_ids": [
                     (0, 0, {"product_id": eggs.id, "product_qty": 100, "price_unit": 300, "product_uom_id": dozen.id})
                 ],

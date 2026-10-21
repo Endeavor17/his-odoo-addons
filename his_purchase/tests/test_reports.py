@@ -34,11 +34,15 @@ class TestReports(HisPurchaseCase):
         self.assertNotIn("9,500", proforma, "aucun prix sur la demande de proforma")
         self.assertNotIn("9 500", proforma)
 
-        choice = self.env["his.purchase.choice"].create(
-            {"order_id": order.id, "criterion": "quality", "note": "Original cartridges."}
+        choice = (
+            self.env["his.purchase.choice"]
+            .with_user(self.officer)
+            .create({"order_id": order.id, "criterion": "quality", "note": "Original cartridges."})
         )
         action = choice.action_confirm()
-        self.env[action["res_model"]].with_context(action["context"]).create({}).action_cancel_alternatives()
+        self.env[action["res_model"]].with_user(self.officer).with_context(action["context"]).create(
+            {}
+        ).action_cancel_alternatives()
         order.with_user(self.director).button_approve()
 
         sheet = self._html("his_purchase.report_supplier_choice", order)
