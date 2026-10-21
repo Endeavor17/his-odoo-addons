@@ -387,6 +387,11 @@ class PurchaseOrder(models.Model):
         ).write({"his_approved_by_id": self.env.user.id})
         return res
 
+    def _create_picking(self):
+        # Le coeur cree la reception sous l'approbateur : le directeur, sans
+        # droit Inventaire, bute sur la regle de rangement de WH/Stock.
+        return super(PurchaseOrder, self.sudo())._create_picking()
+
     # ------------------------------------------------------------------
     # Relances
     # ------------------------------------------------------------------

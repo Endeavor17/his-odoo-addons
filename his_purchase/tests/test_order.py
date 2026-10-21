@@ -106,9 +106,15 @@ class TestOrder(HisPurchaseCase):
         _request, order = self._investment_order(10801)  # 21602 HT
         with self.assertRaisesRegex(UserError, "more than 20% above"):
             order.with_user(self.manager).button_approve()
+        # Recette 2026-10-21 : une regle de rangement sur WH/Stock (Patrimoine)
+        # faisait echouer la reception creee sous le directeur, sans droit stock.
+        stock = self.env["stock.warehouse"].search([("company_id", "=", order.company_id.id)], limit=1).lot_stock_id
+        self.env["stock.putaway.rule"].create({"location_in_id": stock.id, "location_out_id": stock.id})
+        self.env.invalidate_all()
         order.with_user(self.director).button_approve()
         self.assertEqual(order.state, "purchase")
         self.assertEqual(order.his_approved_by_id, self.director)
+        self.assertTrue(order.picking_ids)
 
     def test_decouper_la_commande_ne_contourne_pas_le_plafond(self):
         # Revue RF2 : deux commandes chacune sous le plafond, ensemble au-dessus.

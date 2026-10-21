@@ -23,6 +23,17 @@ class TestPatrimoine(TransactionCase):
         self.assertEqual(bureau.lot_sequence_id, self.sequence)
         self.assertFalse(bureau.sale_ok)
 
+    def test_un_bien_cree_depuis_le_formulaire_est_suivi(self):
+        # Recette 2026-10-21 : le formulaire envoie suivi « aucun » et un
+        # prefixe vide ; l'enregistrement etait refuse puis numerote 0000001.
+        with Form(self.env["product.template"]) as form:
+            form.name = "Armoire"
+            form.categ_id = self.mobilier
+            self.assertEqual(form.tracking, "serial")
+        armoire = form.record
+        self.assertEqual(armoire.lot_sequence_id, self.sequence)
+        self.assertEqual(armoire.serial_prefix_format, "PAT-")
+
     def test_un_bien_cree_comme_variante_est_suivi_aussi(self):
         # Ligne de commande « Creer » ou import : passe par product.product.
         portable = self.env["product.product"].create(
