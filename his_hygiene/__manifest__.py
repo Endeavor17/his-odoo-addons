@@ -25,6 +25,7 @@ Spec : docs/superpowers/specs/2026-10-22-hygiene-team-design.md.
         "security/ir.model.access.csv",
         "data/hygiene_data.xml",
         "views/hygiene_config_views.xml",
+        "views/hygiene_workday_views.xml",
         "views/menus.xml",
     ],
     "installable": True,

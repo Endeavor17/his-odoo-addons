@@ -26,4 +26,33 @@
         <field name="implied_ids" eval="[(4, ref('group_hygiene_worker'))]"/>
         <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
+
+    <!-- La presence de l'equipe hygiene : sa responsable voit toutes ses
+         journees (et les corrige), chaque salariee ne voit que les siennes.
+         Le responsable maintenance ne les voit pas (regle de
+         maintenance_university limitee a son equipe). -->
+    <record id="rule_hygiene_workday_manager" model="ir.rule">
+        <field name="name">Work Day: hygiene manager sees the hygiene team</field>
+        <field name="model_id" ref="maintenance_university.model_maintenance_university_workday"/>
+        <field name="domain_force">[('his_team', '=', 'hygiene')]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_manager'))]"/>
+    </record>
+    <record id="rule_hygiene_workday_worker" model="ir.rule">
+        <field name="name">Work Day: hygiene worker sees own</field>
+        <field name="model_id" ref="maintenance_university.model_maintenance_university_workday"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
+    <record id="rule_hygiene_workday_segment_manager" model="ir.rule">
+        <field name="name">Work Day Segment: hygiene manager sees the hygiene team</field>
+        <field name="model_id" ref="maintenance_university.model_maintenance_university_workday_segment"/>
+        <field name="domain_force">[('workday_id.his_team', '=', 'hygiene')]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_manager'))]"/>
+    </record>
+    <record id="rule_hygiene_workday_segment_worker" model="ir.rule">
+        <field name="name">Work Day Segment: hygiene worker sees own</field>
+        <field name="model_id" ref="maintenance_university.model_maintenance_university_workday_segment"/>
+        <field name="domain_force">[('workday_id.employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
 </odoo>
