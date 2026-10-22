@@ -1,2 +1,2 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from . import test_patrimoine
+from . import test_maintenance_room, test_patrimoine

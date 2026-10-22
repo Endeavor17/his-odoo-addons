@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- La salle suit le batiment : proposee seulement sous son emplacement. -->
+    <record id="view_maintenance_request_form_room" model="ir.ui.view">
+        <field name="name">maintenance.request.form.his.room</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance_university.view_maintenance_university_request_form"/>
+        <field name="arch" type="xml">
+            <field name="building_id" position="after">
+                <field name="his_building_location_id" invisible="1"/>
+                <field name="his_room_id" invisible="not building_id" readonly="not is_manager"
+                       domain="[('id', 'child_of', his_building_location_id), ('id', '!=', his_building_location_id)]"
+                       options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_list_room" model="ir.ui.view">
+        <field name="name">maintenance.request.list.his.room</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance_university.view_maintenance_university_request_list"/>
+        <field name="arch" type="xml">
+            <field name="building_id" position="after">
+                <field name="his_room_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_maintenance_finding_form_room" model="ir.ui.view">
+        <field name="name">maintenance.university.finding.form.his.room</field>
+        <field name="model">maintenance.university.finding</field>
+        <field name="inherit_id" ref="maintenance_university.view_maintenance_university_finding_form"/>
+        <field name="arch" type="xml">
+            <field name="building_id" position="after">
+                <field name="his_building_location_id" invisible="1"/>
+                <field name="his_room_id" invisible="not building_id" readonly="state != 'draft'"
+                       domain="[('id', 'child_of', his_building_location_id), ('id', '!=', his_building_location_id)]"
+                       options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_maintenance_report_form_room" model="ir.ui.view">
+        <field name="name">maintenance.university.report.form.his.room</field>
+        <field name="model">maintenance.university.finding</field>
+        <field name="inherit_id" ref="maintenance_university.view_maintenance_university_report_form"/>
+        <field name="arch" type="xml">
+            <field name="building_id" position="after">
+                <field name="his_building_location_id" invisible="1"/>
+                <field name="his_room_id" invisible="not building_id" readonly="state != 'draft'"
+                       domain="[('id', 'child_of', his_building_location_id), ('id', '!=', his_building_location_id)]"
+                       options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+</odoo>
