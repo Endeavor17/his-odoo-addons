@@ -1,6 +1,13 @@
 // « Ma journee » : telephone d'abord. Gros boutons (au moins 3.5rem de haut),
 // texte lisible, une seule colonne.
 
+// La racine d'une action client doit defiler elle-meme : sans cela, sur un
+// telephone, « Envoyer » restait hors d'atteinte sous le formulaire.
+.o_hyg_myday_scroll {
+    height: 100%;
+    overflow: auto;
+}
+
 .o_hyg_myday {
     max-width: 34rem;
     margin: 0 auto;

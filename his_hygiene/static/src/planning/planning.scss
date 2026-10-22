@@ -247,3 +247,9 @@ td.o_hyg_today {
     background: var(--his-paper, #f3f6f7);
     color: var(--his-ink-40, #7b929b);
 }
+
+// Racine de l'action client : elle defile elle-meme.
+.o_hyg_planning {
+    height: 100%;
+    overflow: auto;
+}

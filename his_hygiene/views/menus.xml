@@ -28,6 +28,13 @@
               sequence="30"
               groups="group_hygiene_manager"/>
 
+    <menuitem id="menu_hygiene_recap"
+              name="Monthly Recap"
+              parent="menu_hygiene_root"
+              action="action_hygiene_recap"
+              sequence="35"
+              groups="group_hygiene_manager"/>
+
     <menuitem id="menu_hygiene_workday"
               name="Work Days"
               parent="menu_hygiene_root"

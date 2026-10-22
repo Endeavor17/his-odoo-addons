@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="his_hygiene.Recap">
+        <div class="o_hyg_recap o_content p-3 p-md-4">
+            <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3">
+                <div>
+                    <div class="o_hyg_eyebrow">Monthly Recap</div>
+                    <h2 class="mb-0 fw-bold text-capitalize" t-if="state.data" t-esc="state.data.label"/>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <i t-if="state.busy" class="fa fa-spinner fa-spin text-muted"/>
+                    <button class="btn btn-outline-secondary" title="Previous month" aria-label="Previous month" t-on-click="() => this.changeMonth(-1)">
+                        <i class="oi oi-arrow-left"/>
+                    </button>
+                    <button class="btn btn-outline-secondary" title="Next month" aria-label="Next month" t-on-click="() => this.changeMonth(1)">
+                        <i class="oi oi-arrow-right"/>
+                    </button>
+                </div>
+            </div>
+
+            <t t-if="state.data">
+                <div class="o_hyg_card mb-3">
+                    <h3 class="o_hyg_card_title">Workers</h3>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0 o_hyg_table">
+                            <thead>
+                                <tr>
+                                    <th>Worker</th>
+                                    <th class="text-end">Days worked</th>
+                                    <th class="text-end">Days absent</th>
+                                    <th class="text-end">Hours clocked</th>
+                                    <th class="text-end">Breaks</th>
+                                    <th class="text-end" title="Days worked without any clock: counted from the plan, no hours">Days not clocked</th>
+                                    <th class="text-end">Areas done</th>
+                                    <th class="text-end">Findings</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="state.data.workers" t-as="w" t-key="w.employee_id">
+                                    <td t-esc="w.name"/>
+                                    <td class="text-end fw-bold" t-esc="w.days_worked"/>
+                                    <td class="text-end" t-att-class="{ 'text-danger': w.days_absent }" t-esc="w.days_absent"/>
+                                    <td class="text-end" t-esc="hours(w.worked_hours)"/>
+                                    <td class="text-end text-muted" t-esc="hours(w.break_hours)"/>
+                                    <td class="text-end text-muted" t-esc="w.unclocked_days"/>
+                                    <td class="text-end"><t t-esc="w.areas_done"/> / <t t-esc="w.areas_planned"/></td>
+                                    <td class="text-end" t-esc="w.findings"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_hyg_card mb-3">
+                    <h3 class="o_hyg_card_title">Areas</h3>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0 o_hyg_table">
+                            <thead>
+                                <tr>
+                                    <th>Area</th>
+                                    <th class="text-end">Days planned</th>
+                                    <th class="text-end">Days cleaned</th>
+                                    <th class="text-end" title="Planned, not done, and every worker on it was absent">Days left uncovered</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="state.data.areas" t-as="a" t-key="a.id">
+                                    <td t-esc="a.name"/>
+                                    <td class="text-end" t-esc="a.planned"/>
+                                    <td class="text-end" t-esc="a.done"/>
+                                    <td class="text-end" t-att-class="{ 'text-danger fw-bold': a.uncovered }" t-esc="a.uncovered"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_hyg_card">
+                    <h3 class="o_hyg_card_title">Fairness</h3>
+                    <p class="text-muted small mb-2">Days each worker spent in each area this month (absences excluded).</p>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0 o_hyg_table o_hyg_fairness">
+                            <thead>
+                                <tr>
+                                    <th/>
+                                    <th t-foreach="state.data.fairness.areas" t-as="name" t-key="name_index" class="o_hyg_fairness_head">
+                                        <span t-esc="name"/>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="state.data.fairness.rows" t-as="row" t-key="row_index">
+                                    <td class="text-nowrap">
+                                        <span class="o_hyg_dot me-2" t-att-style="chipStyle(row.color)"/>
+                                        <t t-esc="row.name"/>
+                                    </td>
+                                    <td t-foreach="row.counts" t-as="count" t-key="count_index" class="text-center" t-att-style="heatStyle(count)">
+                                        <t t-if="count" t-esc="count"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

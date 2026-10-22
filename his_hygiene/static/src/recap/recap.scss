@@ -1,0 +1,55 @@
+// Le recapitulatif : des cartes, des tableaux, une grille d'equite coloree.
+
+.o_hyg_card {
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--his-line, #dde5e8);
+    background: var(--his-card, #fff);
+}
+
+.o_hyg_card_title {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.o_hyg_table th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--his-ink-60, #4f6770);
+    white-space: nowrap;
+}
+
+.o_hyg_fairness {
+    td {
+        min-width: 3rem;
+    }
+}
+
+// Les noms de zone en biais, pour tenir beaucoup de colonnes.
+.o_hyg_fairness_head {
+    height: 8rem;
+    vertical-align: bottom;
+
+    span {
+        display: inline-block;
+        max-width: 9rem;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.o_hyg_dot {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+}
+
+// Racine de l'action client : elle defile elle-meme.
+.o_hyg_recap {
+    height: 100%;
+    overflow: auto;
+}
