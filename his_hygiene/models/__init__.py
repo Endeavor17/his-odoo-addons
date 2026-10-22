@@ -1,1 +1,1 @@
-from . import hygiene_area, hygiene_member, hygiene_workday
+from . import hygiene_absence, hygiene_area, hygiene_assignment, hygiene_member, hygiene_workday

@@ -55,4 +55,31 @@
         <field name="domain_force">[('workday_id.employee_id.user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
     </record>
+
+    <!-- Planning et absences : la responsable voit tout, la salariee les siens. -->
+    <record id="rule_hygiene_assignment_manager" model="ir.rule">
+        <field name="name">Hygiene assignment: manager sees all</field>
+        <field name="model_id" ref="model_his_hygiene_assignment"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_manager'))]"/>
+    </record>
+    <record id="rule_hygiene_assignment_worker" model="ir.rule">
+        <field name="name">Hygiene assignment: worker sees own</field>
+        <field name="model_id" ref="model_his_hygiene_assignment"/>
+        <field name="domain_force">[('employee_ids.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
+
+    <record id="rule_hygiene_absence_manager" model="ir.rule">
+        <field name="name">Hygiene absence: manager sees all</field>
+        <field name="model_id" ref="model_his_hygiene_absence"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_manager'))]"/>
+    </record>
+    <record id="rule_hygiene_absence_worker" model="ir.rule">
+        <field name="name">Hygiene absence: worker sees own</field>
+        <field name="model_id" ref="model_his_hygiene_absence"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
 </odoo>
