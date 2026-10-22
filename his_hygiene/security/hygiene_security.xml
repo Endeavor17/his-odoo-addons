@@ -82,4 +82,30 @@
         <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
     </record>
+
+    <record id="rule_hygiene_finding_manager" model="ir.rule">
+        <field name="name">Hygiene finding: manager sees all</field>
+        <field name="model_id" ref="model_his_hygiene_finding"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_manager'))]"/>
+    </record>
+    <record id="rule_hygiene_finding_worker" model="ir.rule">
+        <field name="name">Hygiene finding: worker sees own</field>
+        <field name="model_id" ref="model_his_hygiene_finding"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
+
+    <!-- Comme le Reporter de maintenance_university : le droit d'acces du coeur
+         donne maintenance.request a tout utilisateur interne, et les regles du
+         coeur sont desactivees par ce module. Sans cette regle, une salariee de
+         l'hygiene lisait toutes les demandes de l'universite. Les regles se
+         cumulent en OU : une personne aussi dans la maintenance garde ses
+         droits de maintenance. -->
+    <record id="rule_hygiene_no_maintenance_request" model="ir.rule">
+        <field name="name">Maintenance Request: hygiene sees none</field>
+        <field name="model_id" ref="maintenance.model_maintenance_request"/>
+        <field name="domain_force">[('id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
 </odoo>

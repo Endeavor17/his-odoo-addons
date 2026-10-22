@@ -13,3 +13,5 @@ access_his_hygiene_assignment_manager,his.hygiene.assignment.manager,model_his_h
 access_his_hygiene_absence_worker,his.hygiene.absence.worker,model_his_hygiene_absence,group_hygiene_worker,1,0,0,0
 access_his_hygiene_absence_manager,his.hygiene.absence.manager,model_his_hygiene_absence,group_hygiene_manager,1,1,1,1
 access_maintenance_building_hygiene_worker,maintenance.building.hygiene.worker,maintenance_university.model_maintenance_building,group_hygiene_worker,1,0,0,0
+access_his_hygiene_finding_worker,his.hygiene.finding.worker,model_his_hygiene_finding,group_hygiene_worker,1,0,1,0
+access_his_hygiene_finding_manager,his.hygiene.finding.manager,model_his_hygiene_finding,group_hygiene_manager,1,1,1,1

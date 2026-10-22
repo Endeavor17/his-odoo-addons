@@ -6,6 +6,13 @@
               sequence="11"
               groups="group_hygiene_worker"/>
 
+    <menuitem id="menu_hygiene_finding"
+              name="Findings"
+              parent="menu_hygiene_root"
+              action="action_his_hygiene_finding"
+              sequence="30"
+              groups="group_hygiene_manager"/>
+
     <menuitem id="menu_hygiene_workday"
               name="Work Days"
               parent="menu_hygiene_root"
