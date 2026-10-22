@@ -1,10 +1,9 @@
 """Equipe et zones : les personnes et les lieux viennent des referentiels."""
 
-from psycopg2 import IntegrityError
-
 from odoo.exceptions import ValidationError
 from odoo.tests import tagged
 from odoo.tools import mute_logger
+from psycopg2 import IntegrityError
 
 from .common import HygieneCase
 

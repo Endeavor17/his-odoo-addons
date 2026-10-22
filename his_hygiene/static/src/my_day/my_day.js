@@ -1,4 +1,5 @@
 import { _t } from "@web/core/l10n/translation";
+import { localization } from "@web/core/l10n/localization";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { Component, onWillStart, onWillUnmount, useState } from "@odoo/owl";
@@ -24,6 +25,12 @@ function formatClock(seconds) {
 export class HygieneMyDay extends Component {
     static template = "his_hygiene.MyDay";
     static props = ["*"];
+
+    // L'arabe se lit de droite a gauche : le coeur pose o_rtl sur le body
+    // mais pas la direction du texte de nos ecrans.
+    get dir() {
+        return localization.direction || "ltr";
+    }
 
     setup() {
         this.orm = useService("orm");

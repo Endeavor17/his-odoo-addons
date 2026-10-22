@@ -2,7 +2,7 @@
 <templates xml:space="preserve">
 
     <t t-name="his_hygiene.Recap">
-        <div class="o_hyg_recap o_content p-3 p-md-4">
+        <div class="o_hyg_recap o_content p-3 p-md-4" t-att-dir="dir">
             <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3">
                 <div>
                     <div class="o_hyg_eyebrow">Monthly Recap</div>

@@ -1,7 +1,6 @@
 from collections import defaultdict
 
 from dateutil.relativedelta import relativedelta
-
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 from odoo.tools import format_date
@@ -71,20 +70,28 @@ class HisHygieneRecap(models.AbstractModel):
         if not employee:
             return res
         day = Workday.sudo().search([("employee_id", "=", employee.id), ("date", "=", today)], limit=1)
-        assignments = self.env["his.hygiene.assignment"].sudo().search(
-            [("date", "=", today), ("employee_ids", "in", employee.id)]
+        assignments = (
+            self.env["his.hygiene.assignment"]
+            .sudo()
+            .search([("date", "=", today), ("employee_ids", "in", employee.id)])
         )
         res.update(
             {
                 "day": Workday._his_day_payload(day),
                 "assignments": [
-                    {"id": a.id, "area": a.area_id.name, "area_id": a.area_id.id, "done": a.is_done, "extra": a.is_extra}
+                    {
+                        "id": a.id,
+                        "area": a.area_id.name,
+                        "area_id": a.area_id.id,
+                        "done": a.is_done,
+                        "extra": a.is_extra,
+                    }
                     for a in assignments
                 ],
                 "absent": bool(
-                    self.env["his.hygiene.absence"].sudo().search_count(
-                        [("employee_id", "=", employee.id), ("date", "=", today)]
-                    )
+                    self.env["his.hygiene.absence"]
+                    .sudo()
+                    .search_count([("employee_id", "=", employee.id), ("date", "=", today)])
                 ),
             }
         )
@@ -97,8 +104,10 @@ class HisHygieneRecap(models.AbstractModel):
     def _his_worker_month(self, employee, first, last):
         """Le detail jour par jour et les totaux, pour une salariee."""
         today = fields.Date.context_today(self)
-        assignments = self.env["his.hygiene.assignment"].sudo().search(
-            [("date", ">=", first), ("date", "<=", last), ("employee_ids", "in", employee.id)]
+        assignments = (
+            self.env["his.hygiene.assignment"]
+            .sudo()
+            .search([("date", ">=", first), ("date", "<=", last), ("employee_ids", "in", employee.id)])
         )
         absent = set(
             self.env["his.hygiene.absence"]
@@ -191,7 +200,9 @@ class HisHygieneRecap(models.AbstractModel):
                 {
                     "name": member.name,
                     "color": member.color,
-                    "counts": [len(set(present.filtered(lambda a, z=area: a.area_id == z).mapped("date"))) for area in areas],
+                    "counts": [
+                        len(set(present.filtered(lambda a, z=area: a.area_id == z).mapped("date"))) for area in areas
+                    ],
                 }
             )
 
@@ -203,9 +214,9 @@ class HisHygieneRecap(models.AbstractModel):
         for area in areas:
             mine = planned.filtered(lambda a, z=area: a.area_id == z)
             uncovered = mine.filtered(
-                lambda a: not a.is_done
-                and a.date < today
-                and all(e in absent_by_date[a.date] for e in a.employee_ids.ids)
+                lambda a: (
+                    not a.is_done and a.date < today and all(e in absent_by_date[a.date] for e in a.employee_ids.ids)
+                )
             )
             area_rows.append(
                 {

@@ -1,0 +1,967 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_hygiene
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260810\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-22 15:35+0000\n"
+"PO-Revision-Date: 2026-10-22 15:35+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.js:0
+msgid "%s cells copied."
+msgstr "%s cases copiées."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "A"
+msgstr "A"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "AB"
+msgstr "AB"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Absences"
+msgstr "Absences"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Absent"
+msgstr "Absente"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__active
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Add a photo"
+msgstr "Ajouter une photo"
+
+#. module: his_hygiene
+#: model_terms:ir.actions.act_window,help:his_hygiene.action_his_hygiene_member
+msgid "Add the women of the cleaning team"
+msgstr "Ajoutez les agentes de l'équipe d'hygiène"
+
+#. module: his_hygiene
+#: model:ir.model.fields,help:his_hygiene.field_his_hygiene_assignment__is_extra
+msgid "Added on top of the plan, e.g. after a cleaning finding."
+msgstr ""
+"Ajouté en plus du planning, par exemple après un signalement de salissure."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_area.py:0
+msgid "An area must be a place under a building in Patrimoine."
+msgstr "Une zone doit être un lieu sous un bâtiment dans le Patrimoine."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__area_id
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__area_id
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_search
+msgid "Area"
+msgstr "Zone"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+#: model:ir.actions.act_window,name:his_hygiene.action_his_hygiene_area
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_area
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_area_list
+msgid "Areas"
+msgstr "Zones"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Areas done"
+msgstr "Zones faites"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Areas today"
+msgstr "Zones du jour"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.js:0
+msgid "Back to work"
+msgstr "Reprendre le travail"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Breaks"
+msgstr "Pauses"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Brush"
+msgstr "Pinceau"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__building_id
+msgid "Building"
+msgstr "Bâtiment"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Choose a worker above to see her day."
+msgstr "Choisissez une agente ci-dessus pour voir sa journée."
+
+#. module: his_hygiene
+#: model_terms:ir.actions.act_window,help:his_hygiene.action_his_hygiene_area
+msgid "Choose the places the team cleans"
+msgstr "Choisissez les lieux que l'équipe nettoie"
+
+#. module: his_hygiene
+#: model:ir.model.fields.selection,name:his_hygiene.selection__his_hygiene_finding__kind__cleaning
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_search
+msgid "Cleaning"
+msgstr "Nettoyage"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid ""
+"Click a cell to add or remove the selected worker. Shift+click further along"
+" the row to repeat the last cell."
+msgstr ""
+"Cliquez sur une case pour ajouter ou retirer l'agente choisie. Maj+clic plus"
+" loin sur la ligne pour répéter la dernière case."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid ""
+"Click a day to mark a worker absent; her areas show uncovered until someone "
+"else is added."
+msgstr ""
+"Cliquez sur un jour pour marquer une agente absente ; ses zones apparaissent"
+" non couvertes tant que personne d'autre n'est ajouté."
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__color
+msgid "Colour"
+msgstr "Couleur"
+
+#. module: his_hygiene
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.js:0
+msgid "Copy"
+msgstr "Copier"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Copy previous month"
+msgstr "Copier le mois précédent"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.js:0
+msgid "Copy the previous month"
+msgstr "Copier le mois précédent"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday_segment__corrected_by_id
+msgid "Corrected By"
+msgstr "Corrigé par"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_absence__create_uid
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__create_uid
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__create_uid
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__create_uid
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_absence__create_date
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__create_date
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__create_date
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__create_date
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_absence__date
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__date
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__date
+msgid "Date"
+msgstr "Date"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Day finished. Thank you!"
+msgstr "Journée terminée. Merci !"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Day off"
+msgstr "Jour de repos"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Days absent"
+msgstr "Jours d'absence"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Days cleaned"
+msgstr "Jours nettoyés"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Days each worker spent in each area this month (absences excluded)."
+msgstr ""
+"Jours passés par chaque agente dans chaque zone ce mois-ci (absences "
+"exclues)."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Days left uncovered"
+msgstr "Jours non couverts"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Days not clocked"
+msgstr "Jours non pointés"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Days planned"
+msgstr "Jours planifiés"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Days worked"
+msgstr "Jours travaillés"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Days worked without any clock: counted from the plan, no hours"
+msgstr ""
+"Jours travaillés sans aucun pointage : comptés d'après le planning, sans "
+"heures"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__description
+msgid "Description"
+msgstr "Description"
+
+#. module: his_hygiene
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_list
+msgid "Dispatch"
+msgstr "Attribuer"
+
+#. module: his_hygiene
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_form
+msgid "Dispatch to the team"
+msgstr "Attribuer à l'équipe"
+
+#. module: his_hygiene
+#: model:ir.model.fields.selection,name:his_hygiene.selection__his_hygiene_finding__state__dispatched
+msgid "Dispatched"
+msgstr "Attribué"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_absence__display_name
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__display_name
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__display_name
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__display_name
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__display_name
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_recap__display_name
+#: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday__display_name
+#: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday_segment__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__is_done
+msgid "Done"
+msgstr "Fait"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__done_at
+msgid "Done At"
+msgstr "Fait à"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__done_by_id
+msgid "Done By"
+msgstr "Fait par"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.js:0
+msgid ""
+"Each day of last month is copied to the same day of this month. Days already"
+" planned, days off and days that do not exist are skipped."
+msgstr ""
+"Chaque jour du mois dernier est copié sur le même jour de ce mois. Les jours"
+" déjà planifiés, les jours de repos et les jours qui n'existent pas sont "
+"sautés."
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__employee_id
+msgid "Employee"
+msgstr "Employé"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "End the day"
+msgstr "Terminer la journée"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday__ended_by_id
+msgid "Ended By"
+msgstr "Terminée par"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday_segment__entered_by_id
+msgid "Entered By"
+msgstr "Saisi par"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Extra"
+msgstr "En plus"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__is_extra
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__assignment_ids
+msgid "Extra Work"
+msgstr "Travail en plus"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Extra work"
+msgstr "Travail en plus"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Fairness"
+msgstr "Équité"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__finding_id
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_form
+msgid "Finding"
+msgstr "Signalement"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+#: model:ir.actions.act_window,name:his_hygiene.action_his_hygiene_finding
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_finding
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_list
+msgid "Findings"
+msgstr "Signalements"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Hours clocked"
+msgstr "Heures pointées"
+
+#. module: his_hygiene
+#: model:ir.model.fields.selection,name:his_hygiene.selection__maintenance_university_workday__his_team__hygiene
+#: model:ir.module.category,name:his_hygiene.module_category_hygiene
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_root
+#: model:res.groups.privilege,name:his_hygiene.res_groups_privilege_hygiene
+msgid "Hygiene"
+msgstr "Hygiène"
+
+#. module: his_hygiene
+#: model:ir.model,name:his_hygiene.model_his_hygiene_absence
+msgid "Hygiene Absence"
+msgstr "Absence hygiène"
+
+#. module: his_hygiene
+#: model:ir.model,name:his_hygiene.model_his_hygiene_area
+msgid "Hygiene Area"
+msgstr "Zone d'hygiène"
+
+#. module: his_hygiene
+#: model:ir.model,name:his_hygiene.model_his_hygiene_assignment
+msgid "Hygiene Assignment"
+msgstr "Affectation hygiène"
+
+#. module: his_hygiene
+#: model:ir.model,name:his_hygiene.model_his_hygiene_finding
+msgid "Hygiene Finding"
+msgstr "Signalement hygiène"
+
+#. module: his_hygiene
+#: model:ir.model,name:his_hygiene.model_his_hygiene_recap
+msgid "Hygiene Screens Data"
+msgstr "Données des écrans hygiène"
+
+#. module: his_hygiene
+#: model:ir.model,name:his_hygiene.model_his_hygiene_member
+msgid "Hygiene Team Member"
+msgstr "Membre de l'équipe hygiène"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_absence__id
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__id
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__id
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__id
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__id
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_recap__id
+#: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday__id
+#: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday_segment__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__initials
+msgid "Initials"
+msgstr "Initiales"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_absence__write_uid
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__write_uid
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__write_uid
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__write_uid
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_absence__write_date
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__write_date
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__write_date
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__write_date
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__maintenance_finding_id
+msgid "Maintenance Finding"
+msgstr "Constat de maintenance"
+
+#. module: his_hygiene
+#: model:ir.model,name:his_hygiene.model_maintenance_university_workday
+msgid "Maintenance Work Day"
+msgstr "Journée de travail"
+
+#. module: his_hygiene
+#: model:ir.model,name:his_hygiene.model_maintenance_university_workday_segment
+msgid "Maintenance Work Day Segment"
+msgstr "Tranche de la journée de travail"
+
+#. module: his_hygiene
+#: model:res.groups,name:his_hygiene.group_hygiene_manager
+msgid "Manager"
+msgstr "Responsable"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Mark done"
+msgstr "Marquer fait"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Marked absent today."
+msgstr "Marquée absente aujourd'hui."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+#: model:ir.actions.client,name:his_hygiene.action_hygiene_recap
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_recap
+msgid "Monthly Recap"
+msgstr "Récapitulatif mensuel"
+
+#. module: his_hygiene
+#: model:ir.actions.client,name:his_hygiene.action_hygiene_my_day
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_my_day
+msgid "My Day"
+msgstr "Ma journée"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "My month"
+msgstr "Mon mois"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__name
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Needs cleaning"
+msgstr "À nettoyer"
+
+#. module: his_hygiene
+#: model:ir.model.fields.selection,name:his_hygiene.selection__his_hygiene_finding__state__new
+msgid "New"
+msgstr "Nouveau"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Next month"
+msgstr "Mois suivant"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "No area yet. Add the places the team cleans in Configuration, Areas."
+msgstr ""
+"Aucune zone pour l'instant. Ajoutez les lieux que l'équipe nettoie dans "
+"Configuration, Zones."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Nothing planned today."
+msgstr "Rien de prévu aujourd'hui."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Nothing this month."
+msgstr "Rien ce mois-ci."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_finding.py:0
+msgid "Only a cleaning finding is dispatched to the team."
+msgstr "Seul un signalement de nettoyage s'attribue à l'équipe."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_assignment.py:0
+msgid "Only members of the hygiene team can be assigned."
+msgstr "Seules les membres de l'équipe hygiène peuvent être affectées."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "Only the hygiene manager can enter the day of another worker."
+msgstr ""
+"Seule la responsable hygiène peut saisir la journée d'une autre agente."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_recap.py:0
+msgid "Only the hygiene manager can open the day of another worker."
+msgstr ""
+"Seule la responsable hygiène peut ouvrir la journée d'une autre agente."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_assignment.py:0
+msgid "Only the hygiene manager can plan the team."
+msgstr "Seule la responsable hygiène peut planifier l'équipe."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_recap.py:0
+msgid "Only the hygiene manager can read the monthly recap."
+msgstr "Seule la responsable hygiène peut lire le récapitulatif mensuel."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_assignment.py:0
+msgid "Only the workers of this area, or the manager, can tick it."
+msgstr ""
+"Seules les agentes de cette zone, ou la responsable, peuvent la cocher."
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday_segment__original_date_end
+msgid "Original End"
+msgstr "Fin d'origine"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday_segment__original_date_start
+msgid "Original Start"
+msgstr "Début d'origine"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__image
+msgid "Photo"
+msgstr "Photo"
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_finding.py:0
+msgid "Photo - %s"
+msgstr "Photo - %s"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.js:0
+msgid "Pick a worker in the palette first, then click the cells."
+msgstr ""
+"Choisissez d'abord une agente dans la palette, puis cliquez sur les cases."
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__location_id
+msgid "Place"
+msgstr "Lieu"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Planned, not done, and every worker on it was absent"
+msgstr "Planifié, non fait, et toutes les agentes prévues étaient absentes"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+#: model:ir.actions.client,name:his_hygiene.action_hygiene_planning
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_planning
+msgid "Planning"
+msgstr "Planning"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+msgid "Previous month"
+msgstr "Mois précédent"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_absence__reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: his_hygiene
+#: model:ir.model.fields,help:his_hygiene.field_his_hygiene_member__user_id
+msgid "Related user name for the resource to manage its access."
+msgstr "Nom de l'utilisateur lié à la ressource pour gérer son accès."
+
+#. module: his_hygiene
+#: model:ir.model.fields.selection,name:his_hygiene.selection__his_hygiene_finding__kind__repair
+msgid "Repair"
+msgstr "Réparation"
+
+#. module: his_hygiene
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_search
+msgid "Repairs"
+msgstr "Réparations"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Report a problem"
+msgstr "Signaler un problème"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__employee_id
+msgid "Reported By"
+msgstr "Signalé par"
+
+#. module: his_hygiene
+#: model_terms:ir.actions.act_window,help:his_hygiene.action_his_hygiene_area
+msgid ""
+"Rooms, corridors, staircases and floors are created in Inventory, "
+"Patrimoine, under their building."
+msgstr ""
+"Les salles, couloirs, escaliers et étages se créent dans Inventaire, "
+"Patrimoine, sous leur bâtiment."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Send"
+msgstr "Envoyer"
+
+#. module: his_hygiene
+#: model:ir.model.fields.selection,name:his_hygiene.selection__his_hygiene_finding__state__sent
+msgid "Sent to maintenance"
+msgstr "Envoyé à la maintenance"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__sequence
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Something is broken"
+msgstr "Quelque chose est cassé"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.js:0
+msgid "Start the day"
+msgstr "Commencer la journée"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__state
+msgid "State"
+msgstr "État"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.js:0
+msgid "Take a break"
+msgstr "Prendre une pause"
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday__his_team
+msgid "Team"
+msgstr "Équipe"
+
+#. module: his_hygiene
+#: model:ir.actions.act_window,name:his_hygiene.action_his_hygiene_member
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_member
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_member_list
+msgid "Team Members"
+msgstr "Membres de l'équipe"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.js:0
+msgid "Thank you. The maintenance team has been told."
+msgstr "Merci. L'équipe de maintenance est prévenue."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.js:0
+msgid "Thank you. The manager has been told."
+msgstr "Merci. La responsable est prévenue."
+
+#. module: his_hygiene
+#: model_terms:ir.actions.act_window,help:his_hygiene.action_his_hygiene_member
+msgid ""
+"They come from the employee directory. No account is needed: the manager can"
+" enter everything for them."
+msgstr ""
+"Elles viennent de l'annuaire des employés. Aucun compte n'est nécessaire : "
+"la responsable peut tout saisir pour elles."
+
+#. module: his_hygiene
+#: model:ir.model.constraint,message:his_hygiene.constraint_his_hygiene_assignment_planned_unique
+msgid "This area is already planned on that day."
+msgstr "Cette zone est déjà planifiée ce jour-là."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "This day has not started yet."
+msgstr "Cette journée n'a pas encore commencé."
+
+#. module: his_hygiene
+#: model:ir.model.constraint,message:his_hygiene.constraint_his_hygiene_member_employee_unique
+msgid "This employee is already in the hygiene team."
+msgstr "Cet employé fait déjà partie de l'équipe hygiène."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_recap.py:0
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "This person is not in the hygiene team."
+msgstr "Cette personne ne fait pas partie de l'équipe hygiène."
+
+#. module: his_hygiene
+#: model:ir.model.constraint,message:his_hygiene.constraint_his_hygiene_area_location_unique
+msgid "This place is already an area."
+msgstr "Ce lieu est déjà une zone."
+
+#. module: his_hygiene
+#: model:ir.model.constraint,message:his_hygiene.constraint_his_hygiene_absence_employee_date_unique
+msgid "This worker is already marked absent on that day."
+msgstr "Cette agente est déjà marquée absente ce jour-là."
+
+#. module: his_hygiene
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_search
+msgid "To dispatch"
+msgstr "À attribuer"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: his_hygiene
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_hygiene_workday_list
+msgid "Total"
+msgstr "Total"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Uncovered"
+msgstr "Non couvert"
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "Unknown clock action."
+msgstr "Action de pointage inconnue."
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__user_id
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_form
+msgid "What did you see?"
+msgstr "Qu'avez-vous vu ?"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Where?"
+msgstr "Où ?"
+
+#. module: his_hygiene
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_hygiene_workday_form
+msgid "Work Day"
+msgstr "Journée de travail"
+
+#. module: his_hygiene
+#: model:ir.actions.act_window,name:his_hygiene.action_hygiene_workday
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_workday
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_hygiene_workday_list
+msgid "Work Days"
+msgstr "Journées de travail"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_absence__employee_id
+#: model:res.groups,name:his_hygiene.group_hygiene_worker
+msgid "Worker"
+msgstr "Agente"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/recap/recap.xml:0
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__employee_ids
+msgid "Workers"
+msgstr "Agentes"
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_finding.py:0
+msgid "You can only report a finding in your own name."
+msgstr "Vous ne pouvez signaler qu'en votre propre nom."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "Your account is not in the hygiene team. Ask the manager to add you."
+msgstr ""
+"Votre compte ne fait pas partie de l'équipe hygiène. Demandez à la "
+"responsable de vous ajouter."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "areas done"
+msgstr "zones faites"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "days absent"
+msgstr "jours d'absence"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "days worked"
+msgstr "jours travaillés"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "hours clocked"
+msgstr "heures pointées"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "on break"
+msgstr "en pause"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+msgid "worked"
+msgstr "travaillé"

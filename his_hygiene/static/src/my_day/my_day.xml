@@ -2,7 +2,7 @@
 <templates xml:space="preserve">
 
     <t t-name="his_hygiene.MyDay">
-        <div class="o_hyg_myday_scroll">
+        <div class="o_hyg_myday_scroll" t-att-dir="dir">
         <div class="o_hyg_myday" t-if="state.data">
 
             <div t-if="state.data.is_manager" class="o_hyg_people">

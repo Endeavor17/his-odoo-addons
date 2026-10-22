@@ -1,3 +1,4 @@
+import { localization } from "@web/core/l10n/localization";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { Component, onWillStart, useState } from "@odoo/owl";
@@ -10,6 +11,12 @@ import { formatHours, memberColor, memberInk } from "../common/colors";
 export class HygieneRecap extends Component {
     static template = "his_hygiene.Recap";
     static props = ["*"];
+
+    // L'arabe se lit de droite a gauche : le coeur pose o_rtl sur le body
+    // mais pas la direction du texte de nos ecrans.
+    get dir() {
+        return localization.direction || "ltr";
+    }
 
     setup() {
         this.orm = useService("orm");

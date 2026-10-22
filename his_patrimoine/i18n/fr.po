@@ -22,7 +22,9 @@ msgstr ""
 msgid ""
 "\"%s\" is a durable item (Patrimoine): it must be storable and tracked by "
 "serial number."
-msgstr "« %s » est un bien durable (Patrimoine) : il doit être stockable et suivi par numéro de série."
+msgstr ""
+"« %s » est un bien durable (Patrimoine) : il doit être stockable et suivi "
+"par numéro de série."
 
 #. module: his_patrimoine
 #. odoo-python
@@ -50,7 +52,9 @@ msgstr "Nom d'affichage"
 msgid ""
 "Each desk, laptop or air conditioner gets its PAT- serial number when it is received,\n"
 "                or through the initial import (tools/import_patrimoine.py)."
-msgstr "Chaque bureau, portable ou climatiseur reçoit son numéro PAT- à la réception,\n                ou par l'import initial (tools/import_patrimoine.py)."
+msgstr ""
+"Chaque bureau, portable ou climatiseur reçoit son numéro PAT- à la réception,\n"
+"                ou par l'import initial (tools/import_patrimoine.py)."
 
 #. module: his_patrimoine
 #: model:ir.model.fields,field_description:his_patrimoine.field_maintenance_building__id
@@ -124,3 +128,31 @@ msgstr "ligne %(index)s : %(error)s"
 #: code:addons/his_patrimoine/models/stock_lot.py:0
 msgid "The internal reference (default_code) is required."
 msgstr "La référence interne (default_code) est obligatoire."
+
+#. module: his_patrimoine
+#: model:ir.model.fields,field_description:his_patrimoine.field_maintenance_request__his_building_location_id
+#: model:ir.model.fields,field_description:his_patrimoine.field_maintenance_university_finding__his_building_location_id
+msgid "Building Location"
+msgstr "Emplacement du bâtiment"
+
+#. module: his_patrimoine
+#: model:ir.model,name:his_patrimoine.model_maintenance_university_finding
+msgid "Inspection Finding"
+msgstr "Constat d'inspection"
+
+#. module: his_patrimoine
+#: model:ir.model,name:his_patrimoine.model_maintenance_request
+msgid "Maintenance Request"
+msgstr "Demande de maintenance"
+
+#. module: his_patrimoine
+#: model:ir.model.fields,field_description:his_patrimoine.field_maintenance_request__his_room_id
+#: model:ir.model.fields,field_description:his_patrimoine.field_maintenance_university_finding__his_room_id
+msgid "Room"
+msgstr "Salle"
+
+#. module: his_patrimoine
+#. odoo-python
+#: code:addons/his_patrimoine/models/maintenance_room.py:0
+msgid "The room must be a place inside the selected building."
+msgstr "La salle doit être un lieu à l'intérieur du bâtiment choisi."

@@ -2,7 +2,6 @@ from collections import defaultdict
 from datetime import date, timedelta
 
 from dateutil.relativedelta import relativedelta
-
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 

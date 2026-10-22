@@ -1,11 +1,11 @@
 import { _t } from "@web/core/l10n/translation";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
+import { deserializeDate, today } from "@web/core/l10n/dates";
+import { localization } from "@web/core/l10n/localization";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { Component, onWillStart, useState } from "@odoo/owl";
 import { memberColor, memberInk } from "../common/colors";
-
-const { DateTime } = luxon;
 
 // La matrice du mois : zones en lignes, chaque jour en colonne.
 //
@@ -18,14 +18,20 @@ export class HygienePlanning extends Component {
     static template = "his_hygiene.Planning";
     static props = ["*"];
 
+    // L'arabe se lit de droite a gauche : le coeur pose o_rtl sur le body
+    // mais pas la direction du texte de nos ecrans.
+    get dir() {
+        return localization.direction || "ltr";
+    }
+
     setup() {
         this.orm = useService("orm");
         this.dialog = useService("dialog");
         this.notification = useService("notification");
-        const today = DateTime.local();
+        const now = today();
         this.state = useState({
-            year: today.year,
-            month: today.month,
+            year: now.year,
+            month: now.month,
             data: null,
             brush: null,
             anchor: null,
@@ -46,7 +52,12 @@ export class HygienePlanning extends Component {
     // Lecture
     // ------------------------------------------------------------------
     get monthLabel() {
-        return DateTime.local(this.state.year, this.state.month, 1).toFormat("LLLL yyyy");
+        return this.firstOfMonth.toFormat("LLLL yyyy");
+    }
+
+    get firstOfMonth() {
+        const month = String(this.state.month).padStart(2, "0");
+        return deserializeDate(`${this.state.year}-${month}-01`);
     }
 
     get buildings() {
@@ -63,7 +74,7 @@ export class HygienePlanning extends Component {
     }
 
     weekdayLetter(day) {
-        return DateTime.fromISO(day.date).toFormat("ccc");
+        return deserializeDate(day.date).toFormat("ccc");
     }
 
     member(id) {
@@ -180,7 +191,7 @@ export class HygienePlanning extends Component {
     }
 
     async changeMonth(delta) {
-        const next = DateTime.local(this.state.year, this.state.month, 1).plus({ months: delta });
+        const next = this.firstOfMonth.plus({ months: delta });
         this.state.year = next.year;
         this.state.month = next.month;
         this.state.brush = null;

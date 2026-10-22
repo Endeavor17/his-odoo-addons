@@ -23,7 +23,9 @@ class TestPlanning(HygieneCase):
     def test_une_case_peut_porter_deux_salariees(self):
         cell = self.Plan.set_cell(self.area_rdc.id, "2026-11-02", [self.fatima.id, self.karima.id])
         self.assertEqual(set(cell["employee_ids"]), {self.fatima.id, self.karima.id})
-        self.assertEqual(set(self._cell(self.area_rdc, date(2026, 11, 2))["employee_ids"]), {self.fatima.id, self.karima.id})
+        self.assertEqual(
+            set(self._cell(self.area_rdc, date(2026, 11, 2))["employee_ids"]), {self.fatima.id, self.karima.id}
+        )
 
     def test_une_salariee_peut_avoir_plusieurs_zones_le_meme_jour(self):
         self.Plan.set_cell(self.area_rdc.id, "2026-11-02", [self.fatima.id])

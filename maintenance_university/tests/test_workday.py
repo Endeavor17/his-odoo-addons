@@ -340,7 +340,9 @@ class TestWorkday(TransactionCase):
             }
         )
         self.env.invalidate_all()
-        days = self.env["maintenance.university.workday"].with_user(manager).search(
-            [("employee_id", "=", self.employee.id)]
+        days = (
+            self.env["maintenance.university.workday"]
+            .with_user(manager)
+            .search([("employee_id", "=", self.employee.id)])
         )
         self.assertEqual(len(days), 1)

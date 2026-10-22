@@ -7,7 +7,6 @@ Un jour planifie et non marque absent compte comme travaille, pointe ou non
 from datetime import datetime, time, timedelta
 
 from dateutil.relativedelta import relativedelta
-
 from odoo import fields
 from odoo.exceptions import AccessError
 from odoo.tests import tagged
@@ -60,19 +59,30 @@ class TestRecap(HygieneCase):
         self.Plan.set_cell(self.area_rdc.id, str(self.d1), [self.fatima.id])
         self.Plan.set_cell(self.area_rdc.id, str(self.d2), [self.fatima.id])
         start = datetime.combine(self.d1, time(7, 0))
-        day = self.env["maintenance.university.workday"].sudo().create(
-            {
-                "employee_id": self.fatima.id,
-                "date": self.d1,
-                "date_start": start,
-                "date_end": start + timedelta(hours=3),
-                "his_team": "hygiene",
-            }
+        day = (
+            self.env["maintenance.university.workday"]
+            .sudo()
+            .create(
+                {
+                    "employee_id": self.fatima.id,
+                    "date": self.d1,
+                    "date_start": start,
+                    "date_end": start + timedelta(hours=3),
+                    "his_team": "hygiene",
+                }
+            )
         )
         Segment = self.env["maintenance.university.workday.segment"].sudo()
-        Segment.create({"workday_id": day.id, "kind": "work", "date_start": start, "date_end": start + timedelta(hours=2)})
         Segment.create(
-            {"workday_id": day.id, "kind": "pause", "date_start": start + timedelta(hours=2), "date_end": start + timedelta(hours=3)}
+            {"workday_id": day.id, "kind": "work", "date_start": start, "date_end": start + timedelta(hours=2)}
+        )
+        Segment.create(
+            {
+                "workday_id": day.id,
+                "kind": "pause",
+                "date_start": start + timedelta(hours=2),
+                "date_end": start + timedelta(hours=3),
+            }
         )
         row = self._row(self._recap(), self.fatima)
         self.assertAlmostEqual(row["worked_hours"], 2.0, places=2)

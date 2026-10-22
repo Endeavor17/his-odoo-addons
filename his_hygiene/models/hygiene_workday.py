@@ -40,9 +40,7 @@ class MaintenanceUniversityWorkday(models.Model):
     @api.model
     def _his_hygiene_check_access(self, employee):
         """Membre de l'equipe, et l'appelant est la responsable ou elle-meme."""
-        if not employee or not self.env["his.hygiene.member"].sudo().search_count(
-            [("employee_id", "=", employee.id)]
-        ):
+        if not employee or not self.env["his.hygiene.member"].sudo().search_count([("employee_id", "=", employee.id)]):
             raise AccessError(_("This person is not in the hygiene team."))
         if not self.env.user.has_group("his_hygiene.group_hygiene_manager") and employee.user_id != self.env.user:
             raise AccessError(_("Only the hygiene manager can enter the day of another worker."))
@@ -72,9 +70,7 @@ class MaintenanceUniversityWorkdaySegment(models.Model):
     _inherit = "maintenance.university.workday.segment"
 
     # sudo() garde l'utilisateur : c'est bien la personne qui a appuye.
-    entered_by_id = fields.Many2one(
-        "res.users", string="Entered By", default=lambda self: self.env.user, readonly=True
-    )
+    entered_by_id = fields.Many2one("res.users", string="Entered By", default=lambda self: self.env.user, readonly=True)
     corrected_by_id = fields.Many2one("res.users", string="Corrected By", readonly=True)
     original_date_start = fields.Datetime(string="Original Start", readonly=True)
     original_date_end = fields.Datetime(string="Original End", readonly=True)
