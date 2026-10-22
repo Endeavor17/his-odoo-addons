@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_his_hygiene_member_worker,his.hygiene.member.worker,model_his_hygiene_member,group_hygiene_worker,1,0,0,0
+access_his_hygiene_member_manager,his.hygiene.member.manager,model_his_hygiene_member,group_hygiene_manager,1,1,1,1
+access_his_hygiene_area_worker,his.hygiene.area.worker,model_his_hygiene_area,group_hygiene_worker,1,0,0,0
+access_his_hygiene_area_manager,his.hygiene.area.manager,model_his_hygiene_area,group_hygiene_manager,1,1,1,1
+access_hr_employee_hygiene_worker,hr.employee.hygiene.worker,hr.model_hr_employee,group_hygiene_worker,1,0,0,0

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hygiene_root"
+              name="Hygiene"
+              web_icon="his_hygiene,static/description/icon.svg"
+              sequence="11"
+              groups="group_hygiene_worker"/>
+
+    <menuitem id="menu_hygiene_config"
+              name="Configuration"
+              parent="menu_hygiene_root"
+              sequence="90"
+              groups="group_hygiene_manager"/>
+    <menuitem id="menu_hygiene_member" name="Team Members" parent="menu_hygiene_config"
+              action="action_his_hygiene_member" sequence="10"/>
+    <menuitem id="menu_hygiene_area" name="Areas" parent="menu_hygiene_config"
+              action="action_his_hygiene_area" sequence="20"/>
+</odoo>

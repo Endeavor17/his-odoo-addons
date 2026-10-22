@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_his_hygiene_member_list" model="ir.ui.view">
+        <field name="name">his.hygiene.member.list</field>
+        <field name="model">his.hygiene.member</field>
+        <field name="arch" type="xml">
+            <list string="Team Members" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="employee_id" options="{'no_create': True}"/>
+                <field name="initials"/>
+                <field name="color" widget="color_picker"/>
+                <field name="user_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_his_hygiene_member" model="ir.actions.act_window">
+        <field name="name">Team Members</field>
+        <field name="res_model">his.hygiene.member</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add the women of the cleaning team</p>
+            <p>They come from the employee directory. No account is needed: the manager can enter everything for them.</p>
+        </field>
+    </record>
+
+    <record id="view_his_hygiene_area_list" model="ir.ui.view">
+        <field name="name">his.hygiene.area.list</field>
+        <field name="model">his.hygiene.area</field>
+        <field name="arch" type="xml">
+            <list string="Areas" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="location_id" options="{'no_create': True}"
+                       domain="[('id', 'child_of', %(his_patrimoine.loc_patrimoine)d), ('id', '!=', %(his_patrimoine.loc_patrimoine)d)]"/>
+                <field name="name"/>
+                <field name="building_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_his_hygiene_area" model="ir.actions.act_window">
+        <field name="name">Areas</field>
+        <field name="res_model">his.hygiene.area</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Choose the places the team cleans</p>
+            <p>Rooms, corridors, staircases and floors are created in Inventory, Patrimoine, under their building.</p>
+        </field>
+    </record>
+</odoo>
