@@ -125,3 +125,7 @@ class TestRecap(HygieneCase):
         self.assertEqual(payload["employee"]["id"], self.fatima.id)
         self.assertFalse(payload["is_manager"])
         self.assertEqual(payload["members"], [])
+
+    def test_la_journee_liste_les_zones_pour_signaler(self):
+        payload = self.Recap.with_user(self.fatima_user).get_today()
+        self.assertEqual({a["id"] for a in payload["areas"]}, {self.area_rdc.id, self.area_amphi.id})

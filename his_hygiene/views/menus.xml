@@ -6,6 +6,14 @@
               sequence="11"
               groups="group_hygiene_worker"/>
 
+    <!-- Premier menu : l'application s'ouvre sur la journee, sur le telephone. -->
+    <menuitem id="menu_hygiene_my_day"
+              name="My Day"
+              parent="menu_hygiene_root"
+              action="action_hygiene_my_day"
+              sequence="5"
+              groups="group_hygiene_worker"/>
+
     <menuitem id="menu_hygiene_planning"
               name="Planning"
               parent="menu_hygiene_root"

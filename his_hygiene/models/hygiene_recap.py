@@ -62,6 +62,8 @@ class HisHygieneRecap(models.AbstractModel):
             "is_manager": is_manager,
             "members": self._his_members() if is_manager else [],
             "today": format_date(self.env, today, date_format="EEEE d MMMM"),
+            # Pour signaler un probleme ailleurs que dans ses zones du jour.
+            "areas": [{"id": a.id, "name": a.name} for a in self.env["his.hygiene.area"].sudo().search([])],
             "day": {},
             "assignments": [],
             "absent": False,
