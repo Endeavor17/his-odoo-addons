@@ -27,8 +27,14 @@ Spec : docs/superpowers/specs/2026-10-22-hygiene-team-design.md.
         "views/hygiene_config_views.xml",
         "views/hygiene_workday_views.xml",
         "views/hygiene_finding_views.xml",
+        "views/hygiene_actions.xml",
         "views/menus.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "his_hygiene/static/src/**/*",
+        ],
+    },
     "installable": True,
     "application": True,
 }
