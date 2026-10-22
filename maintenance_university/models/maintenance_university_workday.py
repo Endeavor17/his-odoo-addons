@@ -65,6 +65,17 @@ class MaintenanceUniversityWorkday(models.Model):
         index=True,
     )
 
+    # Which team the day belongs to. Only maintenance here; his_hygiene adds
+    # its own. Each team's manager sees only their team's days (record
+    # rules), and only the hygiene team lets its manager clock for a worker.
+    his_team = fields.Selection(
+        [("maintenance", "Maintenance")],
+        string="Team",
+        required=True,
+        default="maintenance",
+        index=True,
+    )
+
     _employee_day_unique = models.Constraint(
         "UNIQUE(employee_id, date)",
         "A worker already has a work day recorded for that date.",
@@ -151,7 +162,20 @@ class MaintenanceUniversityWorkday(models.Model):
     # ------------------------------------------------------------------
     @api.model
     def action_start_day(self):
-        employee = self._my_employee()
+        return self._start_day_for(self._my_employee()).get_my_day()
+
+    @api.model
+    def _his_team_for(self, employee):
+        """Team of a new work day - a hook his_hygiene extends."""
+        return "maintenance"
+
+    @api.model
+    def _start_day_for(self, employee):
+        """Open the employee's day, with no check on who is asking.
+
+        The caller has already established that: action_start_day for one's
+        own day, his_hygiene for a manager clocking her team.
+        """
         today = fields.Date.context_today(self)
         existing = self.sudo().search(
             [("employee_id", "=", employee.id), ("date", "=", today)],
@@ -169,10 +193,11 @@ class MaintenanceUniversityWorkday(models.Model):
                 "employee_id": employee.id,
                 "date": today,
                 "date_start": fields.Datetime.now(),
+                "his_team": self._his_team_for(employee),
             }
         )
         day._open_segment("work")
-        return day.get_my_day()
+        return day
 
     def action_pause(self):
         self.ensure_one()
@@ -258,6 +283,11 @@ class MaintenanceUniversityWorkday(models.Model):
             [("employee_id", "=", employee.id), ("date", "=", today)],
             limit=1,
         )
+        return self._his_day_payload(day)
+
+    @api.model
+    def _his_day_payload(self, day):
+        """What the banner reads for one day (empty = not started yet)."""
         if not day:
             return {"has_employee": True, "id": False, "state": False}
 
