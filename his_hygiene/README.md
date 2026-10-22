@@ -34,3 +34,9 @@ La responsable de l'équipe d'hygiène planifie chaque mois qui nettoie quelle z
 ## Côté maintenance
 
 Ce travail a aussi ajouté une **salle** (facultative) aux demandes et constats de maintenance, prise sous l'emplacement Patrimoine du bâtiment ; elle se vide si le bâtiment change et suit la conversion d'un constat en demande (`his_patrimoine`).
+
+## À savoir avant d'attribuer les rôles
+
+- **Les rôles Hygiène retirent la vue des demandes de maintenance.** Le module pose une règle « aucune demande » pour ses groupes (comme le Reporter de la maintenance). Les règles d'Odoo s'additionnent entre groupes : une personne aussi dans la maintenance garde ses droits de maintenance, mais quelqu'un qui voyait toutes les demandes *parce qu'aucun de ses groupes n'avait de règle* (un compte directeur, par exemple) ne les voit plus une fois Hygiène attribué.
+- **Désinstaller le module supprime les journées de l'équipe hygiène** (elles n'ont plus d'équipe à laquelle appartenir).
+- **Corriger une journée** : seule la responsable hygiène, seulement les heures (Journées de travail). Une fin oubliée se saisit sur la journée : la tranche restée ouverte se ferme à cette heure, l'heure d'origine et l'auteur restent visibles.

@@ -105,3 +105,73 @@ class TestClock(HygieneCase):
         self.assertEqual(segment.original_date_start, start)
         self.assertEqual(segment.corrected_by_id, self.manager_user)
         self.assertAlmostEqual(segment.duration, 2.0, delta=0.01)
+
+    # ------------------------------------------------------------------
+    # Revue finale : fin oubliee et journees qu'on ne doit pas pouvoir forger
+    # ------------------------------------------------------------------
+    def _forgotten_day(self):
+        self._clock(self.manager_user, self.karima, "start")
+        day = self._day(self.karima)
+        yesterday = day.date - timedelta(days=1)
+        day.sudo().write({"date": yesterday, "date_start": day.date_start - timedelta(days=1)})
+        day.segment_ids.sudo().write({"date_start": day.date_start})
+        return day
+
+    def test_la_responsable_termine_une_journee_oubliee(self):
+        day = self._forgotten_day()
+        end = day.date_start + timedelta(hours=7)
+        day.with_user(self.manager_user).write({"date_end": end})
+        self.assertEqual(day.state, "done")
+        segment = day.segment_ids
+        self.assertEqual(segment.date_end, end, "la tranche restee ouverte se ferme a la fin saisie")
+        self.assertEqual(segment.corrected_by_id, self.manager_user)
+        self.assertAlmostEqual(day.worked_hours, 7.0, delta=0.01)
+
+    def test_corriger_le_debut_d_une_tranche_ouverte_garde_l_origine(self):
+        self._clock(self.manager_user, self.karima, "start")
+        segment = self._day(self.karima).segment_ids
+        start = segment.date_start
+        segment.with_user(self.manager_user).write({"date_start": start - timedelta(hours=1)})
+        self.assertEqual(segment.original_date_start, start)
+        self.assertEqual(segment.corrected_by_id, self.manager_user)
+
+    def test_les_boutons_ne_sont_pas_des_corrections(self):
+        for action in ("start", "pause", "resume", "end"):
+            self._clock(self.manager_user, self.karima, action)
+        self.assertFalse(self._day(self.karima).segment_ids.corrected_by_id)
+
+    def test_la_responsable_ne_deplace_pas_une_journee(self):
+        self._clock(self.manager_user, self.karima, "start")
+        day = self._day(self.karima)
+        with self.assertRaises(UserError):
+            day.with_user(self.manager_user).write({"employee_id": self.maint_worker.id})
+        with self.assertRaises(UserError):
+            day.with_user(self.manager_user).write({"his_team": "maintenance"})
+        other = self.Workday.sudo().create({"employee_id": self.fatima.id, "his_team": "hygiene"})
+        with self.assertRaises(UserError):
+            day.segment_ids.with_user(self.manager_user).write({"workday_id": other.id})
+
+    def test_la_responsable_ne_corrige_pas_sa_propre_journee_de_maintenance(self):
+        both = (
+            self.env["res.users"]
+            .with_context(no_reset_password=True)
+            .create(
+                {
+                    "name": "Double casquette",
+                    "login": "double.hyg@his.test",
+                    "group_ids": [
+                        (
+                            6,
+                            0,
+                            [self.group_manager.id, self.env.ref("maintenance_university.group_maintenance_worker").id],
+                        )
+                    ],
+                }
+            )
+        )
+        self.env["hr.employee"].create({"name": "Double casquette", "user_id": both.id})
+        self.Workday.with_user(both).action_start_day()
+        day = self.Workday.sudo().search([("employee_id.user_id", "=", both.id)])
+        self.assertEqual(day.his_team, "maintenance")
+        with self.assertRaises(UserError):
+            day.with_user(both).write({"date_start": day.date_start - timedelta(hours=2)})

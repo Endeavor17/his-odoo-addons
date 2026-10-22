@@ -951,3 +951,27 @@ msgstr "في استراحة"
 #: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
 msgid "worked"
 msgstr "عمل"
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "The team of a work day cannot be changed."
+msgstr "لا يمكن تغيير فريق يوم العمل."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "Only the team manager can correct the times of this work day."
+msgstr "مسؤول الفريق وحده يمكنه تصحيح أوقات يوم العمل هذا."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "Only the times of a work day segment can be corrected."
+msgstr "يمكن تصحيح أوقات فترة يوم العمل فقط."
+
+#. module: his_hygiene
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_hygiene_workday_form
+msgid ""
+"A forgotten end of day: type it here, the open segment closes at that time."
+msgstr "نهاية يوم منسية: أدخليها هنا، وتُغلق الفترة المفتوحة في ذلك الوقت."

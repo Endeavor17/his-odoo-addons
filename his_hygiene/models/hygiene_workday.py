@@ -3,6 +3,11 @@ from odoo.exceptions import AccessError, UserError
 
 CLOCK_ACTIONS = {"pause": "action_pause", "resume": "action_resume", "end": "action_end_day"}
 
+# Ce qu'une correction a la main peut changer sur une journee d'hygiene : les
+# heures, rien d'autre. Changer la salariee, l'equipe ou deplacer une tranche
+# reviendrait a inventer une presence.
+TIME_FIELDS = {"date_start", "date_end"}
+
 
 class MaintenanceUniversityWorkday(models.Model):
     """La journee de maintenance_university, partagee avec l'equipe hygiene.
@@ -31,6 +36,44 @@ class MaintenanceUniversityWorkday(models.Model):
         if self.env.user.has_group("his_hygiene.group_hygiene_manager"):
             rest = self.filtered(lambda d: d.sudo().his_team != "hygiene")
         return super(MaintenanceUniversityWorkday, rest)._check_is_owner()
+
+    def _his_check_manual_write(self, vals):
+        """Une ecriture hors des boutons (formulaire, RPC) : qui corrige quoi.
+
+        Journee d'hygiene : la responsable hygiene seule, et seulement les heures.
+        Journee de maintenance : la regle de maintenance_university (son
+        responsable corrige), jamais quelqu'un qui n'y a que sa propre journee.
+        Personne ne change une journee d'equipe.
+        """
+        if self.env.su:
+            return
+        if "his_team" in vals:
+            raise AccessError(_("The team of a work day cannot be changed."))
+        user = self.env.user
+        for day in self.sudo():
+            if day.his_team == "hygiene":
+                allowed = (
+                    user.has_group("his_hygiene.group_hygiene_manager")
+                    and day.employee_id.user_id != user
+                    and not set(vals) - TIME_FIELDS
+                )
+            else:
+                allowed = user.has_group("maintenance_university.group_maintenance_manager")
+            if not allowed:
+                raise AccessError(_("Only the team manager can correct the times of this work day."))
+
+    def write(self, vals):
+        self._his_check_manual_write(vals)
+        res = super().write(vals)
+        if vals.get("date_end") and not self.env.su:
+            # Fin oubliee saisie a la main : la tranche restee ouverte se ferme
+            # a cette heure-la (et la correction est tracee sur elle).
+            self.sudo().segment_ids.filtered(lambda s: not s.date_end).write({"date_end": vals["date_end"]})
+        return res
+
+    def _close_open_segments(self):
+        # Les boutons ferment la tranche en cours : ce n'est pas une correction.
+        return super(MaintenanceUniversityWorkday, self.with_context(his_clock=True))._close_open_segments()
 
     def action_end_day(self):
         res = super().action_end_day()
@@ -76,11 +119,15 @@ class MaintenanceUniversityWorkdaySegment(models.Model):
     original_date_end = fields.Datetime(string="Original End", readonly=True)
 
     def write(self, vals):
-        # Une correction d'heure garde la toute premiere valeur. Fermer un
-        # segment ouvert (le bouton suivant) n'est pas une correction.
+        if not self.env.su:
+            if set(vals) - TIME_FIELDS:
+                raise AccessError(_("Only the times of a work day segment can be corrected."))
+            self.workday_id._his_check_manual_write(vals)
+        # Une correction d'heure garde la toute premiere valeur. Fermer la
+        # tranche en cours par un bouton (contexte his_clock) n'en est pas une.
         corrected = self.browse()
-        if {"date_start", "date_end"} & set(vals):
-            corrected = self.filtered("date_end")
+        if TIME_FIELDS & set(vals) and not self.env.context.get("his_clock"):
+            corrected = self
             for segment in corrected.filtered(lambda s: not s.corrected_by_id):
                 super(MaintenanceUniversityWorkdaySegment, segment).write(
                     {"original_date_start": segment.date_start, "original_date_end": segment.date_end}

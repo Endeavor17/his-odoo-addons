@@ -32,6 +32,8 @@
                             <field name="employee_id" readonly="1"/>
                             <field name="date" readonly="1"/>
                             <field name="state"/>
+                            <field name="date_start"/>
+                            <field name="date_end" help="A forgotten end of day: type it here, the open segment closes at that time."/>
                         </group>
                         <group>
                             <field name="worked_hours" widget="float_time"/>

@@ -965,3 +965,30 @@ msgstr "en pause"
 #: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
 msgid "worked"
 msgstr "travaillé"
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "The team of a work day cannot be changed."
+msgstr "L'équipe d'une journée de travail ne peut pas être changée."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "Only the team manager can correct the times of this work day."
+msgstr ""
+"Seul le responsable de l'équipe peut corriger les heures de cette journée."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "Only the times of a work day segment can be corrected."
+msgstr "Seules les heures d'une tranche de journée peuvent être corrigées."
+
+#. module: his_hygiene
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_hygiene_workday_form
+msgid ""
+"A forgotten end of day: type it here, the open segment closes at that time."
+msgstr ""
+"Fin de journée oubliée : saisissez-la ici, la tranche ouverte se ferme à "
+"cette heure."
