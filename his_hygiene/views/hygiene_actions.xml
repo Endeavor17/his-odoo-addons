@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_hygiene_planning" model="ir.actions.client">
+        <field name="name">Planning</field>
+        <field name="tag">his_hygiene_planning</field>
+    </record>
+
+    <record id="action_hygiene_my_day" model="ir.actions.client">
+        <field name="name">My Day</field>
+        <field name="tag">his_hygiene_my_day</field>
+    </record>
+
+    <record id="action_hygiene_recap" model="ir.actions.client">
+        <field name="name">Monthly Recap</field>
+        <field name="tag">his_hygiene_recap</field>
+    </record>
+</odoo>

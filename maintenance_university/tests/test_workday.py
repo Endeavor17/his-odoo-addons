@@ -322,3 +322,27 @@ class TestWorkday(TransactionCase):
         )
         reading = self.env["maintenance.university.workday"].with_user(stranger).get_my_day()
         self.assertFalse(reading["has_employee"], "a quiet message, not a traceback")
+
+    # ------------------------------------------------------------------
+    # L'equipe de la journee (spec hygiene 2026-10-22, section 6)
+    # ------------------------------------------------------------------
+    def test_une_journee_est_de_l_equipe_maintenance_par_defaut(self):
+        self.Workday.action_start_day()
+        self.assertEqual(self._day().his_team, "maintenance")
+
+    def test_le_responsable_voit_les_journees_de_maintenance(self):
+        self.Workday.action_start_day()
+        manager = self.env["res.users"].create(
+            {
+                "name": "Chef equipe",
+                "login": "chef.equipe.workday@his.test",
+                "group_ids": [(6, 0, [self.env.ref("maintenance_university.group_maintenance_manager").id])],
+            }
+        )
+        self.env.invalidate_all()
+        days = (
+            self.env["maintenance.university.workday"]
+            .with_user(manager)
+            .search([("employee_id", "=", self.employee.id)])
+        )
+        self.assertEqual(len(days), 1)

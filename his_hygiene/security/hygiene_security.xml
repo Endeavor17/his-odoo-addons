@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_hygiene" model="ir.module.category">
+        <field name="name">Hygiene</field>
+        <field name="sequence">21</field>
+    </record>
+
+    <record id="res_groups_privilege_hygiene" model="res.groups.privilege">
+        <field name="name">Hygiene</field>
+        <field name="category_id" ref="module_category_hygiene"/>
+    </record>
+
+    <!-- Accordes par le poste (his_access_base, hr.job.group_ids) : agent
+         d'hygiene et responsable hygiene, pas a la main. -->
+    <record id="group_hygiene_worker" model="res.groups">
+        <field name="name">Worker</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_hygiene"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_hygiene_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="res_groups_privilege_hygiene"/>
+        <field name="implied_ids" eval="[(4, ref('group_hygiene_worker'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- La presence de l'equipe hygiene : sa responsable voit toutes ses
+         journees (et les corrige), chaque salariee ne voit que les siennes.
+         Le responsable maintenance ne les voit pas (regle de
+         maintenance_university limitee a son equipe). -->
+    <record id="rule_hygiene_workday_manager" model="ir.rule">
+        <field name="name">Work Day: hygiene manager sees the hygiene team</field>
+        <field name="model_id" ref="maintenance_university.model_maintenance_university_workday"/>
+        <field name="domain_force">[('his_team', '=', 'hygiene')]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_manager'))]"/>
+    </record>
+    <record id="rule_hygiene_workday_worker" model="ir.rule">
+        <field name="name">Work Day: hygiene worker sees own</field>
+        <field name="model_id" ref="maintenance_university.model_maintenance_university_workday"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
+    <record id="rule_hygiene_workday_segment_manager" model="ir.rule">
+        <field name="name">Work Day Segment: hygiene manager sees the hygiene team</field>
+        <field name="model_id" ref="maintenance_university.model_maintenance_university_workday_segment"/>
+        <field name="domain_force">[('workday_id.his_team', '=', 'hygiene')]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_manager'))]"/>
+    </record>
+    <record id="rule_hygiene_workday_segment_worker" model="ir.rule">
+        <field name="name">Work Day Segment: hygiene worker sees own</field>
+        <field name="model_id" ref="maintenance_university.model_maintenance_university_workday_segment"/>
+        <field name="domain_force">[('workday_id.employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
+
+    <!-- Planning et absences : la responsable voit tout, la salariee les siens. -->
+    <record id="rule_hygiene_assignment_manager" model="ir.rule">
+        <field name="name">Hygiene assignment: manager sees all</field>
+        <field name="model_id" ref="model_his_hygiene_assignment"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_manager'))]"/>
+    </record>
+    <record id="rule_hygiene_assignment_worker" model="ir.rule">
+        <field name="name">Hygiene assignment: worker sees own</field>
+        <field name="model_id" ref="model_his_hygiene_assignment"/>
+        <field name="domain_force">[('employee_ids.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
+
+    <record id="rule_hygiene_absence_manager" model="ir.rule">
+        <field name="name">Hygiene absence: manager sees all</field>
+        <field name="model_id" ref="model_his_hygiene_absence"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_manager'))]"/>
+    </record>
+    <record id="rule_hygiene_absence_worker" model="ir.rule">
+        <field name="name">Hygiene absence: worker sees own</field>
+        <field name="model_id" ref="model_his_hygiene_absence"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
+
+    <record id="rule_hygiene_finding_manager" model="ir.rule">
+        <field name="name">Hygiene finding: manager sees all</field>
+        <field name="model_id" ref="model_his_hygiene_finding"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_manager'))]"/>
+    </record>
+    <record id="rule_hygiene_finding_worker" model="ir.rule">
+        <field name="name">Hygiene finding: worker sees own</field>
+        <field name="model_id" ref="model_his_hygiene_finding"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
+
+    <!-- Comme le Reporter de maintenance_university : le droit d'acces du coeur
+         donne maintenance.request a tout utilisateur interne, et les regles du
+         coeur sont desactivees par ce module. Sans cette regle, une salariee de
+         l'hygiene lisait toutes les demandes de l'universite. Les regles se
+         cumulent en OU : une personne aussi dans la maintenance garde ses
+         droits de maintenance. -->
+    <record id="rule_hygiene_no_maintenance_request" model="ir.rule">
+        <field name="name">Maintenance Request: hygiene sees none</field>
+        <field name="model_id" ref="maintenance.model_maintenance_request"/>
+        <field name="domain_force">[('id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_hygiene_worker'))]"/>
+    </record>
+</odoo>

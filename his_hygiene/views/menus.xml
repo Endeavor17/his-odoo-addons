@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hygiene_root"
+              name="Hygiene"
+              web_icon="his_hygiene,static/description/icon.svg"
+              sequence="11"
+              groups="group_hygiene_worker"/>
+
+    <!-- Premier menu : l'application s'ouvre sur la journee, sur le telephone. -->
+    <menuitem id="menu_hygiene_my_day"
+              name="My Day"
+              parent="menu_hygiene_root"
+              action="action_hygiene_my_day"
+              sequence="5"
+              groups="group_hygiene_worker"/>
+
+    <menuitem id="menu_hygiene_planning"
+              name="Planning"
+              parent="menu_hygiene_root"
+              action="action_hygiene_planning"
+              sequence="10"
+              groups="group_hygiene_manager"/>
+
+    <menuitem id="menu_hygiene_finding"
+              name="Findings"
+              parent="menu_hygiene_root"
+              action="action_his_hygiene_finding"
+              sequence="30"
+              groups="group_hygiene_manager"/>
+
+    <menuitem id="menu_hygiene_recap"
+              name="Monthly Recap"
+              parent="menu_hygiene_root"
+              action="action_hygiene_recap"
+              sequence="35"
+              groups="group_hygiene_manager"/>
+
+    <menuitem id="menu_hygiene_workday"
+              name="Work Days"
+              parent="menu_hygiene_root"
+              action="action_hygiene_workday"
+              sequence="40"
+              groups="group_hygiene_manager"/>
+
+    <menuitem id="menu_hygiene_config"
+              name="Configuration"
+              parent="menu_hygiene_root"
+              sequence="90"
+              groups="group_hygiene_manager"/>
+    <menuitem id="menu_hygiene_member" name="Team Members" parent="menu_hygiene_config"
+              action="action_his_hygiene_member" sequence="10"/>
+    <menuitem id="menu_hygiene_area" name="Areas" parent="menu_hygiene_config"
+              action="action_his_hygiene_area" sequence="20"/>
+</odoo>

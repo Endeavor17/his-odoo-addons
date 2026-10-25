@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Patrimoine - Groupe HIS-HTC-IRA",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Inventory/Inventory",
     "summary": "Biens durables (mobilier, informatique, climatisation...) suivis par numero de serie, salle par salle",
     "description": """
@@ -33,6 +33,7 @@ Spec : docs/superpowers/specs/2026-10-20-investment-purchases-and-fixed-assets-d
         "data/product_category_data.xml",
         "data/stock_location_data.xml",
         "views/patrimoine_views.xml",
+        "views/maintenance_room_views.xml",
     ],
     "post_init_hook": "post_init_hook",
     "installable": True,

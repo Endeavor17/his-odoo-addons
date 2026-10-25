@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_his_hygiene_member_worker,his.hygiene.member.worker,model_his_hygiene_member,group_hygiene_worker,1,0,0,0
+access_his_hygiene_member_manager,his.hygiene.member.manager,model_his_hygiene_member,group_hygiene_manager,1,1,1,1
+access_his_hygiene_area_worker,his.hygiene.area.worker,model_his_hygiene_area,group_hygiene_worker,1,0,0,0
+access_his_hygiene_area_manager,his.hygiene.area.manager,model_his_hygiene_area,group_hygiene_manager,1,1,1,1
+access_hr_employee_hygiene_worker,hr.employee.hygiene.worker,hr.model_hr_employee,group_hygiene_worker,1,0,0,0
+access_hygiene_workday_worker,maintenance.university.workday.hygiene.worker,maintenance_university.model_maintenance_university_workday,group_hygiene_worker,1,0,0,0
+access_hygiene_workday_manager,maintenance.university.workday.hygiene.manager,maintenance_university.model_maintenance_university_workday,group_hygiene_manager,1,1,0,0
+access_hygiene_workday_segment_worker,maintenance.university.workday.segment.hygiene.worker,maintenance_university.model_maintenance_university_workday_segment,group_hygiene_worker,1,0,0,0
+access_hygiene_workday_segment_manager,maintenance.university.workday.segment.hygiene.manager,maintenance_university.model_maintenance_university_workday_segment,group_hygiene_manager,1,1,0,0
+access_his_hygiene_assignment_worker,his.hygiene.assignment.worker,model_his_hygiene_assignment,group_hygiene_worker,1,0,0,0
+access_his_hygiene_assignment_manager,his.hygiene.assignment.manager,model_his_hygiene_assignment,group_hygiene_manager,1,1,1,1
+access_his_hygiene_absence_worker,his.hygiene.absence.worker,model_his_hygiene_absence,group_hygiene_worker,1,0,0,0
+access_his_hygiene_absence_manager,his.hygiene.absence.manager,model_his_hygiene_absence,group_hygiene_manager,1,1,1,1
+access_maintenance_building_hygiene_worker,maintenance.building.hygiene.worker,maintenance_university.model_maintenance_building,group_hygiene_worker,1,0,0,0
+access_his_hygiene_finding_worker,his.hygiene.finding.worker,model_his_hygiene_finding,group_hygiene_worker,1,0,1,0
+access_his_hygiene_finding_manager,his.hygiene.finding.manager,model_his_hygiene_finding,group_hygiene_manager,1,1,1,1

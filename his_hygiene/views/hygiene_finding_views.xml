@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_his_hygiene_finding_list" model="ir.ui.view">
+        <field name="name">his.hygiene.finding.list</field>
+        <field name="model">his.hygiene.finding</field>
+        <field name="arch" type="xml">
+            <list string="Findings" create="0">
+                <field name="date"/>
+                <field name="area_id"/>
+                <field name="kind" widget="badge" decoration-danger="kind == 'repair'" decoration-info="kind == 'cleaning'"/>
+                <field name="description"/>
+                <field name="employee_id"/>
+                <field name="state" widget="badge" decoration-warning="state == 'new'" decoration-success="state != 'new'"/>
+                <button name="action_dispatch" type="object" string="Dispatch" icon="fa-share"
+                        invisible="kind != 'cleaning' or state != 'new'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_his_hygiene_finding_form" model="ir.ui.view">
+        <field name="name">his.hygiene.finding.form</field>
+        <field name="model">his.hygiene.finding</field>
+        <field name="arch" type="xml">
+            <form string="Finding">
+                <header>
+                    <button name="action_dispatch" type="object" string="Dispatch to the team" class="oe_highlight"
+                            invisible="kind != 'cleaning' or state != 'new'"/>
+                    <field name="state" widget="statusbar" readonly="1"/>
+                </header>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <group>
+                        <group>
+                            <field name="area_id" readonly="id"/>
+                            <field name="kind" readonly="id"/>
+                            <field name="date" readonly="id"/>
+                        </group>
+                        <group>
+                            <field name="employee_id" readonly="id" options="{'no_create': True}"/>
+                            <field name="maintenance_finding_id" invisible="not maintenance_finding_id"/>
+                        </group>
+                    </group>
+                    <field name="description" readonly="id" placeholder="What did you see?"/>
+                    <field name="assignment_ids" invisible="not assignment_ids" readonly="1">
+                        <list>
+                            <field name="date"/>
+                            <field name="employee_ids" widget="many2many_tags"/>
+                            <field name="is_done"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_his_hygiene_finding_search" model="ir.ui.view">
+        <field name="name">his.hygiene.finding.search</field>
+        <field name="model">his.hygiene.finding</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="area_id"/>
+                <field name="employee_id"/>
+                <filter name="to_dispatch" string="To dispatch" domain="[('kind', '=', 'cleaning'), ('state', '=', 'new')]"/>
+                <filter name="repair" string="Repairs" domain="[('kind', '=', 'repair')]"/>
+                <filter name="cleaning" string="Cleaning" domain="[('kind', '=', 'cleaning')]"/>
+                <group>
+                    <filter name="group_area" string="Area" context="{'group_by': 'area_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_his_hygiene_finding" model="ir.actions.act_window">
+        <field name="name">Findings</field>
+        <field name="res_model">his.hygiene.finding</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_to_dispatch': 1}</field>
+    </record>
+</odoo>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hygiene_workday_list" model="ir.ui.view">
+        <field name="name">maintenance.university.workday.hygiene.list</field>
+        <field name="model">maintenance.university.workday</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <list string="Work Days" create="0">
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="state" decoration-success="state == 'done'" decoration-info="state == 'working'"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="worked_hours" widget="float_time" sum="Total"/>
+                <field name="paused_hours" widget="float_time" sum="Total"/>
+                <field name="ended_by_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- La correction d'une heure oubliee se fait ici, segment par segment ;
+         l'heure d'origine reste visible. -->
+    <record id="view_hygiene_workday_form" model="ir.ui.view">
+        <field name="name">maintenance.university.workday.hygiene.form</field>
+        <field name="model">maintenance.university.workday</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Work Day" create="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="date" readonly="1"/>
+                            <field name="state"/>
+                            <field name="date_start"/>
+                            <field name="date_end" help="A forgotten end of day: type it here, the open segment closes at that time."/>
+                        </group>
+                        <group>
+                            <field name="worked_hours" widget="float_time"/>
+                            <field name="paused_hours" widget="float_time"/>
+                            <field name="ended_by_id"/>
+                        </group>
+                    </group>
+                    <field name="segment_ids">
+                        <list editable="bottom" create="0" delete="0">
+                            <field name="kind" readonly="1"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="duration" widget="float_time"/>
+                            <field name="entered_by_id"/>
+                            <field name="corrected_by_id" optional="show"/>
+                            <field name="original_date_start" optional="show"/>
+                            <field name="original_date_end" optional="show"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hygiene_workday" model="ir.actions.act_window">
+        <field name="name">Work Days</field>
+        <field name="res_model">maintenance.university.workday</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('his_team', '=', 'hygiene')]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_hygiene_workday_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_hygiene_workday_form')})]"/>
+    </record>
+</odoo>

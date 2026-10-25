@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="his_hygiene.MyDay">
+        <div class="o_hyg_myday_scroll" t-att-dir="dir">
+        <div class="o_hyg_myday" t-if="state.data">
+
+            <div t-if="state.data.is_manager" class="o_hyg_people">
+                <button t-foreach="state.data.members" t-as="member" t-key="member.id"
+                        class="o_hyg_person" t-att-class="{ o_hyg_person_active: member.id === state.employeeId }"
+                        t-on-click="() => this.pickEmployee(member)">
+                    <span class="o_hyg_chip o_hyg_chip_lg" t-att-style="chipStyle(member)" t-esc="member.initials"/>
+                    <span class="o_hyg_person_name" t-esc="member.name"/>
+                </button>
+            </div>
+
+            <div t-if="!state.data.employee" class="o_hyg_empty">
+                <t t-if="state.data.is_manager">Choose a worker above to see her day.</t>
+                <t t-else="">Your account is not in the hygiene team. Ask the manager to add you.</t>
+            </div>
+
+            <t t-else="">
+                <div class="o_hyg_hello">
+                    <div class="o_hyg_eyebrow text-capitalize" t-esc="state.data.today"/>
+                    <h2 class="mb-0" t-esc="state.data.employee.name"/>
+                </div>
+
+                <div class="o_hyg_tabs">
+                    <button t-att-class="{ active: state.tab === 'today' }" t-on-click="() => this.showTab('today')">Today</button>
+                    <button t-att-class="{ active: state.tab === 'month' }" t-on-click="() => this.showTab('month')">My month</button>
+                </div>
+
+                <t t-if="state.tab === 'today'">
+                    <div t-if="state.data.absent" class="o_hyg_absent_banner">
+                        <i class="fa fa-bed me-2"/>Marked absent today.
+                    </div>
+
+                    <div class="o_hyg_clock" t-att-class="'o_hyg_clock_' + (state.data.day.state or 'none')">
+                        <div class="o_hyg_clock_time">
+                            <div>
+                                <div class="o_hyg_clock_big" t-esc="worked"/>
+                                <div class="o_hyg_clock_label">worked</div>
+                            </div>
+                            <div t-if="state.data.day.state">
+                                <div class="o_hyg_clock_small" t-esc="paused"/>
+                                <div class="o_hyg_clock_label">on break</div>
+                            </div>
+                        </div>
+                        <t t-if="state.data.day.state === 'done'">
+                            <div class="o_hyg_clock_done"><i class="fa fa-check-circle me-2"/>Day finished. Thank you!</div>
+                        </t>
+                        <t t-else="">
+                            <button class="o_hyg_big_btn o_hyg_big_btn_main" t-att-disabled="state.busy"
+                                    t-on-click="() => this.clockAction(clock.action)">
+                                <i t-att-class="'fa ' + clock.icon + ' me-2'"/><t t-esc="clock.label"/>
+                            </button>
+                            <button t-if="state.data.day.state" class="o_hyg_big_btn o_hyg_big_btn_end" t-att-disabled="state.busy"
+                                    t-on-click="() => this.clockAction('end')">
+                                <i class="fa fa-stop me-2"/>End the day
+                            </button>
+                        </t>
+                    </div>
+
+                    <h3 class="o_hyg_section">Areas today</h3>
+                    <div t-if="!state.data.assignments.length" class="o_hyg_empty">Nothing planned today.</div>
+                    <div t-foreach="state.data.assignments" t-as="a" t-key="a.id" class="o_hyg_area_card" t-att-class="{ o_hyg_area_done: a.done }">
+                        <div class="o_hyg_area_name">
+                            <t t-esc="a.area"/>
+                            <span t-if="a.extra" class="o_hyg_extra ms-2">Extra</span>
+                        </div>
+                        <button class="o_hyg_done_btn" t-att-disabled="state.busy" t-on-click="() => this.toggleDone(a)">
+                            <t t-if="a.done"><i class="fa fa-check me-2"/>Done</t>
+                            <t t-else="">Mark done</t>
+                        </button>
+                    </div>
+
+                    <div t-if="!state.report" class="mt-3">
+                        <button class="o_hyg_big_btn o_hyg_big_btn_report" t-on-click="() => this.openReport()">
+                            <i class="fa fa-exclamation-triangle me-2"/>Report a problem
+                        </button>
+                    </div>
+
+                    <div t-else="" class="o_hyg_report">
+                        <h3 class="o_hyg_section mt-0">Report a problem</h3>
+                        <div class="o_hyg_kind">
+                            <button t-att-class="{ active: state.report.kind === 'repair' }" t-on-click="() => this.state.report.kind = 'repair'">
+                                <i class="fa fa-wrench fa-2x"/><span>Something is broken</span>
+                            </button>
+                            <button t-att-class="{ active: state.report.kind === 'cleaning' }" t-on-click="() => this.state.report.kind = 'cleaning'">
+                                <i class="fa fa-tint fa-2x"/><span>Needs cleaning</span>
+                            </button>
+                        </div>
+                        <label class="o_hyg_label">Where?</label>
+                        <select class="form-select form-select-lg" t-model="state.report.areaId">
+                            <option value="">-</option>
+                            <option t-foreach="state.data.areas" t-as="area" t-key="area.id" t-att-value="area.id" t-esc="area.name"/>
+                        </select>
+                        <label class="o_hyg_label">What did you see?</label>
+                        <textarea class="form-control form-control-lg" rows="3" t-model="state.report.text"/>
+                        <label class="o_hyg_photo">
+                            <i class="fa fa-camera me-2"/>
+                            <t t-if="state.report.imageName" t-esc="state.report.imageName"/>
+                            <t t-else="">Add a photo</t>
+                            <input type="file" accept="image/*" capture="environment" class="d-none" t-on-change="onPhoto"/>
+                        </label>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="o_hyg_big_btn o_hyg_big_btn_main flex-grow-1" t-att-disabled="!canSend or state.busy" t-on-click="sendReport">Send</button>
+                            <button class="o_hyg_big_btn o_hyg_big_btn_end" t-on-click="() => this.state.report = null">Cancel</button>
+                        </div>
+                    </div>
+                </t>
+
+                <t t-if="state.tab === 'month' and state.month">
+                    <div class="d-flex align-items-center justify-content-between my-3">
+                        <button class="btn btn-outline-secondary" aria-label="Previous month" t-on-click="() => this.changeMonth(-1)"><i class="oi oi-arrow-left"/></button>
+                        <strong class="text-capitalize" t-esc="state.month.label"/>
+                        <button class="btn btn-outline-secondary" aria-label="Next month" t-on-click="() => this.changeMonth(1)"><i class="oi oi-arrow-right"/></button>
+                    </div>
+                    <div t-if="state.month.totals" class="o_hyg_totals">
+                        <div><b t-esc="state.month.totals.days_worked"/><span>days worked</span></div>
+                        <div><b t-esc="state.month.totals.days_absent"/><span>days absent</span></div>
+                        <div><b t-esc="hours(state.month.totals.worked_hours)"/><span>hours clocked</span></div>
+                        <div><b><t t-esc="state.month.totals.areas_done"/>/<t t-esc="state.month.totals.areas_planned"/></b><span>areas done</span></div>
+                    </div>
+                    <div t-if="!state.month.days.length" class="o_hyg_empty">Nothing this month.</div>
+                    <div t-foreach="state.month.days" t-as="d" t-key="d.date" class="o_hyg_month_day" t-att-class="{ o_hyg_month_absent: d.absent }">
+                        <div class="o_hyg_month_date text-capitalize" t-esc="d.label"/>
+                        <div class="flex-grow-1">
+                            <t t-if="d.absent">Absent</t>
+                            <t t-else="">
+                                <t t-esc="d.areas.join(', ')"/>
+                                <span class="text-muted ms-1">(<t t-esc="d.done"/>/<t t-esc="d.areas.length"/>)</span>
+                            </t>
+                        </div>
+                        <div class="text-muted" t-esc="hours(d.worked_hours)"/>
+                    </div>
+                </t>
+            </t>
+        </div>
+        </div>
+    </t>
+
+</templates>
