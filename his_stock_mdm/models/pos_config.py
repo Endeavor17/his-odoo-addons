@@ -6,10 +6,17 @@ Decision de Mohamed (2026-10-17) : un role a donner par le poste
 Point de vente ; une caisse ne s'ouvre, ne se charge et ne s'affiche au tableau
 de bord que pour qui porte l'un de ses roles. Le responsable POS les voit
 toutes. Une caisse sans role reste ouverte a tout utilisateur POS, comme avant.
+
+Deux questions distinctes, deux reponses (MDM des roles, 2026-10-27) :
+- quel PC ouvre quelle caisse : le role du compte comptoir (`his_group_ids`) ;
+- quels noms on tape a la caisse : les employes dont le POSTE porte un role de
+  caissier lie a cette caisse (`his_cashier_role_ids`), et qui ont un PIN. Ces
+  listes pos_hr se deduisent des postes ; personne ne les edite a la main.
 """
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
+from odoo.fields import Command, Domain
 
 
 class PosConfig(models.Model):
@@ -21,9 +28,102 @@ class PosConfig(models.Model):
         string="Cashier Roles",
         help="Roles allowed to open this till. Empty: every Point of Sale user.",
     )
+    his_cashier_role_ids = fields.Many2many(
+        "his.role",
+        "his_role_pos_config_rel",
+        "config_id",
+        "role_id",
+        string="Cashier Business Roles",
+        readonly=True,
+        help="Employees whose job post carries one of these roles tap their name at this till.",
+    )
+    his_till_issue = fields.Text(string="Till Issue", compute="_compute_his_till_issue")
     his_is_my_till = fields.Boolean(
         string="My Till", compute="_compute_his_is_my_till", search="_search_his_is_my_till"
     )
+
+    def _his_titulaires(self):
+        """Les employes dont le poste porte un role de caissier de cette caisse."""
+        self.ensure_one()
+        roles = self.sudo().his_cashier_role_ids
+        if not roles:
+            return self.env["hr.employee"]
+        return (
+            self.env["hr.employee"]
+            .sudo()
+            .search([("job_id.role_ids", "in", roles.ids), ("company_id", "=", self.company_id.id)])
+        )
+
+    @api.depends("his_cashier_role_ids", "advanced_employee_ids")
+    def _compute_his_till_issue(self):
+        for config in self:
+            issue = False
+            if config.module_pos_hr:
+                titulaires = config._his_titulaires()
+                # Les responsables POS ajoutes par pos_hr comptent aussi.
+                sans_pin = (titulaires | config.sudo().advanced_employee_ids).filtered(lambda e: not e.pin)
+                if not config.sudo().his_cashier_role_ids:
+                    issue = _("No cashier role linked: only POS managers with a PIN can tap in.")
+                elif not (titulaires - sans_pin):
+                    issue = _("No cashier can open this till.")
+                if sans_pin:
+                    sans = _("Without a PIN, so not offered: %(names)s", names=", ".join(sans_pin.mapped("name")))
+                    issue = "%s\n%s" % (issue, sans) if issue else sans
+            config.his_till_issue = issue
+
+    @api.model
+    def _his_sync_tills(self):
+        """Deduit des postes la liste des noms de chaque caisse.
+
+        Les caissiers vont dans la liste « avancee » : ils font les entrees et
+        sorties d'especes et ferment la caisse (decision de Mohamed). pos_hr y
+        rajoute lui-meme, a chaque ecriture, les responsables POS — qui restent
+        sur toutes les caisses (decision de Mohamed). Sans PIN, pas de nom.
+        """
+        # ponytail: syncs every till on any change; scope it to affected tills if tills grow beyond a handful.
+        for config in self.sudo().search([("module_pos_hr", "=", True)]):
+            caissiers = config._his_titulaires().filtered("pin")
+            # Comme pos_hr : les responsables de la societe de cette caisse.
+            responsables = (
+                config._get_group_pos_manager()
+                .with_company(config.company_id)
+                .user_ids.filtered(lambda u, c=config.company_id: c in u.company_ids)
+                .employee_id
+            )
+            avances = config.advanced_employee_ids
+            if (
+                avances - responsables == caissiers - responsables
+                and responsables <= avances
+                and not config.basic_employee_ids
+                and not config.minimal_employee_ids
+            ):
+                continue
+            config.write(
+                {
+                    "advanced_employee_ids": [Command.set(caissiers.ids)],
+                    "basic_employee_ids": [Command.clear()],
+                    "minimal_employee_ids": [Command.clear()],
+                }
+            )
+
+    def _employee_domain(self, user_id):
+        """Qui peut taper son nom a cette caisse.
+
+        pos_hr ne filtre que si la liste « basique » est remplie ; nos caissiers
+        sont dans l'« avancee ». Ici, toute liste remplie — ou un role de caissier
+        lie — restreint la caisse a ses listes : retirer le dernier role ne la
+        rouvre donc pas a tout le monde. Et seulement ceux qui ont un PIN : pos_hr
+        met tout responsable POS sur la liste, PIN ou pas, et sans PIN n'importe
+        qui taperait « Administrator » au comptoir (decision 12 : pas de PIN, pas
+        de nom). Le PIN se lit en sudo : le champ est reserve aux RH.
+        """
+        domain = super()._employee_domain(user_id)
+        caisse = self.sudo()
+        listes = caisse.basic_employee_ids | caisse.advanced_employee_ids | caisse.minimal_employee_ids
+        if caisse.his_cashier_role_ids or listes:
+            avec_pin = listes.filtered("pin")
+            domain = Domain.AND([domain, ["|", ("user_id", "=", user_id), ("id", "in", avec_pin.ids)]])
+        return domain
 
     def _his_sees_every_till(self):
         return self.env.su or self.env.user.has_group("point_of_sale.group_pos_manager")

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le catalogue de depart. noupdate : l'administrateur le corrige dans
+         l'interface, une mise a jour ne l'ecrase pas. Aucun groupe sensible
+         (contrainte de his.role) : la comptabilite en administrateur, l'export,
+         etc. restent attribues a la main. -->
+    <data noupdate="1">
+        <!-- forcecreate="0" : un role ou un poste supprime par l'administrateur
+             ne revient pas a la mise a jour suivante (et le poste d'un autre
+             module, s'il a ete supprime, ne fait pas echouer la mise a jour). -->
+
+        <!-- ==================== Caisses ==================== -->
+        <!-- Le caissier ne se connecte pas : il tape son nom au comptoir. Son
+             role ne donne aucun groupe, il le met sur la liste de sa caisse. -->
+        <record id="role_cashier_cafeteria" model="his.role" forcecreate="0">
+            <field name="name">Cafeteria Cashier</field>
+            <field name="description">Taps their name at the Cafeteria till (PIN required).</field>
+            <field name="pos_config_ids" eval="[Command.set([ref('his_stock_mdm.pos_config_cafeteria')])]"/>
+        </record>
+        <record id="role_cashier_restaurant" model="his.role" forcecreate="0">
+            <field name="name">Restaurant Cashier</field>
+            <field name="description">Taps their name at the Restaurant till (PIN required).</field>
+            <field name="pos_config_ids" eval="[Command.set([ref('his_stock_mdm.pos_config_restaurant')])]"/>
+        </record>
+        <record id="role_cashier_copy_center" model="his.role" forcecreate="0">
+            <field name="name">Copy Center Cashier</field>
+            <field name="description">Taps their name at the Copy Center till (PIN required).</field>
+            <field name="pos_config_ids" eval="[Command.set([ref('his_stock_mdm.pos_config_copy_center')])]"/>
+        </record>
+
+        <!-- Le PC du comptoir : un compte qui n'est pas une personne. -->
+        <record id="role_counter_cafeteria" model="his.role" forcecreate="0">
+            <field name="name">Cafeteria Counter</field>
+            <field name="kind">counter</field>
+            <field name="description">The PC at the Cafeteria counter: opens that till only.</field>
+            <field name="group_ids" eval="[Command.set([ref('his_stock_mdm.group_caisse_cafeteria'), ref('point_of_sale.group_pos_user'), ref('his_meal_management.group_meal_cashier')])]"/>
+        </record>
+        <record id="role_counter_restaurant" model="his.role" forcecreate="0">
+            <field name="name">Restaurant Counter</field>
+            <field name="kind">counter</field>
+            <field name="description">The PC at the Restaurant counter: opens that till only.</field>
+            <field name="group_ids" eval="[Command.set([ref('his_stock_mdm.group_caisse_restaurant'), ref('point_of_sale.group_pos_user'), ref('his_meal_management.group_meal_cashier')])]"/>
+        </record>
+        <record id="role_counter_copy_center" model="his.role" forcecreate="0">
+            <field name="name">Copy Center Counter</field>
+            <field name="kind">counter</field>
+            <field name="description">The PC at the Copy Center counter: opens that till only.</field>
+            <field name="group_ids" eval="[Command.set([ref('his_stock_mdm.group_caisse_copy_center'), ref('point_of_sale.group_pos_user')])]"/>
+        </record>
+
+        <record id="role_pos_supervisor" model="his.role" forcecreate="0">
+            <field name="name">POS Supervisor</field>
+            <field name="description">On every till; closes a till whose cash gap is over the tolerance. Also brings Inventory (user).</field>
+            <field name="group_ids" eval="[Command.set([ref('point_of_sale.group_pos_manager')])]"/>
+        </record>
+
+        <!-- ==================== Repas ==================== -->
+        <record id="role_meals_officer" model="his.role" forcecreate="0">
+            <field name="name">Meals Officer</field>
+            <field name="group_ids" eval="[Command.set([ref('his_meal_management.group_meal_officer')])]"/>
+        </record>
+
+        <!-- ==================== Stock ==================== -->
+        <record id="role_magasinier" model="his.role" forcecreate="0">
+            <field name="name">Storekeeper</field>
+            <field name="group_ids" eval="[Command.set([ref('stock.group_stock_user')])]"/>
+        </record>
+        <record id="role_stock_manager" model="his.role" forcecreate="0">
+            <field name="name">Stock Manager</field>
+            <field name="group_ids" eval="[Command.set([ref('stock.group_stock_manager')])]"/>
+        </record>
+        <record id="role_catalogue_manager" model="his.role" forcecreate="0">
+            <field name="name">Catalogue Manager</field>
+            <field name="group_ids" eval="[Command.set([ref('his_purchase.group_catalogue')])]"/>
+        </record>
+
+        <!-- ==================== Achats ==================== -->
+        <record id="role_purchase_requester" model="his.role" forcecreate="0">
+            <field name="name">Purchase Requester</field>
+            <field name="group_ids" eval="[Command.set([ref('his_purchase.group_requester')])]"/>
+        </record>
+        <record id="role_buyer" model="his.role" forcecreate="0">
+            <field name="name">Buyer</field>
+            <field name="description">The buyer is also the stock manager (Mohamed, 2026-10-19).</field>
+            <field name="group_ids" eval="[Command.set([ref('purchase.group_purchase_manager'), ref('stock.group_stock_manager')])]"/>
+        </record>
+        <record id="role_executive_director" model="his.role" forcecreate="0">
+            <field name="name">Executive Director</field>
+            <field name="description">Approves purchases; maintenance manager and reporter.</field>
+            <field name="group_ids" eval="[Command.set([ref('his_purchase.group_purchase_director'), ref('maintenance_university.group_maintenance_manager'), ref('maintenance_university.group_maintenance_reporter')])]"/>
+        </record>
+
+        <!-- ==================== Comptabilite ==================== -->
+        <record id="role_invoicing_clerk" model="his.role" forcecreate="0">
+            <field name="name">Invoicing Clerk</field>
+            <field name="group_ids" eval="[Command.set([ref('account.group_account_invoice')])]"/>
+        </record>
+        <record id="role_accountant" model="his.role" forcecreate="0">
+            <field name="name">Accountant</field>
+            <field name="description">Full accounting features. Accounting administrator stays assigned by hand.</field>
+            <field name="group_ids" eval="[Command.set([ref('account.group_account_user')])]"/>
+        </record>
+
+        <!-- ==================== RH et identite ==================== -->
+        <record id="role_hr_officer" model="his.role" forcecreate="0">
+            <field name="name">HR Officer</field>
+            <field name="description">All employees and the people register. Also brings Equipment manager (Odoo core).</field>
+            <field name="group_ids" eval="[Command.set([ref('hr.group_hr_user'), ref('his_person_core.group_his_person_manager')])]"/>
+        </record>
+        <record id="role_directory_reader" model="his.role" forcecreate="0">
+            <field name="name">Directory Reader</field>
+            <field name="group_ids" eval="[Command.set([ref('his_access_base.group_annuaire')])]"/>
+        </record>
+
+        <!-- ==================== Assistance ==================== -->
+        <record id="role_helpdesk_agent" model="his.role" forcecreate="0">
+            <field name="name">Helpdesk Agent</field>
+            <field name="group_ids" eval="[Command.set([ref('helpdesk_mgmt.group_helpdesk_user_team')])]"/>
+        </record>
+        <record id="role_helpdesk_manager" model="his.role" forcecreate="0">
+            <field name="name">Helpdesk Manager</field>
+            <field name="group_ids" eval="[Command.set([ref('helpdesk_mgmt.group_helpdesk_manager')])]"/>
+        </record>
+
+        <!-- ==================== Maintenance ==================== -->
+        <record id="role_maintenance_reporter" model="his.role" forcecreate="0">
+            <field name="name">Maintenance Reporter</field>
+            <field name="group_ids" eval="[Command.set([ref('maintenance_university.group_maintenance_reporter')])]"/>
+        </record>
+        <record id="role_maintenance_worker" model="his.role" forcecreate="0">
+            <field name="name">Maintenance Worker</field>
+            <field name="group_ids" eval="[Command.set([ref('maintenance_university.group_maintenance_worker')])]"/>
+        </record>
+        <!-- Reporter reste a part dans le module d'Abdo, expres (role frere) :
+             le role metier compose les deux. -->
+        <record id="role_maintenance_manager" model="his.role" forcecreate="0">
+            <field name="name">Maintenance Manager</field>
+            <field name="group_ids" eval="[Command.set([ref('maintenance_university.group_maintenance_manager'), ref('maintenance_university.group_maintenance_reporter')])]"/>
+        </record>
+
+        <!-- ==================== Hygiene ==================== -->
+        <record id="role_hygiene_worker" model="his.role" forcecreate="0">
+            <field name="name">Hygiene Worker</field>
+            <field name="group_ids" eval="[Command.set([ref('his_hygiene.group_hygiene_worker')])]"/>
+        </record>
+        <record id="role_hygiene_manager" model="his.role" forcecreate="0">
+            <field name="name">Hygiene Manager</field>
+            <field name="group_ids" eval="[Command.set([ref('his_hygiene.group_hygiene_manager')])]"/>
+        </record>
+
+        <!-- ==================== Services ==================== -->
+        <!-- n8n ne tient aujourd'hui qu'un groupe du CRM (beta, hors perimetre) :
+             il reste pose a la main jusqu'a ce que le CRM ait ses roles. -->
+        <record id="role_n8n_service" model="his.role" forcecreate="0">
+            <field name="name">n8n Service</field>
+            <field name="kind">service</field>
+            <field name="description">The n8n integration account.</field>
+        </record>
+
+        <!-- ==================== Postes livres par d'autres modules ==================== -->
+        <record id="his_purchase.job_purchasing_officer" model="hr.job" forcecreate="0">
+            <field name="role_ids" eval="[Command.link(ref('role_buyer'))]"/>
+        </record>
+        <record id="his_helpdesk_identity_bridge.job_support" model="hr.job" forcecreate="0">
+            <field name="role_ids" eval="[Command.link(ref('role_helpdesk_manager'))]"/>
+        </record>
+    </data>
+</odoo>

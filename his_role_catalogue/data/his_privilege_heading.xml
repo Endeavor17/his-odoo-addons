@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Une seule rubrique « HIS » dans les droits d'un utilisateur, au lieu de
+         groupes eparpilles dans « Chaine d'approvisionnement », « Ventes »...
+         Modules beta (CRM, admission, Campus+) : pas encore.
+         ponytail: applied when this catalogue installs or upgrades; a privilege its owner declares noupdate
+         (his_person_core) keeps the heading set at install, others reset on a lone -u of their owner until the next catalogue -u. -->
+    <record id="his_access_base.res_groups_privilege_annuaire" model="res.groups.privilege">
+        <field name="category_id" ref="his_access_base.module_category_his_access"/>
+    </record>
+    <record id="his_hygiene.res_groups_privilege_hygiene" model="res.groups.privilege">
+        <field name="category_id" ref="his_access_base.module_category_his_access"/>
+    </record>
+    <record id="his_meal_management.res_groups_privilege_meal" model="res.groups.privilege">
+        <field name="category_id" ref="his_access_base.module_category_his_access"/>
+    </record>
+    <record id="his_person_core.res_groups_privilege_his_person" model="res.groups.privilege">
+        <field name="category_id" ref="his_access_base.module_category_his_access"/>
+    </record>
+    <record id="his_purchase.res_groups_privilege_purchase_request" model="res.groups.privilege">
+        <field name="category_id" ref="his_access_base.module_category_his_access"/>
+    </record>
+    <record id="his_purchase.res_groups_privilege_catalogue" model="res.groups.privilege">
+        <field name="category_id" ref="his_access_base.module_category_his_access"/>
+    </record>
+    <record id="helpdesk_mgmt.group_helpdesk_privilege" model="res.groups.privilege">
+        <field name="category_id" ref="his_access_base.module_category_his_access"/>
+    </record>
+    <record id="maintenance_university.res_groups_privilege_maintenance_university" model="res.groups.privilege">
+        <field name="category_id" ref="his_access_base.module_category_his_access"/>
+    </record>
+    <record id="maintenance_university.res_groups_privilege_maintenance_university_reporter" model="res.groups.privilege">
+        <field name="category_id" ref="his_access_base.module_category_his_access"/>
+    </record>
+</odoo>
