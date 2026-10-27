@@ -119,3 +119,43 @@ class TestCourrielEntrant(TransactionCase):
         self.assertTrue(mail)
         self.assertIn("ines.merabet@gmail.com", (mail.email_cc or "").lower())
         self.assertIn("répondre à ce message", mail.body_html)
+
+    def _accuses(self, ticket):
+        self.env.cr.precommit.run()
+        # Juste apres la creation, le seul courriel du ticket est l'accuse (dans
+        # la langue du client : on ne filtre pas sur son texte).
+        return self.env["mail.mail"].search([("model", "=", "helpdesk.ticket"), ("res_id", "=", ticket.id)])
+
+    def test_un_courriel_recoit_un_accuse_depuis_odoo_support(self):
+        ticket = self.env["helpdesk.ticket"].browse(self._recevoir("Quelqu'un <qq@example.com>"))
+        accuse = self._accuses(ticket)
+        self.assertEqual(len(accuse), 1)
+        self.assertIn("qq@example.com", accuse.email_to)
+        self.assertIn(self.support, accuse.email_from)
+        # Adresse de reponse du fil (catchall@, redirige vers la boite relevee) :
+        # une reponse rejoint le ticket. Jamais l'adresse d'un agent.
+        self.assertIn("catchall@%s" % self.env.company.alias_domain_id.name, accuse.reply_to)
+        self.assertIn(ticket.number, accuse.subject)
+
+    def test_le_formulaire_avec_un_email_envoie_l_accuse(self):
+        ticket = self.env["helpdesk.ticket"].create(
+            {"name": "Badge perdu", "description": "x", "partner_email": "client@example.com"}
+        )
+        self.assertEqual(len(self._accuses(ticket)), 1)
+
+    def test_pas_d_accuse_sans_email_client(self):
+        ticket = self.env["helpdesk.ticket"].create({"name": "Imprimante en panne", "description": "x"})
+        self.assertFalse(self._accuses(ticket))
+
+    def test_une_reponse_a_l_accuse_rejoint_le_ticket(self):
+        ticket = self.env["helpdesk.ticket"].browse(self._recevoir("Quelqu'un <qq@example.com>"))
+        accuse = self._accuses(ticket)
+        tickets = self.env["helpdesk.ticket"].search_count([])
+        reponse = self._recevoir(
+            "Quelqu'un <qq@example.com>",
+            sujet="Re: %s" % accuse.subject,
+            message_id="m-reponse",
+            en_tetes="In-Reply-To: %s\nReferences: %s\n" % (accuse.message_id, accuse.message_id),
+        )
+        self.assertEqual(reponse, ticket.id)
+        self.assertEqual(self.env["helpdesk.ticket"].search_count([]), tickets)

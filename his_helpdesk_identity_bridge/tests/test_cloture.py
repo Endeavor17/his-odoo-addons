@@ -45,6 +45,8 @@ class TestCloture(TransactionCase):
         self.assertFalse(send.called, "la cloture a ete envoyee dans la requete de l'agent")
         self.assertFalse(send_after_commit.called, "la cloture a ete envoyee dans la requete de l'agent")
         self.assertGreater(Trigger.search_count([("cron_id", "=", cron.id)]), triggers_avant)
-        mail = self.env["mail.mail"].search([("model", "=", "helpdesk.ticket"), ("res_id", "=", ticket.id)])
+        mail = self.env["mail.mail"].search(
+            [("model", "=", "helpdesk.ticket"), ("res_id", "=", ticket.id), ("subject", "like", "clôturée")]
+        )
         self.assertTrue(mail)
         self.assertIn("répondre à ce message", mail.body_html)
