@@ -1,0 +1,194 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_role_catalogue
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_accountant
+msgid "Accountant"
+msgstr "Comptable"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_buyer
+msgid "Buyer"
+msgstr "Acheteur"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_cashier_cafeteria
+msgid "Cafeteria Cashier"
+msgstr "Caissier Cafétéria"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_counter_cafeteria
+msgid "Cafeteria Counter"
+msgstr "Comptoir Cafétéria"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_catalogue_manager
+msgid "Catalogue Manager"
+msgstr "Responsable catalogue"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_cashier_copy_center
+msgid "Copy Center Cashier"
+msgstr "Caissier Copy Center"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_counter_copy_center
+msgid "Copy Center Counter"
+msgstr "Comptoir Copy Center"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_directory_reader
+msgid "Directory Reader"
+msgstr "Lecteur de l'annuaire"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_executive_director
+msgid "Executive Director"
+msgstr "Directeur exécutif"
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_accountant
+msgid "Full accounting features. Accounting administrator stays assigned by hand."
+msgstr "Toutes les fonctions comptables. L'administration de la comptabilité reste attribuée à la main."
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_hr_officer
+msgid "HR Officer"
+msgstr "Chargé RH"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_helpdesk_agent
+msgid "Helpdesk Agent"
+msgstr "Agent d'assistance"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_helpdesk_manager
+msgid "Helpdesk Manager"
+msgstr "Responsable assistance"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_hygiene_manager
+msgid "Hygiene Manager"
+msgstr "Responsable hygiène"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_hygiene_worker
+msgid "Hygiene Worker"
+msgstr "Agent d'hygiène"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_invoicing_clerk
+msgid "Invoicing Clerk"
+msgstr "Agent de facturation"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_maintenance_manager
+msgid "Maintenance Manager"
+msgstr "Responsable maintenance"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_maintenance_reporter
+msgid "Maintenance Reporter"
+msgstr "Déclarant maintenance"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_maintenance_worker
+msgid "Maintenance Worker"
+msgstr "Ouvrier de maintenance"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_meals_officer
+msgid "Meals Officer"
+msgstr "Responsable repas"
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_pos_supervisor
+msgid "On every till; closes a till whose cash gap is over the tolerance."
+msgstr "Sur toutes les caisses ; ferme une caisse dont l'écart dépasse la tolérance."
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_pos_supervisor
+msgid "POS Supervisor"
+msgstr "Superviseur caisses"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_purchase_requester
+msgid "Purchase Requester"
+msgstr "Demandeur d'achat"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_cashier_restaurant
+msgid "Restaurant Cashier"
+msgstr "Caissier Restaurant"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_counter_restaurant
+msgid "Restaurant Counter"
+msgstr "Comptoir Restaurant"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_stock_manager
+msgid "Stock Manager"
+msgstr "Responsable stock"
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_magasinier
+msgid "Storekeeper"
+msgstr "Magasinier"
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_cashier_cafeteria
+msgid "Taps their name at the Cafeteria till (PIN required)."
+msgstr "Tape son nom à la caisse Cafétéria (PIN obligatoire)."
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_cashier_copy_center
+msgid "Taps their name at the Copy Center till (PIN required)."
+msgstr "Tape son nom à la caisse Copy Center (PIN obligatoire)."
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_cashier_restaurant
+msgid "Taps their name at the Restaurant till (PIN required)."
+msgstr "Tape son nom à la caisse Restaurant (PIN obligatoire)."
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_counter_cafeteria
+msgid "The PC at the Cafeteria counter: opens that till only."
+msgstr "Le PC du comptoir Cafétéria : n'ouvre que cette caisse."
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_counter_copy_center
+msgid "The PC at the Copy Center counter: opens that till only."
+msgstr "Le PC du comptoir Copy Center : n'ouvre que cette caisse."
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_counter_restaurant
+msgid "The PC at the Restaurant counter: opens that till only."
+msgstr "Le PC du comptoir Restaurant : n'ouvre que cette caisse."
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_buyer
+msgid "The buyer is also the stock manager (Mohamed, 2026-10-19)."
+msgstr "L'acheteur est aussi le gestionnaire de stock (Mohamed, 2026-10-19)."
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_n8n_service
+msgid "The n8n integration account."
+msgstr "Le compte de l'intégration n8n."
+
+#. module: his_role_catalogue
+#: model:his.role,name:his_role_catalogue.role_n8n_service
+msgid "n8n Service"
+msgstr "Service n8n"
