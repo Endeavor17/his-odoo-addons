@@ -3,7 +3,8 @@
     <!-- Une seule rubrique « HIS » dans les droits d'un utilisateur, au lieu de
          groupes eparpilles dans « Chaine d'approvisionnement », « Ventes »...
          Modules beta (CRM, admission, Campus+) : pas encore.
-         ponytail: re-applied only when this module upgrades; a lone -u of an owner module resets its heading until then. -->
+         ponytail: applied when this catalogue installs or upgrades; a privilege its owner declares noupdate
+         (his_person_core) keeps the heading set at install, others reset on a lone -u of their owner until the next catalogue -u. -->
     <record id="his_access_base.res_groups_privilege_annuaire" model="res.groups.privilege">
         <field name="category_id" ref="his_access_base.module_category_his_access"/>
     </record>

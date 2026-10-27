@@ -115,8 +115,8 @@ msgstr "Responsable repas"
 
 #. module: his_role_catalogue
 #: model:his.role,description:his_role_catalogue.role_pos_supervisor
-msgid "On every till; closes a till whose cash gap is over the tolerance."
-msgstr "Sur toutes les caisses ; ferme une caisse dont l'écart dépasse la tolérance."
+msgid "On every till; closes a till whose cash gap is over the tolerance. Also brings Inventory (user)."
+msgstr "Sur toutes les caisses ; ferme une caisse dont l'écart dépasse la tolérance. Donne aussi Inventaire (utilisateur)."
 
 #. module: his_role_catalogue
 #: model:his.role,name:his_role_catalogue.role_pos_supervisor
@@ -192,3 +192,17 @@ msgstr "Le compte de l'intégration n8n."
 #: model:his.role,name:his_role_catalogue.role_n8n_service
 msgid "n8n Service"
 msgstr "Service n8n"
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_executive_director
+msgid "Approves purchases; maintenance manager and reporter."
+msgstr "Approuve les achats ; responsable et déclarant de maintenance."
+
+#. module: his_role_catalogue
+#: model:his.role,description:his_role_catalogue.role_hr_officer
+msgid ""
+"All employees and the people register. Also brings Equipment manager (Odoo "
+"core)."
+msgstr ""
+"Tous les employés et le référentiel des personnes. Donne aussi Gestionnaire "
+"d'équipements (cœur d'Odoo)."
