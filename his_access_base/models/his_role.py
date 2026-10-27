@@ -39,6 +39,13 @@ class HisRole(models.Model):
         compute="_compute_granted_group_ids",
         help="The groups above plus every group they bring along.",
     )
+    job_ids = fields.Many2many(
+        "hr.job",
+        "his_job_role_rel",
+        "role_id",
+        "job_id",
+        string="Job Positions",
+    )
     active = fields.Boolean(default=True)
 
     @api.depends("group_ids", "group_ids.all_implied_ids")
@@ -60,5 +67,16 @@ class HisRole(models.Model):
                     )
                 )
 
-    def _his_reapply(self):
+    def write(self, vals):
+        # Les postes d'AVANT comptent aussi : un poste retire du role doit perdre
+        # ses groupes.
+        postes = self.job_ids
+        res = super().write(vals)
+        if {"group_ids", "job_ids", "active"} & vals.keys():
+            self._his_reapply(postes)
+        return res
+
+    def _his_reapply(self, postes=None):
         """Re-applique ces roles a tous ceux qui les portent."""
+        postes = (postes or self.env["hr.job"]) | self.with_context(active_test=False).job_ids
+        self.env["hr.employee"].sudo().search([("job_id", "in", postes.ids)])._his_appliquer_roles_du_poste()

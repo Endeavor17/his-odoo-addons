@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="hr.view_hr_job_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="inside">
-                <group string="Odoo Roles" groups="hr.group_hr_manager">
-                    <field name="group_ids" widget="many2many_tags"
+                <group string="Business Roles" groups="base.group_erp_manager">
+                    <field name="role_ids" widget="many2many_tags"
                            options="{'no_create': True}"/>
                     <button name="action_appliquer_roles" type="object"
                             string="Apply to Holders"

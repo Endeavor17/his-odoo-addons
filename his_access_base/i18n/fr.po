@@ -20,17 +20,6 @@ msgid "%(n)s account(s) updated."
 msgstr "%(n)s compte(s) mis à jour."
 
 #. module: his_access_base
-#. odoo-python
-#: code:addons/his_access_base/models/hr_job.py:0
-msgid ""
-"A position cannot grant an administration role (%(roles)s). These accesses "
-"are still assigned by hand by an administrator, in Settings ▸ Users."
-msgstr ""
-"Un poste ne peut pas accorder de rôle d'administration (%(roles)s). Ces "
-"accès restent attribués à la main par un administrateur, dans Réglages ▸ "
-"Utilisateurs."
-
-#. module: his_access_base
 #: model:ir.actions.act_window,name:his_access_base.action_revue_acces
 #: model:ir.ui.menu,name:his_access_base.menu_revue_acces
 #: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
@@ -101,19 +90,9 @@ msgstr ""
 "d'utilisateur Odoo."
 
 #. module: his_access_base
-#: model_terms:ir.ui.view,arch_db:his_access_base.view_hr_job_form_roles
-msgid "Odoo Roles"
-msgstr "Rôles Odoo"
-
-#. module: his_access_base
 #: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
 msgid "Of Which From the Position"
 msgstr "Dont issus du poste"
-
-#. module: his_access_base
-#: model:ir.model.fields,field_description:his_access_base.field_hr_job__group_ids
-msgid "Position Odoo Roles"
-msgstr "Rôles Odoo du poste"
 
 #. module: his_access_base
 #: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
@@ -124,15 +103,6 @@ msgstr "Rôles"
 #: model:ir.model.fields,field_description:his_access_base.field_res_users__role_ids_du_poste
 msgid "Roles From Position"
 msgstr "Rôles issus du poste"
-
-#. module: his_access_base
-#: model:ir.model.fields,help:his_access_base.field_hr_job__group_ids
-msgid ""
-"Roles granted automatically to whoever holds this position. Roles set by "
-"hand on a user are never touched by this list."
-msgstr ""
-"Rôles accordés automatiquement à qui occupe ce poste. Les rôles posés à la "
-"main sur un utilisateur ne sont jamais touchés par cette liste."
 
 #. module: his_access_base
 #: model:res.groups,comment:his_access_base.group_annuaire
@@ -267,3 +237,19 @@ msgstr "Quels comptes peuvent porter ce rôle : un employé par son poste, le co
 #: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
 msgid "e.g. Cafeteria Cashier"
 msgstr "ex. Caissier Cafétéria"
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/hr_job.py:0
+msgid "A position only carries employee roles, not counter or service roles."
+msgstr "Un poste ne porte que des rôles d'employé, pas de rôles comptoir ou service."
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_hr_job__role_ids
+msgid "Business roles granted automatically to whoever holds this position. Groups set by hand on a user are never touched."
+msgstr "Rôles métier donnés automatiquement à qui occupe ce poste. Les groupes posés à la main sur un utilisateur ne sont jamais touchés."
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__job_ids
+msgid "Job Positions"
+msgstr "Postes"

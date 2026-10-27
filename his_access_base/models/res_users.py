@@ -72,7 +72,7 @@ class HrEmployee(models.Model):
             user = employe.user_id
             if not user:
                 continue
-            groupes = employe.job_id.group_ids if employe.job_id else self.env["res.groups"]
+            groupes = employe.job_id._his_groupes_du_poste() if employe.job_id else self.env["res.groups"]
             if user._his_reconcilier_roles(groupes):
                 touches += 1
         return touches
@@ -106,7 +106,7 @@ class HrEmployee(models.Model):
         """
         ecarts = []
         for employe in self.search([("user_id", "!=", False), ("job_id", "!=", False)]):
-            attendu = employe.job_id.group_ids
+            attendu = employe.job_id._his_groupes_du_poste()
             pose = employe.user_id.role_ids_du_poste
             if attendu != pose:
                 ecarts.append("%s (poste %s)" % (employe.name, employe.job_id.name))

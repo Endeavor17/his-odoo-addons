@@ -8,6 +8,7 @@ avait ouvert la Production Contenu pour un remplacement perd son acces un matin,
 et personne ne comprend pourquoi.
 """
 
+from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -20,12 +21,11 @@ class TestRolesDuPoste(TransactionCase):
         cls.interne = cls.env.ref("base.group_user")
 
     def _poste(self, nom, groupes=()):
-        return self.env["hr.job"].create(
-            {
-                "name": nom,
-                "group_ids": [(6, 0, [g.id for g in groupes])],
-            }
-        )
+        """Un poste et son role metier, qui porte ces groupes."""
+        roles = self.env["his.role"]
+        if groupes:
+            roles = roles.create({"name": "Role %s" % nom, "group_ids": [(6, 0, [g.id for g in groupes])]})
+        return self.env["hr.job"].create({"name": nom, "role_ids": [(6, 0, roles.ids)]})
 
     def _employe(self, nom, poste=None, avec_compte=True):
         user = False
@@ -86,8 +86,7 @@ class TestRolesDuPoste(TransactionCase):
         poste = self._poste("Poste evolutif", [self.annuaire])
         employe = self._employe("evol", poste)
 
-        poste.group_ids = [(5, 0, 0)]
-        poste.action_appliquer_roles()
+        poste.role_ids = [(5, 0, 0)]
 
         self.assertFalse(employe.user_id.has_group("his_access_base.group_annuaire"))
 
@@ -114,3 +113,54 @@ class TestRolesDuPoste(TransactionCase):
             employe.user_id.role_ids_du_poste,
             "le cron doit signaler l'ecart, pas le corriger",
         )
+
+    # --- Le poste pointe des roles metier ------------------------------------
+
+    def _groupe(self, nom):
+        return self.env["res.groups"].create({"name": nom})
+
+    def test_removing_a_group_from_a_role_removes_it_from_holders_only(self):
+        """Corriger un role une fois corrige tous ceux qui le portent, sans
+        toucher a leurs derogations."""
+        du_role = self._groupe("ZZ groupe du role")
+        poste = self._poste("Poste a role", [du_role])
+        employe = self._employe("porteur", poste)
+        employe.user_id.sudo().write({"group_ids": [(4, self.annuaire.id)]})
+        self.assertIn(du_role, employe.user_id.group_ids)
+
+        poste.role_ids.group_ids = [(3, du_role.id)]
+
+        self.assertNotIn(du_role, employe.user_id.group_ids)
+        self.assertTrue(employe.user_id.has_group("his_access_base.group_annuaire"))
+
+    def test_archiving_a_role_removes_its_groups(self):
+        du_role = self._groupe("ZZ groupe archive")
+        poste = self._poste("Poste archive", [du_role])
+        employe = self._employe("archive", poste)
+
+        poste.role_ids.active = False
+
+        self.assertNotIn(du_role, employe.user_id.group_ids)
+
+    def test_a_post_refuses_a_counter_role(self):
+        comptoir = self.env["his.role"].create({"name": "Counter", "kind": "counter"})
+        with self.assertRaises(ValidationError):
+            self.env["hr.job"].create({"name": "Poste comptoir", "role_ids": [(6, 0, comptoir.ids)]})
+
+    def test_hr_officer_cannot_set_post_roles_but_moves_people(self):
+        du_role = self._groupe("ZZ groupe RH")
+        poste = self._poste("Poste cible", [du_role])
+        employe = self._employe("deplace")
+        rh = self.env["res.users"].create(
+            {
+                "name": "RH",
+                "login": "zz_rh_officer",
+                "group_ids": [(6, 0, [self.interne.id, self.env.ref("hr.group_hr_user").id])],
+            }
+        )
+
+        with self.assertRaises(AccessError):
+            poste.with_user(rh).write({"role_ids": [(5, 0, 0)]})
+
+        employe.with_user(rh).write({"job_id": poste.id})
+        self.assertIn(du_role, employe.user_id.group_ids)

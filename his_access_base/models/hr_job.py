@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-"""Le poste porte les roles Odoo qu'il donne.
+"""Le poste porte les roles metier qu'il donne.
 
 L'organigramme du groupe croise sept grades et une quinzaine de departements.
 Ce croisement ne se modelise PAS en groupes : un « mas'ul » de la restauration
@@ -8,7 +8,9 @@ quinze departements font une centaine de groupes vides de sens.
 
 Le grade et le departement restent donc de la donnee descriptive, ici, dans hr.
 Ce qui est traduit en droits, c'est le POSTE — et la traduction est de la
-configuration, pas du code : les RH ajustent un poste sans livraison.
+configuration, pas du code. Le poste pointe des roles metier (his.role), jamais
+des groupes Odoo bruts ; seul l'administrateur des droits les choisit (decision
+de Mohamed, 2026-10-27). Les RH affectent les gens aux postes.
 """
 
 from odoo import _, api, fields, models
@@ -36,14 +38,16 @@ SENSITIVE_GROUP_XMLIDS = (
 class HrJob(models.Model):
     _inherit = "hr.job"
 
-    group_ids = fields.Many2many(
-        "res.groups",
-        "his_job_group_rel",
+    role_ids = fields.Many2many(
+        "his.role",
+        "his_job_role_rel",
         "job_id",
-        "group_id",
-        string="Position Odoo Roles",
-        help="Roles granted automatically to whoever holds this position. Roles set "
-        "by hand on a user are never touched by this list.",
+        "role_id",
+        string="Business Roles",
+        domain=[("kind", "=", "employee")],
+        groups="base.group_erp_manager",
+        help="Business roles granted automatically to whoever holds this position. Groups "
+        "set by hand on a user are never touched.",
     )
 
     @api.model
@@ -59,25 +63,25 @@ class HrJob(models.Model):
         # Un groupe qui IMPLIQUE l'administration la donne tout autant.
         return self.env["res.groups"].search([]).filtered(lambda g: (g | g.all_implied_ids) & dangereux)
 
-    @api.constrains("group_ids")
-    def _check_pas_de_role_administration(self):
-        """Un poste ne peut pas conferer l'administration (faille S-1 de l'audit).
-
-        La vue masque deja `group_ids` aux non-managers RH, mais ce n'est que de
-        l'affichage : un ecrit direct (RPC) passerait outre. Le verrou est ici.
-        """
-        interdits = self._his_groupes_sensibles()
+    @api.constrains("role_ids")
+    def _check_roles_d_employe(self):
         for job in self:
-            fautifs = job.group_ids & interdits
-            if fautifs:
-                raise ValidationError(
-                    _(
-                        "A position cannot grant an administration role (%(roles)s). These "
-                        "accesses are still assigned by hand by an administrator, in Settings ▸ "
-                        "Users.",
-                        roles=", ".join(fautifs.mapped("name")),
-                    )
-                )
+            if job.role_ids.filtered(lambda r: r.kind != "employee"):
+                raise ValidationError(_("A position only carries employee roles, not counter or service roles."))
+
+    def _his_groupes_du_poste(self):
+        """Les groupes que donne ce poste.
+
+        En sudo : `role_ids` est reserve a l'administrateur des droits, alors que
+        la reconciliation part aussi d'un RH qui change quelqu'un de poste.
+        """
+        return self.sudo().role_ids.group_ids
+
+    def write(self, vals):
+        res = super().write(vals)
+        if "role_ids" in vals:
+            self.env["hr.employee"].sudo().search([("job_id", "in", self.ids)])._his_appliquer_roles_du_poste()
+        return res
 
     def action_appliquer_roles(self):
         """Reapplique les roles de ce poste a tous ceux qui l'occupent."""
