@@ -66,7 +66,7 @@ scratchpad), the till audit of the same day, and the decisions below.
 - Every till's list of names derived from job posts, with PINs.
 - Counter and service accounts as first-class account types, not exceptions.
 - Sensitive groups can never be given through a post or a role.
-- The baseline test (`test_le_socle_ne_contient_que_les_outils_communs`) green.
+- The baseline test (`test_le_socle_ne_contient_que_les_outils_communs`) stays green.
 
 **Non-goals**
 - Renaming or restructuring existing module groups (CRM chains, purchase,
@@ -207,12 +207,19 @@ The reconcile step keeps stripping these as defence in depth.
 
 ### 4.6 Defects fixed along the way
 
-- **Dashboards open to every employee:** the root menu "Tableaux de bord"
-  (and "Tests") has no group. Close it at the data level, not only the menu,
-  so the baseline test passes.
-- **Maintenance Manager doesn't include Reporter**
-  (`maintenance_university`, Abdo's module): add the implication. Tell Abdo
-  in the PR.
+- **Dashboards: no change (corrected while planning).** The staging audit
+  said "Dashboards" makes the baseline test fail. On main,
+  `SOCLE_AUTORISE = {"Calendar", "Discuss", "Dashboards"}` accepts it on
+  purpose: it is the empty `spreadsheet_dashboard` shell, with no data for an
+  account without roles. The second menu the map lists as open to all,
+  "Tests", is checked on staging during the final verification; if an
+  account with no role sees it, its root menu gets `base.group_system` with
+  `(4, …)`.
+- **Maintenance Manager doesn't include Reporter** (corrected while
+  planning): `maintenance_university` keeps Reporter apart on purpose (its
+  own privilege, a sibling role, per the comment in its security file). The
+  business role "Maintenance Manager" simply grants both groups. Abdo's
+  module is not touched.
 - **One "HIS" heading:** HIS groups are spread over Odoo categories ("Supply
   chain", "Sales", …). Move every HIS-defined group's privilege under one HIS
   category so the user rights screen reads.
