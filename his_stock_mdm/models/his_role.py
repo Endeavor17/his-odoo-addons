@@ -22,6 +22,13 @@ class HisRole(models.Model):
         if self.filtered(lambda r: r.kind != "employee" and r.pos_config_ids):
             raise ValidationError(_("Only an employee role names the tills where its holders tap in."))
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        roles = super().create(vals_list)
+        if roles.filtered("pos_config_ids"):
+            self.env["pos.config"]._his_sync_tills()
+        return roles
+
     def write(self, vals):
         res = super().write(vals)
         if {"pos_config_ids", "job_ids", "active"} & vals.keys():

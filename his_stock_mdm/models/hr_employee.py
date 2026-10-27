@@ -15,7 +15,7 @@ class HrEmployee(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        if {"job_id", "pin", "active", "company_id"} & vals.keys():
+        if {"job_id", "pin", "active", "company_id", "user_id"} & vals.keys():
             self.env["pos.config"]._his_sync_tills()
         return res
 
@@ -26,5 +26,16 @@ class HrJob(models.Model):
     def write(self, vals):
         res = super().write(vals)
         if "role_ids" in vals:
+            self.env["pos.config"]._his_sync_tills()
+        return res
+
+
+class ResUsers(models.Model):
+    _inherit = "res.users"
+
+    def write(self, vals):
+        res = super().write(vals)
+        # Devenir ou cesser d'etre responsable POS change qui tape son nom.
+        if "group_ids" in vals:
             self.env["pos.config"]._his_sync_tills()
         return res

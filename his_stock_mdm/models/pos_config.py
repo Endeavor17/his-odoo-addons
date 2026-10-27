@@ -60,9 +60,10 @@ class PosConfig(models.Model):
             issue = False
             if config.module_pos_hr:
                 titulaires = config._his_titulaires()
-                sans_pin = titulaires.filtered(lambda e: not e.pin)
+                # Les responsables POS ajoutes par pos_hr comptent aussi.
+                sans_pin = (titulaires | config.sudo().advanced_employee_ids).filtered(lambda e: not e.pin)
                 if not config.sudo().his_cashier_role_ids:
-                    issue = _("No cashier role linked: every employee can tap in.")
+                    issue = _("No cashier role linked: only POS managers with a PIN can tap in.")
                 elif not (titulaires - sans_pin):
                     issue = _("No cashier can open this till.")
                 if sans_pin:
@@ -82,7 +83,13 @@ class PosConfig(models.Model):
         # ponytail: syncs every till on any change; scope it to affected tills if tills grow beyond a handful.
         for config in self.sudo().search([("module_pos_hr", "=", True)]):
             caissiers = config._his_titulaires().filtered("pin")
-            responsables = config._get_group_pos_manager().user_ids.employee_id
+            # Comme pos_hr : les responsables de la societe de cette caisse.
+            responsables = (
+                config._get_group_pos_manager()
+                .with_company(config.company_id)
+                .user_ids.filtered(lambda u, c=config.company_id: c in u.company_ids)
+                .employee_id
+            )
             avances = config.advanced_employee_ids
             if (
                 avances - responsables == caissiers - responsables
@@ -100,13 +107,22 @@ class PosConfig(models.Model):
             )
 
     def _employee_domain(self, user_id):
-        """pos_hr ne filtre que si la liste « basique » est remplie ; nos caissiers
-        sont dans l'« avancee ». Une caisse qui a des roles de caissier n'offre
-        donc que ses listes — meme vides : alors seuls les responsables POS."""
+        """Qui peut taper son nom a cette caisse.
+
+        pos_hr ne filtre que si la liste « basique » est remplie ; nos caissiers
+        sont dans l'« avancee ». Ici, toute liste remplie — ou un role de caissier
+        lie — restreint la caisse a ses listes : retirer le dernier role ne la
+        rouvre donc pas a tout le monde. Et seulement ceux qui ont un PIN : pos_hr
+        met tout responsable POS sur la liste, PIN ou pas, et sans PIN n'importe
+        qui taperait « Administrator » au comptoir (decision 12 : pas de PIN, pas
+        de nom). Le PIN se lit en sudo : le champ est reserve aux RH.
+        """
         domain = super()._employee_domain(user_id)
-        if self.sudo().his_cashier_role_ids:
-            listes = self.basic_employee_ids | self.advanced_employee_ids | self.minimal_employee_ids
-            domain = Domain.AND([domain, ["|", ("user_id", "=", user_id), ("id", "in", listes.ids)]])
+        caisse = self.sudo()
+        listes = caisse.basic_employee_ids | caisse.advanced_employee_ids | caisse.minimal_employee_ids
+        if caisse.his_cashier_role_ids or listes:
+            avec_pin = listes.filtered("pin")
+            domain = Domain.AND([domain, ["|", ("user_id", "=", user_id), ("id", "in", avec_pin.ids)]])
         return domain
 
     def _his_sees_every_till(self):

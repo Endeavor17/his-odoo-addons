@@ -697,8 +697,8 @@ msgstr "Aucun caissier ne peut ouvrir cette caisse."
 #. module: his_stock_mdm
 #. odoo-python
 #: code:addons/his_stock_mdm/models/pos_config.py:0
-msgid "No cashier role linked: every employee can tap in."
-msgstr "Aucun rôle de caissier lié : tout employé peut taper son nom."
+msgid "No cashier role linked: only POS managers with a PIN can tap in."
+msgstr "Aucun rôle de caissier lié : seuls les responsables POS avec un PIN peuvent taper leur nom."
 
 #. module: his_stock_mdm
 #. odoo-python
@@ -733,3 +733,8 @@ msgstr "Qui peut taper son nom"
 #: code:addons/his_stock_mdm/models/pos_config.py:0
 msgid "Without a PIN, so not offered: %(names)s"
 msgstr "Sans PIN, donc pas proposés : %(names)s"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_res_users
+msgid "User"
+msgstr "Utilisateur"
