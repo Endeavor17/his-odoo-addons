@@ -137,6 +137,8 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
 
     def test_the_server_emails_the_ticket_once(self):
         """Recette P-05 : le ticket partait du navigateur, et un rechargement le perdait."""
+        domaine = self.env.company.alias_domain_id or self.env["mail.alias.domain"].create({"name": "his.edu.dz"})
+        self.env.company.alias_domain_id = domaine
         order = self._sync(self.with_email, [(self.meal_600, 1, 0.0, 0.0)], "ticket-0001", to_invoice=False)
         mail = self._ticket_mails(order)
         self.assertEqual(len(mail), 1)
@@ -144,6 +146,7 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
         self.assertEqual(mail.state, "outgoing", "sent inside the till's request instead of queued")
         self.assertIn("Meal credits left", mail.body_html)
         self.assertNotIn("VAT", mail.body_html, "the ticket shows prices incl. tax only")
+        self.assertEqual(mail.reply_to, "odoo-support@%s" % domaine.name, "a reply would have no thread to join")
         order._his_send_ticket()
         self.assertEqual(len(self._ticket_mails(order)), 1, "a resync sent the ticket twice")
 

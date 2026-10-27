@@ -10,6 +10,9 @@
         <field name="model_id" ref="point_of_sale.model_pos_order"/>
         <field name="subject">Ticket {{ object.pos_reference or object.name }}</field>
         <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+        <!-- The ticket is deleted once sent: a reply has no thread to join.
+             It goes to the helpdesk address instead and opens a ticket. -->
+        <field name="reply_to">{{ object.company_id.alias_domain_id and 'odoo-support@' + object.company_id.alias_domain_id.name or '' }}</field>
         <field name="partner_to">{{ object.partner_id.id }}</field>
         <field name="lang">{{ object.partner_id.lang }}</field>
         <field name="auto_delete" eval="True"/>
