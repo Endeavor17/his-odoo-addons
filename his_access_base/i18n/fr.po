@@ -32,11 +32,6 @@ msgid "Apply to Holders"
 msgstr "Appliquer aux titulaires"
 
 #. module: his_access_base
-#: model:ir.actions.server,name:his_access_base.ir_cron_reconcilier_roles_ir_actions_server
-msgid "Core: gaps between roles and positions"
-msgstr "Socle : écarts entre rôles et postes"
-
-#. module: his_access_base
 #: model:ir.module.category,description:his_access_base.module_category_his_access
 msgid "Cross-cutting access, shared by every department."
 msgstr "Accès transverses, communs à tous les métiers."
@@ -88,11 +83,6 @@ msgid ""
 msgstr ""
 "Aucun compte à mettre à jour : les employés de ce poste n'ont pas "
 "d'utilisateur Odoo."
-
-#. module: his_access_base
-#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
-msgid "Of Which From the Position"
-msgstr "Dont issus du poste"
 
 #. module: his_access_base
 #: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
@@ -253,3 +243,87 @@ msgstr "Rôles métier donnés automatiquement à qui occupe ce poste. Les group
 #: model:ir.model.fields,field_description:his_access_base.field_his_role__job_ids
 msgid "Job Positions"
 msgstr "Postes"
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/res_users.py:0
+msgid "A counter or service account only carries roles of its own kind."
+msgstr "Un compte comptoir ou service ne porte que des rôles de son type."
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_res_users__his_access_issue
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_search
+msgid "Access Issue"
+msgstr "Écart d'accès"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_res_users__his_role_ids
+msgid "Account Roles"
+msgstr "Rôles du compte"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_res_users__his_account_type
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_search
+msgid "Account Type"
+msgstr "Type de compte"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__user_ids
+msgid "Accounts"
+msgstr "Comptes"
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/res_users.py:0
+msgid "An employee account gets its roles from its job post, not directly."
+msgstr "Un compte d'employé tient ses rôles de son poste, pas directement."
+
+#. module: his_access_base
+#: model:ir.actions.server,name:his_access_base.ir_cron_reconcilier_roles_ir_actions_server
+msgid "Core: access gaps (accounts vs posts and roles)"
+msgstr "Socle : écarts d'accès (comptes face aux postes et aux rôles)"
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_his_role__user_ids
+msgid "Counter and service accounts carrying this role directly."
+msgstr "Comptes comptoir et service qui portent ce rôle directement."
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_res_users__his_role_ids
+msgid "Counter and service accounts only. Employees get their roles from their job post."
+msgstr "Comptes comptoir et service seulement. Les employés tiennent leurs rôles de leur poste."
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_res_users__his_account_type
+msgid "Employee: rights come from the job post. Counter: the PC of a till. Service: an integration such as n8n."
+msgstr "Employé : les droits viennent du poste. Comptoir : le PC d'une caisse. Service : une intégration comme n8n."
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__res_users__his_access_issue__no_employee
+msgid "No employee record"
+msgstr "Aucune fiche employé"
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__res_users__his_access_issue__no_job
+msgid "No job post"
+msgstr "Aucun poste"
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
+msgid "Of Which Automatic"
+msgstr "Dont automatiques"
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__res_users__his_access_issue__post_drift
+msgid "Out of sync with its job post"
+msgstr "Désynchronisé de son poste"
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__res_users__his_access_issue__role_drift
+msgid "Out of sync with its roles"
+msgstr "Désynchronisé de ses rôles"
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_search
+msgid "With issue"
+msgstr "Avec écart"

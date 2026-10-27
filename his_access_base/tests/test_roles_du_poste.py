@@ -106,9 +106,9 @@ class TestRolesDuPoste(TransactionCase):
         # On desynchronise en ne passant pas par la reconciliation.
         employe.user_id.sudo().write({"role_ids_du_poste": [(5, 0, 0)]})
 
-        ecarts = self.env["hr.employee"]._cron_reconcilier_roles()
+        ecarts = self.env["res.users"]._cron_controler_acces()
 
-        self.assertTrue(any("desync" in e for e in ecarts))
+        self.assertIn("zz_desync", ecarts)
         self.assertFalse(
             employe.user_id.role_ids_du_poste,
             "le cron doit signaler l'ecart, pas le corriger",

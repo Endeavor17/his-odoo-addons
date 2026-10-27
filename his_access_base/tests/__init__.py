@@ -6,4 +6,5 @@ from . import (
     test_langue_interface,
     test_politique_acces,
     test_roles_du_poste,
+    test_types_de_compte,
 )

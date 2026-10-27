@@ -46,6 +46,14 @@ class HisRole(models.Model):
         "job_id",
         string="Job Positions",
     )
+    user_ids = fields.Many2many(
+        "res.users",
+        "his_user_role_rel",
+        "role_id",
+        "user_id",
+        string="Accounts",
+        help="Counter and service accounts carrying this role directly.",
+    )
     active = fields.Boolean(default=True)
 
     @api.depends("group_ids", "group_ids.all_implied_ids")
@@ -70,19 +78,24 @@ class HisRole(models.Model):
     def write(self, vals):
         # Les postes d'AVANT comptent aussi : un poste retire du role doit perdre
         # ses groupes.
-        postes = self.with_context(active_test=False).job_ids
+        tous = self.with_context(active_test=False)
+        postes, comptes = tous.job_ids, tous.user_ids
         res = super().write(vals)
-        if {"group_ids", "job_ids", "active"} & vals.keys():
-            self._his_reapply(postes)
+        if {"group_ids", "job_ids", "user_ids", "active"} & vals.keys():
+            self._his_reapply(postes, comptes)
         return res
 
     def unlink(self):
-        postes = self.with_context(active_test=False).job_ids
+        tous = self.with_context(active_test=False)
+        postes, comptes = tous.job_ids, tous.user_ids
         res = super().unlink()
-        self.browse()._his_reapply(postes)
+        self.browse()._his_reapply(postes, comptes)
         return res
 
-    def _his_reapply(self, postes=None):
+    def _his_reapply(self, postes=None, comptes=None):
         """Re-applique ces roles a tous ceux qui les portent."""
-        postes = (postes or self.env["hr.job"]) | self.with_context(active_test=False).job_ids
+        tous = self.with_context(active_test=False)
+        postes = (postes or self.env["hr.job"]) | tous.job_ids
+        comptes = (comptes or self.env["res.users"]) | tous.user_ids
         self.env["hr.employee"].sudo().search([("job_id", "in", postes.ids)])._his_appliquer_roles_du_poste()
+        comptes.sudo()._his_reconcilier_compte()

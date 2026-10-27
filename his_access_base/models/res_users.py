@@ -14,7 +14,8 @@ on ne touche a rien d'autre.
 
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -31,6 +32,109 @@ class ResUsers(models.Model):
         help="Technical: what the automatic assignment set. Used to tell a position "
         "role apart from an individual exception.",
     )
+
+    # Les comptes qui ne sont pas des personnes : le PC d'un comptoir de caisse,
+    # une integration (n8n). Ils portent leurs roles directement ; tout autre
+    # compte tient les siens de son poste (decision de Mohamed, 2026-10-27).
+    his_account_type = fields.Selection(
+        [("employee", "Employee"), ("counter", "Counter"), ("service", "Service")],
+        string="Account Type",
+        default="employee",
+        groups="base.group_erp_manager",
+        help="Employee: rights come from the job post. Counter: the PC of a till. Service: an "
+        "integration such as n8n.",
+    )
+    his_role_ids = fields.Many2many(
+        "his.role",
+        "his_user_role_rel",
+        "user_id",
+        "role_id",
+        string="Account Roles",
+        groups="base.group_erp_manager",
+        help="Counter and service accounts only. Employees get their roles from their job post.",
+    )
+    his_access_issue = fields.Selection(
+        [
+            ("no_employee", "No employee record"),
+            ("no_job", "No job post"),
+            ("post_drift", "Out of sync with its job post"),
+            ("role_drift", "Out of sync with its roles"),
+        ],
+        string="Access Issue",
+        readonly=True,
+        copy=False,
+        groups="base.group_erp_manager",
+    )
+
+    @api.constrains("his_account_type", "his_role_ids")
+    def _check_roles_du_compte(self):
+        for user in self.sudo():
+            kind = user.his_account_type or "employee"
+            if kind == "employee" and user.his_role_ids:
+                raise ValidationError(_("An employee account gets its roles from its job post, not directly."))
+            if user.his_role_ids.filtered(lambda r, kind=kind: r.kind != kind):
+                raise ValidationError(_("A counter or service account only carries roles of its own kind."))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        users = super().create(vals_list)
+        users.sudo().filtered("his_role_ids")._his_reconcilier_compte()
+        return users
+
+    def write(self, vals):
+        res = super().write(vals)
+        if {"his_account_type", "his_role_ids"} & vals.keys():
+            self.sudo()._his_reconcilier_compte()
+        return res
+
+    def _his_groupes_attendus(self):
+        """Ce que ce compte doit tenir automatiquement, groupes sensibles exclus."""
+        self.ensure_one()
+        user = self.sudo()
+        if (user.his_account_type or "employee") == "employee":
+            employe = user.employee_ids[:1]
+            groupes = employe.job_id._his_groupes_du_poste() if employe.job_id else self.env["res.groups"]
+        else:
+            groupes = user.his_role_ids.group_ids
+        return groupes - self.env["hr.job"]._his_groupes_sensibles()
+
+    def _his_reconcilier_compte(self):
+        for user in self:
+            user._his_reconcilier_roles(user._his_groupes_attendus())
+            user._his_controler_acces()
+
+    def _his_controler_acces(self):
+        """Note l'ecart d'acces de chaque compte, sans le corriger."""
+        for user in self.sudo():
+            issue = False
+            if (user.his_account_type or "employee") == "employee":
+                employe = user.employee_ids[:1]
+                if not employe:
+                    issue = "no_employee"
+                elif not employe.job_id:
+                    issue = "no_job"
+                elif user._his_groupes_attendus() != user.role_ids_du_poste:
+                    issue = "post_drift"
+            elif user._his_groupes_attendus() != user.role_ids_du_poste:
+                issue = "role_drift"
+            if user.his_access_issue != issue:
+                user.his_access_issue = issue
+
+    @api.model
+    def _cron_controler_acces(self):
+        """Signale les ecarts sans les corriger en silence.
+
+        Corriger sans rien dire masquerait une attribution faite a la main qui
+        contredit le poste — or c'est precisement ce qu'une revue d'acces doit
+        voir. Les ecarts s'affichent dans la revue d'acces (filtre « With
+        issue »), plus seulement dans un journal que personne ne lit.
+        """
+        comptes = self.sudo().search([("share", "=", False)])
+        comptes._his_controler_acces()
+        signales = comptes.filtered("his_access_issue")
+        if signales:
+            _logger.warning("Ecarts d'acces sur %s compte(s) : %s", len(signales), ", ".join(signales.mapped("login")))
+        return signales.mapped("login")
 
     def _his_reconcilier_roles(self, groupes_du_poste):
         """Aligne ce compte sur les roles de son poste, sans toucher au reste."""
@@ -70,11 +174,14 @@ class HrEmployee(models.Model):
         touches = 0
         for employe in self:
             user = employe.user_id
-            if not user:
+            # Un compte comptoir ou service rattache par erreur a une fiche ne
+            # prend pas les roles d'un poste.
+            if not user or (user.sudo().his_account_type or "employee") != "employee":
                 continue
             groupes = employe.job_id._his_groupes_du_poste() if employe.job_id else self.env["res.groups"]
             if user._his_reconcilier_roles(groupes):
                 touches += 1
+            user._his_controler_acces()
         return touches
 
     @api.model_create_multi
@@ -95,25 +202,3 @@ class HrEmployee(models.Model):
         if "job_id" in vals or "user_id" in vals:
             self._his_appliquer_roles_du_poste()
         return res
-
-    @api.model
-    def _cron_reconcilier_roles(self):
-        """Signale les ecarts sans les corriger en silence.
-
-        Corriger sans rien dire masquerait une attribution faite a la main qui
-        contredit le poste — or c'est precisement ce qu'une revue d'acces doit
-        voir.
-        """
-        ecarts = []
-        for employe in self.search([("user_id", "!=", False), ("job_id", "!=", False)]):
-            attendu = employe.job_id._his_groupes_du_poste()
-            pose = employe.user_id.role_ids_du_poste
-            if attendu != pose:
-                ecarts.append("%s (poste %s)" % (employe.name, employe.job_id.name))
-        if ecarts:
-            _logger.warning(
-                "Roles du poste desynchronises pour %s compte(s) : %s",
-                len(ecarts),
-                ", ".join(ecarts),
-            )
-        return ecarts
