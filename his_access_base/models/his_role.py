@@ -41,7 +41,7 @@ class HisRole(models.Model):
     )
     active = fields.Boolean(default=True)
 
-    @api.depends("group_ids")
+    @api.depends("group_ids", "group_ids.all_implied_ids")
     def _compute_granted_group_ids(self):
         for role in self:
             role.granted_group_ids = role.group_ids | role.group_ids.all_implied_ids

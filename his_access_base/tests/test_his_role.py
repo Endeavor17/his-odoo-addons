@@ -20,10 +20,13 @@ class TestHisRole(TransactionCase):
         return self.env["res.users"].create({"name": login, "login": login, "group_ids": [(6, 0, groups)]})
 
     def test_role_shows_everything_it_grants(self):
-        role = self.env["his.role"].create(
-            {"name": "POS Supervisor", "group_ids": [(6, 0, [self.env.ref("point_of_sale.group_pos_manager").id])]}
+        # Un groupe cree ici, sur une dependance declaree (hr) : le test ne doit
+        # pas supposer le Point de vente installe.
+        brings_along = self.env["res.groups"].create(
+            {"name": "Brings HR along", "implied_ids": [(4, self.env.ref("hr.group_hr_user").id)]}
         )
-        self.assertIn(self.env.ref("stock.group_stock_user"), role.granted_group_ids)
+        role = self.env["his.role"].create({"name": "HR helper", "group_ids": [(6, 0, [brings_along.id])]})
+        self.assertIn(self.env.ref("hr.group_hr_user"), role.granted_group_ids)
 
     def test_role_refuses_sensitive_group(self):
         checked = 0
