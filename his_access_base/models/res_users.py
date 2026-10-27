@@ -107,15 +107,21 @@ class ResUsers(models.Model):
         """Note l'ecart d'acces de chaque compte, sans le corriger."""
         for user in self.sudo():
             issue = False
-            if (user.his_account_type or "employee") == "employee":
+            # Desynchronise : ce qui est memorise differe de l'attendu, OU un
+            # groupe attendu a ete retire a la main du compte.
+            attendus = user._his_groupes_attendus()
+            desynchronise = attendus != user.role_ids_du_poste or bool(attendus - user.group_ids)
+            if not user.active:
+                pass
+            elif (user.his_account_type or "employee") == "employee":
                 employe = user.employee_ids[:1]
                 if not employe:
                     issue = "no_employee"
                 elif not employe.job_id:
                     issue = "no_job"
-                elif user._his_groupes_attendus() != user.role_ids_du_poste:
+                elif desynchronise:
                     issue = "post_drift"
-            elif user._his_groupes_attendus() != user.role_ids_du_poste:
+            elif desynchronise:
                 issue = "role_drift"
             if user.his_access_issue != issue:
                 user.his_access_issue = issue
@@ -129,9 +135,10 @@ class ResUsers(models.Model):
         voir. Les ecarts s'affichent dans la revue d'acces (filtre « With
         issue »), plus seulement dans un journal que personne ne lit.
         """
-        comptes = self.sudo().search([("share", "=", False)])
+        # Archives compris : leur ecart s'efface, la revue les affiche aussi.
+        comptes = self.sudo().with_context(active_test=False).search([("share", "=", False)])
         comptes._his_controler_acces()
-        signales = comptes.filtered("his_access_issue")
+        signales = comptes.filtered("his_access_issue")  # que des actifs
         if signales:
             _logger.warning("Ecarts d'acces sur %s compte(s) : %s", len(signales), ", ".join(signales.mapped("login")))
         return signales.mapped("login")

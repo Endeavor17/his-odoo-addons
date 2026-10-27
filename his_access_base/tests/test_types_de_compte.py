@@ -73,3 +73,35 @@ class TestTypesDeCompte(TransactionCase):
         self.assertIn("zz_desync", signales)
         self.assertEqual(compte.his_access_issue, "post_drift")
         self.assertFalse(compte.role_ids_du_poste, "le controle signale l'ecart, il ne le corrige pas")
+
+    def test_role_side_cannot_attach_a_counter_account_to_an_employee_role(self):
+        comptoir = self._comptoir()
+        magasinier = self.env["his.role"].create({"name": "Magasinier"})
+        with self.assertRaises(ValidationError):
+            magasinier.user_ids = [(4, comptoir.id)]
+
+    def test_a_role_on_a_post_cannot_become_a_counter_role(self):
+        role = self.env["his.role"].create({"name": "Sur un poste"})
+        self.env["hr.job"].create({"name": "Poste du role", "role_ids": [(6, 0, role.ids)]})
+        with self.assertRaises(ValidationError):
+            role.kind = "counter"
+
+    def test_a_post_group_removed_by_hand_is_flagged(self):
+        role = self.env["his.role"].create({"name": "Retrait", "group_ids": [(6, 0, self.du_role.ids)]})
+        poste = self.env["hr.job"].create({"name": "Poste retrait", "role_ids": [(6, 0, role.ids)]})
+        compte = self._compte("zz_retrait")
+        self.env["hr.employee"].create({"name": "Retrait", "user_id": compte.id, "job_id": poste.id})
+        compte.sudo().write({"group_ids": [(3, self.du_role.id)]})
+
+        compte._his_controler_acces()
+
+        self.assertEqual(compte.his_access_issue, "post_drift")
+
+    def test_an_archived_account_carries_no_issue(self):
+        seul = self._compte("zz_archive")
+        seul._his_controler_acces()
+        seul.active = False
+
+        self.env["res.users"]._cron_controler_acces()
+
+        self.assertFalse(seul.his_access_issue)

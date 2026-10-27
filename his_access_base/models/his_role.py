@@ -75,6 +75,16 @@ class HisRole(models.Model):
                     )
                 )
 
+    @api.constrains("kind", "user_ids", "job_ids")
+    def _check_comptes_et_postes(self):
+        """La regle de type, vue du cote du role : sinon on rattacherait un
+        compte comptoir a un role d'employe en passant par le role."""
+        self.sudo().user_ids._check_roles_du_compte()
+        # Pas de job_ids._check_roles_d_employe() : hr.job.role_ids filtre par
+        # son domaine (kind = employee) a la lecture et ne verrait pas ce role.
+        if self.sudo().filtered(lambda r: r.kind != "employee" and r.job_ids):
+            raise ValidationError(_("A position only carries employee roles, not counter or service roles."))
+
     def write(self, vals):
         # Les postes d'AVANT comptent aussi : un poste retire du role doit perdre
         # ses groupes.
