@@ -86,6 +86,31 @@ class HelpdeskTicket(models.Model):
             self.env.ref("mail.ir_cron_mail_scheduler_action")._trigger()
         return res
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        tickets = super().create(vals_list)
+        tickets._his_envoyer_accuse()
+        return tickets
+
+    def _his_envoyer_accuse(self):
+        # Accuse de reception, a la creation seulement (pas par l'etape Nouveau :
+        # le suivi d'etape ne part a la creation que si stage_id est dans les
+        # valeurs, ce que ni la passerelle mail ni le formulaire ne donnent).
+        # Memes options que le courriel d'etape d'OCA, en file. Adresse brute,
+        # aucun contact cree pour l'expediteur.
+        accuse = self.env.ref("his_helpdesk_identity_bridge.mail_template_accuse_reception", raise_if_not_found=False)
+        tickets = self.filtered(lambda t: t.partner_email or t.partner_id.email)
+        if not (accuse and tickets):
+            return
+        for ticket in tickets.with_context(mail_composer_force_partners=False):
+            ticket.message_mail_with_source(
+                accuse,
+                subtype_id=self.env["ir.model.data"]._xmlid_to_res_id("mail.mt_note"),
+                email_layout_xmlid="mail.mail_notification_light",
+                force_send=False,
+            )
+        self.env.ref("mail.ir_cron_mail_scheduler_action")._trigger()
+
     @api.model
     def message_new(self, msg, custom_values=None):
         # Un courriel recu (odoo-support@) : canal Email, et la personne quand

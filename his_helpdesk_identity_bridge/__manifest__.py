@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Helpdesk - Referentiel Personnes (pont)",
-    "version": "19.0.1.3.0",
+    "version": "19.0.1.4.0",
     "category": "Services/Helpdesk",
     "summary": "Chaque ticket est rattache a une personne du referentiel",
     "description": """
@@ -22,6 +22,7 @@ est un defaut du referentiel, corrige a sa source.
     "data": [
         "data/helpdesk_data.xml",
         "data/helpdesk_category_data.xml",
+        "data/mail_template_accuse.xml",
         "security/ir.model.access.csv",
         "security/his_helpdesk_identity_bridge_security.xml",
         "views/helpdesk_ticket_views.xml",

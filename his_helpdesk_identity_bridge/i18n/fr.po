@@ -245,3 +245,32 @@ msgstr "Équipe de ticket d'assistance"
 #: model:ir.model.fields,field_description:his_helpdesk_identity_bridge.field_helpdesk_ticket__team_id
 msgid "Team"
 msgstr "Équipe"
+
+#. module: his_helpdesk_identity_bridge
+#: model:mail.template,body_html:his_helpdesk_identity_bridge.mail_template_accuse_reception
+msgid ""
+"<div>\n"
+"    <p>Hello<t t-if=\"object.partner_id.name or object.partner_name\"> <t t-out=\"object.partner_id.name or object.partner_name\"/></t>,</p>\n"
+"    <p>We have received your request <strong><t t-out=\"object.number\"/></strong> (\"<t t-out=\"object.name\"/>\").</p>\n"
+"    <p>Our team is looking into it and will get back to you as soon as possible.</p>\n"
+"    <p>To add information, simply reply to this message: your reply will be added to your request.</p>\n"
+"</div>\n"
+"        "
+msgstr ""
+"<div>\n"
+"    <p>Bonjour<t t-if=\"object.partner_id.name or object.partner_name\"> <t t-out=\"object.partner_id.name or object.partner_name\"/></t>,</p>\n"
+"    <p>Nous avons bien reçu votre demande <strong><t t-out=\"object.number\"/></strong> (« <t t-out=\"object.name\"/> »).</p>\n"
+"    <p>Notre équipe l'examine et nous revenons vers vous dès que possible.</p>\n"
+"    <p>Pour compléter votre demande, répondez simplement à ce message : votre réponse sera ajoutée à votre demande.</p>\n"
+"</div>\n"
+"        "
+
+#. module: his_helpdesk_identity_bridge
+#: model:mail.template,name:his_helpdesk_identity_bridge.mail_template_accuse_reception
+msgid "Helpdesk: acknowledgement of receipt"
+msgstr "Helpdesk : accusé de réception"
+
+#. module: his_helpdesk_identity_bridge
+#: model:mail.template,subject:his_helpdesk_identity_bridge.mail_template_accuse_reception
+msgid "Your request {{ object.number }} has been received: {{ object.name }}"
+msgstr "Votre demande {{ object.number }} est bien reçue : {{ object.name }}"
