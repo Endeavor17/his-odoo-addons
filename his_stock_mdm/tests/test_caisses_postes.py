@@ -122,3 +122,14 @@ class TestCaissesPostes(TransactionCase):
             }
         )
         self.assertIn(nour, self.restaurant.advanced_employee_ids)
+
+    def test_counter_account_loads_its_till(self):
+        # La caisse lit tous les champs de pos.config ; le role de caissier
+        # (his.role) est reserve aux responsables POS.
+        comptoir = new_test_user(
+            self.env,
+            login="zz_comptoir_charge",
+            groups="base.group_user,point_of_sale.group_pos_user,his_stock_mdm.group_caisse_cafeteria",
+        )
+        data = self.env["pos.config"].with_user(comptoir)._load_pos_data_search_read({}, self.cafeteria)
+        self.assertEqual([c["id"] for c in data], self.cafeteria.ids)
