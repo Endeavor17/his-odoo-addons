@@ -14,12 +14,23 @@ configuration, pas du code : les RH ajustent un poste sans livraison.
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
-# Roles d'administration : qui les detient controle tout Odoo (utilisateurs,
-# regles, actions serveur qui executent du Python). Ils ne sont JAMAIS un role
-# de poste — sinon quiconque edite un poste (RH, recruteur) s'octroie
-# l'administration en se le rattachant. Ils restent attribues a la main par un
-# administrateur, dans Reglages.
-ADMIN_GROUP_XMLIDS = ("base.group_system", "base.group_erp_manager")
+# Roles sensibles : jamais par un poste ni par un role metier. L'administration
+# d'abord — qui la detient controle tout Odoo (utilisateurs, regles, actions
+# serveur qui executent du Python) ; sinon quiconque edite un poste s'octroie
+# l'administration en se le rattachant. Puis ce qui contourne une protection
+# ou fait sortir les donnees : HTML non assaini, modeles d'e-mail (rendu de
+# code), comptabilite en administrateur, export, documentation de l'API.
+# Ils restent attribues a la main par un administrateur, dans Reglages, et la
+# revue d'acces les montre comme des derogations.
+SENSITIVE_GROUP_XMLIDS = (
+    "base.group_system",
+    "base.group_erp_manager",
+    "base.group_sanitize_override",
+    "mail.group_mail_template_editor",
+    "account.group_account_manager",
+    "base.group_allow_export",
+    "api_doc.group_allow_doc",
+)
 
 
 class HrJob(models.Model):
@@ -36,10 +47,10 @@ class HrJob(models.Model):
     )
 
     @api.model
-    def _his_groupes_administration(self):
-        """Les groupes d'administration, eux-memes et tout ce qui les implique."""
+    def _his_groupes_sensibles(self):
+        """Les groupes sensibles, eux-memes et tout ce qui les implique."""
         dangereux = self.env["res.groups"]
-        for xmlid in ADMIN_GROUP_XMLIDS:
+        for xmlid in SENSITIVE_GROUP_XMLIDS:
             groupe = self.env.ref(xmlid, raise_if_not_found=False)
             if groupe:
                 dangereux |= groupe
@@ -55,7 +66,7 @@ class HrJob(models.Model):
         La vue masque deja `group_ids` aux non-managers RH, mais ce n'est que de
         l'affichage : un ecrit direct (RPC) passerait outre. Le verrou est ici.
         """
-        interdits = self._his_groupes_administration()
+        interdits = self._his_groupes_sensibles()
         for job in self:
             fautifs = job.group_ids & interdits
             if fautifs:

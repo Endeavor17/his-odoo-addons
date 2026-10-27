@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La liste maitresse des roles. Seul l'administrateur des droits y touche :
+         c'est elle qui decide de ce qu'un poste donne. -->
+
+    <record id="view_his_role_list" model="ir.ui.view">
+        <field name="name">his.role.list</field>
+        <field name="model">his.role</field>
+        <field name="arch" type="xml">
+            <list string="Business Roles">
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="group_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_his_role_form" model="ir.ui.view">
+        <field name="name">his.role.form</field>
+        <field name="model">his.role</field>
+        <field name="arch" type="xml">
+            <form string="Business Role">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Cafeteria Cashier"/></h1>
+                    </div>
+                    <group>
+                        <field name="kind"/>
+                        <field name="description"/>
+                        <field name="active" invisible="1"/>
+                    </group>
+                    <group string="Odoo Groups">
+                        <field name="group_ids" widget="many2many_tags" options="{'no_create': True}" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Everything This Role Grants">
+                        <field name="granted_group_ids" widget="many2many_tags" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_his_role_search" model="ir.ui.view">
+        <field name="name">his.role.search</field>
+        <field name="model">his.role</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="group_ids"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_kind" string="Kind" context="{'group_by': 'kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_his_role" model="ir.actions.act_window">
+        <field name="name">Business Roles</field>
+        <field name="res_model">his.role</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_his_role" name="Business Roles"
+              parent="base.menu_users" action="action_his_role"
+              sequence="40" groups="base.group_erp_manager"/>
+
+</odoo>

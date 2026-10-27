@@ -164,3 +164,106 @@ msgstr ""
 #: model:ir.model,name:his_access_base.model_res_users
 msgid "User"
 msgstr "Utilisateur"
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/his_role.py:0
+msgid "A business role cannot grant a sensitive group (%(groups)s). These are still assigned by hand by an administrator, in Settings ▸ Users."
+msgstr "Un rôle métier ne peut pas donner un groupe sensible (%(groups)s). Ces accès restent attribués à la main par un administrateur, dans Paramètres ▸ Utilisateurs."
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: his_access_base
+#: model:ir.model,name:his_access_base.model_his_role
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
+msgid "Business Role"
+msgstr "Rôle métier"
+
+#. module: his_access_base
+#: model:ir.actions.act_window,name:his_access_base.action_his_role
+#: model:ir.ui.menu,name:his_access_base.menu_his_role
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_list
+msgid "Business Roles"
+msgstr "Rôles métier"
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__his_role__kind__counter
+msgid "Counter"
+msgstr "Comptoir"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__description
+msgid "Description"
+msgstr "Description"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__granted_group_ids
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
+msgid "Everything This Role Grants"
+msgstr "Tout ce que ce rôle donne"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__kind
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_search
+msgid "Kind"
+msgstr "Type"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__group_ids
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
+msgid "Odoo Groups"
+msgstr "Groupes Odoo"
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__his_role__kind__service
+msgid "Service"
+msgstr "Service"
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_his_role__granted_group_ids
+msgid "The groups above plus every group they bring along."
+msgstr "Les groupes ci-dessus, plus tous ceux qu'ils entraînent."
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_his_role__kind
+msgid "Which accounts may carry this role: an employee through their job post, a till's counter account, or a service account such as n8n."
+msgstr "Quels comptes peuvent porter ce rôle : un employé par son poste, le compte comptoir d'une caisse, ou un compte de service comme n8n."
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
+msgid "e.g. Cafeteria Cashier"
+msgstr "ex. Caissier Cafétéria"

@@ -39,7 +39,7 @@ class ResUsers(models.Model):
         # d'administration (impossible via la contrainte de hr.job, mais une
         # base ancienne pourrait en avoir un), la reconciliation en sudo ne doit
         # jamais l'accorder. On l'ecarte avant tout calcul.
-        interdits = self.env["hr.job"]._his_groupes_administration()
+        interdits = self.env["hr.job"]._his_groupes_sensibles()
         groupes_du_poste = groupes_du_poste - interdits
         a_retirer = self.role_ids_du_poste - groupes_du_poste
         a_ajouter = groupes_du_poste - self.group_ids
