@@ -88,7 +88,7 @@ class HelpdeskTicket(models.Model):
 
     @api.model
     def message_new(self, msg, custom_values=None):
-        # Un courriel recu (support@) : canal Email, et la personne quand
+        # Un courriel recu (odoo-support@) : canal Email, et la personne quand
         # l'expediteur n'est pas deja un contact connu.
         values = dict(custom_values or {})
         values.setdefault("channel_id", self.env.ref("helpdesk_mgmt.helpdesk_ticket_channel_email").id)
