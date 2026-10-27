@@ -40,10 +40,14 @@
             <field name="name">Restaurant</field>
             <field name="picking_type_id" ref="picking_type_pos_restaurant"/>
             <field name="his_group_ids" eval="[Command.set([ref('group_caisse_restaurant')])]"/>
-            <!-- Le Restaurant ne sert QUE des repas : aucune categorie de
-                 vente au detail. L'onglet Repas est ajoute par
+            <!-- Le Restaurant sert les repas et, depuis le 2026-10-27, les
+                 boissons, prises sur le stock unique des caisses (voir
+                 picking_type_pos_restaurant). L'onglet Repas est ajoute par
                  his_meal_management, a qui les produits appartiennent. -->
             <field name="limit_categories" eval="True"/>
+            <field name="iface_available_categ_ids" eval="[Command.set([
+                ref('pos_categ_boissons'),
+            ])]"/>
         </record>
         <record id="pos_config_copy_center" model="pos.config">
             <field name="name">Copy Center</field>

@@ -33,3 +33,13 @@ class TestCaissesRoles(TransactionCase):
         mes_caisses = self.env["pos.config"].with_user(self.chef).search([("his_is_my_till", "=", True)])
         self.assertIn(self.cafeteria, mes_caisses)
         self.assertIn(self.copy_center, mes_caisses)
+
+    def test_le_restaurant_vend_les_boissons_de_son_stock(self):
+        """2026-10-27 : le Restaurant vend les boissons, prises sur le stock unique des caisses."""
+        restaurant = self.env.ref("his_stock_mdm.pos_config_restaurant")
+        self.assertIn(self.env.ref("his_stock_mdm.pos_categ_boissons"), restaurant.iface_available_categ_ids)
+        self.assertEqual(
+            restaurant.picking_type_id.default_location_src_id,
+            self.env.ref("his_stock_mdm.loc_cafeteria"),
+            "les boissons vendues au Restaurant sortent du meme stock que la Cafeteria",
+        )

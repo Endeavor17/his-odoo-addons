@@ -254,7 +254,7 @@ class TestGovernance(TransactionCase):
     def test_pos_sources_own_location(self):
         for pos_xmlid, loc_xmlid in [
             ("pos_config_cafeteria", "loc_cafeteria"),
-            ("pos_config_restaurant", "loc_restaurant"),
+            ("pos_config_restaurant", "loc_cafeteria"),  # boissons : stock unique (2026-10-27)
             ("pos_config_copy_center", "loc_copy_center"),
         ]:
             config = self.env.ref("his_stock_mdm.%s" % pos_xmlid)
