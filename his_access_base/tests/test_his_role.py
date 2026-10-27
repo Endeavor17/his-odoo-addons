@@ -7,10 +7,9 @@ utilisateur » avant d'enregistrer. Et il ne peut jamais porter un groupe
 sensible, ni directement ni par implication.
 """
 
+from odoo.addons.his_access_base.models.hr_job import SENSITIVE_GROUP_XMLIDS
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
-
-from odoo.addons.his_access_base.models.hr_job import SENSITIVE_GROUP_XMLIDS
 
 
 @tagged("post_install", "-at_install")

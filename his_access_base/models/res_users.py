@@ -41,8 +41,7 @@ class ResUsers(models.Model):
         string="Account Type",
         default="employee",
         groups="base.group_erp_manager",
-        help="Employee: rights come from the job post. Counter: the PC of a till. Service: an "
-        "integration such as n8n.",
+        help="Employee: rights come from the job post. Counter: the PC of a till. Service: an integration such as n8n.",
     )
     his_role_ids = fields.Many2many(
         "his.role",
