@@ -6,10 +6,10 @@
              sans transmettre (Mohamed, 2026-10-18). Elle remplace les quatre
              equipes du 2026-10-07 ; le service concerne passe dans la
              categorie. Ses membres suivent le poste « Support Officer »,
-             qui donne aussi le role Helpdesk Manager. -->
+             dont le role metier « Helpdesk Manager » vient de
+             his_role_catalogue. -->
         <record id="job_support" model="hr.job">
             <field name="name">Support Officer</field>
-            <field name="group_ids" eval="[Command.link(ref('helpdesk_mgmt.group_helpdesk_manager'))]"/>
         </record>
         <record id="team_support" model="helpdesk.ticket.team">
             <field name="name">Support</field>

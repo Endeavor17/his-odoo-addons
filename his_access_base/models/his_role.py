@@ -70,10 +70,16 @@ class HisRole(models.Model):
     def write(self, vals):
         # Les postes d'AVANT comptent aussi : un poste retire du role doit perdre
         # ses groupes.
-        postes = self.job_ids
+        postes = self.with_context(active_test=False).job_ids
         res = super().write(vals)
         if {"group_ids", "job_ids", "active"} & vals.keys():
             self._his_reapply(postes)
+        return res
+
+    def unlink(self):
+        postes = self.with_context(active_test=False).job_ids
+        res = super().unlink()
+        self.browse()._his_reapply(postes)
         return res
 
     def _his_reapply(self, postes=None):

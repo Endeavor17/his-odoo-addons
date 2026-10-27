@@ -46,6 +46,9 @@ class HrJob(models.Model):
         string="Business Roles",
         domain=[("kind", "=", "employee")],
         groups="base.group_erp_manager",
+        # Une copie par RH echouerait : RH ne lit pas les roles, et la copie les
+        # reecrirait. Un poste duplique repart sans role ; l'admin les choisit.
+        copy=False,
         help="Business roles granted automatically to whoever holds this position. Groups "
         "set by hand on a user are never touched.",
     )

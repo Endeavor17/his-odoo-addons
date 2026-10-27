@@ -164,3 +164,47 @@ class TestRolesDuPoste(TransactionCase):
 
         employe.with_user(rh).write({"job_id": poste.id})
         self.assertIn(du_role, employe.user_id.group_ids)
+
+    def _rh_officer(self, login):
+        """RH et recrutement : sans le recrutement, le coeur refuse deja toute
+        copie de poste (champ interviewer_ids)."""
+        groupes = [self.interne.id, self.env.ref("hr.group_hr_user").id]
+        recrutement = self.env.ref("hr_recruitment.group_hr_recruitment_user", raise_if_not_found=False)
+        if recrutement:
+            groupes.append(recrutement.id)
+        return self.env["res.users"].create({"name": login, "login": login, "group_ids": [(6, 0, groupes)]})
+
+    def test_hr_officer_can_duplicate_a_post(self):
+        """Les roles ne suivent pas la copie : RH ne peut pas les lire."""
+        poste = self._poste("Poste a copier", [self._groupe("ZZ groupe copie")])
+        copie = poste.with_user(self._rh_officer("zz_rh_copie")).copy()
+        self.assertFalse(copie.sudo().role_ids)
+
+    def test_removing_a_post_from_a_role_removes_its_groups(self):
+        du_role = self._groupe("ZZ groupe retire")
+        poste = self._poste("Poste retire", [du_role])
+        employe = self._employe("retire", poste)
+
+        poste.role_ids.job_ids = [(3, poste.id)]
+
+        self.assertNotIn(du_role, employe.user_id.group_ids)
+
+    def test_deleting_a_role_removes_its_groups(self):
+        du_role = self._groupe("ZZ groupe supprime")
+        poste = self._poste("Poste supprime", [du_role])
+        employe = self._employe("supprime", poste)
+
+        poste.role_ids.unlink()
+
+        self.assertNotIn(du_role, employe.user_id.group_ids)
+
+    def test_unarchiving_a_role_gives_its_groups_back(self):
+        du_role = self._groupe("ZZ groupe desarchive")
+        poste = self._poste("Poste desarchive", [du_role])
+        employe = self._employe("desarchive", poste)
+        role = poste.role_ids
+        role.active = False
+
+        role.active = True
+
+        self.assertIn(du_role, employe.user_id.group_ids)

@@ -11,6 +11,11 @@ class TestEquipePoste(TransactionCase):
         super().setUpClass()
         cls.poste = cls.env.ref("his_helpdesk_identity_bridge.job_support")
         cls.support = cls.env.ref("his_helpdesk_identity_bridge.team_support")
+        # Le role metier du poste vient du catalogue (his_role_catalogue), qui
+        # n'est pas une dependance : on le pose ici.
+        cls.poste.role_ids = cls.env["his.role"].create(
+            {"name": "Helpdesk Manager", "group_ids": [(6, 0, [cls.env.ref("helpdesk_mgmt.group_helpdesk_manager").id])]}
+        )
         cls.autre_poste = cls.env["hr.job"].create({"name": "Comptable"})
         cls.karim = new_test_user(cls.env, login="karim_support")
         cls.nadia = new_test_user(cls.env, login="nadia_support")
