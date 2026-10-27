@@ -66,7 +66,11 @@
             <field name="code">outgoing</field>
             <field name="sequence_code">RESOUT</field>
             <field name="warehouse_id" ref="stock.warehouse0"/>
-            <field name="default_location_src_id" ref="loc_restaurant"/>
+            <!-- Le Restaurant ne vend en stock que des boissons (repas et plats ne
+                 sont pas stockes) : elles sortent du stock unique des caisses,
+                 a la Cafeteria. Le personnel les porte au congelateur du
+                 Restaurant sans transfert (Mohamed, 2026-10-27). -->
+            <field name="default_location_src_id" ref="loc_cafeteria"/>
             <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
         </record>
         <record id="picking_type_pos_copy_center" model="stock.picking.type">
