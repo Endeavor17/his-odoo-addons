@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les listes pos_hr se deduisent des postes : en lecture seule ici, sinon
+         une correction a la main serait effacee a la prochaine synchronisation
+         sans que personne comprenne pourquoi. -->
+
+    <record id="res_config_settings_view_form_employes_postes" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.his.employes.postes</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="pos_hr.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <field name="pos_advanced_employee_ids" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field name="pos_basic_employee_ids" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field name="pos_minimal_employee_ids" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field name="pos_advanced_employee_ids" position="before">
+                <div class="text-muted">Filled from job posts (Settings ▸ Users ▸ Business Roles), once the employee has a PIN.</div>
+            </field>
+        </field>
+    </record>
+
+    <record id="pos_config_form_view_employes_postes" model="ir.ui.view">
+        <field name="name">pos.config.form.his.employes.postes</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="pos_hr.pos_config_form_view_inherit"/>
+        <field name="arch" type="xml">
+            <field name="advanced_employee_ids" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field name="basic_employee_ids" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field name="minimal_employee_ids" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- Revue des caisses : a cote de la revue d'acces. -->
+    <record id="view_pos_config_revue_caisses" model="ir.ui.view">
+        <field name="name">pos.config.revue.caisses</field>
+        <field name="model">pos.config</field>
+        <field name="arch" type="xml">
+            <list string="Till Review" create="false" edit="false">
+                <field name="name"/>
+                <field name="his_cashier_role_ids" widget="many2many_tags"/>
+                <field name="advanced_employee_ids" widget="many2many_tags" string="Who Can Tap In"/>
+                <field name="his_till_issue" decoration-danger="his_till_issue"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_revue_caisses" model="ir.actions.act_window">
+        <field name="name">Till Review</field>
+        <field name="res_model">pos.config</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_pos_config_revue_caisses"/>
+        <field name="domain">[('module_pos_hr', '=', True)]</field>
+    </record>
+
+    <menuitem id="menu_revue_caisses" name="Till Review"
+              parent="base.menu_users" action="action_revue_caisses"
+              sequence="55" groups="base.group_system"/>
+
+</odoo>
