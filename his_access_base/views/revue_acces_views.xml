@@ -15,9 +15,47 @@
                 <field name="name"/>
                 <field name="group_ids" widget="many2many_tags" string="Roles"/>
                 <field name="role_ids_du_poste" widget="many2many_tags"
-                       string="Of Which From the Position"/>
+                       string="Of Which Automatic"/>
+                <field name="his_account_type"/>
+                <field name="his_role_ids" widget="many2many_tags"/>
+                <field name="his_access_issue" decoration-danger="his_access_issue"/>
                 <field name="active"/>
             </list>
+        </field>
+    </record>
+
+    <record id="view_users_revue_search" model="ir.ui.view">
+        <field name="name">res.users.revue.acces.search</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <search string="Access Review">
+                <field name="name"/>
+                <field name="login"/>
+                <filter name="with_issue" string="With issue" domain="[('his_access_issue', '!=', False)]"/>
+                <group>
+                    <filter name="group_issue" string="Access Issue" context="{'group_by': 'his_access_issue'}"/>
+                    <filter name="group_type" string="Account Type" context="{'group_by': 'his_account_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Le type de compte et ses roles, sur la fiche utilisateur : c'est la
+         que l'administrateur cree le compte d'un comptoir ou de n8n. -->
+    <record id="view_users_form_type_compte" model="ir.ui.view">
+        <field name="name">res.users.form.type.compte</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='access_rights']" position="inside">
+                <group string="Business Roles" groups="base.group_erp_manager">
+                    <field name="his_account_type"/>
+                    <field name="his_role_ids" widget="many2many_tags" options="{'no_create': True}"
+                           invisible="his_account_type in (False, 'employee')"
+                           domain="[('kind', '=', his_account_type)]"/>
+                    <field name="his_access_issue" invisible="not his_access_issue"/>
+                </group>
+            </xpath>
         </field>
     </record>
 
@@ -26,7 +64,8 @@
         <field name="res_model">res.users</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_users_revue_list"/>
-        <field name="context">{'active_test': False}</field>
+        <field name="search_view_id" ref="view_users_revue_search"/>
+        <field name="context">{'active_test': False, 'search_default_with_issue': 1}</field>
     </record>
 
     <menuitem id="menu_revue_acces" name="Access Review"

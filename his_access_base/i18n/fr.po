@@ -20,17 +20,6 @@ msgid "%(n)s account(s) updated."
 msgstr "%(n)s compte(s) mis à jour."
 
 #. module: his_access_base
-#. odoo-python
-#: code:addons/his_access_base/models/hr_job.py:0
-msgid ""
-"A position cannot grant an administration role (%(roles)s). These accesses "
-"are still assigned by hand by an administrator, in Settings ▸ Users."
-msgstr ""
-"Un poste ne peut pas accorder de rôle d'administration (%(roles)s). Ces "
-"accès restent attribués à la main par un administrateur, dans Réglages ▸ "
-"Utilisateurs."
-
-#. module: his_access_base
 #: model:ir.actions.act_window,name:his_access_base.action_revue_acces
 #: model:ir.ui.menu,name:his_access_base.menu_revue_acces
 #: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
@@ -41,11 +30,6 @@ msgstr "Revue des accès"
 #: model_terms:ir.ui.view,arch_db:his_access_base.view_hr_job_form_roles
 msgid "Apply to Holders"
 msgstr "Appliquer aux titulaires"
-
-#. module: his_access_base
-#: model:ir.actions.server,name:his_access_base.ir_cron_reconcilier_roles_ir_actions_server
-msgid "Core: gaps between roles and positions"
-msgstr "Socle : écarts entre rôles et postes"
 
 #. module: his_access_base
 #: model:ir.module.category,description:his_access_base.module_category_his_access
@@ -101,21 +85,6 @@ msgstr ""
 "d'utilisateur Odoo."
 
 #. module: his_access_base
-#: model_terms:ir.ui.view,arch_db:his_access_base.view_hr_job_form_roles
-msgid "Odoo Roles"
-msgstr "Rôles Odoo"
-
-#. module: his_access_base
-#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
-msgid "Of Which From the Position"
-msgstr "Dont issus du poste"
-
-#. module: his_access_base
-#: model:ir.model.fields,field_description:his_access_base.field_hr_job__group_ids
-msgid "Position Odoo Roles"
-msgstr "Rôles Odoo du poste"
-
-#. module: his_access_base
 #: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
 msgid "Roles"
 msgstr "Rôles"
@@ -124,15 +93,6 @@ msgstr "Rôles"
 #: model:ir.model.fields,field_description:his_access_base.field_res_users__role_ids_du_poste
 msgid "Roles From Position"
 msgstr "Rôles issus du poste"
-
-#. module: his_access_base
-#: model:ir.model.fields,help:his_access_base.field_hr_job__group_ids
-msgid ""
-"Roles granted automatically to whoever holds this position. Roles set by "
-"hand on a user are never touched by this list."
-msgstr ""
-"Rôles accordés automatiquement à qui occupe ce poste. Les rôles posés à la "
-"main sur un utilisateur ne sont jamais touchés par cette liste."
 
 #. module: his_access_base
 #: model:res.groups,comment:his_access_base.group_annuaire
@@ -164,3 +124,206 @@ msgstr ""
 #: model:ir.model,name:his_access_base.model_res_users
 msgid "User"
 msgstr "Utilisateur"
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/his_role.py:0
+msgid "A business role cannot grant a sensitive group (%(groups)s). These are still assigned by hand by an administrator, in Settings ▸ Users."
+msgstr "Un rôle métier ne peut pas donner un groupe sensible (%(groups)s). Ces accès restent attribués à la main par un administrateur, dans Paramètres ▸ Utilisateurs."
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: his_access_base
+#: model:ir.model,name:his_access_base.model_his_role
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
+msgid "Business Role"
+msgstr "Rôle métier"
+
+#. module: his_access_base
+#: model:ir.actions.act_window,name:his_access_base.action_his_role
+#: model:ir.ui.menu,name:his_access_base.menu_his_role
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_list
+msgid "Business Roles"
+msgstr "Rôles métier"
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__his_role__kind__counter
+msgid "Counter"
+msgstr "Comptoir"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__description
+msgid "Description"
+msgstr "Description"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__granted_group_ids
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
+msgid "Everything This Role Grants"
+msgstr "Tout ce que ce rôle donne"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__kind
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_search
+msgid "Kind"
+msgstr "Type"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__group_ids
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
+msgid "Odoo Groups"
+msgstr "Groupes Odoo"
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__his_role__kind__service
+msgid "Service"
+msgstr "Service"
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_his_role__granted_group_ids
+msgid "The groups above plus every group they bring along."
+msgstr "Les groupes ci-dessus, plus tous ceux qu'ils entraînent."
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_his_role__kind
+msgid "Which accounts may carry this role: an employee through their job post, a till's counter account, or a service account such as n8n."
+msgstr "Quels comptes peuvent porter ce rôle : un employé par son poste, le compte comptoir d'une caisse, ou un compte de service comme n8n."
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_his_role_form
+msgid "e.g. Cafeteria Cashier"
+msgstr "ex. Caissier Cafétéria"
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/hr_job.py:0
+msgid "A position only carries employee roles, not counter or service roles."
+msgstr "Un poste ne porte que des rôles d'employé, pas de rôles comptoir ou service."
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_hr_job__role_ids
+msgid "Business roles granted automatically to whoever holds this position. Groups set by hand on a user are never touched."
+msgstr "Rôles métier donnés automatiquement à qui occupe ce poste. Les groupes posés à la main sur un utilisateur ne sont jamais touchés."
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__job_ids
+msgid "Job Positions"
+msgstr "Postes"
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/res_users.py:0
+msgid "A counter or service account only carries roles of its own kind."
+msgstr "Un compte comptoir ou service ne porte que des rôles de son type."
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_res_users__his_access_issue
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_search
+msgid "Access Issue"
+msgstr "Écart d'accès"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_res_users__his_role_ids
+msgid "Account Roles"
+msgstr "Rôles du compte"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_res_users__his_account_type
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_search
+msgid "Account Type"
+msgstr "Type de compte"
+
+#. module: his_access_base
+#: model:ir.model.fields,field_description:his_access_base.field_his_role__user_ids
+msgid "Accounts"
+msgstr "Comptes"
+
+#. module: his_access_base
+#. odoo-python
+#: code:addons/his_access_base/models/res_users.py:0
+msgid "An employee account gets its roles from its job post, not directly."
+msgstr "Un compte d'employé tient ses rôles de son poste, pas directement."
+
+#. module: his_access_base
+#: model:ir.actions.server,name:his_access_base.ir_cron_reconcilier_roles_ir_actions_server
+msgid "Core: access gaps (accounts vs posts and roles)"
+msgstr "Socle : écarts d'accès (comptes face aux postes et aux rôles)"
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_his_role__user_ids
+msgid "Counter and service accounts carrying this role directly."
+msgstr "Comptes comptoir et service qui portent ce rôle directement."
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_res_users__his_role_ids
+msgid "Counter and service accounts only. Employees get their roles from their job post."
+msgstr "Comptes comptoir et service seulement. Les employés tiennent leurs rôles de leur poste."
+
+#. module: his_access_base
+#: model:ir.model.fields,help:his_access_base.field_res_users__his_account_type
+msgid "Employee: rights come from the job post. Counter: the PC of a till. Service: an integration such as n8n."
+msgstr "Employé : les droits viennent du poste. Comptoir : le PC d'une caisse. Service : une intégration comme n8n."
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__res_users__his_access_issue__no_employee
+msgid "No employee record"
+msgstr "Aucune fiche employé"
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__res_users__his_access_issue__no_job
+msgid "No job post"
+msgstr "Aucun poste"
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_list
+msgid "Of Which Automatic"
+msgstr "Dont automatiques"
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__res_users__his_access_issue__post_drift
+msgid "Out of sync with its job post"
+msgstr "Désynchronisé de son poste"
+
+#. module: his_access_base
+#: model:ir.model.fields.selection,name:his_access_base.selection__res_users__his_access_issue__role_drift
+msgid "Out of sync with its roles"
+msgstr "Désynchronisé de ses rôles"
+
+#. module: his_access_base
+#: model_terms:ir.ui.view,arch_db:his_access_base.view_users_revue_search
+msgid "With issue"
+msgstr "Avec écart"

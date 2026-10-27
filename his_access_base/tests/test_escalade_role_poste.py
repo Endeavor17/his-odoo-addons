@@ -8,7 +8,7 @@ rendait administrateur en creant un poste, en y mettant le groupe
 serait contournee.
 """
 
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -31,34 +31,39 @@ class TestEscaladeRolePoste(TransactionCase):
         )
 
     def test_un_poste_refuse_le_groupe_administration(self):
-        """Le coeur du correctif : ecrire le groupe admin sur un poste est refuse."""
-        job = self.env["hr.job"].with_user(self.rh).create({"name": "Charge RH"})
-        with self.assertRaises(ValidationError):
-            job.write({"group_ids": [(4, self.admin_group.id)]})
+        """Le coeur du correctif : RH ne choisit pas les roles d'un poste.
 
-    def test_un_role_impliquant_l_administration_est_refuse_aussi(self):
-        """Un groupe qui IMPLIQUE l'administration la conferrerait tout autant."""
-        piege = self.env["res.groups"].create({"name": "ZZ piege", "implied_ids": [(4, self.admin_group.id)]})
-        job = self.env["hr.job"].create({"name": "Poste piege"})
-        with self.assertRaises(ValidationError):
-            job.write({"group_ids": [(4, piege.id)]})
+        Seul l'administrateur des droits ecrit `role_ids` ; un role ne peut de
+        toute facon pas porter l'administration (TestHisRole).
+        """
+        admin_role = self.env["his.role"].create({"name": "Ordinary"})
+        job = self.env["hr.job"].with_user(self.rh).create({"name": "Charge RH"})
+        with self.assertRaises(AccessError):
+            job.write({"role_ids": [(4, admin_role.id)]})
+
+    def test_rh_ne_cree_pas_de_role(self):
+        """Sinon RH se fabriquerait un role puis le rattacherait a son poste."""
+        with self.assertRaises(AccessError):
+            self.env["his.role"].with_user(self.rh).create({"name": "ZZ piege"})
 
     def test_un_role_de_poste_ordinaire_reste_permis(self):
         """Le correctif ne bloque que l'administration, pas les vrais roles."""
-        job = self.env["hr.job"].create({"name": "Poste normal", "group_ids": [(6, 0, [self.annuaire.id])]})
-        self.assertEqual(job.group_ids, self.annuaire)
+        role = self.env["his.role"].create({"name": "Directory", "group_ids": [(6, 0, [self.annuaire.id])]})
+        job = self.env["hr.job"].create({"name": "Poste normal", "role_ids": [(6, 0, role.ids)]})
+        self.assertEqual(job.role_ids, role)
 
     def test_la_reconciliation_n_accorde_jamais_l_administration(self):
-        """Defense en profondeur : meme un poste deja porteur du groupe admin
+        """Defense en profondeur : meme un role deja porteur du groupe admin
         (pose en contournant l'ORM) ne doit pas rendre son titulaire admin."""
-        job = self.env["hr.job"].create({"name": "Poste legacy"})
+        role = self.env["his.role"].create({"name": "Role legacy"})
         # Contournement de la contrainte pour simuler une base ancienne : ecriture
         # SQL directe sur la table de relation.
         self.env.cr.execute(
-            "INSERT INTO his_job_group_rel (job_id, group_id) VALUES (%s, %s)",
-            [job.id, self.admin_group.id],
+            "INSERT INTO his_role_group_rel (role_id, group_id) VALUES (%s, %s)",
+            [role.id, self.admin_group.id],
         )
-        job.invalidate_recordset(["group_ids"])
+        role.invalidate_recordset(["group_ids"])
+        job = self.env["hr.job"].create({"name": "Poste legacy", "role_ids": [(6, 0, role.ids)]})
         user = self.env["res.users"].create(
             {"name": "Titulaire", "login": "zz_titulaire", "group_ids": [(6, 0, [self.env.ref("base.group_user").id])]}
         )

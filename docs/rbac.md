@@ -94,7 +94,12 @@ cumul se ferait alors sans que personne l'ait coché.
 
 ## Attribution des rôles
 
-`hr.job` porte les rôles Odoo du poste. À l'application, on distingue :
+`hr.job` pointe des **rôles métier** (`his.role`), jamais des groupes Odoo
+bruts. Un rôle (« Caissier Cafétéria », « Magasinier ») est défini une fois par
+l'administrateur des droits, dans Paramètres ▸ Utilisateurs ▸ Rôles métier, et
+sait quels groupes Odoo il donne. Lui seul choisit les rôles d'un poste ; les RH
+affectent les gens aux postes. Un rôle ne peut porter aucun groupe sensible
+(`SENSITIVE_GROUP_XMLIDS`). À l'application, on distingue :
 
 - **le droit du poste** — automatique, réconcilié ;
 - **la dérogation individuelle** — posée à la main, **jamais touchée**.

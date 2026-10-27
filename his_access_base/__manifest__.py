@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Socle de controle d'acces",
-    "version": "19.0.1.2.0",
+    "version": "19.0.2.0.0",
     "category": "Technical",
     "summary": "Politique de droits du groupe, attribution par le poste, et les tests qui la tiennent",
     "description": """
@@ -36,6 +36,7 @@ lui permet de surveiller des modules qui ne le connaissent pas.
         "security/his_access_groups.xml",
         "security/ir.model.access.csv",
         "views/socle_menus.xml",
+        "views/his_role_views.xml",
         "views/hr_job_views.xml",
         "views/revue_acces_views.xml",
     ],

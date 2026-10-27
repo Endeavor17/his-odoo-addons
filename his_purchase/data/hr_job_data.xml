@@ -4,10 +4,10 @@
         <!-- Un seul acheteur a HIS, et il change (Mohamed, 2026-10-19) :
              l'acheteur est l'occupant de ce poste, plus un nom choisi a chaque
              demande. Il est aussi le gestionnaire de stock (achats et
-             inventaire en administrateur). -->
+             inventaire en administrateur). Ses droits viennent du role metier
+             « Buyer » (his_role_catalogue), plus de groupes poses ici. -->
         <record id="job_purchasing_officer" model="hr.job">
             <field name="name">Purchasing Officer</field>
-            <field name="group_ids" eval="[Command.link(ref('purchase.group_purchase_manager')), Command.link(ref('stock.group_stock_manager'))]"/>
         </record>
     </data>
 </odoo>

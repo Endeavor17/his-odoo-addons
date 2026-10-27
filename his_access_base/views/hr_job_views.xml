@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="hr.view_hr_job_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="inside">
-                <group string="Odoo Roles" groups="hr.group_hr_manager">
-                    <field name="group_ids" widget="many2many_tags"
+                <group string="Business Roles" groups="base.group_erp_manager">
+                    <field name="role_ids" widget="many2many_tags"
                            options="{'no_create': True}"/>
                     <button name="action_appliquer_roles" type="object"
                             string="Apply to Holders"
@@ -20,12 +20,12 @@
     </record>
 
     <record id="ir_cron_reconcilier_roles" model="ir.cron">
-        <field name="name">Core: gaps between roles and positions</field>
-        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="name">Core: access gaps (accounts vs posts and roles)</field>
+        <field name="model_id" ref="base.model_res_users"/>
         <field name="state">code</field>
-        <field name="code">model._cron_reconcilier_roles()</field>
+        <field name="code">model._cron_controler_acces()</field>
         <field name="interval_number">1</field>
-        <field name="interval_type">weeks</field>
+        <field name="interval_type">days</field>
         <field name="active" eval="True"/>
     </record>
 

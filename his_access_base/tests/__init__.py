@@ -1,3 +1,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from . import test_escalade_role_poste, test_langue_interface, test_politique_acces, test_roles_du_poste
+from . import (
+    test_escalade_role_poste,
+    test_his_role,
+    test_langue_interface,
+    test_politique_acces,
+    test_roles_du_poste,
+    test_types_de_compte,
+)
