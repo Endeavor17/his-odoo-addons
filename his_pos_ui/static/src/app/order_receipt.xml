@@ -17,6 +17,14 @@
         <xpath expr="//div[hasclass('pos-config-name')]/parent::div" position="attributes">
             <attribute name="class">text-break text-start</attribute>
         </xpath>
+
+        <!-- Prices TTC only: no "Subtotal" excl. tax, no VAT line, no tax label
+             on the lines. The VAT is still computed and posted (his_pos_tva);
+             an invoice asked for afterwards shows it. -->
+        <xpath expr="//t[@t-set='showTaxGroupLabels']" position="attributes">
+            <attribute name="t-value">false</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('pos-receipt-taxes')]" position="replace"/>
     </t>
 
 </templates>

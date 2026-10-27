@@ -143,6 +143,7 @@ class TestTheCreditMealInvoice(AccountTestInvoicingCommon):
         self.assertEqual(mail.recipient_ids, self.with_email)
         self.assertEqual(mail.state, "outgoing", "sent inside the till's request instead of queued")
         self.assertIn("Meal credits left", mail.body_html)
+        self.assertNotIn("VAT", mail.body_html, "the ticket shows prices incl. tax only")
         order._his_send_ticket()
         self.assertEqual(len(self._ticket_mails(order)), 1, "a resync sent the ticket twice")
 
@@ -267,7 +268,14 @@ class TestTheCreditMealTill(TestPointOfSaleHttpCommon):
                 "type": "consu",
                 "list_price": 100.0,
                 "available_in_pos": True,
-                "taxes_id": [Command.clear()],
+                # Taxed, so the mixed tour can check the ticket hides the VAT.
+                "taxes_id": [
+                    Command.set(
+                        cls.env["account.tax"]
+                        .create({"name": "TVA 9 % TTC", "amount": 9.0, "price_include_override": "tax_included"})
+                        .ids
+                    )
+                ],
             }
         )
         # "AAA": the till loads only the first partners it finds, by name.
