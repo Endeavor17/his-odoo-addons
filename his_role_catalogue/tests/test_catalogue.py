@@ -7,9 +7,11 @@ from odoo.tests import TransactionCase, tagged
 @tagged("post_install", "-at_install")
 class TestCatalogue(TransactionCase):
     def _roles_du_catalogue(self):
-        ids = self.env["ir.model.data"].search(
-            [("module", "=", "his_role_catalogue"), ("model", "=", "his.role")]
-        ).mapped("res_id")
+        ids = (
+            self.env["ir.model.data"]
+            .search([("module", "=", "his_role_catalogue"), ("model", "=", "his.role")])
+            .mapped("res_id")
+        )
         return self.env["his.role"].with_context(active_test=False).browse(ids)
 
     def test_every_catalogue_role_loads_and_grants_no_sensitive_group(self):
