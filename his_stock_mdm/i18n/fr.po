@@ -652,3 +652,89 @@ msgstr "Recherche non prise en charge sur « Ma caisse »."
 #: code:addons/his_stock_mdm/models/pos_config.py:0
 msgid "You cannot open %(till)s: it needs one of these roles: %(roles)s."
 msgstr "Vous ne pouvez pas ouvrir %(till)s : il faut l'un de ces rôles : %(roles)s."
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_his_role
+msgid "Business Role"
+msgstr "Rôle métier"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_pos_config__his_cashier_role_ids
+msgid "Cashier Business Roles"
+msgstr "Rôles métier de caissier"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_hr_employee
+msgid "Employee"
+msgstr "Employé"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,help:his_stock_mdm.field_pos_config__his_cashier_role_ids
+msgid "Employees whose job post carries one of these roles tap their name at this till."
+msgstr "Les employés dont le poste porte l'un de ces rôles tapent leur nom à cette caisse."
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,help:his_stock_mdm.field_his_role__pos_config_ids
+msgid "Employees whose job post carries this role appear at these tills, once they have a PIN."
+msgstr "Les employés dont le poste porte ce rôle apparaissent à ces caisses, une fois leur PIN posé."
+
+#. module: his_stock_mdm
+#: model_terms:ir.ui.view,arch_db:his_stock_mdm.res_config_settings_view_form_employes_postes
+msgid "Filled from job posts (Settings ▸ Users ▸ Business Roles), once the employee has a PIN."
+msgstr "Rempli à partir des postes (Paramètres ▸ Utilisateurs ▸ Rôles métier), une fois le PIN de l'employé posé."
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_hr_job
+msgid "Job Position"
+msgstr "Poste"
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/pos_config.py:0
+msgid "No cashier can open this till."
+msgstr "Aucun caissier ne peut ouvrir cette caisse."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/pos_config.py:0
+msgid "No cashier role linked: only POS managers with a PIN can tap in."
+msgstr "Aucun rôle de caissier lié : seuls les responsables POS avec un PIN peuvent taper leur nom."
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/his_role.py:0
+msgid "Only an employee role names the tills where its holders tap in."
+msgstr "Seul un rôle d'employé désigne les caisses où ses titulaires tapent leur nom."
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_pos_config__his_till_issue
+msgid "Till Issue"
+msgstr "Problème de caisse"
+
+#. module: his_stock_mdm
+#: model:ir.actions.act_window,name:his_stock_mdm.action_revue_caisses
+#: model:ir.ui.menu,name:his_stock_mdm.menu_revue_caisses
+#: model_terms:ir.ui.view,arch_db:his_stock_mdm.view_pos_config_revue_caisses
+msgid "Till Review"
+msgstr "Revue des caisses"
+
+#. module: his_stock_mdm
+#: model:ir.model.fields,field_description:his_stock_mdm.field_his_role__pos_config_ids
+msgid "Tills"
+msgstr "Caisses"
+
+#. module: his_stock_mdm
+#: model_terms:ir.ui.view,arch_db:his_stock_mdm.view_pos_config_revue_caisses
+msgid "Who Can Tap In"
+msgstr "Qui peut taper son nom"
+
+#. module: his_stock_mdm
+#. odoo-python
+#: code:addons/his_stock_mdm/models/pos_config.py:0
+msgid "Without a PIN, so not offered: %(names)s"
+msgstr "Sans PIN, donc pas proposés : %(names)s"
+
+#. module: his_stock_mdm
+#: model:ir.model,name:his_stock_mdm.model_res_users
+msgid "User"
+msgstr "Utilisateur"
