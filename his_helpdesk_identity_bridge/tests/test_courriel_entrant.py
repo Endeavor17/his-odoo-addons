@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-"""support@ : un courriel devient un ticket, rattache a sa personne sans jamais en creer."""
+"""odoo-support@ : un courriel devient un ticket, rattache a sa personne sans jamais en creer."""
 
 from odoo.tests import TransactionCase, tagged
 
@@ -26,7 +26,7 @@ class TestCourrielEntrant(TransactionCase):
             cls.env.company.alias_domain_id = domaine
         cls.alias = cls.env.ref("helpdesk_mgmt.mail_alias_lead_info_helpdesk")
         cls.alias.alias_domain_id = domaine
-        cls.support = "support@%s" % domaine.name
+        cls.support = "odoo-support@%s" % domaine.name
         cls.etudiant = cls.env["his.person"].create(
             {
                 "name": "Ines Merabet",
@@ -47,13 +47,24 @@ class TestCourrielEntrant(TransactionCase):
         )
         return self.env["mail.thread"].message_process(None, raw)
 
-    def test_l_adresse_est_support(self):
-        self.assertEqual(self.alias.alias_name, "support")
+    def test_l_adresse_est_odoo_support(self):
+        self.assertEqual(self.alias.alias_name, "odoo-support")
 
     def test_un_courriel_devient_un_ticket_canal_email(self):
         ticket = self.env["helpdesk.ticket"].browse(self._recevoir("Quelqu'un <qq@example.com>"))
         self.assertEqual(ticket.name, "Attestation")
         self.assertEqual(ticket.channel_id, self.env.ref("helpdesk_mgmt.helpdesk_ticket_channel_email"))
+
+    def test_redirige_vers_la_boite_relevee_devient_un_ticket(self):
+        """odoo-support@ est redirige vers test-support@, la seule boite relevee :
+        l'en-tete To d'origine suffit a trouver l'equipe."""
+        ticket = self.env["helpdesk.ticket"].browse(
+            self._recevoir(
+                "Quelqu'un <qq@example.com>",
+                en_tetes="Delivered-To: test-support@%s\n" % self.env.company.alias_domain_id.name,
+            )
+        )
+        self.assertEqual(ticket.name, "Attestation")
 
     def test_l_email_personnel_retrouve_la_personne(self):
         ticket = self.env["helpdesk.ticket"].browse(self._recevoir("Ines <Ines.Merabet@gmail.com>"))

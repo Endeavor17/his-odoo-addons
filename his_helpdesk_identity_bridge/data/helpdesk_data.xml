@@ -21,13 +21,13 @@
             <field name="name">Front Desk</field>
         </record>
 
-        <!-- Adresse publique du helpdesk : support@his.edu.dz (OCA la nomme
+        <!-- Adresse publique du helpdesk : odoo-support@his.edu.dz (OCA la nomme
              help). Le courriel devient un ticket de l'equipe Support. -->
         <record id="helpdesk_mgmt.mail_alias_lead_info_helpdesk" model="mail.alias">
-            <field name="alias_name">support</field>
+            <field name="alias_name">odoo-support</field>
         </record>
 
-        <!-- Les reponses arrivent dans Odoo (catchall@ releve en IMAP) et
+        <!-- Les reponses arrivent dans Odoo (catchall@ redirige vers test-support@, releve en IMAP) et
              rejoignent le ticket. Copie a l'adresse d'ou l'etudiant a ecrit
              quand elle differe de celle de sa fiche : c'est la qu'il lit. -->
         <record id="helpdesk_mgmt.closed_ticket_template" model="mail.template">
