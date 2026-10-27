@@ -56,7 +56,8 @@ registry.category("web_tour.tours").add("his_meal_credit_payment_no_email_tour",
 });
 
 // Something to pay on the order - a juice next to the meal - and the payment
-// screen is back, exactly as before.
+// screen is back, exactly as before. The juice carries VAT: the ticket shows
+// prices incl. tax only, no subtotal and no VAT line (his_pos_ui).
 registry.category("web_tour.tours").add("his_meal_credit_payment_mixed_tour", {
     steps: () =>
         [
@@ -64,5 +65,12 @@ registry.category("web_tour.tours").add("his_meal_credit_payment_mixed_tour", {
             ProductScreen.clickDisplayedProduct("Tour Jus"),
             ProductScreen.clickPayButton(true),
             PaymentScreen.isShown(),
+            PaymentScreen.clickPaymentMethod("Bank"),
+            PaymentScreen.clickValidate(),
+            ReceiptScreen.receiptAmountTotalIs("100.00"),
+            {
+                content: "The ticket shows no VAT",
+                trigger: ".receipt-screen .pos-receipt:not(:has(.pos-receipt-taxes)):not(:contains('Subtotal'))",
+            },
         ].flat(),
 });

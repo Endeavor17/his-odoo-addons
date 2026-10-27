@@ -33,11 +33,6 @@
             <td style="padding: 4px 8px;"><strong>Total</strong></td>
             <td style="padding: 4px 8px; text-align: right;"><strong t-out="format_amount(object.amount_total, object.currency_id)"/></td>
         </tr>
-        <tr>
-            <td/>
-            <td style="padding: 4px 8px;">Including VAT</td>
-            <td style="padding: 4px 8px; text-align: right;" t-out="format_amount(object.amount_tax, object.currency_id)"/>
-        </tr>
     </table>
     <p t-if="object._his_ticket_credits_left()">Meal credits left: <strong t-out="object._his_ticket_credits_left()"/></p>
     <p><t t-out="object.company_id.name or ''"/></p>
