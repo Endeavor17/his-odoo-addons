@@ -35,6 +35,9 @@ class PosConfig(models.Model):
         "role_id",
         string="Cashier Business Roles",
         readonly=True,
+        # Comme l'acces a his.role : sinon la caisse, qui lit tous les champs
+        # de pos.config, ne charge plus pour un simple utilisateur POS.
+        groups="point_of_sale.group_pos_manager,base.group_erp_manager",
         help="Employees whose job post carries one of these roles tap their name at this till.",
     )
     his_till_issue = fields.Text(string="Till Issue", compute="_compute_his_till_issue")
