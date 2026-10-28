@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "HIS Business Role Catalogue",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Technical",
     "summary": "The starting list of HIS business roles: tills, meals, stock, purchase, accounting, HR, helpdesk, maintenance, hygiene",
     "description": """

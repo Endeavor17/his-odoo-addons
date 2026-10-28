@@ -70,8 +70,8 @@ msgstr "Chargé RH"
 
 #. module: his_role_catalogue
 #: model:his.role,name:his_role_catalogue.role_helpdesk_agent
-msgid "Helpdesk Agent"
-msgstr "Agent d'assistance"
+msgid "Helpdesk Technician"
+msgstr "Technicien assistance"
 
 #. module: his_role_catalogue
 #: model:his.role,name:his_role_catalogue.role_helpdesk_manager
