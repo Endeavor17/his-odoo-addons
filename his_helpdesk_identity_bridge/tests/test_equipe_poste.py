@@ -66,10 +66,15 @@ class TestEquipePoste(TransactionCase):
         self._employe(self.karim, self.poste)
         self.assertEqual(self._ticket().user_id, self.karim)
 
-    def test_deux_agents_le_ticket_reste_a_attribuer(self):
+    def test_deux_techniciens_le_moins_charge_recoit(self):
+        # Recette 2026-10-28 : plus de ticket en attente d'attribution.
         self._employe(self.karim, self.poste)
         self._employe(self.nadia, self.poste)
-        self.assertFalse(self._ticket().user_id)
+        premier = self._ticket()
+        second = self._ticket()
+        self.assertEqual(premier.user_id | second.user_id, self.karim | self.nadia, "un chacun")
+        premier.stage_id = self.env["helpdesk.ticket.stage"].search([("closed", "=", True)], limit=1)
+        self.assertEqual(self._ticket().user_id, premier.user_id, "un ticket clos ne compte plus")
 
     def test_le_responsable_a_tout_sans_recevoir_de_ticket(self):
         # Recette 2026-10-28 : les tickets vont au technicien, pas au responsable.

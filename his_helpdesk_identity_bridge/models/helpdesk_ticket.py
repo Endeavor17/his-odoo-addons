@@ -58,15 +58,27 @@ class HelpdeskTicket(models.Model):
 
     @api.depends("team_id")
     def _compute_user_id(self):
-        # Un seul agent dans l'equipe : le ticket est a lui, personne n'a a le
-        # choisir (Mohamed, 2026-10-19). L'equipe suit le poste, donc le
-        # nouvel occupant recoit les tickets suivants sans autre geste.
+        # Personne n'a a choisir : le ticket va au technicien de l'equipe
+        # (Mohamed, 2026-10-19), et s'ils sont plusieurs, a celui qui a le moins
+        # de tickets ouverts (recette 2026-10-28). L'equipe suit le poste, donc
+        # le nouvel occupant recoit les tickets suivants sans autre geste.
         res = super()._compute_user_id()
         for ticket in self:
             agents = ticket.team_id.sudo().user_ids
-            if not ticket.user_id and len(agents) == 1:
-                ticket.user_id = agents
+            if not ticket.user_id and agents:
+                ticket.user_id = agents if len(agents) == 1 else ticket._his_least_busy(agents)
         return res
+
+    def _his_least_busy(self, agents):
+        """L'agent qui a le moins de tickets ouverts ; a egalite, le premier par id."""
+        counts = dict(
+            self.sudo()._read_group(
+                [("user_id", "in", agents.ids), ("stage_id.closed", "=", False)],
+                ["user_id"],
+                ["__count"],
+            )
+        )
+        return min(agents.sorted("id"), key=lambda agent: counts.get(agent, 0))
 
     @api.depends("his_person_id.engagement_ids.etat")
     def _compute_his_engagement_etat(self):
