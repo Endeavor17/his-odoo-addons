@@ -16,14 +16,14 @@
                     <button class="btn btn-outline-secondary" title="Next month" aria-label="Next month" t-on-click="() => this.changeMonth(1)">
                         <i class="oi oi-arrow-right"/>
                     </button>
-                    <button class="btn btn-secondary" t-on-click="copyPreviousMonth">
+                    <button t-if="state.data?.can_edit" class="btn btn-secondary" t-on-click="copyPreviousMonth">
                         <i class="fa fa-copy me-1"/>Copy previous month
                     </button>
                 </div>
             </div>
 
             <t t-if="state.data">
-                <div class="o_hyg_palette mb-3">
+                <div t-if="state.data.can_edit" class="o_hyg_palette mb-3">
                     <span class="o_hyg_palette_label">Brush</span>
                     <button t-foreach="state.data.members" t-as="member" t-key="member.id"
                             class="o_hyg_brush" t-att-class="{ 'o_hyg_brush_active': state.brush === member.id }"
@@ -79,7 +79,7 @@
                         <tbody class="o_hyg_absences">
                             <tr class="o_hyg_building">
                                 <th>Absences</th>
-                                <td t-att-colspan="state.data.days.length" class="text-muted small">Click a day to mark a worker absent; her areas show uncovered until someone else is added.</td>
+                                <td t-att-colspan="state.data.days.length" class="text-muted small"><t t-if="state.data.can_edit">Click a day to mark a worker absent; her areas show uncovered until someone else is added.</t></td>
                             </tr>
                             <tr t-foreach="state.data.members" t-as="member" t-key="member.id">
                                 <th class="o_hyg_area">

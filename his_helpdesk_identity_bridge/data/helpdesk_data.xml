@@ -2,18 +2,22 @@
 <odoo>
     <data noupdate="1">
 
-        <!-- Une seule equipe : HIS a un agent de support, qui traite tout
-             sans transmettre (Mohamed, 2026-10-18). Elle remplace les quatre
-             equipes du 2026-10-07 ; le service concerne passe dans la
-             categorie. Ses membres suivent le poste « Support Officer »,
-             dont le role metier « Helpdesk Manager » vient de
-             his_role_catalogue. -->
+        <!-- Une seule equipe : elle traite tout sans transmettre (Mohamed,
+             2026-10-18). Elle remplace les quatre equipes du 2026-10-07 ; le
+             service concerne passe dans la categorie. Ses membres suivent le
+             poste « Helpdesk Technician » : les tickets vont aux techniciens,
+             jamais au responsable, qui a tous les droits sans en recevoir
+             (recette 2026-10-28). Les roles metier des deux postes viennent de
+             his_role_catalogue. noupdate : voir migrations/19.0.1.5.0. -->
         <record id="job_support" model="hr.job">
-            <field name="name">Support Officer</field>
+            <field name="name">Helpdesk Manager</field>
+        </record>
+        <record id="job_helpdesk_technician" model="hr.job">
+            <field name="name">Helpdesk Technician</field>
         </record>
         <record id="team_support" model="helpdesk.ticket.team">
             <field name="name">Support</field>
-            <field name="his_job_id" ref="job_support"/>
+            <field name="his_job_id" ref="job_helpdesk_technician"/>
         </record>
 
         <!-- Le personnel ouvre des tickets pour un etudiant venu au guichet. -->

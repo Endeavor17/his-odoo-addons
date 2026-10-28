@@ -113,8 +113,11 @@
         </record>
 
         <!-- ==================== Assistance ==================== -->
+        <!-- Les tickets lui sont attribues (equipe Support, poste « Helpdesk
+             Technician ») ; le responsable a tout, sans en recevoir (recette
+             2026-10-28). -->
         <record id="role_helpdesk_agent" model="his.role" forcecreate="0">
-            <field name="name">Helpdesk Agent</field>
+            <field name="name">Helpdesk Technician</field>
             <field name="group_ids" eval="[Command.set([ref('helpdesk_mgmt.group_helpdesk_user_team')])]"/>
         </record>
         <record id="role_helpdesk_manager" model="his.role" forcecreate="0">
@@ -163,6 +166,9 @@
         </record>
         <record id="his_helpdesk_identity_bridge.job_support" model="hr.job" forcecreate="0">
             <field name="role_ids" eval="[Command.link(ref('role_helpdesk_manager'))]"/>
+        </record>
+        <record id="his_helpdesk_identity_bridge.job_helpdesk_technician" model="hr.job" forcecreate="0">
+            <field name="role_ids" eval="[Command.link(ref('role_helpdesk_agent'))]"/>
         </record>
     </data>
 </odoo>

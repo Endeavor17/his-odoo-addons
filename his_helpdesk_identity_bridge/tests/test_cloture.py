@@ -10,8 +10,8 @@ from odoo.tests import TransactionCase, tagged
 class TestCloture(TransactionCase):
     def test_l_equipe_support_le_poste_et_le_guichet(self):
         support = self.env.ref("his_helpdesk_identity_bridge.team_support")
-        poste = self.env.ref("his_helpdesk_identity_bridge.job_support")
-        self.assertEqual(support.his_job_id, poste)
+        poste = self.env.ref("his_helpdesk_identity_bridge.job_helpdesk_technician")
+        self.assertEqual(support.his_job_id, poste, "les tickets vont aux techniciens, pas au responsable")
         self.assertTrue(self.env.ref("his_helpdesk_identity_bridge.channel_guichet"))
 
     def test_la_cloture_part_en_file_et_reveille_le_cron(self):

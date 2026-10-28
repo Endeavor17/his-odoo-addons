@@ -113,7 +113,7 @@ export class HygienePlanning extends Component {
     }
 
     async onCellClick(area, day, ev) {
-        if (this.state.busy) {
+        if (this.state.busy || !this.state.data.can_edit) {
             return;
         }
         const anchor = this.state.anchor;
@@ -157,7 +157,7 @@ export class HygienePlanning extends Component {
     }
 
     async onAbsenceClick(member, day) {
-        if (this.state.busy) {
+        if (this.state.busy || !this.state.data.can_edit) {
             return;
         }
         const ok = await this.run(() =>

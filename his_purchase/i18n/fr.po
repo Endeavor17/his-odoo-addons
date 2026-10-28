@@ -2115,3 +2115,25 @@ msgstr "%s est déjà en cours d'achat : son type ne peut plus changer. Adressez
 #: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
 msgstr "Activité suivante de l'événement du calendrier"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "Nothing to choose"
+msgstr "Rien à départager"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/purchase_order.py:0
+msgid "No other offer quotes this product: confirm this order to choose its supplier."
+msgstr "Aucune autre offre ne chiffre cet article : confirmez cette commande pour choisir son fournisseur."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_department_locked
+msgid "His Department Locked"
+msgstr "Département figé"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_requester_locked
+msgid "His Requester Locked"
+msgstr "Demandeur figé"

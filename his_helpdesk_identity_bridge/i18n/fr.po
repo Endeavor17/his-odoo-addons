@@ -214,8 +214,13 @@ msgstr "Support"
 
 #. module: his_helpdesk_identity_bridge
 #: model:hr.job,name:his_helpdesk_identity_bridge.job_support
-msgid "Support Officer"
-msgstr "Chargé du support"
+msgid "Helpdesk Manager"
+msgstr "Responsable assistance"
+
+#. module: his_helpdesk_identity_bridge
+#: model:hr.job,name:his_helpdesk_identity_bridge.job_helpdesk_technician
+msgid "Helpdesk Technician"
+msgstr "Technicien assistance"
 
 #. module: his_helpdesk_identity_bridge
 #: model:ir.model.fields,field_description:his_helpdesk_identity_bridge.field_helpdesk_ticket_team__his_job_id

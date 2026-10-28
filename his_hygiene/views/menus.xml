@@ -4,7 +4,7 @@
               name="Hygiene"
               web_icon="his_hygiene,static/description/icon.svg"
               sequence="11"
-              groups="group_hygiene_worker"/>
+              groups="group_hygiene_worker,group_hygiene_manager"/>
 
     <!-- Premier menu : l'application s'ouvre sur la journee, sur le telephone. -->
     <menuitem id="menu_hygiene_my_day"
@@ -14,12 +14,19 @@
               sequence="5"
               groups="group_hygiene_worker"/>
 
+    <menuitem id="menu_hygiene_team_clock"
+              name="Team Clock-In"
+              parent="menu_hygiene_root"
+              action="action_hygiene_team_clock"
+              sequence="6"
+              groups="group_hygiene_manager"/>
+
     <menuitem id="menu_hygiene_planning"
               name="Planning"
               parent="menu_hygiene_root"
               action="action_hygiene_planning"
               sequence="10"
-              groups="group_hygiene_manager"/>
+              groups="group_hygiene_worker,group_hygiene_manager"/>
 
     <menuitem id="menu_hygiene_finding"
               name="Findings"

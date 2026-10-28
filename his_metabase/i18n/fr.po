@@ -167,3 +167,8 @@ msgstr "Ce tableau de bord n'existe pas ou a été archivé."
 #: code:addons/his_metabase/models/his_metabase_dashboard.py:0
 msgid "You are not allowed to open the %s dashboard."
 msgstr "Vous n'êtes pas autorisé à ouvrir le tableau de bord %s."
+
+#. module: his_metabase
+#: model:ir.model,name:his_metabase.model_ir_ui_menu
+msgid "Menu"
+msgstr "Menu"

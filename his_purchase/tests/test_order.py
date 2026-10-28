@@ -1,8 +1,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 """Demandes de prix, choix du fournisseur, approbation (AT-04 a AT-12, AT-26)."""
 
+from odoo import fields
 from odoo.exceptions import UserError
 from odoo.tests import new_test_user, tagged
+from odoo.tools import format_date
 
 from .common import HisPurchaseCase
 
@@ -70,6 +72,36 @@ class TestOrder(HisPurchaseCase):
             declined.button_confirm()
         self.assertTrue(order.button_confirm(), "un refus n'est pas une offre concurrente")
         self.assertNotIn(declined, order._his_competitors())
+
+    def test_echeance_de_la_demande_de_prix(self):
+        # Recette 2026-10-28 : l'echeance affichee n'est pas le jour meme.
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        self.assertEqual(order.date_order.date(), order.his_reply_by)
+        self.assertGreater(order.his_reply_by, fields.Date.context_today(order))
+        # La demande imprimee garde sa propre date, pas l'echeance.
+        html = str(
+            self.env["ir.actions.report"]._render_qweb_html("his_purchase.report_proforma_request", order.ids)[0]
+        )
+        self.assertIn(format_date(self.env, order.create_date), html)
+
+    def test_une_offre_refusee_sort_de_la_comparaison(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 9500
+        declined = self._alternative(order, self.supplier_b, 9000)
+        declined.his_supplier_answer = "declined"
+        pending = self._alternative(order, self.supplier_c, 0)
+        domain = order.action_compare_alternative_lines()["domain"]
+        lines = self.env["purchase.order.line"].search(domain)
+        self.assertEqual(lines.order_id, order | pending, "en attente : comparee ; refusee : non")
+        order.order_line.with_user(self.officer).action_choose()
+        self.assertFalse(pending.order_line.product_qty, "l'offre en attente avait une quantite a effacer")
+        declined_only = self._source_rfq(self._approved_request(), self.supplier_a)
+        refused = self._alternative(declined_only, self.supplier_b, 100)
+        refused.his_supplier_answer = "declined"
+        res = declined_only.order_line.action_choose()
+        self.assertEqual(res["params"]["title"], "Nothing to choose")
 
     def test_offre_marquee_chiffree_sans_prix(self):
         request = self._approved_request()

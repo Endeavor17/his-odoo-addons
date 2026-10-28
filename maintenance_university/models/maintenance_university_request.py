@@ -225,6 +225,14 @@ class MaintenanceRequest(models.Model):
             raise UserError(_("You can only update your own progress on this request, not its details."))
         return super().write(vals)
 
+    def _track_subtype(self, init_values):
+        self.ensure_one()
+        # Le demarrage par l'ouvrier reste au fil, sans courriel aux abonnes :
+        # le responsable le voit au tableau de bord (recette 2026-10-28).
+        if "stage_id" in init_values and self.state == "in_progress":
+            return self.env.ref("mail.mt_note")
+        return super()._track_subtype(init_values)
+
     def action_assign(self):
         if not self.env.user.has_group("maintenance_university.group_maintenance_manager"):
             raise UserError(_("Only a manager can assign a maintenance request."))

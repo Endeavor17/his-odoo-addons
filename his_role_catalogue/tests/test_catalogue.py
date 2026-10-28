@@ -36,9 +36,12 @@ class TestCatalogue(TransactionCase):
         poste = self.env.ref("his_purchase.job_purchasing_officer")
         self.assertIn(self.env.ref("his_role_catalogue.role_buyer"), poste.role_ids)
 
-    def test_support_officer_post_carries_helpdesk_manager(self):
+    def test_helpdesk_posts_carry_their_roles(self):
         poste = self.env.ref("his_helpdesk_identity_bridge.job_support")
         self.assertIn(self.env.ref("his_role_catalogue.role_helpdesk_manager"), poste.role_ids)
+        technicien = self.env.ref("his_helpdesk_identity_bridge.job_helpdesk_technician")
+        self.assertIn(self.env.ref("his_role_catalogue.role_helpdesk_agent"), technicien.role_ids)
+        self.assertEqual(self.env.ref("his_role_catalogue.role_helpdesk_agent").name, "Helpdesk Technician")
 
     def test_his_privileges_share_one_heading(self):
         rubrique = self.env.ref("his_access_base.module_category_his_access")

@@ -10,6 +10,14 @@
         <field name="tag">his_hygiene_my_day</field>
     </record>
 
+    <!-- Le meme ecran, cote responsable : elle choisit la salariee et pointe
+         pour elle (celles sans compte). Sa propre « Ma journee » n'existe plus
+         (recette 2026-10-28). -->
+    <record id="action_hygiene_team_clock" model="ir.actions.client">
+        <field name="name">Team Clock-In</field>
+        <field name="tag">his_hygiene_my_day</field>
+    </record>
+
     <record id="action_hygiene_recap" model="ir.actions.client">
         <field name="name">Monthly Recap</field>
         <field name="tag">his_hygiene_recap</field>
