@@ -136,7 +136,7 @@
                             <field name="priority" widget="priority" readonly="not is_manager"/>
                         </group>
                         <group>
-                            <field name="request_date"/>
+                            <field name="request_date" readonly="not is_manager"/>
                             <field name="scheduled_date" readonly="not is_manager"/>
                             <field name="date_assigned" readonly="1"/>
                             <field name="date_start" readonly="1"/>
