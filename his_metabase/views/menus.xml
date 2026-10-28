@@ -26,6 +26,12 @@
         <field name="params" eval="{'code': 'inventory'}"/>
     </record>
 
+    <!-- Un agent ouvre l'Assistance sur ses tickets, pas sur le tableau de
+         bord des equipes : il est au responsable (recette 2026-10-28). -->
+    <record id="helpdesk_mgmt.helpdesk_ticket_dashboard_menu" model="ir.ui.menu">
+        <field name="group_ids" eval="[Command.set([ref('helpdesk_mgmt.group_helpdesk_manager')])]"/>
+    </record>
+
     <menuitem id="menu_dashboard_maintenance" name="Indicators" parent="maintenance_university.menu_maintenance_root"
               action="action_dashboard_maintenance" sequence="8"
               groups="maintenance_university.group_maintenance_manager"/>

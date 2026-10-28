@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "HIS - Metabase Dashboards",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Productivity",
     "summary": "Each workflow manager opens their Metabase dashboard inside their Odoo app",
     "description": """
