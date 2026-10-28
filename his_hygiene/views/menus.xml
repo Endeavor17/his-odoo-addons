@@ -4,7 +4,7 @@
               name="Hygiene"
               web_icon="his_hygiene,static/description/icon.svg"
               sequence="11"
-              groups="group_hygiene_worker"/>
+              groups="group_hygiene_worker,group_hygiene_manager"/>
 
     <!-- Premier menu : l'application s'ouvre sur la journee, sur le telephone. -->
     <menuitem id="menu_hygiene_my_day"
@@ -19,7 +19,7 @@
               parent="menu_hygiene_root"
               action="action_hygiene_planning"
               sequence="10"
-              groups="group_hygiene_manager"/>
+              groups="group_hygiene_worker,group_hygiene_manager"/>
 
     <menuitem id="menu_hygiene_finding"
               name="Findings"

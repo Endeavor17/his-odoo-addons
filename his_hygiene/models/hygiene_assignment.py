@@ -109,7 +109,14 @@ class HisHygieneAssignment(models.Model):
 
     @api.model
     def get_matrix(self, year, month):
-        self._his_check_manager()
+        # La salariee lit le planning (recette 2026-10-28) : ses cases et ses
+        # absences seulement, par les regles ; seule la responsable le modifie.
+        is_manager = self._his_is_manager()
+        if not is_manager and not self.env.user.has_group("his_hygiene.group_hygiene_worker"):
+            raise AccessError(_("Only the hygiene team can read the planning."))
+        members = self.env["his.hygiene.member"].search(
+            [] if is_manager else [("employee_id.user_id", "=", self.env.uid)]
+        )
         first = date(year, month, 1)
         last = first + relativedelta(months=1, days=-1)
         off = self._hygiene_off_weekdays()
@@ -143,6 +150,7 @@ class HisHygieneAssignment(models.Model):
             current += timedelta(days=1)
 
         return {
+            "can_edit": is_manager,
             "year": year,
             "month": month,
             "days": days,
@@ -151,8 +159,7 @@ class HisHygieneAssignment(models.Model):
                 for a in self.env["his.hygiene.area"].search([])
             ],
             "members": [
-                {"id": m.employee_id.id, "name": m.name, "initials": m.initials, "color": m.color}
-                for m in self.env["his.hygiene.member"].search([])
+                {"id": m.employee_id.id, "name": m.name, "initials": m.initials, "color": m.color} for m in members
             ],
             "cells": cells,
             "absences": {

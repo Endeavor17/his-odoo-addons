@@ -80,7 +80,9 @@ class TestOrder(HisPurchaseCase):
         self.assertEqual(order.date_order.date(), order.his_reply_by)
         self.assertGreater(order.his_reply_by, fields.Date.context_today(order))
         # La demande imprimee garde sa propre date, pas l'echeance.
-        html = str(self.env["ir.actions.report"]._render_qweb_html("his_purchase.report_proforma_request", order.ids)[0])
+        html = str(
+            self.env["ir.actions.report"]._render_qweb_html("his_purchase.report_proforma_request", order.ids)[0]
+        )
         self.assertIn(format_date(self.env, order.create_date), html)
 
     def test_une_offre_refusee_sort_de_la_comparaison(self):

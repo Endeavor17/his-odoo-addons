@@ -97,9 +97,47 @@ class TestPlanning(HygieneCase):
 
     def test_seule_la_responsable_planifie(self):
         with self.assertRaises(AccessError):
-            self.Assignment.with_user(self.fatima_user).get_matrix(2026, 11)
-        with self.assertRaises(AccessError):
             self.Assignment.with_user(self.fatima_user).set_cell(self.area_rdc.id, "2026-11-02", [self.fatima.id])
+
+    def test_la_salariee_lit_son_planning(self):
+        # Recette 2026-10-28 : la salariee voit le planning, ses cases
+        # seulement, sans rien pouvoir y changer.
+        self.Plan.set_cell(self.area_rdc.id, "2026-11-02", [self.fatima.id])
+        self.Plan.set_cell(self.area_amphi.id, "2026-11-02", [self.karima.id])
+        self.Plan.toggle_absence(self.karima.id, "2026-11-03")
+        matrix = self.Assignment.with_user(self.fatima_user).get_matrix(2026, 11)
+        self.assertFalse(matrix["can_edit"])
+        self.assertEqual(list(matrix["cells"]), [f"{self.area_rdc.id}|2026-11-02"])
+        self.assertEqual([m["id"] for m in matrix["members"]], self.fatima.ids)
+        self.assertFalse(matrix["absences"], "l'absence d'une collegue ne la regarde pas")
+        self.assertTrue(self.Plan.get_matrix(2026, 11)["can_edit"])
+        outsider = (
+            self.env["res.users"]
+            .with_context(no_reset_password=True)
+            .create(
+                {
+                    "name": "Hors hygiene",
+                    "login": "hors_hyg",
+                    "group_ids": [(6, 0, self.env.ref("base.group_user").ids)],
+                }
+            )
+        )
+        with self.assertRaises(AccessError):
+            self.Assignment.with_user(outsider).get_matrix(2026, 11)
+
+    def test_la_responsable_ne_pointe_pas(self):
+        # Recette 2026-10-28 : « Ma journee » est aux salariees.
+        self.assertFalse(self.manager_user.has_group("his_hygiene.group_hygiene_worker"))
+        my_day = self.env.ref("his_hygiene.menu_hygiene_my_day")
+        self.assertEqual(my_day.group_ids, self.group_worker)
+        visible = self.env["ir.ui.menu"].with_user(self.manager_user)._visible_menu_ids()
+        self.assertNotIn(my_day.id, visible)
+        self.assertIn(self.env.ref("his_hygiene.menu_hygiene_planning").id, visible)
+        self.assertIn(self.env.ref("his_hygiene.menu_hygiene_root").id, visible)
+        self.assertIn(
+            self.env.ref("his_hygiene.menu_hygiene_planning").id,
+            self.env["ir.ui.menu"].with_user(self.fatima_user)._visible_menu_ids(),
+        )
 
     def test_on_ne_planifie_que_l_equipe(self):
         stranger = self.env["hr.employee"].create({"name": "Hors equipe"})

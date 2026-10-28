@@ -992,3 +992,9 @@ msgid ""
 msgstr ""
 "Fin de journée oubliée : saisissez-la ici, la tranche ouverte se ferme à "
 "cette heure."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_assignment.py:0
+msgid "Only the hygiene team can read the planning."
+msgstr "Seule l'équipe hygiène peut lire le planning."
