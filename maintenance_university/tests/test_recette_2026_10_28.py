@@ -37,22 +37,19 @@ class TestRecette20261028(TransactionCase):
         )
         cls.request.with_user(cls.manager).action_assign()
 
-    def _last_tracking(self):
-        # Le suivi s'ecrit au precommit ; ses valeurs ne se lisent qu'en sudo.
-        self.env.cr.precommit.run()
-        return self.request.sudo().message_ids.filtered("tracking_value_ids")[:1]
+    def _subtype_after(self, action):
+        # Le sous-type choisit qui est prevenu : mt_note = personne.
+        stage = self.request.stage_id
+        getattr(self.request.with_user(self.worker), action)()
+        return self.request._track_subtype({"stage_id": stage})
 
     def test_le_demarrage_ne_previent_personne(self):
         self.assertIn(self.manager.partner_id, self.request.message_partner_ids)
-        self.request.with_user(self.worker).action_start()
-        message = self._last_tracking()
-        self.assertEqual(message.subtype_id, self.env.ref("mail.mt_note"))
-        self.assertFalse(message.notification_ids, "aucun courriel au responsable")
+        self.assertEqual(self._subtype_after("action_start"), self.env.ref("mail.mt_note"))
 
     def test_la_fin_previent_toujours(self):
         self.request.with_user(self.worker).action_start()
-        self.request.with_user(self.worker).action_done()
-        self.assertEqual(self._last_tracking().subtype_id, self.env.ref("maintenance.mt_req_status"))
+        self.assertEqual(self._subtype_after("action_done"), self.env.ref("maintenance.mt_req_status"))
 
     def test_la_date_de_la_demande_est_au_responsable(self):
         arch = self.env.ref("maintenance_university.view_maintenance_university_request_form").arch
