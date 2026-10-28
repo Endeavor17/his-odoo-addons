@@ -134,6 +134,11 @@ class TestPlanning(HygieneCase):
         self.assertNotIn(my_day.id, visible)
         self.assertIn(self.env.ref("his_hygiene.menu_hygiene_planning").id, visible)
         self.assertIn(self.env.ref("his_hygiene.menu_hygiene_root").id, visible)
+        # Elle pointe pour une salariee depuis son propre menu.
+        team_clock = self.env.ref("his_hygiene.menu_hygiene_team_clock")
+        self.assertIn(team_clock.id, visible)
+        self.assertEqual(team_clock.action.tag, "his_hygiene_my_day")
+        self.assertNotIn(team_clock.id, self.env["ir.ui.menu"].with_user(self.fatima_user)._visible_menu_ids())
         self.assertIn(
             self.env.ref("his_hygiene.menu_hygiene_planning").id,
             self.env["ir.ui.menu"].with_user(self.fatima_user)._visible_menu_ids(),
