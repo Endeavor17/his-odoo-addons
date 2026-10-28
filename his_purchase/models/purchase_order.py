@@ -115,6 +115,17 @@ class PurchaseOrder(models.Model):
         self.ensure_one()
         return (self.alternative_po_ids - self).filtered(lambda o: o._his_is_competing_offer())
 
+    def action_compare_alternative_lines(self):
+        # Une offre refusee ou sans reponse a ses quantites a zero : elle n'a
+        # rien a comparer, et « Choisir » sur une autre ligne n'y trouverait
+        # rien a effacer (recette 2026-10-28). En attente, elle reste.
+        action = super().action_compare_alternative_lines()
+        offers = self | self.alternative_po_ids.filtered(
+            lambda o: o.state != "cancel" and o.his_supplier_answer not in ("declined", "no_answer")
+        )
+        action["domain"] = [("order_id", "in", offers.ids), ("display_type", "=", False)]
+        return action
+
     def _his_is_cheapest(self):
         self.ensure_one()
         prices = [
@@ -185,6 +196,9 @@ class PurchaseOrder(models.Model):
         today = fields.Date.context_today(self)
         for order in self:
             order.his_reply_by = add_working_days(today, DAYS_TO_REPLY)
+            # « Echeance de commande » d'une demande de prix : la reponse
+            # attendue, pas l'instant de creation (recette 2026-10-28).
+            order.date_order = to_planned_datetime(order.his_reply_by)
 
     def _his_check_quoted(self):
         for order in self:
@@ -517,6 +531,17 @@ class PurchaseOrderLine(models.Model):
         return order.currency_id._convert(
             self.price_subtotal, currency, order.company_id, order.date_order or fields.Date.today()
         )
+
+    def action_choose(self):
+        res = super().action_choose()
+        # Le coeur dit « Rien a effacer » quand aucune autre offre ne porte cet
+        # article : pour l'acheteur, c'est qu'il n'y a rien a departager.
+        if isinstance(res, dict) and res.get("tag") == "display_notification":
+            res["params"].update(
+                title=_("Nothing to choose"),
+                message=_("No other offer quotes this product: confirm this order to choose its supplier."),
+            )
+        return res
 
     def _compute_tax_id(self):
         res = super()._compute_tax_id()

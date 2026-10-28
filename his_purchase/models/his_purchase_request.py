@@ -136,9 +136,24 @@ class HisPurchaseRequest(models.Model):
         help="A line describes an item that is not in the catalogue yet: the catalogue team creates it.",
     )
 
+    his_requester_locked = fields.Boolean(compute="_compute_his_locks")
+    his_department_locked = fields.Boolean(compute="_compute_his_locks")
+
     # ------------------------------------------------------------------
     # Calculs
     # ------------------------------------------------------------------
+
+    @api.depends("requester_id")
+    @api.depends_context("uid")
+    def _compute_his_locks(self):
+        # Le demandeur, c'est l'utilisateur ; son departement, celui de sa
+        # fiche. Seule l'equipe achats depose pour un autre. Sans fiche ou
+        # sans departement, le champ reste libre (recette 2026-10-28).
+        purchasing = self._his_is_purchasing()
+        has_employee = bool(self.env.user.employee_id)
+        for request in self:
+            request.his_requester_locked = not purchasing and has_employee
+            request.his_department_locked = not purchasing and bool(request.requester_id.sudo().department_id)
 
     @api.depends("line_ids.product_id")
     def _compute_his_needs_product(self):
@@ -294,6 +309,9 @@ class HisPurchaseRequest(models.Model):
             return
         if "requester_id" in vals:
             requester = self.env["hr.employee"].browse(vals["requester_id"])
+        # Fiche sans departement : le demandeur le choisit lui-meme.
+        if not requester.sudo().department_id:
+            return
         if (vals["department_id"] or False) != (requester.sudo().department_id.id or False):
             raise AccessError(_("Only the purchasing team can file a request for another department."))
 

@@ -47,8 +47,10 @@
                     </div>
                     <group>
                         <group>
-                            <field name="requester_id" readonly="state != 'draft'"/>
-                            <field name="department_id" readonly="state != 'draft'"/>
+                            <field name="his_requester_locked" invisible="1"/>
+                            <field name="his_department_locked" invisible="1"/>
+                            <field name="requester_id" readonly="state != 'draft' or his_requester_locked"/>
+                            <field name="department_id" readonly="state != 'draft' or his_department_locked"/>
                             <field name="approver_id"/>
                             <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
                         </group>

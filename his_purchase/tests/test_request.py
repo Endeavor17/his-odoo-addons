@@ -209,6 +209,25 @@ class TestRequest(HisPurchaseCase):
         request.with_user(self.officer).department_id = self.restaurant
         self.assertEqual(request.department_id, self.restaurant)
 
+    def test_demandeur_et_departement_preremplis_et_figes(self):
+        # Recette 2026-10-28 : le demandeur est celui qui demande, son
+        # departement celui de sa fiche ; sans departement, il le choisit.
+        Request = self.env["his.purchase.request"].with_user(self.requester)
+        draft = Request.new({})
+        self.assertEqual(draft.requester_id, self.req_emp)
+        self.assertEqual(draft.department_id, self.it)
+        self.assertTrue(draft.his_requester_locked)
+        self.assertTrue(draft.his_department_locked)
+        free = self.env["his.purchase.request"].with_user(self.outsider).new({})
+        self.assertEqual(free.requester_id, self.outsider_emp)
+        self.assertFalse(free.department_id)
+        self.assertFalse(free.his_department_locked, "fiche sans departement : choix libre")
+        request = self._request(user=self.outsider, employee=self.outsider_emp, department_id=self.restaurant.id)
+        self.assertEqual(request.department_id, self.restaurant)
+        officer_view = self.env["his.purchase.request"].with_user(self.officer).new({"requester_id": self.req_emp.id})
+        self.assertFalse(officer_view.his_requester_locked, "l'equipe achats depose pour un autre")
+        self.assertFalse(officer_view.his_department_locked)
+
     def test_le_nouveau_directeur_devient_l_approbateur(self):
         self.company.his_purchase_director_id = False
         request = self._request(user=self.outsider, employee=self.outsider_emp)
