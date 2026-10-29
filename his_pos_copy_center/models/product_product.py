@@ -11,7 +11,7 @@ class ProductProduct(models.Model):
     backend. That failure is silent and expensive, so the test suite pins this
     list rather than trusting it.
 
-    The four fields live on `product.template`; `product.product` _inherits it,
+    The copy fields live on `product.template`; `product.product` _inherits it,
     so reading them off a variant is ordinary delegation.
     """
 
@@ -19,4 +19,11 @@ class ProductProduct(models.Model):
 
     @api.model
     def _load_pos_data_fields(self, config):
-        return [*super()._load_pos_data_fields(config), "copy_service", "copy_format", "copy_color", "copy_sides"]
+        return [
+            *super()._load_pos_data_fields(config),
+            "copy_service",
+            "copy_paper",
+            "copy_color",
+            "copy_sides",
+            "copy_bulk_price",
+        ]

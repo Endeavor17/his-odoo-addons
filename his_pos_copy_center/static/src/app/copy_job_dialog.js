@@ -4,6 +4,17 @@ import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { usePos } from "@point_of_sale/app/hooks/pos_hook";
 import { useService } from "@web/core/utils/hooks";
 import { Component, useState } from "@odoo/owl";
+import { bulkUnitPrice, copyBulkState } from "./copy_bulk_pricing";
+
+// The dimensions, in the order the cashier answers them.
+const DIMENSIONS = ["service", "paper", "color", "sides"];
+const FIELD = {
+    service: "copy_service",
+    paper: "copy_paper",
+    color: "copy_color",
+    sides: "copy_sides",
+};
+export const PAPERS = ["normal", "a5", "bristol", "sticker", "glossy", "luxury", "photo"];
 
 // One dialog instead of one popup per dimension.
 //
@@ -15,6 +26,10 @@ import { Component, useState } from "@odoo/owl";
 // The dimensions are fields rather than attributes because his_stock_mdm's MDM
 // rule 6 forbids the Format attribute on the copy categories. See
 // models/product_template.py for the whole argument.
+//
+// A dimension a product leaves empty is not asked for that product (sticker,
+// glossy, luxury and photo prints carry no colour). A choice no product offers
+// with the other current choices is disabled rather than left to fail.
 export class CopyJobDialog extends Component {
     static template = "his_pos_copy_center.CopyJobDialog";
     static components = { Dialog };
@@ -27,7 +42,7 @@ export class CopyJobDialog extends Component {
         this.dialog = useService("dialog");
         this.state = useState({
             service: this.defaultService,
-            format: "a4",
+            paper: "normal",
             color: "bw",
             sides: "recto",
             copies: 1,
@@ -56,19 +71,84 @@ export class CopyJobDialog extends Component {
         return this.availableServices[0] || "photocopie";
     }
 
-    // The one product matching all four chips, or nothing at all.
-    get matchedProduct() {
-        return this.copyProducts.find(
-            (p) =>
-                p.copy_service === this.state.service &&
-                p.copy_format === this.state.format &&
-                p.copy_color === this.state.color &&
-                p.copy_sides === this.state.sides
+    // A product's empty dimension matches any choice.
+    fits(product, choices, except = null) {
+        return DIMENSIONS.every(
+            (dim) => dim === except || !product[FIELD[dim]] || product[FIELD[dim]] === choices[dim]
         );
     }
 
+    // The one product matching the chips, or nothing at all.
+    get matchedProduct() {
+        return this.copyProducts.find((p) => this.fits(p, this.state));
+    }
+
+    isAvailable(dimension, value) {
+        return this.copyProducts.some(
+            (p) => p[FIELD[dimension]] === value && this.fits(p, this.state, dimension)
+        );
+    }
+
+    // False when every product matching the other choices leaves this
+    // dimension empty: nothing to ask.
+    asks(dimension) {
+        const candidates = this.copyProducts.filter((p) => this.fits(p, this.state, dimension));
+        return !candidates.length || candidates.some((p) => p[FIELD[dimension]]);
+    }
+
+    get availablePapers() {
+        return PAPERS.filter((paper) =>
+            this.copyProducts.some(
+                (p) => p.copy_service === this.state.service && p.copy_paper === paper
+            )
+        );
+    }
+
+    get paperLabel() {
+        return {
+            normal: _t("Normal"),
+            a5: _t("A5"),
+            bristol: _t("Bristol"),
+            sticker: _t("Sticker"),
+            glossy: _t("Glossy"),
+            luxury: _t("Luxury"),
+            photo: _t("Photo"),
+        };
+    }
+
+    // The order as it would be with this document added: the price above 20
+    // pages is decided over the whole order, not this line alone.
+    get bulkState() {
+        const order = this.pos.getOrder();
+        const items = (order?.lines || []).map((line) => ({
+            product: line.product_id,
+            qty: line.getQuantity(),
+        }));
+        if (this.matchedProduct) {
+            items.push({ product: this.matchedProduct, qty: this.state.copies });
+        }
+        return copyBulkState(items);
+    }
+
+    // True when adding this document is what takes the order past 20 pages:
+    // the earlier print lines will drop to the lower price too.
+    get tipsOrderOverThreshold() {
+        const order = this.pos.getOrder();
+        const before = copyBulkState(
+            (order?.lines || []).map((line) => ({
+                product: line.product_id,
+                qty: line.getQuantity(),
+            }))
+        );
+        return !before.active && this.bulkState.active && before.pages > 0;
+    }
+
     get unitPrice() {
-        return this.matchedProduct ? this.matchedProduct.lst_price : 0;
+        const product = this.matchedProduct;
+        if (!product) {
+            return 0;
+        }
+        return bulkUnitPrice(product, this.bulkState.active) ?? product.lst_price;
     }
 
     get total() {
@@ -90,8 +170,21 @@ export class CopyJobDialog extends Component {
         };
     }
 
+    // Re-snap any later choice the new one made impossible, so the chips never
+    // describe a combination that does not exist.
     pick(dimension, value) {
         this.state[dimension] = value;
+        for (const dim of DIMENSIONS) {
+            if (dim === dimension || !this.asks(dim)) {
+                continue;
+            }
+            if (!this.isAvailable(dim, this.state[dim])) {
+                const first = this.copyProducts.find((p) => this.fits(p, this.state, dim));
+                if (first && first[FIELD[dim]]) {
+                    this.state[dim] = first[FIELD[dim]];
+                }
+            }
+        }
     }
 
     isPicked(dimension, value) {
@@ -122,11 +215,11 @@ export class CopyJobDialog extends Component {
             this.dialog.add(AlertDialog, {
                 title: _t("No such copy"),
                 body: _t(
-                    "No product is configured for %(format)s / %(color)s / %(sides)s.\n\n" +
+                    "No product is configured for %(paper)s / %(color)s / %(sides)s.\n\n" +
                         "Tell the Copy Center manager: this is a gap in the catalogue, " +
                         "not a mistake at the till.",
                     {
-                        format: this.state.format.toUpperCase(),
+                        paper: this.paperLabel[this.state.paper] || this.state.paper,
                         color: this.state.color === "bw" ? _t("B&W") : _t("Colour"),
                         sides:
                             this.state.sides === "recto" ? _t("Single-sided") : _t("Double-sided"),
@@ -150,6 +243,8 @@ export class CopyJobDialog extends Component {
             return false;
         }
 
+        // The line takes the product's usual price; the order patch then
+        // applies the price above 20 pages across the whole order.
         await this.pos.addLineToCurrentOrder(
             {
                 product_tmpl_id: product.product_tmpl_id,

@@ -6,8 +6,8 @@
             <button t-if="hasCopyProducts and !props.showRemainingButtons"
                 class="btn btn-primary btn-lg border-0 js_copy_job"
                 t-on-click="() => this.clickCopyJob()">
-                <i class="fa fa-copy me-1" role="img" aria-label="Copy job" title="Copy job"/>
-                Copy job
+                <i class="fa fa-copy me-1" role="img" aria-label="Copies &amp; Prints" title="Copies &amp; Prints"/>
+                Copies &amp; Prints
             </button>
         </xpath>
     </t>

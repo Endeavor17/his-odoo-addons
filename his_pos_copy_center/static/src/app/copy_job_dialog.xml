@@ -2,7 +2,7 @@
 <templates id="template" xml:space="preserve">
 
     <t t-name="his_pos_copy_center.CopyJobDialog">
-        <Dialog title="'Copy job'" size="'lg'" contentClass="themeClass">
+        <Dialog title="'Copies &amp; Prints'" size="'lg'" contentClass="themeClass">
             <div class="his-copy-job">
 
                 <!-- Only worth a row when the till actually sells both. -->
@@ -10,7 +10,8 @@
                     <span class="his-row-label">Service</span>
                     <div class="his-row-options">
                         <button t-foreach="availableServices" t-as="service" t-key="service"
-                            class="btn his-chip"
+                            class="btn his-chip js_copy_service"
+                            t-att-data-service="service"
                             t-att-class="{ 'his-on': isPicked('service', service) }"
                             t-on-click="() => this.pick('service', service)">
                             <t t-esc="serviceLabel[service] or service"/>
@@ -18,38 +19,36 @@
                     </div>
                 </div>
 
-                <!-- The two format buttons are drawn to true ISO 216 proportion,
-                     so the A3 target is literally larger than the A4 one. The
-                     control is the same shape as the thing it sells. -->
-                <div class="his-row his-row-formats">
-                    <span class="his-row-label">Format</span>
-                    <div class="his-row-options his-sheets">
-                        <button class="btn his-sheet his-sheet-a4 js_copy_a4"
-                            t-att-class="{ 'his-on': isPicked('format', 'a4') }"
-                            t-on-click="() => this.pick('format', 'a4')">
-                            <span class="his-sheet-name">A4</span>
-                            <span class="his-sheet-mm">210 × 297</span>
-                        </button>
-                        <button class="btn his-sheet his-sheet-a3 js_copy_a3"
-                            t-att-class="{ 'his-on': isPicked('format', 'a3') }"
-                            t-on-click="() => this.pick('format', 'a3')">
-                            <span class="his-sheet-name">A3</span>
-                            <span class="his-sheet-mm">297 × 420</span>
+                <!-- Paper decides the price at this counter (no A3 on the
+                     poster). Only the papers this service is sold on. -->
+                <div class="his-row">
+                    <span class="his-row-label">Paper</span>
+                    <div class="his-row-options">
+                        <button t-foreach="availablePapers" t-as="paper" t-key="paper"
+                            class="btn his-chip js_copy_paper"
+                            t-att-data-paper="paper"
+                            t-att-class="{ 'his-on': isPicked('paper', paper), 'his-off': !isAvailable('paper', paper) }"
+                            t-att-disabled="!isAvailable('paper', paper)"
+                            t-on-click="() => this.pick('paper', paper)">
+                            <t t-esc="paperLabel[paper]"/>
                         </button>
                     </div>
                 </div>
 
-                <div class="his-row">
+                <!-- Not asked for papers whose products carry no colour. -->
+                <div class="his-row" t-if="asks('color')">
                     <span class="his-row-label">Colour</span>
                     <div class="his-row-options">
                         <button class="btn his-chip his-chip-ink js_copy_bw"
-                            t-att-class="{ 'his-on': isPicked('color', 'bw') }"
+                            t-att-class="{ 'his-on': isPicked('color', 'bw'), 'his-off': !isAvailable('color', 'bw') }"
+                            t-att-disabled="!isAvailable('color', 'bw')"
                             t-on-click="() => this.pick('color', 'bw')">
                             <span class="his-ink his-ink-bw"/>
                             <span>B&amp;W</span>
                         </button>
                         <button class="btn his-chip his-chip-ink js_copy_color"
-                            t-att-class="{ 'his-on': isPicked('color', 'color') }"
+                            t-att-class="{ 'his-on': isPicked('color', 'color'), 'his-off': !isAvailable('color', 'color') }"
+                            t-att-disabled="!isAvailable('color', 'color')"
                             t-on-click="() => this.pick('color', 'color')">
                             <span class="his-ink his-ink-cmyk"/>
                             <span>Colour</span>
@@ -57,14 +56,16 @@
                     </div>
                 </div>
 
-                <div class="his-row">
+                <div class="his-row" t-if="asks('sides')">
                     <span class="his-row-label">Sides</span>
                     <div class="his-row-options">
                         <button class="btn his-chip js_copy_recto"
-                            t-att-class="{ 'his-on': isPicked('sides', 'recto') }"
+                            t-att-class="{ 'his-on': isPicked('sides', 'recto'), 'his-off': !isAvailable('sides', 'recto') }"
+                            t-att-disabled="!isAvailable('sides', 'recto')"
                             t-on-click="() => this.pick('sides', 'recto')">Single-sided</button>
                         <button class="btn his-chip js_copy_duplex"
-                            t-att-class="{ 'his-on': isPicked('sides', 'duplex') }"
+                            t-att-class="{ 'his-on': isPicked('sides', 'duplex'), 'his-off': !isAvailable('sides', 'duplex') }"
+                            t-att-disabled="!isAvailable('sides', 'duplex')"
                             t-on-click="() => this.pick('sides', 'duplex')">Double-sided</button>
                     </div>
                 </div>
@@ -97,6 +98,9 @@
                             <span class="his-ticket-calc">
                                 <t t-esc="state.copies"/> × <t t-esc="formattedUnitPrice"/>
                             </span>
+                        </div>
+                        <div class="his-ticket-note js_copy_bulk_note" t-if="tipsOrderOverThreshold">
+                            Over 20 B&amp;W pages: the earlier B&amp;W prints drop to the lower price too.
                         </div>
                         <div class="his-ticket-total">
                             <span class="his-ticket-label">Total</span>

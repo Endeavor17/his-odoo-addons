@@ -22,6 +22,29 @@ from pathlib import Path
 RACINE = Path(__file__).resolve().parent / "seed"
 SOURCES = RACINE / "sources"
 SORTIE = RACINE / "Seed_Catalogue_v2.csv"
+# La fusion du Copy Center (tools/fusion_copy_center.py) remplace les lignes
+# bureau des listes fournisseur : elle les contient deja, fusionnees avec la
+# feuille du comptoir.
+FUSION_COPY = SOURCES / "copy_center_fusion.csv"
+SANS_FUSION = False  # --sans-fusion : l'entree de tools/fusion_copy_center.py
+COLONNES = [
+    "Nom",
+    "Categorie_Suggeree",
+    "Type",
+    "Format",
+    "Variante",
+    "Code_Barres",
+    "Source",
+    "Ligne",
+    # Colonnes de la fusion Copy Center, vides ailleurs.
+    "Reference",
+    "Prix_Vente",
+    "Cout",
+    "Description_Achat",
+    "Categorie_POS",
+    "Ancien_Noms",
+    "Groupe_Papier",
+]
 
 # Chemins tels qu'attendus par import_seed_catalogue.py : il prefixe
 # « All / Retail & Consommables (Storable) / » et remplace '/' par ' / '.
@@ -266,10 +289,13 @@ def construire():
             }
         )
     # --- Bureau : granularite de la liste brute -----------------------------
+    fusion = FUSION_COPY.exists() and not SANS_FUSION
     for row in lire("liste_articles_HIS.csv"):
         designation = row["Designation"].strip()
         designation = CORRECTIONS.get(designation, designation)
         categorie = MENAGE if HYGIENE.search(designation) else BUREAUTIQUE
+        if fusion and categorie == BUREAUTIQUE:
+            continue  # reprise par la fusion Copy Center, ci-dessous
         lignes.append(
             {
                 "Nom": designation,
@@ -284,6 +310,12 @@ def construire():
         # Designations visiblement tronquees a la saisie (« ... A4 25 X »).
         if re.search(r"\b(X|REF)\s*/?\s*$", designation):
             alertes.append(("liste_articles_HIS", designation, "designation possiblement tronquee"))
+
+    # --- Copy Center : feuille du comptoir fusionnee aux listes -------------
+    if fusion:
+        with open(FUSION_COPY, encoding="utf-8-sig", newline="") as f:
+            for row in csv.DictReader(f):
+                lignes.append({**row, "Format": "", "Variante": ""})
 
     restaurer = charger_restaurateur_arabe()
     non_restaures = []
@@ -391,7 +423,10 @@ def construire():
 
     # La liste bureau classee ne sert pas de source, mais rien ne doit lui
     # echapper : chaque entree doit se retrouver dans la liste brute.
-    mots_bruts = {m for ligne in lignes for m in normaliser(ligne["Nom"]).split()}
+    # Une ligne fusionnee garde le libelle fournisseur en description d'achat.
+    mots_bruts = {
+        m for ligne in lignes for m in normaliser(ligne["Nom"] + " " + ligne.get("Description_Achat", "")).split()
+    }
     for row in lire("liste_fournitures_bureau.csv"):
         tete = normaliser(row["Designation"])
         significatifs = [m for m in tete.split() if len(m) > 3][:2]
@@ -409,9 +444,8 @@ def construire():
 
 def ecrire(lignes):
     SORTIE.parent.mkdir(parents=True, exist_ok=True)
-    colonnes = ["Nom", "Categorie_Suggeree", "Type", "Format", "Variante", "Code_Barres", "Source", "Ligne"]
     with open(SORTIE, "w", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=colonnes, restval="")
+        writer = csv.DictWriter(f, fieldnames=COLONNES, restval="")
         writer.writeheader()
         writer.writerows(lignes)
 
@@ -440,6 +474,30 @@ def _autotest():
     # Le conditionnement ne doit jamais etre lu comme un format.
     assert format_controle("Pate Rossort Sim C/10", ALIMENTATIONS) == ""
 
+    # La fusion Copy Center : chaque ligne garde ses anciens noms (l'import
+    # retrouve par eux les fiches deja creees sous le libelle fournisseur), et
+    # la grille de copie du seed concorde avec celle des tests du module.
+    if FUSION_COPY.exists():
+        with open(FUSION_COPY, encoding="utf-8-sig", newline="") as f:
+            fusion = list(csv.DictReader(f))
+        assert all(re.fullmatch(r"INV-\d{6}", r["Reference"]) for r in fusion), "reference non opaque"
+        assert len({normaliser(r["Nom"]) for r in fusion}) == len(fusion), "un article en double"
+        fournisseur = [r for r in fusion if r["Source"] != "copy_center_fusion"]
+        assert all(r["Ancien_Noms"] == r["Nom"] for r in fournisseur), "rejouer_sur_base_existante"
+    grille = RACINE.parent.parent / "his_pos_copy_center" / "tests" / "copy_grid.py"
+    if grille.exists():
+        espace = {}
+        exec(grille.read_text(encoding="utf-8"), espace)  # noqa: S102 - fichier du depot, pas une entree externe
+        with open(RACINE / "copy_services.csv", encoding="utf-8-sig", newline="") as f:
+            services = {r["Nom"]: r for r in csv.DictReader(f) if r["Service"]}
+        assert set(services) == {row[0] for row in espace["COPY_GRID"]}, "grille de copie : noms"
+        for nom, service, papier, couleur, faces, prix, plus20 in espace["COPY_GRID"]:
+            r = services[nom]
+            assert (r["Service"], r["Papier"], r["Couleur"] or None, r["Faces"]) == (service, papier, couleur, faces), (
+                nom
+            )
+            assert float(r["Prix"]) == prix and float(r["Prix_Plus_20"] or 0) == plus20, nom
+
     # Les designations tronquees de la liste brute sont completees.
     assert CORRECTIONS["SAC A CADEAU BLANCHE A4 25 X"].endswith("37 CM")
     print("autotest : OK")
@@ -448,10 +506,19 @@ def _autotest():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--test", action="store_true", help="controles internes puis sortie")
+    parser.add_argument(
+        "--sans-fusion",
+        metavar="CSV",
+        help="ecrit le seed SANS la fusion Copy Center (lignes bureau des listes "
+        "fournisseur telles quelles) : c'est l'entree de tools/fusion_copy_center.py",
+    )
     args = parser.parse_args()
     if args.test:
         _autotest()
         return
+    global SORTIE, SANS_FUSION
+    if args.sans_fusion:
+        SORTIE, SANS_FUSION = Path(args.sans_fusion), True
 
     lignes, alertes = construire()
     ecrire(lignes)

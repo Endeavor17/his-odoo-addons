@@ -1,4 +1,4 @@
-# his_pos_copy_center — Composition d'un travail de copie
+# his_pos_copy_center — Copies et impressions au Copy Center
 
 Un écran pour composer une copie au comptoir, au lieu d'une fenêtre par
 dimension et par document.
@@ -29,7 +29,7 @@ Le message d'erreur du MDM prescrit lui-même l'alternative :
 > « En dehors de ces catégories, une variation physique doit être portée par une
 > fiche produit distincte. »
 
-Donc **A4 N&B Recto et A3 Couleur Recto-verso sont deux produits**, chacun avec
+Donc **Impression N&B Recto et Impression Couleur Recto-verso sont deux produits**, chacun avec
 son prix et son coût. C'est le catalogue que ce module doit servir, et discuter
 la règle reviendrait à amender la gouvernance d'un autre module pour arranger
 une interface.
@@ -54,62 +54,91 @@ le navigateur. Le builder ne trouve alors aucun produit alors que tout paraît
 parfaitement configuré en back-office. Le module surcharge donc cette liste, et
 un test l'épingle — parce que cette panne-là est silencieuse.
 
-## 3. Ce que fait le dialogue, et ce qu'il ne fait pas
+## 3. Ce que fait le dialogue « Copies et impressions »
 
-Il résout **un** produit à partir des quatre choix et appelle
-`addLineToCurrentOrder`, exactement comme un clic sur une vignette produit. La
-quantité est le nombre de copies.
+La grille est celle de l'affiche du comptoir (2026-10-29) : service
+(photocopie / impression), **papier** (normal, A5, Bristol, autocollant, glacé,
+luxe, photo), couleur, faces. Il n'y a pas d'A3.
 
-**Il lit un prix, il n'en calcule aucun.** Le montant affiché est celui du
-produit déjà chargé par le POS : un aperçu de ce que dira la ligne de commande,
-pas un calcul. Si les deux pouvaient diverger, le prix aurait deux sources de
-vérité dont l'une serait du JavaScript — précisément l'erreur que
-`his_meal_management` documente avoir évitée pour les crédits.
+- Il résout **un** produit et ajoute une ligne de commande ordinaire ; la
+  quantité est le nombre de copies. « Ajouter un autre document » valide la
+  ligne et réarme le formulaire. **Il n'y a pas de modèle de travail** : la
+  commande *est* le travail (un client arrive, demande ses copies, paie, part).
+- Une dimension qu'un produit laisse vide **n'est pas demandée** pour lui :
+  l'autocollant, le glacé, le luxe et la photo n'ont pas de couleur.
+- Un choix qu'aucun produit n'offre avec les autres choix est **grisé**.
 
-« Ajouter un autre document » valide la ligne courante et réarme le formulaire :
-un travail de cinq documents fait cinq lignes de commande ordinaires. **Il n'y a
-pas de modèle de travail** ; la commande *est* le travail, et elle s'imprime, se
-rembourse et se reporte déjà. Un commentaire `ponytail:` porte la décision : un
-`his.copy.job` s'ajoutera le jour où un travail multi-documents enregistré et
-référencé sera un vrai besoin.
+### Le prix au-delà de 20 pages
 
-Bureautique, Flexy et Scan restent des vignettes ordinaires : aucune dimension
-ne justifie un écran.
+Règle de Mohamed (2026-10-29) : les pages d'**impression N&B sur papier
+normal** s'additionnent sur **toute la commande** ; au-delà de 20, **toutes**
+ces pages passent au prix réduit (8 DA recto, 10 DA recto-verso). Un
+recto-verso compte deux pages : 11 feuilles suffisent. **La couleur et les
+photocopies n'ont jamais de remise**, et leurs pages ne comptent pas.
 
-## 4. Quand ça refuse
+Une liste de prix Odoo ne sait pas le dire (sa quantité minimale se lit ligne
+par ligne). `static/src/app/copy_bulk_pricing.js` porte la règle, en fonctions
+pures ; `pos_order_patch.js` la rejoue à chaque ajout, changement de quantité
+ou suppression de ligne, dans les deux sens. **La caisse ne calcule aucun
+prix** : elle choisit entre les deux prix stockés sur le produit (`list_price`
+et `copy_bulk_price`). Un prix saisi à la main par le caissier n'est jamais
+touché.
+
+## 4. Le papier sort du stock
+
+Chaque produit dit ce qu'il consomme : `copy_paper_product_id` (l'article
+papier, un par type, toutes marques confondues) et `copy_sheets_per_unit`
+(1 pour une copie, recto-verso compris ; 500 pour la rame vendue telle quelle).
+
+À la création des transferts de caisse (vente en temps réel **ou** clôture de
+session, même porte d'entrée), `stock_picking.py` ajoute un transfert du papier
+depuis l'emplacement de la caisse :
+
+| Ligne | Destination |
+|---|---|
+| copie ou impression | « Consommation Copy Center » (une par société, créée au premier besoin) |
+| rame vendue au comptoir | le client, comme toute vente |
+| remboursement | rien : les feuilles ont été imprimées |
+
+Une validation qui échoue ne bloque jamais la vente (même règle que le cœur).
+Le papier s'achète à la rame : unité « Rame (500 feuilles) ».
+Où le voir : **Inventaire › Rapports › Consommation de papier** (par papier et
+par semaine), et le stock de l'article papier. L'écart au comptage est la
+gâche.
+
+## 5. Quand ça refuse
 
 | Situation | Comportement |
 |---|---|
-| aucun produit pour la combinaison | fenêtre nommant la combinaison manquante — c'est une lacune du catalogue, pas une erreur de caisse, et le message le dit |
+| combinaison inexistante | le choix est grisé ; « No such copy » reste le dernier recours d'un catalogue incomplet |
 | produit sans prix | refus d'ajouter la ligne ; un zéro donnerait les copies |
-| aucun produit de copie sur cette caisse | le bouton n'apparaît pas, plutôt que d'ouvrir un formulaire vide |
+| aucun produit de copie sur cette caisse | le bouton n'apparaît que sur une caisse Copy Center |
 
-## 5. Essayer
+## 6. Peupler une base
 
-Les catégories Copy sont vides sur une base neuve, donc le bouton reste caché.
-Pour peupler une base de développement :
-
-```bash
-docker compose run --rm -T odoo odoo shell -d <base> --no-http \
-    < tools/seed_copy_products.py
-```
-
-Le script crée les huit combinaisons de photocopie et thématise la caisse Copy
-Center. Les prix y sont des exemples : **le vrai catalogue appartient au MDM.**
-
-## 6. Tests
-
-Cinq tests Python couvrent les champs, la liste blanche POS et la règle du MDM.
-
-Deux tours POS (`his_copy_job_tour`, `his_copy_job_missing_tour`) couvrent le
-chemin nominal et le refus. **Ils ne s'exécutent pas dans l'image `odoo:19.0`
-telle quelle** : les tours `HttpCase` exigent `websocket-client` et un
-navigateur, absents de l'image. Sur un environnement qui les fournit :
+1. Catalogue : `tools/convertir_listes_seed.py` puis `tools/import_seed_catalogue.py`
+   (il crée les articles papier issus de la fusion Copy Center,
+   `tools/fusion_copy_center.py`).
+2. Services : `tools/seed_copy_products.py` lit `tools/seed/copy_services.csv`
+   (16 services + la rame), relie chacun à son papier ; il s'arrête si un papier
+   manque.
 
 ```bash
-docker compose run --rm -T odoo odoo -d <base> -u his_pos_copy_center \
-    --test-enable --test-tags /his_pos_copy_center --stop-after-init
+docker compose run --rm -T odoo odoo shell -d <base> --no-http < tools/seed_copy_products.py
 ```
 
-Sans navigateur, ces deux tests sont *skipped* — et un test ignoré n'est pas un
-test réussi.
+## 7. Tests
+
+Les tests Python couvrent les champs, la liste blanche POS, la règle du MDM et
+la sortie du papier (vente, clôture de session, rame, remboursement, stock
+négatif, emplacement par société, réception à la rame).
+
+Quatre tours POS (`his_copy_job_tour`, `his_copy_job_missing_tour`,
+`his_copy_bulk_tour`, `his_copy_bulk_duplex_tour`) couvrent le dialogue et la
+remise. **Ils ne s'exécutent pas dans l'image `odoo:19.0`** (ni navigateur ni
+`websocket-client`) : ils sont *skipped*, et un test ignoré n'est pas un test
+réussi. Le 2026-10-29 les six cas de la remise ont été rejoués dans Chrome.
+
+```bash
+docker compose run --rm -T odoo odoo -d <base> -u his_pos_copy_center     --test-enable --test-tags /his_pos_copy_center --stop-after-init
+```

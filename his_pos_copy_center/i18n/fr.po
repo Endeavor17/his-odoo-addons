@@ -24,17 +24,10 @@ msgstr ""
 
 #. module: his_pos_copy_center
 #. odoo-javascript
-#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
-#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_format__a3
-msgid "A3"
-msgstr "A3"
-
-#. module: his_pos_copy_center
-#. odoo-javascript
-#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
-#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_format__a4
-msgid "A4"
-msgstr "A4"
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__a5
+msgid "A5"
+msgstr "A5"
 
 #. module: his_pos_copy_center
 #. odoo-javascript
@@ -59,6 +52,13 @@ msgstr "N&B"
 #. module: his_pos_copy_center
 #. odoo-javascript
 #: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__bristol
+msgid "Bristol"
+msgstr "Bristol"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
 #: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
 #: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_color__color
 msgid "Colour"
@@ -71,9 +71,20 @@ msgid "Copies"
 msgstr "Copies"
 
 #. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/control_buttons.xml:0
+msgid "Copies & Prints"
+msgstr "Copies et impressions"
+
+#. module: his_pos_copy_center
 #: model_terms:ir.ui.view,arch_db:his_pos_copy_center.view_product_template_form_copy
 msgid "Copy Center"
 msgstr "Copy Center"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_stock_location__his_copy_consumption
+msgid "Copy Center Paper Consumption"
+msgstr "Consommation de papier du Copy Center"
 
 #. module: his_pos_copy_center
 #: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_center_visible
@@ -88,10 +99,10 @@ msgid "Copy Colour"
 msgstr "Couleur de copie"
 
 #. module: his_pos_copy_center
-#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_format
-#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_format
-msgid "Copy Format"
-msgstr "Format de copie"
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_paper
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_paper
+msgid "Copy Paper"
+msgstr "Papier de copie"
 
 #. module: his_pos_copy_center
 #: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_service
@@ -106,14 +117,10 @@ msgid "Copy Sides"
 msgstr "Faces de copie"
 
 #. module: his_pos_copy_center
-#. odoo-javascript
-#: code:addons/his_pos_copy_center/static/src/app/control_buttons.xml:0
-msgid "Copy job"
-msgstr "Travail de copie"
-
-#. module: his_pos_copy_center
 #: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__display_name
 #: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__display_name
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_stock_location__display_name
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_stock_picking__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -127,15 +134,30 @@ msgstr "Recto-verso"
 
 #. module: his_pos_copy_center
 #. odoo-javascript
-#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
-msgid "Format"
-msgstr "Format"
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__glossy
+msgid "Glossy"
+msgstr "Glacé"
 
 #. module: his_pos_copy_center
 #: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__id
 #: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__id
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_stock_location__id
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_stock_picking__id
 msgid "ID"
 msgstr "ID"
+
+#. module: his_pos_copy_center
+#: model:ir.model,name:his_pos_copy_center.model_stock_location
+msgid "Inventory Locations"
+msgstr "Emplacements de l'inventaire"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__luxury
+msgid "Luxury"
+msgstr "Luxe"
 
 #. module: his_pos_copy_center
 #: model:ir.model.fields,help:his_pos_copy_center.field_product_product__copy_service
@@ -157,11 +179,11 @@ msgstr "Pas de prix"
 #. odoo-javascript
 #: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
 msgid ""
-"No product is configured for %(format)s / %(color)s / %(sides)s.\n"
+"No product is configured for %(paper)s / %(color)s / %(sides)s.\n"
 "\n"
 "Tell the Copy Center manager: this is a gap in the catalogue, not a mistake at the till."
 msgstr ""
-"Aucun produit n'est configuré pour %(format)s / %(color)s / %(sides)s.\n"
+"Aucun produit n'est configuré pour %(paper)s / %(color)s / %(sides)s.\n"
 "\n"
 "Prévenez le responsable du Copy Center : c'est un manque dans le catalogue, pas une erreur de caisse."
 
@@ -170,6 +192,13 @@ msgstr ""
 #: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
 msgid "No such copy"
 msgstr "Copie introuvable"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__normal
+msgid "Normal"
+msgstr "Normal"
 
 #. module: his_pos_copy_center
 #. odoo-javascript
@@ -185,10 +214,49 @@ msgstr "Rien n'est encore configuré pour cette combinaison."
 
 #. module: his_pos_copy_center
 #. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Over 20 B&W pages: the earlier B&W prints drop to the lower price too."
+msgstr ""
+"Au-delà de 20 pages N&B : les impressions N&B déjà saisies passent aussi au "
+"prix réduit."
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
+msgid "Paper"
+msgstr "Papier"
+
+#. module: his_pos_copy_center
+#: model:ir.actions.act_window,name:his_pos_copy_center.action_paper_consumption
+#: model:ir.ui.menu,name:his_pos_copy_center.menu_paper_consumption
+msgid "Paper Consumption"
+msgstr "Consommation de papier"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_paper_product_id
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_paper_product_id
+msgid "Paper Used"
+msgstr "Papier utilisé"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__photo
+msgid "Photo"
+msgstr "Photo"
+
+#. module: his_pos_copy_center
+#. odoo-javascript
 #: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
 #: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_service__photocopie
 msgid "Photocopy"
 msgstr "Photocopie"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_bulk_price
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_bulk_price
+msgid "Price above 20 pages"
+msgstr "Prix au-delà de 20 pages"
 
 #. module: his_pos_copy_center
 #. odoo-javascript
@@ -208,10 +276,21 @@ msgid "Product Variant"
 msgstr "Variante de produit"
 
 #. module: his_pos_copy_center
+#: model:uom.uom,name:his_pos_copy_center.uom_rame_500
+msgid "Ream (500 sheets)"
+msgstr "Rame (500 feuilles)"
+
+#. module: his_pos_copy_center
 #. odoo-javascript
 #: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
 msgid "Service"
 msgstr "Service"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_sheets_per_unit
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_sheets_per_unit
+msgid "Sheets per Unit"
+msgstr "Feuilles par unité"
 
 #. module: his_pos_copy_center
 #. odoo-javascript
@@ -229,6 +308,33 @@ msgstr "Recto"
 
 #. module: his_pos_copy_center
 #. odoo-javascript
+#: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.js:0
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__sticker
+msgid "Sticker"
+msgstr "Autocollant"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,help:his_pos_copy_center.field_product_product__copy_paper_product_id
+#: model:ir.model.fields,help:his_pos_copy_center.field_product_template__copy_paper_product_id
+msgid ""
+"The paper article one unit of this product takes out of stock when sold at "
+"the till."
+msgstr ""
+"L'article papier qu'une unité de ce produit sort du stock quand elle est "
+"vendue en caisse."
+
+#. module: his_pos_copy_center
+#. odoo-javascript
 #: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
 msgid "Total"
 msgstr "Total"
+
+#. module: his_pos_copy_center
+#: model:ir.model,name:his_pos_copy_center.model_stock_picking
+msgid "Transfer"
+msgstr "Transfert"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,help:his_pos_copy_center.field_stock_location__his_copy_consumption
+msgid "Where the paper used by the copies sold at the Copy Center goes."
+msgstr "Là où part le papier utilisé par les copies vendues au Copy Center."
