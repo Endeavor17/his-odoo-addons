@@ -54,11 +54,12 @@ Inputs:
    Copy Center's paper stock.
 6. **Above 20 pages, every page of the job gets the lower price** (21 B&W prints
    = 21 × 8 DA, not 20 × 10 + 1 × 8).
-7. **The discount counts pages across the whole order, B&W on normal paper
-   only.** Copies and prints of several documents add up; once the order
-   passes 20 B&W pages, every B&W line takes its lower price. Double-sided
+7. **The discount counts pages across the whole order, B&W prints on normal
+   paper only.** Prints of several documents add up; once the order passes 20
+   B&W print pages, every B&W print line takes its lower price. Double-sided
    counts two pages a sheet, so 11 double-sided sheets (22 pages) get it.
-   **Colour never gets a discount.**
+   **Colour never gets a discount, and photocopies never do** (Mohamed,
+   2026-10-29: "discounts only touch printing").
 8. **No one cares about the paper brand.** One stock article per paper type:
    A4 copy paper, Luxury, Bristol (all brands received into it).
 
@@ -151,10 +152,8 @@ rule:
   one. The README rule ("read a price, never compute one") holds in that sense.
   The server accepts the line price as it does for any POS line.
 
-**Photocopy B&W is eligible too** (decision 7), but the sheet and the poster
-give it no lower price. Until Mohamed supplies it, `copy_bulk_price` stays
-empty on the two photocopy B&W products: their pages still count toward the
-20, and they keep 5 / 10 DA.
+**Photocopies are outside the rule** (decision 7): no lower price, and their
+pages do not count toward the 20. They always sell at 5 / 10 / 30 / 50 DA.
 
 A two-sided copy is **one sheet** of paper and **two pages**. One unit of
 "B&W double-sided" is one sheet printed on both sides.
@@ -285,8 +284,8 @@ The pipeline stays the one already in use (`tools/seed/sources/` →
   Photo, Toner…), so a person can untick the ones that no longer exist.
 - A5 prints use a dedicated A5 paper article (the sheet's "Papier A5" and
   "Papier Extra Blanc A5" merged), not half an A4 sheet.
-- Photocopy and print B&W pages add up toward the same 20-page threshold;
-  B&W on A5 or Bristol does not count (normal paper only).
+- Only B&W prints on normal paper count toward the 20 pages; B&W prints on
+  A5 or Bristol do not.
 - Merging brands into one paper article is the one place where the supplier-list
   rule "one product per SKU" is set aside, by decision 8. It applies to the
   copy papers only.

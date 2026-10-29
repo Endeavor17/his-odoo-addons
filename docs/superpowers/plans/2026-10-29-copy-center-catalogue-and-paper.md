@@ -15,8 +15,8 @@
 - Branch `feature/copy-center-papier`, worktree `C:\Users\Mohamed\his-odoo-addons\.worktrees\copy-job`. Commits as `Endeavor <mohamed.bounouaa@outlook.com>`, **no `Co-Authored-By` trailer**. Message style `[IMP] …` / `[FIX] …` / `[ADD] …`, French, unaccented.
 - UI source strings in **English**, French in `his_pos_copy_center/i18n/fr.po` for every new term (field labels, selection labels, menu, view strings, JS `_t`). Python comments: French, unaccented ASCII. One font, no new CSS font.
 - `his_stock_mdm` rules hold: opaque `INV-NNNNNN` codes only (no `COP-`), terminal category, price mandatory when storable + sellable, no Format/Variante attribute on Copy categories, barcode unique.
-- Prices (DA, tax included as today): exactly the §5 table. Bulk prices: Print Normal B&W Single **8**, Print Normal B&W Double **10**. Photocopy B&W: no bulk price (field empty) but its pages count.
-- Threshold: B&W pages on **normal paper** across the whole order **> 20** → every eligible line at its bulk price (when it has one). Pages per unit: 1 single-sided, 2 double-sided. Colour: never.
+- Prices (DA, tax included as today): exactly the §5 table. Bulk prices: Print Normal B&W Single **8**, Print Normal B&W Double **10**. Photocopies: never discounted, and their pages do not count.
+- Threshold: B&W **print** pages on **normal paper** across the whole order **> 20** → every such line at its bulk price. Pages per unit: 1 single-sided, 2 double-sided. Colour and photocopies: never.
 - Paper: one article per type — `Papier A4 80g`, `Papier Luxe`, `Papier Bristol`, `Papier Autocollant`, `Papier Glace`, `Papier Photo`, `Papier A5` — held in sheets (`uom.product_uom_unit`). One copy unit = 1 sheet (double-sided included).
 - Consumption location: "Consommation Copy Center", usage `inventory`. Refunds never return paper.
 - Module version: `his_pos_copy_center` 19.0.1.1.0 → **19.0.2.0.0**. Write the migration **before** bumping the version.
@@ -163,7 +163,7 @@ Behaviour (the decisions the code must encode):
 
 **Interfaces:**
 - `export const BULK_THRESHOLD_PAGES = 20;`
-- `export function isBulkEligible(product) -> boolean`: `copy_service && copy_color === "bw" && copy_paper === "normal"`.
+- `export function isBulkEligible(product) -> boolean`: `copy_service === "impression" && copy_color === "bw" && copy_paper === "normal"`.
 - `export function pagesOf(line) -> number`: `line.qty × (copy_sides === "duplex" ? 2 : 1)`, 0 when not eligible.
 - `export function copyBulkState(lines) -> { pages: number, active: boolean }`: `active` iff Σ `pagesOf` > `BULK_THRESHOLD_PAGES`.
 - `export function bulkUnitPrice(product, active) -> number|null`: `active && product.copy_bulk_price ? copy_bulk_price : null` (null = leave the line's normal price).
@@ -176,7 +176,7 @@ Cases the tour pins (order built through the dialog):
 3. + 5 × Print Colour Single → stays 30 DA; B&W lines stay 8.
 4. Remove the second B&W line → back to 20 pages → first line 10 DA.
 5. 11 × Print B&W Double (22 pages) alone → 10 DA (its bulk price).
-6. 15 × Photocopy B&W Single + 6 × Print B&W Single (21 pages) → photocopy 5 DA (no bulk price), print 8 DA.
+6. 15 × Photocopy B&W Single + 6 × Print B&W Single → only 6 print pages count → photocopy 5 DA, print 10 DA; then 30 × Photocopy B&W alone → 5 DA (photocopies never discount).
 
 - [ ] **Step 1: Write `copy_bulk_tour.js`** with the six cases above (assert with `ProductScreen.selectedOrderlineHas(name, qty, price)` / `Order.hasLine`), and its `HttpCase` runner using the `COPY_GRID` fixtures.
 - [ ] **Step 2: Implement `copy_bulk_pricing.js`** (pure, no POS imports) and `pos_order_patch.js`.
@@ -270,4 +270,4 @@ Rules:
 - [ ] **Step 1: Fresh base** like CI (`-i l10n_dz,point_of_sale,his_person_core,his_academic_base`, the two `tools/*.py` shells, then `-i his_stock_mdm,his_pos_copy_center,his_meal_management`), then converter → importer → `seed_copy_products.py` → images import. Paper stock: receive 2 reams of `Papier A4 80g` into Copy Center.
 - [ ] **Step 2: Browser** (Chrome tools, `http://localhost:8070`, Copy Center till as a Copy Center cashier): run the six cases of Task 5 by hand; sticker greys out duplex and hides colour; screenshot each; close the session; open Inventory › Reporting › Paper Consumption and check the sheets equal the copies sold; paper on hand = 1000 − sold.
 - [ ] **Step 3: Full module test run** with `$TEST` plus `-u his_stock_mdm --test-tags /his_stock_mdm,/his_pos_copy_center,/his_access_base` (language test) — all green, counts non-zero.
-- [ ] **Step 4:** README + manifest description, lint, commit `[DOC] Copy Center : grille, papier, ordre de seed`; push; open the PR to `main` with `gh pr create` (body: what changed, the review workbook to tick, the missing photocopy B&W bulk price, rehearsal evidence).
+- [ ] **Step 4:** README + manifest description, lint, commit `[DOC] Copy Center : grille, papier, ordre de seed`; push; open the PR to `main` with `gh pr create` (body: what changed, the review workbook to tick, rehearsal evidence).
