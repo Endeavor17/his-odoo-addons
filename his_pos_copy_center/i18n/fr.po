@@ -271,3 +271,42 @@ msgstr "Luxe"
 #: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__photo
 msgid "Photo"
 msgstr "Photo"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_paper_product_id
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_paper_product_id
+msgid "Paper Used"
+msgstr "Papier utilisé"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_sheets_per_unit
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_sheets_per_unit
+msgid "Sheets per Unit"
+msgstr "Feuilles par unité"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,help:his_pos_copy_center.field_product_product__copy_paper_product_id
+#: model:ir.model.fields,help:his_pos_copy_center.field_product_template__copy_paper_product_id
+msgid "The paper article one unit of this product takes out of stock when sold at the till."
+msgstr "L'article papier qu'une unité de ce produit sort du stock quand elle est vendue en caisse."
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_stock_location__his_copy_consumption
+msgid "Copy Center Paper Consumption"
+msgstr "Consommation de papier du Copy Center"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,help:his_pos_copy_center.field_stock_location__his_copy_consumption
+msgid "Where the paper used by the copies sold at the Copy Center goes."
+msgstr "Là où part le papier utilisé par les copies vendues au Copy Center."
+
+#. module: his_pos_copy_center
+#: model:ir.actions.act_window,name:his_pos_copy_center.action_paper_consumption
+#: model:ir.ui.menu,name:his_pos_copy_center.menu_paper_consumption
+msgid "Paper Consumption"
+msgstr "Consommation de papier"
+
+#. module: his_pos_copy_center
+#: model:uom.uom,name:his_pos_copy_center.uom_rame_500
+msgid "Ream (500 sheets)"
+msgstr "Rame (500 feuilles)"

@@ -20,6 +20,10 @@
                     <field name="copy_color" invisible="not copy_service"/>
                     <field name="copy_sides" invisible="not copy_service"/>
                     <field name="copy_bulk_price" invisible="not copy_service"/>
+                    <!-- Aussi hors copy_service : une rame vendue au comptoir
+                         sort 500 feuilles du meme papier. -->
+                    <field name="copy_paper_product_id"/>
+                    <field name="copy_sheets_per_unit" invisible="not copy_paper_product_id"/>
                 </group>
             </xpath>
         </field>

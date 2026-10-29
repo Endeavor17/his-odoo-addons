@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Le papier se compte en feuilles (ce que consomme une copie) et
+             s'achete a la rame. Une rame = 500 feuilles, exprimee comme le
+             fait Odoo 19 pour « Pack of 6 » (relative_uom_id + facteur). -->
+        <record id="uom_rame_500" model="uom.uom">
+            <field name="name">Ream (500 sheets)</field>
+            <field name="relative_factor">500</field>
+            <field name="relative_uom_id" ref="uom.product_uom_unit"/>
+        </record>
+    </data>
+</odoo>

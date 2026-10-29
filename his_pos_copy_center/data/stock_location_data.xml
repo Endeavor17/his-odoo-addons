@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Le papier consomme par les copies vendues. Virtuel (usage
+             inventory), comme les emplacements de perte de his_stock_mdm,
+             mais distinct d'eux : les pertes restent les pertes, et les rames
+             vendues au comptoir partent vers le client. Rattache a
+             l'emplacement de perte de la societe, qui n'a pas d'XML ID. Les
+             autres societes recoivent le leur au premier besoin
+             (stock.location._his_copy_consumption_location). -->
+        <record id="loc_consommation_copy_center" model="stock.location">
+            <field name="name">Consommation Copy Center</field>
+            <field name="usage">inventory</field>
+            <field name="his_copy_consumption" eval="True"/>
+            <field name="location_id" model="stock.location"
+                   eval="obj().env['stock.location'].search([('usage', '=', 'inventory')], order='id', limit=1).id"/>
+        </record>
+    </data>
+</odoo>

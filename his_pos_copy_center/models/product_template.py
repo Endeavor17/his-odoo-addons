@@ -64,6 +64,15 @@ class ProductTemplate(models.Model):
     # pages N&B imprimees. Vide = pas de prix reduit. La caisse choisit entre
     # deux prix du produit, elle n'en calcule aucun.
     copy_bulk_price = fields.Float("Price above 20 pages", digits="Product Price")
+    # Le papier que consomme une unite vendue : une copie (une feuille, meme
+    # en recto-verso) ou une rame vendue telle quelle (500 feuilles).
+    copy_paper_product_id = fields.Many2one(
+        "product.product",
+        string="Paper Used",
+        domain=[("is_storable", "=", True)],
+        help="The paper article one unit of this product takes out of stock when sold at the till.",
+    )
+    copy_sheets_per_unit = fields.Float("Sheets per Unit", default=1.0)
     copy_center_visible = fields.Boolean(compute="_compute_copy_center_visible")
 
     def _copy_center_categories(self):

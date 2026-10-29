@@ -27,7 +27,10 @@ job.
     "license": "LGPL-3",
     "depends": ["his_pos_ui"],
     "data": [
+        "data/stock_location_data.xml",
+        "data/uom_data.xml",
         "views/product_template_views.xml",
+        "views/paper_consumption_views.xml",
     ],
     "demo": [
         "demo/copy_products.xml",
