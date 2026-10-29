@@ -470,14 +470,17 @@ def build_rows(data, refs, decisions):
         if not inside:
             continue
         seeds = [m for m in inside if m["id"].startswith("SEED:")]
-        priced = [m.get("price") for m in inside if m.get("price")]
-        costed = [m.get("cost") for m in inside if m.get("cost")]
+        # Ni prix ni cout recopies des membres : l'article se compte a la
+        # FEUILLE, alors que les membres sont des rames (650 DA) ou des paquets.
+        # Il ne se vend pas tel quel (la rame vendue et les copies sont des
+        # services) ; son cout par feuille viendra des receptions a la rame.
         row = row_from(
-            {"id": "GROUP:%s" % group, "name": group, "pos": "Articles Bureautique"},
+            {"id": "GROUP:%s" % group, "name": group, "pos": ""},
             Groupe_Papier=group,
-            Prix_Vente=max(priced, key=priced.count) if priced else "",
-            Cout=max(costed, key=costed.count) if costed else "",
+            Prix_Vente="",
+            Cout="",
         )
+        row["Categorie_POS"] = ""
         merge_seed(row, seeds)
         row["Description_Achat"] = " | ".join(m["name"] for m in inside)
         # Les codes-barres des marques ne designent plus un article : la rame
@@ -669,6 +672,10 @@ def _autotest():
     assert by_name["Stylo Ultron Noir"]["Description_Achat"] == "STYLO ULTRON X2 NOIR"
     assert by_name["Papier A4 80g"]["Reference"] == "INV-000020" and retired == ["INV-000030"]
     assert by_name["Papier A4 80g"]["Code_Barres"] == ""
+    # Le papier se compte a la feuille et ne se vend pas tel quel : la rame
+    # vendue est un service, les copies aussi. Ni prix (650 DA = une rame), ni
+    # cout (souvent celui d'un paquet) recopies des membres.
+    assert by_name["Papier A4 80g"]["Prix_Vente"] == "" == by_name["Papier A4 80g"]["Cout"]
     assert by_name["Cartouche Golden Rouge"]["Code_Barres"] == "" == by_name["Cartouche Golden Vert"]["Code_Barres"]
     assert not any("+20" in r["Nom"] for r in rows)
     assert not any(r["Reference"].startswith("COP-") for r in rows)

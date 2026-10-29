@@ -101,6 +101,17 @@ def find_existing(row):
     return found, candidates - found
 
 
+# Les lignes sans reference recoivent un code de la sequence MDM. Sur une base
+# neuve elle part de INV-000001 et heurterait les codes pre-attribues des lignes
+# qui en portent un (« Eau Besbassa » tirait INV-000819, deja pose sur un
+# article Copy Center : 243 refus a la repetition du 2026-10-29). La sequence
+# part donc d'abord apres la plus haute reference du seed.
+sequence = env.ref("his_stock_mdm.seq_product_internal_reference", raise_if_not_found=False)
+seed_codes = [r.get("Reference", "").strip() for r in rows]
+seed_highest = max((int(c[4:]) for c in seed_codes if c.startswith("INV-") and c[4:].isdigit()), default=0)
+if sequence and sequence.number_next_actual <= seed_highest:
+    sequence.sudo().number_next_actual = seed_highest + 1
+
 for row in rows:
     name = row["Nom"].strip()
     if row.get("Reference") or row.get("Ancien_Noms"):
