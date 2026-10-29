@@ -6,8 +6,9 @@ Cafétéria, Restaurant, Copy Center.
 L'idée directrice, énoncée d'abord :
 
 > **L'interface peut être redessinée ; la transaction, non.** Ce module ne
-> contient que du CSS, une classe et deux retouches de navigation : l'entrée
-> « Return » du menu et le verrou de l'écran de connexion (`inert`). Il
+> contient que du CSS, une classe et trois retouches de navigation : l'entrée
+> « Return » du menu, le verrou de l'écran de connexion (`inert`) et le délai
+> de mise en veille. Il
 > n'ajoute aucun appel serveur et ne touche à aucune ligne de commande. Aucune
 > décision d'habillage ne peut donc casser une vente.
 
@@ -113,6 +114,14 @@ thème et l'écran d'entrée reste délibéré plutôt que cassé. Voir
 `static/src/img/README.md`.
 
 ## 6. Écarts assumés
+
+- **Veille au bout d'une heure, pas cinq minutes.** Odoo met une caisse
+  inactive en veille après 5 minutes, et le réveil oublie le caissier : avec
+  `pos_hr` le PIN est redemandé. Au comptoir, entre deux clients, c'est presque
+  toute la journée. `static/src/app/pos_store.js` porte ce pas à une heure sur
+  toutes les caisses ; les autres (écran de connexion, plan de salle) gardent
+  leur valeur Odoo. Le prix : une caisse laissée ouverte reste au nom du
+  dernier caissier pendant une heure.
 
 - **Pas de RTL.** `pos_app.scss` d'Odoo impose `direction: ltr` sur `.pos`. Les
   chaînes arabes se traduisent, la mise en page ne se reflète pas. Changer cela
