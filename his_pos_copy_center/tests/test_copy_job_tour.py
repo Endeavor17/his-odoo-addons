@@ -39,6 +39,7 @@ class TestCopyJobTour(TestPointOfSaleHttpCommon):
 
     def test_bulk_price_follows_the_whole_order(self):
         """Over 20 B&W print pages, every B&W print page at the lower price."""
+        self.env["res.partner"].create({"name": "Partner Test 1"})
         self._start("his_copy_bulk_tour")
 
     def test_bulk_price_duplex_and_photocopies(self):

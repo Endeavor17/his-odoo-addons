@@ -41,6 +41,16 @@ patch(PosOrder.prototype, {
         this.hisApplyCopyBulkPrices();
         return result;
     },
+
+    // The core re-prices every "original" line from the pricelist, straight
+    // through setUnitPrice. It runs on every customer change (setPartner),
+    // so picking the student to email the ticket undid the price above 20
+    // pages. Re-apply it afterwards.
+    setPricelist() {
+        const result = super.setPricelist(...arguments);
+        this.hisApplyCopyBulkPrices();
+        return result;
+    },
 });
 
 patch(PosOrderline.prototype, {

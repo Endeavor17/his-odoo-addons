@@ -78,15 +78,19 @@ registry.category("web_tour.tours").add("his_copy_bulk_tour", {
             Order.hasLine({ productName: "Impression N&B Recto", quantity: "20", priceUnit: "10" }),
             // 2. A second document takes the order to 21 pages: both drop.
             addCopies({ service: "impression", paper: "normal", color: "bw", sides: "recto", copies: 1 }),
-            Order.hasLine({ productName: "Impression N&B Recto", quantity: "20", priceUnit: "8" }),
-            Order.hasLine({ productName: "Impression N&B Recto", quantity: "1", priceUnit: "8" }),
+            // The till merges the second document into the same line: 21 pages.
+            Order.hasLine({ productName: "Impression N&B Recto", quantity: "21", priceUnit: "8" }),
+            // Picking the customer (to email the ticket) re-applies the
+            // pricelist; the lower price must survive it.
+            ProductScreen.clickPartnerButton(),
+            ProductScreen.clickCustomer("Partner Test 1"),
+            Order.hasLine({ productName: "Impression N&B Recto", quantity: "21", priceUnit: "8" }),
             // 3. Colour never drops.
             addCopies({ service: "impression", paper: "normal", color: "color", sides: "recto", copies: 5 }),
             Order.hasLine({ productName: "Impression Couleur Recto", quantity: "5", priceUnit: "30" }),
-            // 4. Remove the 1-page document: back to 20 pages, back to 10.
-            ProductScreen.clickOrderline("Impression N&B Recto", "1"),
-            ProductScreen.clickNumpad("⌫"),
-            ProductScreen.clickNumpad("⌫"),
+            // 4. Back to 20 pages on the numpad: back to 10.
+            ProductScreen.clickOrderline("Impression N&B Recto", "21"),
+            ProductScreen.clickNumpad("2", "0"),
             Order.hasLine({ productName: "Impression N&B Recto", quantity: "20", priceUnit: "10" }),
         ].flat(),
 });
