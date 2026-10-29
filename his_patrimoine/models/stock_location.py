@@ -16,7 +16,9 @@ class StockLocation(models.Model):
                 # Le formulaire envoie 0 par defaut : seule une valeur saisie compte.
                 if vals.get("cyclic_inventory_frequency") or not vals.get("location_id"):
                     continue
-                parent = self.browse(vals["location_id"])
-                if parent.parent_path.startswith(root.parent_path):
+                # sudo : seul le chemin est lu. Un utilisateur peut creer un
+                # emplacement sans lire son parent (cas du socle de tests POS).
+                parent = self.browse(vals["location_id"]).sudo()
+                if parent.parent_path.startswith(root.sudo().parent_path):
                     vals["cyclic_inventory_frequency"] = YEARLY
         return super().create(vals_list)
