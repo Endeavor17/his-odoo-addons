@@ -180,7 +180,7 @@
         </record>
 
         <record id="product_copy_impression_papier_glace" model="product.template">
-            <field name="name">Impression Papier Glace</field>
+            <field name="name">Impression Papier Glacé</field>
             <field name="type">service</field>
             <field name="list_price">50.0</field>
             <field name="available_in_pos" eval="True"/>

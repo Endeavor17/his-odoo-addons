@@ -21,7 +21,7 @@ COPY_GRID = [
     ("Impression Bristol N&B", "impression", "bristol", "bw", "recto", 15.0, 0.0),
     ("Impression Bristol Couleur", "impression", "bristol", "color", "recto", 35.0, 0.0),
     ("Impression Papier Autocollant", "impression", "sticker", None, "recto", 80.0, 0.0),
-    ("Impression Papier Glace", "impression", "glossy", None, "recto", 50.0, 0.0),
+    ("Impression Papier Glacé", "impression", "glossy", None, "recto", 50.0, 0.0),
     ("Impression Papier Luxe", "impression", "luxury", None, "recto", 80.0, 0.0),
     ("Impression Papier Photo", "impression", "photo", None, "recto", 50.0, 0.0),
 ]

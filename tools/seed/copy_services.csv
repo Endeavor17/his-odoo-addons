@@ -1,0 +1,18 @@
+Nom,Service,Papier,Couleur,Faces,Prix,Prix_Plus_20,Papier_Consomme,Feuilles
+Photocopie N&B Recto,photocopie,normal,bw,recto,5,,Papier A4 80g,1
+Photocopie N&B Recto-verso,photocopie,normal,bw,duplex,10,,Papier A4 80g,1
+Photocopie Couleur Recto,photocopie,normal,color,recto,30,,Papier A4 80g,1
+Photocopie Couleur Recto-verso,photocopie,normal,color,duplex,50,,Papier A4 80g,1
+Impression N&B Recto,impression,normal,bw,recto,10,8,Papier A4 80g,1
+Impression N&B Recto-verso,impression,normal,bw,duplex,15,10,Papier A4 80g,1
+Impression Couleur Recto,impression,normal,color,recto,30,,Papier A4 80g,1
+Impression Couleur Recto-verso,impression,normal,color,duplex,50,,Papier A4 80g,1
+Impression A5 N&B,impression,a5,bw,recto,5,,Papier A5,1
+Impression A5 Couleur,impression,a5,color,recto,15,,Papier A5,1
+Impression Bristol N&B,impression,bristol,bw,recto,15,,Papier Bristol,1
+Impression Bristol Couleur,impression,bristol,color,recto,35,,Papier Bristol,1
+Impression Papier Autocollant,impression,sticker,,recto,80,,Papier Autocollant,1
+Impression Papier Glacé,impression,glossy,,recto,50,,Papier Glacé,1
+Impression Papier Luxe,impression,luxury,,recto,80,,Papier Luxe,1
+Impression Papier Photo,impression,photo,,recto,50,,Papier Photo,1
+Rame Papier A4 500 feuilles,,,,,650,,Papier A4 80g,500
