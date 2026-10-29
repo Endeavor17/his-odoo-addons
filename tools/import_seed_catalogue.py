@@ -37,10 +37,98 @@ skipped = []  # deja en base : le script doit rester rejouable a chaque
 # nouvelle liste fournisseur sans dupliquer l'existant.
 
 existing_names = set(Template.search([]).mapped("name"))
+updated = []  # fiches existantes mises a jour (fusion Copy Center)
+archived = []  # fiches fusionnees dans une autre, archivees
+kept_apart = []  # fiches fusionnees qui ont encore du stock : a traiter a la main
+
+# --- Colonnes de la fusion Copy Center ------------------------------------
+#
+# Une ligne fusionnee porte sa reference INV- pre-attribuee, son prix, son
+# cout, le libelle fournisseur (description d'achat) et ses ANCIENS noms : sur
+# une base ou l'article existe deja sous le libelle fournisseur, l'import le
+# retrouve par eux et le met a jour au lieu d'en creer un second.
+copy_config = env.ref("his_stock_mdm.pos_config_copy_center", raise_if_not_found=False)
+ream_uom = env.ref("his_pos_copy_center.uom_rame_500", raise_if_not_found=False)
+pos_by_name = {"Articles Bureautique": env.ref("his_stock_mdm.pos_categ_fournitures", raise_if_not_found=False)}
+
+
+def pos_category(label):
+    if not label:
+        return None
+    if label not in pos_by_name or not pos_by_name[label]:
+        PosCateg = env["pos.category"]
+        pos_by_name[label] = PosCateg.search([("name", "=", label)], limit=1) or PosCateg.create({"name": label})
+        if copy_config and copy_config.limit_categories:
+            copy_config.iface_available_categ_ids = [(4, pos_by_name[label].id)]
+    return pos_by_name[label]
+
+
+def fusion_vals(row):
+    vals = {}
+    price = float(row.get("Prix_Vente") or 0)
+    if price > 0:
+        vals.update({"list_price": price, "sale_ok": True, "available_in_pos": True})
+    if float(row.get("Cout") or 0) > 0:
+        vals["standard_price"] = float(row["Cout"])
+    if row.get("Description_Achat"):
+        vals["description_purchase"] = row["Description_Achat"]
+    categ = pos_category(row.get("Categorie_POS", "").strip())
+    if categ:
+        vals["pos_categ_ids"] = [(4, categ.id)]
+    if row.get("Groupe_Papier") and ream_uom:
+        vals["uom_ids"] = [(4, ream_uom.id)]
+    return vals
+
+
+def find_existing(row):
+    """La fiche deja en base pour cette ligne, et celles qu'elle absorbe.
+
+    Par NOM d'abord (le nouveau, puis les anciens). La reference ne sert qu'a
+    departager : les codes INV- pre-attribues ne designent PAS les memes
+    articles sur une base dont les codes ont ete tires localement (staging,
+    poste de dev). Une fiche trouvee par sa reference mais dont le nom n'est
+    aucun des noms de la ligne n'est pas la bonne.
+    """
+    Any = Template.with_context(active_test=False)
+    reference = row.get("Reference", "").strip()
+    names = [row["Nom"].strip()] + [n.strip() for n in row.get("Ancien_Noms", "").split(" | ") if n.strip()]
+    candidates = Any.search([("name", "in", names)])
+    if not candidates:
+        return Any, Any
+    by_code = candidates.filtered(lambda t: reference and t.default_code == reference)
+    by_rank = sorted(candidates, key=lambda t: names.index(t.name))
+    found = by_code[:1] or by_rank[0]
+    return found, candidates - found
+
 
 for row in rows:
     name = row["Nom"].strip()
-    if name in existing_names:
+    if row.get("Reference") or row.get("Ancien_Noms"):
+        found, others = find_existing(row)
+        if found:
+            savepoint = env.cr.savepoint()
+            try:
+                vals = {"name": name, **fusion_vals(row)}
+                barcode = row.get("Code_Barres", "").strip()
+                if barcode and not env["product.product"].search_count(
+                    [("barcode", "=", barcode), ("product_tmpl_id", "!=", found.id)]
+                ):
+                    vals["barcode"] = barcode
+                found.write(vals)
+                for other in others.filtered("active"):
+                    if other.qty_available > 0:
+                        kept_apart.append("%s (%s en stock)" % (other.name, other.qty_available))
+                    else:
+                        other.action_archive()
+                        archived.append(other.name)
+            except Exception as exc:
+                savepoint.close(rollback=True)
+                rejected.append((name, str(exc).split("\n")[0]))
+            else:
+                savepoint.close(rollback=False)
+                updated.append(name)
+            continue
+    elif name in existing_names:
         skipped.append(name)
         continue
     categ_suggeree = row["Categorie_Suggeree"].strip()
@@ -91,9 +179,22 @@ for row in rows:
         rejected.append((name, "type inconnu : %s" % type_))
         continue
 
+    reference = row.get("Reference", "").strip()
+    # Un code deja pris par un autre article (base aux codes tires localement)
+    # n'est jamais reutilise : le MDM en tire un neuf.
+    if reference and not env["product.product"].with_context(active_test=False).search_count(
+        [("default_code", "=", reference)]
+    ):
+        vals["default_code"] = reference
+    if type_ == "Service" and float(row.get("Prix_Vente") or 0) > 0:
+        vals["sale_ok"] = True
+
     savepoint = env.cr.savepoint()
     try:
         template = Template.create(vals)
+        extra = fusion_vals(row)
+        if extra:
+            template.write(extra)
         if fmt:
             value = format_values_by_name.get(fmt)
             if not value:
@@ -116,10 +217,24 @@ for row in rows:
         savepoint.close(rollback=False)
         accepted.append((name, template.default_code))
 
+# La sequence MDM doit repartir apres la plus haute reference posee a la main,
+# sinon la prochaine fiche creee recevrait un code deja pris. C'est la sequence
+# PostgreSQL qui compte (implementation standard), number_next_actual l'ecrit.
+sequence = env.ref("his_stock_mdm.seq_product_internal_reference", raise_if_not_found=False)
+if sequence:
+    codes = Template.with_context(active_test=False).search([("default_code", "=like", "INV-%")]).mapped("default_code")
+    highest = max((int(c[4:]) for c in codes if c[4:].isdigit()), default=0)
+    if sequence.number_next_actual <= highest:
+        sequence.sudo().number_next_actual = highest + 1
+
 env.cr.commit()
 
 print("=== RESUME IMPORT ===")
 print("Acceptes     :", len(accepted))
+print("Mis a jour   :", len(updated))
+print("Archives     :", len(archived), "(fusionnes dans une autre fiche)")
+for line in kept_apart:
+    print("A TRAITER    : fusionne mais encore en stock :", line)
 print("Deja en base :", len(skipped))
 print("Rejetes      :", len(rejected))
 print("Codes-barres :", sum(1 for r in rows if r.get("Code_Barres", "").strip()))
