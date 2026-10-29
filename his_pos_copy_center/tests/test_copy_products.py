@@ -18,18 +18,18 @@ class TestCopyProducts(TransactionCase):
     def test_a_copy_product_carries_its_dimensions(self):
         product = self.env["product.template"].create(
             {
-                "name": "Photocopie A4 N&B Recto",
+                "name": "Photocopie N&B Recto",
                 "type": "consu",
                 "list_price": 10.0,
                 "available_in_pos": True,
                 "copy_service": "photocopie",
-                "copy_format": "a4",
+                "copy_paper": "normal",
                 "copy_color": "bw",
                 "copy_sides": "recto",
             }
         )
         self.assertEqual(product.copy_service, "photocopie")
-        self.assertEqual(product.copy_format, "a4")
+        self.assertEqual(product.copy_paper, "normal")
         self.assertEqual(product.copy_color, "bw")
         self.assertEqual(product.copy_sides, "recto")
 
@@ -37,7 +37,7 @@ class TestCopyProducts(TransactionCase):
         """A product carrying no copy_service is invisible to the builder."""
         product = self.env["product.template"].create({"name": "Stylo"})
         self.assertFalse(product.copy_service)
-        self.assertFalse(product.copy_format)
+        self.assertFalse(product.copy_paper)
 
     def test_tagging_does_not_trip_the_mdm_rule(self):
         """The whole reason these are fields and not attributes.
@@ -47,11 +47,11 @@ class TestCopyProducts(TransactionCase):
         """
         product = self.env["product.template"].create(
             {
-                "name": "Photocopie A3 Couleur Recto-verso",
+                "name": "Photocopie Couleur Recto-verso",
                 "type": "consu",
                 "list_price": 30.0,
                 "copy_service": "photocopie",
-                "copy_format": "a3",
+                "copy_paper": "normal",
                 "copy_color": "color",
                 "copy_sides": "duplex",
             }
@@ -68,12 +68,30 @@ class TestCopyProducts(TransactionCase):
         """
         config = self.env["pos.config"].create({"name": "Copy Till"})
         fields = self.env["product.product"]._load_pos_data_fields(config)
-        for name in ("copy_service", "copy_format", "copy_color", "copy_sides"):
+        for name in ("copy_service", "copy_paper", "copy_color", "copy_sides", "copy_bulk_price"):
             self.assertIn(
                 name,
                 fields,
                 "%s must be loaded into the POS or the job builder is blind to it." % name,
             )
+        self.assertNotIn("copy_format", fields)
+
+    def test_bulk_price_is_a_second_stored_price(self):
+        """Le prix au-dela de 20 pages est un second prix stocke, pas un calcul."""
+        product = self.env["product.template"].create(
+            {
+                "name": "Impression N&B Recto",
+                "type": "service",
+                "list_price": 10.0,
+                "copy_service": "impression",
+                "copy_paper": "normal",
+                "copy_color": "bw",
+                "copy_sides": "recto",
+                "copy_bulk_price": 8.0,
+            }
+        )
+        self.assertEqual(product.copy_bulk_price, 8.0)
+        self.assertEqual(product.list_price, 10.0)
 
     def test_the_mdm_rule_that_forced_this_design_still_bites(self):
         """Pin the constraint this module was shaped around.

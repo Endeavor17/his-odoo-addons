@@ -13,12 +13,13 @@
                        invisible="not copy_center_visible">
                     <field name="copy_center_visible" invisible="1"/>
                     <field name="copy_service"/>
-                    <!-- The three dimensions only mean anything once the
+                    <!-- The dimensions only mean anything once the
                          product is declared a copy service, so they stay out of
                          the way of every other product in the catalogue. -->
-                    <field name="copy_format" invisible="not copy_service"/>
+                    <field name="copy_paper" invisible="not copy_service"/>
                     <field name="copy_color" invisible="not copy_service"/>
                     <field name="copy_sides" invisible="not copy_service"/>
+                    <field name="copy_bulk_price" invisible="not copy_service"/>
                 </group>
             </xpath>
         </field>

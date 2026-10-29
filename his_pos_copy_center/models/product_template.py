@@ -16,8 +16,8 @@ class ProductTemplate(models.Model):
     enforces it with a ValidationError in
     `product_template_attribute_line._check_mdm_categ_eligible`. Its message
     prescribes what to do instead — *"une variation physique doit être portée
-    par une fiche produit distincte"* — so A4 N&B Recto and A3 Couleur
-    Recto-verso are separate products, each with its own price and its own
+    par une fiche produit distincte"* — so Impression N&B Recto and Impression
+    Couleur Recto-verso are separate products, each with its own price and its own
     cost, and these four fields are how a till recognises which is which.
 
     Nothing here prices anything. The price is the product's own; the builder
@@ -38,9 +38,19 @@ class ProductTemplate(models.Model):
         help="Marks this product as a copy service the Copy Center job builder "
         "can offer. Leave empty for every other product.",
     )
-    copy_format = fields.Selection(
-        [("a4", "A4"), ("a3", "A3")],
-        string="Copy Format",
+    # Le papier remplace le format : la grille affichee au comptoir n'a pas
+    # d'A3, et c'est le support (normal, autocollant, luxe...) qui fait le prix.
+    copy_paper = fields.Selection(
+        [
+            ("normal", "Normal"),
+            ("a5", "A5"),
+            ("bristol", "Bristol"),
+            ("sticker", "Sticker"),
+            ("glossy", "Glossy"),
+            ("luxury", "Luxury"),
+            ("photo", "Photo"),
+        ],
+        string="Copy Paper",
     )
     copy_color = fields.Selection(
         [("bw", "B&W"), ("color", "Colour")],
@@ -50,6 +60,10 @@ class ProductTemplate(models.Model):
         [("recto", "Single-sided"), ("duplex", "Double-sided")],
         string="Copy Sides",
     )
+    # Second prix stocke, applique par la caisse quand la commande depasse 20
+    # pages N&B imprimees. Vide = pas de prix reduit. La caisse choisit entre
+    # deux prix du produit, elle n'en calcule aucun.
+    copy_bulk_price = fields.Float("Price above 20 pages", digits="Product Price")
     copy_center_visible = fields.Boolean(compute="_compute_copy_center_visible")
 
     def _copy_center_categories(self):

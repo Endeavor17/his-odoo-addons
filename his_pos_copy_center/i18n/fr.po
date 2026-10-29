@@ -25,14 +25,12 @@ msgstr ""
 #. module: his_pos_copy_center
 #. odoo-javascript
 #: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
-#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_format__a3
 msgid "A3"
 msgstr "A3"
 
 #. module: his_pos_copy_center
 #. odoo-javascript
 #: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
-#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_format__a4
 msgid "A4"
 msgstr "A4"
 
@@ -88,10 +86,16 @@ msgid "Copy Colour"
 msgstr "Couleur de copie"
 
 #. module: his_pos_copy_center
-#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_format
-#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_format
-msgid "Copy Format"
-msgstr "Format de copie"
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_paper
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_paper
+msgid "Copy Paper"
+msgstr "Papier de copie"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_bulk_price
+#: model:ir.model.fields,field_description:his_pos_copy_center.field_product_template__copy_bulk_price
+msgid "Price above 20 pages"
+msgstr "Prix au-delà de 20 pages"
 
 #. module: his_pos_copy_center
 #: model:ir.model.fields,field_description:his_pos_copy_center.field_product_product__copy_service
@@ -232,3 +236,38 @@ msgstr "Recto"
 #: code:addons/his_pos_copy_center/static/src/app/copy_job_dialog.xml:0
 msgid "Total"
 msgstr "Total"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__normal
+msgid "Normal"
+msgstr "Normal"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__a5
+msgid "A5"
+msgstr "A5"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__bristol
+msgid "Bristol"
+msgstr "Bristol"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__sticker
+msgid "Sticker"
+msgstr "Autocollant"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__glossy
+msgid "Glossy"
+msgstr "Glacé"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__luxury
+msgid "Luxury"
+msgstr "Luxe"
+
+#. module: his_pos_copy_center
+#: model:ir.model.fields.selection,name:his_pos_copy_center.selection__product_template__copy_paper__photo
+msgid "Photo"
+msgstr "Photo"

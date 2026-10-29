@@ -1,11 +1,11 @@
 {
     "name": "HIS POS Copy Center",
-    "version": "19.0.1.1.0",
+    "version": "19.0.2.0.0",
     "summary": "One dialog to compose a copy job, instead of one popup per dimension",
     "description": """
 HIS POS Copy Center
 ===================
-A copy is priced by its dimensions — copies, format, colour, sides — and stock
+A copy is priced by its dimensions — copies, paper, colour, sides — and stock
 POS makes the cashier answer one popup per dimension, for every document in a
 job.
 

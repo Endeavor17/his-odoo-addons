@@ -28,7 +28,7 @@ class TestCopyJobTour(TestPointOfSaleHttpCommon):
                     "sale_ok": True,
                     "taxes_id": [(5, 0, 0)],
                     "copy_service": "photocopie",
-                    "copy_format": "a4",
+                    "copy_paper": "normal",
                     "copy_color": color,
                     "copy_sides": "recto",
                 }
