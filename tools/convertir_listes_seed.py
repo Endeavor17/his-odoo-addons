@@ -26,6 +26,7 @@ SORTIE = RACINE / "Seed_Catalogue_v2.csv"
 # bureau des listes fournisseur : elle les contient deja, fusionnees avec la
 # feuille du comptoir.
 FUSION_COPY = SOURCES / "copy_center_fusion.csv"
+SANS_FUSION = False  # --sans-fusion : l'entree de tools/fusion_copy_center.py
 COLONNES = [
     "Nom",
     "Categorie_Suggeree",
@@ -288,7 +289,7 @@ def construire():
             }
         )
     # --- Bureau : granularite de la liste brute -----------------------------
-    fusion = FUSION_COPY.exists()
+    fusion = FUSION_COPY.exists() and not SANS_FUSION
     for row in lire("liste_articles_HIS.csv"):
         designation = row["Designation"].strip()
         designation = CORRECTIONS.get(designation, designation)
@@ -505,10 +506,19 @@ def _autotest():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--test", action="store_true", help="controles internes puis sortie")
+    parser.add_argument(
+        "--sans-fusion",
+        metavar="CSV",
+        help="ecrit le seed SANS la fusion Copy Center (lignes bureau des listes "
+        "fournisseur telles quelles) : c'est l'entree de tools/fusion_copy_center.py",
+    )
     args = parser.parse_args()
     if args.test:
         _autotest()
         return
+    global SORTIE, SANS_FUSION
+    if args.sans_fusion:
+        SORTIE, SANS_FUSION = Path(args.sans_fusion), True
 
     lignes, alertes = construire()
     ecrire(lignes)

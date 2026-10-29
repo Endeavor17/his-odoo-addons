@@ -11,10 +11,15 @@ commun) : `review` ecrit un classeur ou une personne coche « meme article /
 article different » ; `build` suit ces coches.
 
     uv run --no-project --with openpyxl python -I tools/fusion_copy_center.py review \\
-        <feuille.xlsx> <Seed_Catalogue_v2.csv> <Product_Catalogue REVIEW.xlsx> <revue.xlsx>
+        <feuille.xlsx> <seed_sans_fusion.csv> <Product_Catalogue REVIEW.xlsx> <revue.xlsx>
     uv run ... tools/fusion_copy_center.py build \\
-        <feuille.xlsx> <Seed_Catalogue_v2.csv> <Product_Catalogue REVIEW.xlsx> <revue.xlsx> <sortie.csv>
+        <feuille.xlsx> <seed_sans_fusion.csv> <Product_Catalogue REVIEW.xlsx> <revue.xlsx> <sortie.csv>
     uv run ... tools/fusion_copy_center.py --test
+
+Le seed SANS fusion (lignes bureau des listes fournisseur telles quelles) vient
+de `python tools/convertir_listes_seed.py --sans-fusion <csv>` ; la sortie de
+build va dans tools/seed/sources/copy_center_fusion.csv, puis on relance le
+convertisseur et l'import comme toujours.
 
 Ne touche pas a Odoo. La gouvernance MDM reste celle de l'import.
 """
@@ -151,6 +156,12 @@ def read_sources(sheet_path, seed_path, catalogue_path):
                 }
             )
     with open(seed_path, encoding="utf-8-sig", newline="") as f:
+        if any(r.get("Source") == "copy_center_fusion" for r in csv.DictReader(f)):
+            raise SystemExit(
+                "Ce seed contient deja la fusion. Passer le seed SANS fusion :\n"
+                "    python tools/convertir_listes_seed.py --sans-fusion <seed_sans_fusion.csv>"
+            )
+        f.seek(0)
         seed = [
             {"id": "SEED:%s:%s" % (r["Source"], r["Ligne"]), "name": r["Nom"].strip(), **r}
             for r in csv.DictReader(f)
@@ -505,6 +516,13 @@ def build_rows(data, refs, decisions):
             continue
         if row["Code_Barres"] and keep["Code_Barres"] and row["Code_Barres"] != keep["Code_Barres"]:
             conflicts.append("%s: %s / %s" % (keep["Nom"], keep["Code_Barres"], row["Code_Barres"]))
+        # Le libelle du comptoir l'emporte sur le libelle fournisseur, qui
+        # reste en description d'achat et en ancien nom.
+        if row["Source"] == "copy_center_fusion" and keep["Source"] != "copy_center_fusion":
+            keep["Ancien_Noms"] = keep["Ancien_Noms"] or keep["Nom"]
+            keep["Description_Achat"] = keep["Description_Achat"] or keep["Nom"]
+            keep["Nom"], keep["Source"], keep["Ligne"] = row["Nom"], row["Source"], row["Ligne"]
+            keep["Categorie_POS"] = keep["Categorie_POS"] or row["Categorie_POS"]
         for field in ("Code_Barres", "Prix_Vente", "Cout", "Description_Achat", "Ancien_Noms", "Reference"):
             keep[field] = keep[field] or row[field]
         if row["Reference"] and row["Reference"] != keep["Reference"] and re.fullmatch(r"INV-\d{6}", row["Reference"]):
@@ -677,6 +695,26 @@ def _autotest():
     )
     rows3, _r = build_rows(data3, {}, ({}, {}, {}))
     assert len(rows3) == 1  # meme nom, un seul article
+    data4 = analyse(
+        [],
+        [],
+        [{"id": "ST:7", "name": "Note Book Elastique A5", "barcode": "", "price": "540", "cost": "", "pos": ""}],
+        [
+            {
+                "id": "SEED:l:40",
+                "name": "NOTE BOOK ELASTIQUE A5",
+                "Categorie_Suggeree": BUREAUTIQUE,
+                "Type": "Storable",
+                "Source": "l",
+                "Ligne": "40",
+            }
+        ],
+    )
+    data4["stock_pairs"] = {}  # le rapprochement n'a pas eu lieu : seul le nom les reunit
+    rows4, _r = build_rows(data4, {"NOTE BOOK ELASTIQUE A5": "INV-000040"}, ({}, {}, {"ST:7": "IMPORT"}))
+    assert [(r["Nom"], r["Reference"], r["Ancien_Noms"]) for r in rows4] == [
+        ("Note Book Elastique A5", "INV-000040", "NOTE BOOK ELASTIQUE A5")
+    ], rows4
     print("fusion_copy_center : autotest OK")
 
 
