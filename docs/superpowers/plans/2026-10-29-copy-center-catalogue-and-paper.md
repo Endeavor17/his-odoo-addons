@@ -64,11 +64,18 @@
 
 ```python
 def test_bulk_price_is_a_second_stored_price(self):
-    product = self.env["product.template"].create({
-        "name": "Impression N&B Recto", "type": "service", "list_price": 10.0,
-        "copy_service": "impression", "copy_paper": "normal",
-        "copy_color": "bw", "copy_sides": "recto", "copy_bulk_price": 8.0,
-    })
+    product = self.env["product.template"].create(
+        {
+            "name": "Impression N&B Recto",
+            "type": "service",
+            "list_price": 10.0,
+            "copy_service": "impression",
+            "copy_paper": "normal",
+            "copy_color": "bw",
+            "copy_sides": "recto",
+            "copy_bulk_price": 8.0,
+        }
+    )
     self.assertEqual(product.copy_bulk_price, 8.0)
     self.assertEqual(product.list_price, 10.0)
 ```
