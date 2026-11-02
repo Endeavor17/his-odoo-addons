@@ -349,12 +349,10 @@ msgstr "Fait par"
 #. odoo-javascript
 #: code:addons/his_hygiene/static/src/planning/planning.js:0
 msgid ""
-"Each day of last month is copied to the same day of this month. Days already"
-" planned, days off and days that do not exist are skipped."
+"Each working day takes the plan of the same weekday of last month. Days "
+"already planned and days off are skipped."
 msgstr ""
-"Chaque jour du mois dernier est copié sur le même jour de ce mois. Les jours"
-" déjà planifiés, les jours de repos et les jours qui n'existent pas sont "
-"sautés."
+"Chaque jour travaillé reprend le planning du même jour de la semaine du mois dernier. Les jours déjà planifiés et les jours de repos sont sautés."
 
 #. module: his_hygiene
 #: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__employee_id
@@ -1004,3 +1002,10 @@ msgstr "Seule l'équipe hygiène peut lire le planning."
 #: model:ir.ui.menu,name:his_hygiene.menu_hygiene_team_clock
 msgid "Team Clock-In"
 msgstr "Pointage de l'équipe"
+
+#. module: his_hygiene
+#: code:addons/his_hygiene/models/hygiene_finding.py:0
+msgid ""
+"Nobody present is planned on this area on %s. Add a worker to this area in "
+"the Planning, then dispatch again."
+msgstr "Personne de présent n'est planifié sur cette zone le %s. Ajoutez une salariée à cette zone dans le planning, puis attribuez à nouveau."

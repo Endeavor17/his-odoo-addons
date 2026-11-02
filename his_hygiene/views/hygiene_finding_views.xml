@@ -21,7 +21,7 @@
         <field name="name">his.hygiene.finding.form</field>
         <field name="model">his.hygiene.finding</field>
         <field name="arch" type="xml">
-            <form string="Finding">
+            <form string="Finding" create="0">
                 <header>
                     <button name="action_dispatch" type="object" string="Dispatch to the team" class="oe_highlight"
                             invisible="kind != 'cleaning' or state != 'new'"/>

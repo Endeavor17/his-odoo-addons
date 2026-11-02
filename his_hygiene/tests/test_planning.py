@@ -65,16 +65,24 @@ class TestPlanning(HygieneCase):
         self.assertNotIn(date(2026, 11, 6), dates)
         self.assertNotIn(date(2026, 11, 7), dates)
 
-    def test_copier_le_mois_precedent(self):
-        self.Plan.set_cell(self.area_rdc.id, "2026-10-01", [self.fatima.id])  # -> dim. 1er nov.
-        self.Plan.set_cell(self.area_rdc.id, "2026-10-06", [self.fatima.id])  # -> ven. 6 nov. : off
-        self.Plan.set_cell(self.area_rdc.id, "2026-10-31", [self.fatima.id])  # -> pas de 31 nov.
-        self.assertEqual(self.Plan.copy_previous_month(2026, 11), 1)
+    def test_copier_le_mois_precedent_suit_le_jour_de_la_semaine(self):
+        self.Plan.set_cell(self.area_rdc.id, "2026-10-04", [self.fatima.id])  # dim. -> dim. 1er nov.
+        self.Plan.set_cell(self.area_rdc.id, "2026-10-26", [self.karima.id])  # lun. -> lun. 23 et 30 nov.
+        self.assertEqual(self.Plan.copy_previous_month(2026, 11), 3)
         nov = self.Assignment.search([("area_id", "=", self.area_rdc.id), ("date", ">=", "2026-11-01")])
-        self.assertEqual(nov.mapped("date"), [date(2026, 11, 1)])
+        self.assertEqual(nov.mapped("date"), [date(2026, 11, 1), date(2026, 11, 23), date(2026, 11, 30)])
+        self.assertEqual(nov[0].employee_ids, self.fatima)
+        self.assertEqual(nov[2].employee_ids, self.karima)
+
+    def test_copier_un_mois_complet_ne_laisse_aucun_trou(self):
+        self.Plan.fill_range(self.area_rdc.id, "2026-10-01", "2026-10-31", [self.fatima.id])
+        self.assertEqual(self.Plan.copy_previous_month(2026, 11), 22)
+        nov = self.Assignment.search([("area_id", "=", self.area_rdc.id), ("date", ">=", "2026-11-01")])
+        self.assertEqual(len(nov), 22, "les 30 jours de novembre moins 8 vendredis et samedis")
+        self.assertFalse(nov.filtered(lambda a: a.date.weekday() in (4, 5)))
 
     def test_copier_ne_remplace_pas_une_case_deja_planifiee(self):
-        self.Plan.set_cell(self.area_rdc.id, "2026-10-01", [self.fatima.id])
+        self.Plan.set_cell(self.area_rdc.id, "2026-10-04", [self.fatima.id])
         self.Plan.set_cell(self.area_rdc.id, "2026-11-01", [self.karima.id])
         self.assertEqual(self.Plan.copy_previous_month(2026, 11), 0)
 

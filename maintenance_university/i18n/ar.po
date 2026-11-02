@@ -83,16 +83,20 @@ msgstr "تعيين"
 #. module: maintenance_university
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__assigned
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__assigned
+#: model:maintenance.stage,name:maintenance_university.maintenance_stage_assigned
 msgid "Assigned"
 msgstr "مُعيَّن"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__date_assigned
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__date_assigned
 msgid "Assigned On"
 msgstr "تاريخ التعيين"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__employee_ids
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__employee_ids
 msgid "Assigned Workers"
 msgstr "العمال المعينون"
 
@@ -116,6 +120,7 @@ msgstr "عدد المرفقات"
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_building_form
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_search
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__building_id
 msgid "Building"
 msgstr "المبنى"
 
@@ -140,6 +145,8 @@ msgstr "إلغاء"
 #. module: maintenance_university
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__cancelled
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__cancelled
+#: model:maintenance.stage,name:maintenance_university.maintenance_stage_cancelled
 msgid "Cancelled"
 msgstr "ملغى"
 
@@ -188,6 +195,7 @@ msgstr "تحويل"
 #. module: maintenance_university
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_form
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_finding_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
 msgid "Convert to Request"
 msgstr "تحويل إلى طلب"
 
@@ -208,6 +216,10 @@ msgstr "إنشاء طلب صيانة"
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__create_uid
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__create_uid
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__create_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__create_uid
 msgid "Created by"
 msgstr "أنشأه"
 
@@ -217,16 +229,23 @@ msgstr "أنشأه"
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__create_date
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__create_date
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__create_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__create_date
 msgid "Created on"
 msgstr "تاريخ الإنشاء"
 
 #. module: maintenance_university
+#. odoo-javascript
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__critical
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
 msgid "Critical"
 msgstr "حرجة"
 
 #. module: maintenance_university
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_report_form
 msgid "Describe the problem..."
 msgstr "صف المشكلة..."
 
@@ -250,12 +269,23 @@ msgstr "الوصف"
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__display_name
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__display_name
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_dashboard__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__display_name
+#: model:ir.model.fields,field_description:maintenance_university.field_res_users__display_name
 msgid "Display Name"
 msgstr "الاسم المعروض"
 
 #. module: maintenance_university
+#. odoo-javascript
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__done
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__done
+#: model:maintenance.stage,name:maintenance_university.maintenance_stage_done
 msgid "Done"
 msgstr "منجز"
 
@@ -268,16 +298,20 @@ msgstr "مسودة"
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__duration
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__duration
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__duration
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__duration
 msgid "Duration (hours)"
 msgstr "المدة (ساعات)"
 
 #. module: maintenance_university
 #: model:ir.model,name:maintenance_university.model_hr_employee
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__employee_id
 msgid "Employee"
 msgstr "موظف"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__date_end
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__date_end
 msgid "End"
 msgstr "النهاية"
 
@@ -295,19 +329,24 @@ msgstr "متابعة نتيجة التفتيش"
 
 #. module: maintenance_university
 #. odoo-python
+#. odoo-javascript
 #: code:addons/maintenance_university/models/maintenance_university_request.py:0
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__finding_ids
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__finding_ids
 msgid "Findings"
 msgstr "نتائج التفتيش"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__finding_count
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__finding_count
 msgid "Findings Count"
 msgstr "عدد نتائج التفتيش"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__date_end
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__date_end
 msgid "Finished On"
 msgstr "تاريخ الانتهاء"
 
@@ -347,6 +386,7 @@ msgstr "لديه رسالة"
 #. module: maintenance_university
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__high
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__priority__2
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__priority__2
 msgid "High"
 msgstr "عالية"
 
@@ -372,6 +412,13 @@ msgstr "كيف سارت الجولة؟ أي شيء يجب أن يعرفه الق
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__id
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__id
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_dashboard__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__id
+#: model:ir.model.fields,field_description:maintenance_university.field_res_users__id
 msgid "ID"
 msgstr "المعرّف"
 
@@ -402,6 +449,8 @@ msgstr "إذا تم التحديد، فإن بعض الرسائل بها خطأ 
 #. module: maintenance_university
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__in_progress
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__in_progress
+#: model:maintenance.stage,name:maintenance_university.maintenance_stage_in_progress
 msgid "In Progress"
 msgstr "قيد التنفيذ"
 
@@ -426,6 +475,7 @@ msgstr "نتائج التفتيش"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__inspection_report
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__inspection_report
 msgid "Inspection Report"
 msgstr "تقرير التفتيش"
 
@@ -454,6 +504,7 @@ msgstr "متابِع"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__is_inspection
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__is_inspection
 msgid "Is Inspection"
 msgstr "طلب تفتيش؟"
 
@@ -464,6 +515,7 @@ msgstr "فئة تفتيش؟"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__is_manager
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__is_manager
 msgid "Is Manager"
 msgstr "مدير؟"
 
@@ -473,6 +525,10 @@ msgstr "مدير؟"
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__write_uid
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__write_uid
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__write_uid
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__write_uid
 msgid "Last Updated by"
 msgstr "آخر تحديث بواسطة"
 
@@ -482,6 +538,10 @@ msgstr "آخر تحديث بواسطة"
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__write_date
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__write_date
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create__write_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_worker_create_line__write_date
 msgid "Last Updated on"
 msgstr "آخر تحديث في"
 
@@ -502,6 +562,7 @@ msgstr ""
 #. module: maintenance_university
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_finding__severity__low
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__priority__0
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__priority__0
 msgid "Low"
 msgstr "منخفضة"
 
@@ -515,6 +576,7 @@ msgstr "فئة الصيانة"
 #. odoo-python
 #: code:addons/maintenance_university/models/maintenance_university_finding.py:0
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model:ir.model,name:maintenance_university.model_maintenance_request
 msgid "Maintenance Request"
 msgstr "طلب صيانة"
 
@@ -534,6 +596,7 @@ msgstr "طلبات الصيانة"
 
 #. module: maintenance_university
 #: model:res.groups,name:maintenance_university.group_maintenance_manager
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_list
 msgid "Manager"
 msgstr "مدير"
 
@@ -573,6 +636,8 @@ msgstr "عملي"
 #. module: maintenance_university
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__new
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__new
+#: model:maintenance.stage,name:maintenance_university.maintenance_stage_new
 msgid "New"
 msgstr "جديد"
 
@@ -598,6 +663,7 @@ msgstr "لا يوجد موظفون بعد"
 
 #. module: maintenance_university
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__priority__1
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__priority__1
 msgid "Normal"
 msgstr "عادية"
 
@@ -701,6 +767,7 @@ msgstr "لا يمكن تحديد سوى فئة نشطة واحدة كفئة تف
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__origin_finding_id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__origin_finding_id
 msgid "Originating Finding"
 msgstr "المصدر"
 
@@ -713,6 +780,7 @@ msgstr "إيقاف مؤقت"
 #. module: maintenance_university
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__state__paused
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__state__paused
 msgid "Paused"
 msgstr "متوقف مؤقتًا"
 
@@ -723,6 +791,7 @@ msgstr "صورة"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__priority
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__priority
 msgid "Priority"
 msgstr "الأولوية"
 
@@ -743,17 +812,20 @@ msgstr "الطلب"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__request_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__request_date
 msgid "Request Date"
 msgstr "تاريخ الطلب"
 
 #. module: maintenance_university
 #: model:ir.ui.menu,name:maintenance_university.menu_maintenance_request
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_category__maintenance_ids
 msgid "Requests"
 msgstr "الطلبات"
 
 #. module: maintenance_university
 #: model:ir.model.fields,help:maintenance_university.field_maintenance_category__is_inspection
 #: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__is_inspection
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_request__is_inspection
 msgid ""
 "Requests using this category show the Findings tab and enable the inspection"
 " workflow."
@@ -780,6 +852,7 @@ msgstr "خطأ في تسليم الرسالة النصية"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__scheduled_date
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__scheduled_date
 msgid "Scheduled For"
 msgstr "التاريخ المجدول"
 
@@ -804,11 +877,13 @@ msgstr "الخطورة"
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__date_start
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_kanban
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__date_start
 msgid "Start"
 msgstr "بدء"
 
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__date_start
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__date_start
 msgid "Started On"
 msgstr "تاريخ البدء"
 
@@ -816,6 +891,9 @@ msgstr "تاريخ البدء"
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_finding__state
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__state
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__state
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__state
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
 msgid "Status"
 msgstr "الحالة"
 
@@ -867,11 +945,13 @@ msgstr "هذا الطلب مغلق بالفعل."
 #. module: maintenance_university
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request__time_log_ids
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_form
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_request__time_log_ids
 msgid "Time Log"
 msgstr "سجل الوقت"
 
 #. module: maintenance_university
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_form
 msgid "Total"
 msgstr "الإجمالي"
 
@@ -889,11 +969,13 @@ msgstr "مبنى جامعي"
 #: model:ir.module.category,name:maintenance_university.module_category_maintenance_university
 #: model:ir.ui.menu,name:maintenance_university.menu_maintenance_root
 #: model:res.groups.privilege,name:maintenance_university.res_groups_privilege_maintenance_university
+#: model:maintenance.team,name:maintenance_university.maintenance_team_university
 msgid "University Maintenance"
 msgstr "صيانة الجامعة"
 
 #. module: maintenance_university
 #: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_request__priority__3
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_request__priority__3
 msgid "Urgent"
 msgstr "عاجلة"
 
@@ -911,13 +993,19 @@ msgstr "سجل تواصل الموقع الإلكتروني"
 
 #. module: maintenance_university
 #: model:ir.model.fields,help:maintenance_university.field_maintenance_university_request__scheduled_date
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_request__scheduled_date
 msgid "When the worker is expected to do this."
 msgstr "الموعد المتوقع أن يقوم فيه العامل بذلك."
 
 #. module: maintenance_university
+#. odoo-javascript
 #: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_request_time__employee_id
 #: model:res.groups,name:maintenance_university.group_maintenance_worker
 #: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_request_search
+#: code:addons/maintenance_university/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__employee_id
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__employee_id
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_search
 msgid "Worker"
 msgstr "عامل"
 
@@ -1361,3 +1449,120 @@ msgstr "مُبلِّغ صيانة الجامعة"
 #: model:ir.model.fields,help:maintenance_university.field_maintenance_request__scheduled_date
 msgid "When the worker is expected to do this."
 msgstr "الوقت المتوقع أن يقوم فيه العامل بذلك."
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_workday_segment__kind__pause
+msgid "Break"
+msgstr "استراحة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__paused_hours
+msgid "Break Hours"
+msgstr "ساعات الاستراحة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__date
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_search
+msgid "Day"
+msgstr "اليوم"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_workday__date_end
+msgid "Empty while the day is still running."
+msgstr "يبقى فارغاً ما دام اليوم جارياً."
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__date_end
+msgid "Ended At"
+msgstr "انتهى في"
+
+#. module: maintenance_university
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_form
+msgid "Fill this in to close a day the worker left running."
+msgstr "املأ هذا الحقل لإغلاق يوم تركه العامل مفتوحاً."
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__hr_employee__maintenance_workday_state__done
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_workday__state__done
+msgid "Finished"
+msgstr "منتهٍ"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__kind
+msgid "Kind"
+msgstr "النوع"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_workday
+msgid "Maintenance Work Day"
+msgstr "يوم عمل الصيانة"
+
+#. module: maintenance_university
+#: model:ir.model,name:maintenance_university.model_maintenance_university_workday_segment
+msgid "Maintenance Work Day Segment"
+msgstr "فترة يوم عمل الصيانة"
+
+#. module: maintenance_university
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_workday__state__paused
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_search
+msgid "On Break"
+msgstr "في استراحة"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+#: model:ir.model.fields.selection,name:maintenance_university.selection__hr_employee__maintenance_workday_state__paused
+msgid "On break"
+msgstr "في استراحة"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__segment_ids
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_form
+msgid "Segments"
+msgstr "الفترات"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_workday_started_at
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__date_start
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+msgid "Started At"
+msgstr "بدأ في"
+
+#. module: maintenance_university
+#: model:ir.model.fields,help:maintenance_university.field_maintenance_university_workday__worked_hours
+msgid "Time actually worked, breaks excluded."
+msgstr "وقت العمل الفعلي دون احتساب الاستراحات."
+
+#. module: maintenance_university
+#. odoo-python
+#: code:addons/maintenance_university/models/maintenance_university_workday.py:0
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday_segment__workday_id
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_form
+msgid "Work Day"
+msgstr "يوم العمل"
+
+#. module: maintenance_university
+#: model:ir.actions.act_window,name:maintenance_university.action_maintenance_university_workday
+#: model:ir.model.fields,field_description:maintenance_university.field_hr_employee__maintenance_workday_ids
+#: model:ir.ui.menu,name:maintenance_university.menu_maintenance_workday
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_hr_employee_maintenance_summary_form
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_list
+#: model_terms:ir.ui.view,arch_db:maintenance_university.view_maintenance_university_workday_search
+msgid "Work Days"
+msgstr "أيام العمل"
+
+#. module: maintenance_university
+#: model:ir.model.fields,field_description:maintenance_university.field_maintenance_university_workday__worked_hours
+msgid "Worked Hours"
+msgstr "ساعات العمل"
+
+#. module: maintenance_university
+#. odoo-javascript
+#: code:addons/maintenance_university/static/src/my_work/my_work.xml:0
+#: model:ir.model.fields.selection,name:maintenance_university.selection__hr_employee__maintenance_workday_state__working
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_workday__state__working
+#: model:ir.model.fields.selection,name:maintenance_university.selection__maintenance_university_workday_segment__kind__work
+msgid "Working"
+msgstr "قيد العمل"

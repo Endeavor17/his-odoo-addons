@@ -4,7 +4,7 @@ import { deserializeDate, today } from "@web/core/l10n/dates";
 import { localization } from "@web/core/l10n/localization";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { Component, onWillStart, useState } from "@odoo/owl";
+import { Component, onWillStart, useEffect, useRef, useState } from "@odoo/owl";
 import { memberColor, memberInk } from "../common/colors";
 
 // La matrice du mois : zones en lignes, chaque jour en colonne.
@@ -38,6 +38,17 @@ export class HygienePlanning extends Component {
             busy: false,
         });
         onWillStart(() => this.load());
+        // Sur un telephone seuls quelques jours tiennent a l'ecran : le mois
+        // s'ouvre sur aujourd'hui plutot que sur le 1er.
+        this.scrollRef = useRef("scroll");
+        useEffect(
+            () => {
+                this.scrollRef.el
+                    ?.querySelector("thead .o_hyg_today")
+                    ?.scrollIntoView({ block: "nearest", inline: "center" });
+            },
+            () => [this.state.data?.year, this.state.data?.month]
+        );
     }
 
     async load() {
@@ -173,7 +184,7 @@ export class HygienePlanning extends Component {
         this.dialog.add(ConfirmationDialog, {
             title: _t("Copy the previous month"),
             body: _t(
-                "Each day of last month is copied to the same day of this month. Days already planned, days off and days that do not exist are skipped."
+                "Each working day takes the plan of the same weekday of last month. Days already planned and days off are skipped."
             ),
             confirmLabel: _t("Copy"),
             confirm: async () => {

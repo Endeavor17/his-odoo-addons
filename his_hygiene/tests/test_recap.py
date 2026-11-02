@@ -26,6 +26,13 @@ class TestRecap(HygieneCase):
         today = fields.Date.context_today(cls.env["his.hygiene.recap"])
         cls.d1 = today.replace(day=1) - relativedelta(months=1)
         cls.d2 = cls.d1 + timedelta(days=1)
+        cls.unlinked_user = (
+            cls.env["res.users"]
+            .with_context(no_reset_password=True)
+            .create(
+                {"name": "Sans fiche", "login": "sans.fiche.hyg@his.test", "group_ids": [(6, 0, [cls.group_worker.id])]}
+            )
+        )
 
     def _row(self, recap, employee):
         return next(w for w in recap["workers"] if w["employee_id"] == employee.id)
@@ -129,6 +136,13 @@ class TestRecap(HygieneCase):
         self.assertEqual([a["area"] for a in payload["assignments"]], [self.area_rdc.name])
         self.assertFalse(payload["day"]["state"])
         self.assertEqual(len(payload["members"]), 2)
+
+    def test_sans_salariee_choisie_il_n_y_a_pas_d_employee(self):
+        # False, pas un recordset vide : en JSON il devient la chaine
+        # "hr.employee()", et l'ecran croit qu'une salariee est choisie.
+        for user in (self.manager_user, self.unlinked_user):
+            payload = self.Recap.with_user(user).get_today()
+            self.assertIs(payload["employee"], False)
 
     def test_la_salariee_voit_sa_journee(self):
         payload = self.Recap.with_user(self.fatima_user).get_today()
