@@ -344,11 +344,10 @@ msgstr "أنجز بواسطة"
 #. odoo-javascript
 #: code:addons/his_hygiene/static/src/planning/planning.js:0
 msgid ""
-"Each day of last month is copied to the same day of this month. Days already"
-" planned, days off and days that do not exist are skipped."
+"Each working day takes the plan of the same weekday of last month. Days "
+"already planned and days off are skipped."
 msgstr ""
-"يُنسخ كل يوم من الشهر الماضي إلى اليوم نفسه من هذا الشهر. تُتجاوز الأيام "
-"المخططة مسبقاً وأيام الراحة والأيام غير الموجودة."
+"يأخذ كل يوم عمل مخطط اليوم نفسه من الأسبوع في الشهر الماضي. تُتجاوز الأيام المخططة مسبقاً وأيام الراحة."
 
 #. module: his_hygiene
 #: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__employee_id
@@ -975,3 +974,22 @@ msgstr "يمكن تصحيح أوقات فترة يوم العمل فقط."
 msgid ""
 "A forgotten end of day: type it here, the open segment closes at that time."
 msgstr "نهاية يوم منسية: أدخليها هنا، وتُغلق الفترة المفتوحة في ذلك الوقت."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_assignment.py:0
+msgid "Only the hygiene team can read the planning."
+msgstr "يمكن لفريق النظافة فقط الاطلاع على المخطط."
+
+#. module: his_hygiene
+#: model:ir.actions.client,name:his_hygiene.action_hygiene_team_clock
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_team_clock
+msgid "Team Clock-In"
+msgstr "تسجيل حضور الفريق"
+
+#. module: his_hygiene
+#: code:addons/his_hygiene/models/hygiene_finding.py:0
+msgid ""
+"Nobody present is planned on this area on %s. Add a worker to this area in "
+"the Planning, then dispatch again."
+msgstr "لا توجد عاملة حاضرة مخططة في هذه المنطقة يوم %s. أضيفي عاملة إلى هذه المنطقة في المخطط ثم أعيدي الإسناد."

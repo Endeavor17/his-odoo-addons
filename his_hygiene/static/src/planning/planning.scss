@@ -117,6 +117,18 @@
         white-space: nowrap;
     }
 
+    // Telephone : colonne des zones plus etroite, une semaine tient a l'ecran.
+    @media (max-width: 767.98px) {
+        thead th {
+            min-width: 2.25rem;
+        }
+
+        th:first-child {
+            min-width: 6rem;
+            max-width: 7rem;
+        }
+    }
+
     thead th.o_hyg_corner {
         z-index: 3;
     }

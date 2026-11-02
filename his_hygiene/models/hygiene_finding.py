@@ -1,5 +1,6 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
+from odoo.tools import format_date
 
 
 class HisHygieneFinding(models.Model):
@@ -36,6 +37,11 @@ class HisHygieneFinding(models.Model):
         "maintenance.university.finding", string="Maintenance Finding", readonly=True
     )
     assignment_ids = fields.One2many("his.hygiene.assignment", "finding_id", string="Extra Work")
+
+    @api.depends("area_id", "date")
+    def _compute_display_name(self):
+        for finding in self:
+            finding.display_name = f"{finding.area_id.name} - {format_date(self.env, finding.date)}"
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -82,19 +88,29 @@ class HisHygieneFinding(models.Model):
     def action_dispatch(self, date=None, employee_ids=None):
         """Fait d'une salissure du travail en plus, ce jour-la (aujourd'hui par defaut).
 
-        Sans equipe precisee : celle deja planifiee sur la zone ce jour-la.
+        Sans equipe precisee : celle deja planifiee sur la zone ce jour-la, moins
+        les absentes. Personne pour le recevoir = refuse : le constat reste a
+        attribuer plutot que de partir vers personne.
         """
         self.ensure_one()
         Assignment = self.env["his.hygiene.assignment"]
         Assignment._his_check_manager()
         if self.kind != "cleaning":
             raise UserError(_("Only a cleaning finding is dispatched to the team."))
-        day = fields.Date.to_date(date) if date else self.date
+        day = fields.Date.to_date(date) if date else fields.Date.context_today(self)
         if employee_ids is None:
             planned = Assignment.search(
                 [("area_id", "=", self.area_id.id), ("date", "=", day), ("is_extra", "=", False)], limit=1
             )
-            employee_ids = planned.employee_ids.ids
+            absent = Assignment._his_absent_by_date(day, day)[day]
+            employee_ids = [e for e in planned.employee_ids.ids if e not in absent]
+        if not employee_ids:
+            raise UserError(
+                _(
+                    "Nobody present is planned on this area on %s. Add a worker to this area in the Planning, then dispatch again.",
+                    format_date(self.env, day),
+                )
+            )
         extra = Assignment.create(
             {
                 "area_id": self.area_id.id,

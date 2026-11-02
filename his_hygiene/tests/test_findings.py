@@ -1,7 +1,9 @@
 """Les constats : une panne part en maintenance, une salissure revient a la responsable."""
 
 import base64
+from datetime import timedelta
 
+from odoo import fields
 from odoo.exceptions import AccessError, UserError
 from odoo.tests import tagged
 
@@ -45,11 +47,16 @@ class TestFindings(HygieneCase):
         self.assertFalse(finding.sudo().maintenance_finding_id.his_room_id)
         self.assertEqual(finding.sudo().maintenance_finding_id.employee_id, self.karima)
 
-    def test_une_salissure_revient_a_la_responsable(self):
+    def _plan_today(self, area, *employees):
+        today = fields.Date.context_today(self.env.user)
         self.env["his.hygiene.assignment"].with_user(self.manager_user).set_cell(
-            self.area_rdc.id, "2026-11-02", [self.karima.id]
+            area.id, today.isoformat(), [e.id for e in employees]
         )
-        finding = self._report(self.fatima_user, self.area_rdc, "cleaning", date="2026-11-02")
+        return today
+
+    def test_une_salissure_revient_a_la_responsable(self):
+        today = self._plan_today(self.area_rdc, self.karima)
+        finding = self._report(self.fatima_user, self.area_rdc, "cleaning")
         self.assertEqual(finding.state, "new")
         self.assertFalse(finding.maintenance_finding_id)
         extra = finding.with_user(self.manager_user).action_dispatch()
@@ -57,8 +64,43 @@ class TestFindings(HygieneCase):
         self.assertTrue(extra.is_extra)
         self.assertEqual(extra.finding_id, finding)
         self.assertEqual(extra.employee_ids, self.karima, "par defaut, l'equipe deja sur la zone ce jour-la")
-        matrix = self.env["his.hygiene.assignment"].with_user(self.manager_user).get_matrix(2026, 11)
-        self.assertEqual(matrix["cells"][f"{self.area_rdc.id}|2026-11-02"]["extra"], 1)
+        matrix = self.env["his.hygiene.assignment"].with_user(self.manager_user).get_matrix(today.year, today.month)
+        self.assertEqual(matrix["cells"][f"{self.area_rdc.id}|{today.isoformat()}"]["extra"], 1)
+
+    def test_un_constat_d_hier_part_sur_le_jour_de_l_envoi(self):
+        today = self._plan_today(self.area_rdc, self.karima)
+        finding = self._report(self.fatima_user, self.area_rdc, "cleaning", date=today - timedelta(days=1))
+        extra = finding.with_user(self.manager_user).action_dispatch()
+        self.assertEqual(extra.date, today)
+        self.assertEqual(extra.employee_ids, self.karima)
+
+    def test_envoyer_sans_personne_planifiee_est_refuse(self):
+        finding = self._report(self.fatima_user, self.area_rdc, "cleaning")
+        with self.assertRaises(UserError):
+            finding.with_user(self.manager_user).action_dispatch()
+        self.assertEqual(finding.state, "new")
+        self.assertFalse(finding.assignment_ids)
+
+    def test_le_travail_en_plus_ne_part_pas_a_une_absente(self):
+        today = self._plan_today(self.area_rdc, self.karima, self.fatima)
+        Plan = self.env["his.hygiene.assignment"].with_user(self.manager_user)
+        Plan.toggle_absence(self.karima.id, today.isoformat())
+        finding = self._report(self.manager_user, self.area_rdc, "cleaning")
+        self.assertEqual(finding.with_user(self.manager_user).action_dispatch().employee_ids, self.fatima)
+
+    def test_envoyer_quand_toute_l_equipe_est_absente_est_refuse(self):
+        today = self._plan_today(self.area_rdc, self.karima)
+        self.env["his.hygiene.assignment"].with_user(self.manager_user).toggle_absence(
+            self.karima.id, today.isoformat()
+        )
+        finding = self._report(self.manager_user, self.area_rdc, "cleaning")
+        with self.assertRaises(UserError):
+            finding.with_user(self.manager_user).action_dispatch()
+
+    def test_un_constat_porte_le_nom_de_sa_zone(self):
+        finding = self._report(self.fatima_user, self.area_rdc, "cleaning")
+        self.assertIn(self.area_rdc.name, finding.display_name)
+        self.assertNotIn("his.hygiene.finding", finding.display_name)
 
     def test_une_salariee_ne_dispatche_pas(self):
         finding = self._report(self.fatima_user, self.area_rdc, "cleaning")

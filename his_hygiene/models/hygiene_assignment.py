@@ -207,42 +207,47 @@ class HisHygieneAssignment(models.Model):
 
     @api.model
     def copy_previous_month(self, year, month):
-        """Le jour N du mois precedent devient le jour N de ce mois.
+        """Chaque jour travaille reprend le meme jour de la semaine du mois precedent.
 
-        Saute un jour qui n'existe pas (31), un jour off, une case deja
-        planifiee, une zone archivee, et les salariees sorties de l'equipe.
+        Le planning se pense en semaines : recopier par numero de jour decale les
+        jours off et laisse des trous. On remonte de 4 semaines, ou de 5 pour les
+        derniers jours du mois (29 et plus), qui tomberaient sinon dans ce mois-ci.
+        Saute un jour off, une case deja planifiee, une zone archivee, et les
+        salariees sorties de l'equipe.
         """
         self._his_check_manager()
         first = date(year, month, 1)
-        prev_first = first - relativedelta(months=1)
+        next_first = first + relativedelta(months=1)
         off = self._hygiene_off_weekdays()
         members = set(self.env["his.hygiene.member"].search([]).employee_id.ids)
         planned = {
             (a.area_id.id, a.date)
-            for a in self.search(
-                [("date", ">=", first), ("date", "<", first + relativedelta(months=1)), ("is_extra", "=", False)]
-            )
+            for a in self.search([("date", ">=", first), ("date", "<", next_first), ("is_extra", "=", False)])
         }
-        sources = self.search(
+        sources = defaultdict(lambda: self.browse())
+        for source in self.search(
             [
-                ("date", ">=", prev_first),
+                ("date", ">=", first - relativedelta(months=1)),
                 ("date", "<", first),
                 ("is_extra", "=", False),
                 ("area_id.active", "=", True),
             ]
-        )
+        ):
+            sources[source.date] |= source
         count = 0
-        for source in sources:
-            try:
-                target = source.date.replace(year=year, month=month)
-            except ValueError:
-                continue
-            workers = [e for e in source.employee_ids.ids if e in members]
-            if target.weekday() in off or (source.area_id.id, target) in planned or not workers:
-                continue
-            self.create({"area_id": source.area_id.id, "date": target, "employee_ids": [(6, 0, workers)]})
-            planned.add((source.area_id.id, target))
-            count += 1
+        target = first
+        while target < next_first:
+            origin = target - timedelta(weeks=4)
+            if origin >= first:
+                origin -= timedelta(weeks=1)
+            if target.weekday() not in off:
+                for source in sources[origin]:
+                    workers = [e for e in source.employee_ids.ids if e in members]
+                    if (source.area_id.id, target) in planned or not workers:
+                        continue
+                    self.create({"area_id": source.area_id.id, "date": target, "employee_ids": [(6, 0, workers)]})
+                    count += 1
+            target += timedelta(days=1)
         return count
 
     @api.model

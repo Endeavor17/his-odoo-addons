@@ -38,7 +38,7 @@
                     No area yet. Add the places the team cleans in Configuration, Areas.
                 </div>
 
-                <div t-else="" class="o_hyg_scroll">
+                <div t-else="" class="o_hyg_scroll" t-ref="scroll">
                     <table class="o_hyg_matrix">
                         <thead>
                             <tr>

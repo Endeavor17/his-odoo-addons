@@ -57,7 +57,7 @@ class HisHygieneRecap(models.AbstractModel):
         today = fields.Date.context_today(self)
         Workday = self.env["maintenance.university.workday"]
         res = {
-            "employee": employee and {"id": employee.id, "name": employee.name},
+            "employee": {"id": employee.id, "name": employee.name} if employee else False,
             "is_manager": is_manager,
             "members": self._his_members() if is_manager else [],
             "today": format_date(self.env, today, date_format="EEEE d MMMM"),
