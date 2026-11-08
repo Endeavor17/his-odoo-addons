@@ -5,5 +5,6 @@ from . import (
     test_caisses_roles,
     test_governance,
     test_reappro_comptoirs,
+    test_scan_caisse,
     test_stock_rbac,
 )

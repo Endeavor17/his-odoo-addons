@@ -1,6 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from odoo import _, api, models
 from odoo.exceptions import ValidationError
+from odoo.fields import Domain
 from odoo.tools import float_is_zero
 
 
@@ -147,3 +148,27 @@ class ProductTemplate(models.Model):
         # vendable.
         if self._mdm_a_mettre_en_vente():
             self.sale_ok = True
+
+    # --- MDM regle 3 ter — un code-barres ne met pas un article en vente -----
+    #
+    # Le piege : pour un code-barres inconnu de la caisse, le coeur
+    # (product_screen.js, _getProductByBarcode) charge l'article sur ce seul
+    # code, sans available_in_pos, sale_ok ni categories de la caisse. Un article
+    # importe (sale_ok=False, prix 0) passait donc a 0 DA, et sa vente sortait du
+    # stock.
+    #
+    # Les deux chargements qui doivent rester libres passent load_archived : les
+    # articles d'un ticket passe (data_service.js) et d'une commande de vente
+    # (pos_sale).
+
+    @api.model
+    def load_product_from_pos(self, config_id, domain, offset=0, limit=0):
+        if not self.env.context.get("load_archived"):
+            config = self.env["pos.config"].browse(config_id)
+            domain = Domain.AND([domain, self._load_pos_data_domain({}, config)])
+        return super().load_product_from_pos(config_id, domain, offset, limit)
+
+    @api.model
+    def _load_pos_data_fields(self, config_id):
+        # Lu par static/src/app/product_scan.js.
+        return [*super()._load_pos_data_fields(config_id), "sale_ok"]
