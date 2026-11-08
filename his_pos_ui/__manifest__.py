@@ -1,6 +1,6 @@
 {
     "name": "HIS POS Interface",
-    "version": "19.0.1.1.1",
+    "version": "19.0.1.1.2",
     "summary": "Branded, touch-first interface shared by the HIS points of sale",
     "description": """
 HIS POS Interface
