@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The till picks a customer, it does not edit one. "Edit Details" opened
+         the full contact form on anyone in the list, employees included: their
+         details, and the barcode their meal card is found by. Contacts are
+         maintained in the backend. The phone and desktop layouts each carry
+         their own copy of the item. -->
+    <t t-name="his_pos_ui.PartnerLine" t-inherit="point_of_sale.PartnerLine" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('partner-info')]//DropdownItem[contains(text(), 'Edit Details')]" position="replace"/>
+        <xpath expr="//tr//DropdownItem[contains(text(), 'Edit Details')]" position="replace"/>
+    </t>
+
+</templates>

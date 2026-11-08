@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The till picks a customer, it does not create one: contacts come from
+         the identity records and the backend. The desktop header and the phone
+         footer each carry their own copy of the button. -->
+    <t t-name="his_pos_ui.PartnerList" t-inherit="point_of_sale.PartnerList" t-inherit-mode="extension">
+        <xpath expr="//t[@t-set-slot='header']/button[@aria-label='Add a customer']" position="replace"/>
+        <xpath expr="//t[@t-set-slot='footer']//button[@aria-label='Add a customer']" position="replace"/>
+    </t>
+
+</templates>
