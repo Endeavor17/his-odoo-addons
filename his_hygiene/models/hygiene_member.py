@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 # Les couleurs 1 a 11 de la palette Odoo (0 = sans couleur).
 PALETTE = range(1, 12)
@@ -25,6 +26,15 @@ class HisHygieneMember(models.Model):
     active = fields.Boolean(default=True)
 
     _employee_unique = models.Constraint("UNIQUE(employee_id)", "This employee is already in the hygiene team.")
+
+    def write(self, vals):
+        # Changer la personne d'une fiche reviendrait a ajouter quelqu'un a
+        # l'equipe, ce qui est reserve aux RH : on retire et on ajoute.
+        if "employee_id" in vals and any(m.employee_id.id != vals["employee_id"] for m in self):
+            raise UserError(
+                _("A team member cannot be changed into another employee. HR removes her and adds the other.")
+            )
+        return super().write(vals)
 
     @api.depends("employee_id.name")
     def _compute_initials(self):

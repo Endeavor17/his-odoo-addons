@@ -10,9 +10,8 @@
                 <field name="kind" widget="badge" decoration-danger="kind == 'repair'" decoration-info="kind == 'cleaning'"/>
                 <field name="description"/>
                 <field name="employee_id"/>
+                <field name="dispatch_employee_ids" widget="many2many_tags_avatar" optional="show"/>
                 <field name="state" widget="badge" decoration-warning="state == 'new'" decoration-success="state != 'new'"/>
-                <button name="action_dispatch" type="object" string="Dispatch" icon="fa-share"
-                        invisible="kind != 'cleaning' or state != 'new'"/>
             </list>
         </field>
     </record>
@@ -41,6 +40,13 @@
                         </group>
                     </group>
                     <field name="description" readonly="id" placeholder="What did you see?"/>
+                    <field name="dispatch_allowed_ids" invisible="1"/>
+                    <group invisible="kind != 'cleaning'">
+                        <field name="dispatch_employee_ids" widget="many2many_tags_avatar"
+                               readonly="state != 'new'" options="{'no_create': True}"
+                               domain="[('id', 'in', dispatch_allowed_ids)]"
+                               help="Suggested: the workers planned on this area today. Change it before dispatching."/>
+                    </group>
                     <field name="assignment_ids" invisible="not assignment_ids" readonly="1">
                         <list>
                             <field name="date"/>

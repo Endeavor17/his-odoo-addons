@@ -17,6 +17,12 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_finding.py:0
+msgid "%(names)s is absent on %(day)s."
+msgstr "%(names)s est absente le %(day)s."
+
+#. module: his_hygiene
 #. odoo-javascript
 #: code:addons/his_hygiene/static/src/planning/planning.js:0
 msgid "%s cells copied."
@@ -27,6 +33,22 @@ msgstr "%s cases copiées."
 #: code:addons/his_hygiene/static/src/planning/planning.xml:0
 msgid "A"
 msgstr "A"
+
+#. module: his_hygiene
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_hygiene_workday_form
+msgid ""
+"A forgotten end of day: type it here, the open segment closes at that time."
+msgstr ""
+"Fin de journée oubliée : saisissez-la ici, la tranche ouverte se ferme à "
+"cette heure."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_member.py:0
+msgid ""
+"A team member cannot be changed into another employee. HR removes her and "
+"adds the other."
+msgstr "Une membre de l'équipe ne peut pas devenir un autre salarié. Les RH la retirent et ajoutent l'autre."
 
 #. module: his_hygiene
 #. odoo-javascript
@@ -46,6 +68,12 @@ msgstr "Absences"
 #: code:addons/his_hygiene/static/src/planning/planning.xml:0
 msgid "Absent"
 msgstr "Absente"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Absent today"
+msgstr "Absente aujourd'hui"
 
 #. module: his_hygiene
 #: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__active
@@ -69,6 +97,11 @@ msgstr "Ajoutez les agentes de l'équipe d'hygiène"
 msgid "Added on top of the plan, e.g. after a cleaning finding."
 msgstr ""
 "Ajouté en plus du planning, par exemple après un signalement de salissure."
+
+#. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__dispatch_allowed_ids
+msgid "Allowed Workers"
+msgstr "Agents autorisés"
 
 #. module: his_hygiene
 #. odoo-python
@@ -108,6 +141,11 @@ msgid "Areas today"
 msgstr "Zones du jour"
 
 #. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__dispatch_employee_ids
+msgid "Assign To"
+msgstr "Affecter à"
+
+#. module: his_hygiene
 #. odoo-javascript
 #: code:addons/his_hygiene/static/src/my_day/my_day.js:0
 msgid "Back to work"
@@ -118,12 +156,6 @@ msgstr "Reprendre le travail"
 #: code:addons/his_hygiene/static/src/recap/recap.xml:0
 msgid "Breaks"
 msgstr "Pauses"
-
-#. module: his_hygiene
-#. odoo-javascript
-#: code:addons/his_hygiene/static/src/planning/planning.xml:0
-msgid "Brush"
-msgstr "Pinceau"
 
 #. module: his_hygiene
 #: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_area__building_id
@@ -148,20 +180,27 @@ msgid "Choose the places the team cleans"
 msgstr "Choisissez les lieux que l'équipe nettoie"
 
 #. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_finding.py:0
+msgid "Choose who will clean it in Assign To, then dispatch again."
+msgstr "Choisissez qui va nettoyer dans « Affecter à », puis envoyez à nouveau."
+
+#. module: his_hygiene
 #: model:ir.model.fields.selection,name:his_hygiene.selection__his_hygiene_finding__kind__cleaning
 #: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_search
 msgid "Cleaning"
 msgstr "Nettoyage"
 
 #. module: his_hygiene
+#: model:ir.ui.menu,name:his_hygiene.menu_patrimoine_hygiene_area
+msgid "Cleaning Areas"
+msgstr "Zones de nettoyage"
+
+#. module: his_hygiene
 #. odoo-javascript
 #: code:addons/his_hygiene/static/src/planning/planning.xml:0
-msgid ""
-"Click a cell to add or remove the selected worker. Shift+click further along"
-" the row to repeat the last cell."
-msgstr ""
-"Cliquez sur une case pour ajouter ou retirer l'agente choisie. Maj+clic plus"
-" loin sur la ligne pour répéter la dernière case."
+msgid "Cleaning team"
+msgstr "Équipe de nettoyage"
 
 #. module: his_hygiene
 #. odoo-javascript
@@ -301,11 +340,6 @@ msgid "Description"
 msgstr "Description"
 
 #. module: his_hygiene
-#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_list
-msgid "Dispatch"
-msgstr "Attribuer"
-
-#. module: his_hygiene
 #: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_form
 msgid "Dispatch to the team"
 msgstr "Attribuer à l'équipe"
@@ -344,6 +378,20 @@ msgstr "Fait à"
 #: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__done_by_id
 msgid "Done By"
 msgstr "Fait par"
+
+#. module: his_hygiene
+#: model_terms:ir.actions.act_window,help:his_hygiene.action_his_hygiene_member
+msgid ""
+"Done by HR, from the employee directory. No account is needed: the manager "
+"can enter everything for them."
+msgstr "Fait par les RH, à partir de l'annuaire des employés. Aucun compte n'est nécessaire : la responsable peut tout saisir pour elles."
+
+#. module: his_hygiene
+#: model_terms:ir.actions.act_window,help:his_hygiene.action_his_hygiene_area
+msgid ""
+"Done by Inventory. Rooms, corridors, staircases and floors are created in "
+"Inventory, Patrimoine, under their building."
+msgstr "Fait par l'Inventaire. Les salles, couloirs, escaliers et étages sont créés dans Inventaire, Patrimoine, sous leur bâtiment."
 
 #. module: his_hygiene
 #. odoo-javascript
@@ -454,6 +502,11 @@ msgid "Hygiene Screens Data"
 msgstr "Données des écrans hygiène"
 
 #. module: his_hygiene
+#: model:ir.ui.menu,name:his_hygiene.menu_hr_hygiene_member
+msgid "Hygiene Team"
+msgstr "Équipe hygiène"
+
+#. module: his_hygiene
 #: model:ir.model,name:his_hygiene.model_his_hygiene_member
 msgid "Hygiene Team Member"
 msgstr "Membre de l'équipe hygiène"
@@ -532,6 +585,12 @@ msgstr "Marquée absente aujourd'hui."
 
 #. module: his_hygiene
 #. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Month"
+msgstr "Mois"
+
+#. module: his_hygiene
+#. odoo-javascript
 #: code:addons/his_hygiene/static/src/recap/recap.xml:0
 #: model:ir.actions.client,name:his_hygiene.action_hygiene_recap
 #: model:ir.ui.menu,name:his_hygiene.menu_hygiene_recap
@@ -569,8 +628,13 @@ msgstr "Nouveau"
 
 #. module: his_hygiene
 #. odoo-javascript
-#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
 #: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Next"
+msgstr "Suivant"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
 #: code:addons/his_hygiene/static/src/recap/recap.xml:0
 msgid "Next month"
 msgstr "Mois suivant"
@@ -578,10 +642,16 @@ msgstr "Mois suivant"
 #. module: his_hygiene
 #. odoo-javascript
 #: code:addons/his_hygiene/static/src/planning/planning.xml:0
-msgid "No area yet. Add the places the team cleans in Configuration, Areas."
-msgstr ""
-"Aucune zone pour l'instant. Ajoutez les lieux que l'équipe nettoie dans "
-"Configuration, Zones."
+msgid "No account"
+msgstr "Sans compte"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid ""
+"No area yet. Inventory adds the places the team cleans in Inventory, "
+"Patrimoine, Cleaning Areas."
+msgstr "Aucune zone pour l'instant. L'Inventaire ajoute les lieux que l'équipe nettoie dans Inventaire, Patrimoine, Zones de nettoyage."
 
 #. module: his_hygiene
 #. odoo-javascript
@@ -632,6 +702,25 @@ msgstr "Seule la responsable hygiène peut planifier l'équipe."
 #: code:addons/his_hygiene/models/hygiene_recap.py:0
 msgid "Only the hygiene manager can read the monthly recap."
 msgstr "Seule la responsable hygiène peut lire le récapitulatif mensuel."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_assignment.py:0
+msgid "Only the hygiene team can read the planning."
+msgstr "Seule l'équipe hygiène peut lire le planning."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "Only the team manager can correct the times of this work day."
+msgstr ""
+"Seul le responsable de l'équipe peut corriger les heures de cette journée."
+
+#. module: his_hygiene
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "Only the times of a work day segment can be corrected."
+msgstr "Seules les heures d'une tranche de journée peuvent être corrigées."
 
 #. module: his_hygiene
 #. odoo-python
@@ -689,8 +778,13 @@ msgstr "Planning"
 
 #. module: his_hygiene
 #. odoo-javascript
-#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
 #: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Previous"
+msgstr "Précédent"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
 #: code:addons/his_hygiene/static/src/recap/recap.xml:0
 msgid "Previous month"
 msgstr "Mois précédent"
@@ -727,13 +821,18 @@ msgid "Reported By"
 msgstr "Signalé par"
 
 #. module: his_hygiene
-#: model_terms:ir.actions.act_window,help:his_hygiene.action_his_hygiene_area
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
 msgid ""
-"Rooms, corridors, staircases and floors are created in Inventory, "
-"Patrimoine, under their building."
-msgstr ""
-"Les salles, couloirs, escaliers et étages se créent dans Inventaire, "
-"Patrimoine, sous leur bâtiment."
+"Select a worker, then click the cells to add or remove her. Shift+click "
+"further along a row repeats the last cell."
+msgstr "Sélectionnez une agente, puis cliquez sur les cases pour l'ajouter ou la retirer. Maj+clic plus loin sur une ligne recopie la dernière case."
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Selected"
+msgstr "Sélectionnée"
 
 #. module: his_hygiene
 #. odoo-javascript
@@ -754,6 +853,12 @@ msgstr "Séquence"
 
 #. module: his_hygiene
 #. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "She has no Odoo account: the manager clocks her in."
+msgstr "Elle n'a pas de compte Odoo : la responsable pointe pour elle."
+
+#. module: his_hygiene
+#. odoo-javascript
 #: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
 msgid "Something is broken"
 msgstr "Quelque chose est cassé"
@@ -770,6 +875,13 @@ msgid "State"
 msgstr "État"
 
 #. module: his_hygiene
+#: model_terms:ir.ui.view,arch_db:his_hygiene.view_his_hygiene_finding_form
+msgid ""
+"Suggested: the workers planned on this area today. Change it before "
+"dispatching."
+msgstr "Suggestion : les agentes planifiées sur cette zone aujourd'hui. Modifiez avant d'envoyer."
+
+#. module: his_hygiene
 #. odoo-javascript
 #: code:addons/his_hygiene/static/src/my_day/my_day.js:0
 msgid "Take a break"
@@ -779,6 +891,12 @@ msgstr "Prendre une pause"
 #: model:ir.model.fields,field_description:his_hygiene.field_maintenance_university_workday__his_team
 msgid "Team"
 msgstr "Équipe"
+
+#. module: his_hygiene
+#: model:ir.actions.client,name:his_hygiene.action_hygiene_team_clock
+#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_team_clock
+msgid "Team Clock-In"
+msgstr "Pointage de l'équipe"
 
 #. module: his_hygiene
 #: model:ir.actions.act_window,name:his_hygiene.action_his_hygiene_member
@@ -800,13 +918,10 @@ msgid "Thank you. The manager has been told."
 msgstr "Merci. La responsable est prévenue."
 
 #. module: his_hygiene
-#: model_terms:ir.actions.act_window,help:his_hygiene.action_his_hygiene_member
-msgid ""
-"They come from the employee directory. No account is needed: the manager can"
-" enter everything for them."
-msgstr ""
-"Elles viennent de l'annuaire des employés. Aucun compte n'est nécessaire : "
-"la responsable peut tout saisir pour elles."
+#. odoo-python
+#: code:addons/his_hygiene/models/hygiene_workday.py:0
+msgid "The team of a work day cannot be changed."
+msgstr "L'équipe d'une journée de travail ne peut pas être changée."
 
 #. module: his_hygiene
 #: model:ir.model.constraint,message:his_hygiene.constraint_his_hygiene_assignment_planned_unique
@@ -849,6 +964,7 @@ msgstr "À attribuer"
 #. module: his_hygiene
 #. odoo-javascript
 #: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
 msgid "Today"
 msgstr "Aujourd'hui"
 
@@ -873,6 +989,12 @@ msgstr "Action de pointage inconnue."
 #: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_member__user_id
 msgid "User"
 msgstr "Utilisateur"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "Week"
+msgstr "Semaine"
 
 #. module: his_hygiene
 #. odoo-javascript
@@ -942,6 +1064,18 @@ msgstr "jours d'absence"
 
 #. module: his_hygiene
 #. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "days this month"
+msgstr "jours ce mois-ci"
+
+#. module: his_hygiene
+#. odoo-javascript
+#: code:addons/his_hygiene/static/src/planning/planning.xml:0
+msgid "days this week"
+msgstr "jours cette semaine"
+
+#. module: his_hygiene
+#. odoo-javascript
 #: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
 msgid "days worked"
 msgstr "jours travaillés"
@@ -963,49 +1097,3 @@ msgstr "en pause"
 #: code:addons/his_hygiene/static/src/my_day/my_day.xml:0
 msgid "worked"
 msgstr "travaillé"
-
-#. module: his_hygiene
-#. odoo-python
-#: code:addons/his_hygiene/models/hygiene_workday.py:0
-msgid "The team of a work day cannot be changed."
-msgstr "L'équipe d'une journée de travail ne peut pas être changée."
-
-#. module: his_hygiene
-#. odoo-python
-#: code:addons/his_hygiene/models/hygiene_workday.py:0
-msgid "Only the team manager can correct the times of this work day."
-msgstr ""
-"Seul le responsable de l'équipe peut corriger les heures de cette journée."
-
-#. module: his_hygiene
-#. odoo-python
-#: code:addons/his_hygiene/models/hygiene_workday.py:0
-msgid "Only the times of a work day segment can be corrected."
-msgstr "Seules les heures d'une tranche de journée peuvent être corrigées."
-
-#. module: his_hygiene
-#: model_terms:ir.ui.view,arch_db:his_hygiene.view_hygiene_workday_form
-msgid ""
-"A forgotten end of day: type it here, the open segment closes at that time."
-msgstr ""
-"Fin de journée oubliée : saisissez-la ici, la tranche ouverte se ferme à "
-"cette heure."
-
-#. module: his_hygiene
-#. odoo-python
-#: code:addons/his_hygiene/models/hygiene_assignment.py:0
-msgid "Only the hygiene team can read the planning."
-msgstr "Seule l'équipe hygiène peut lire le planning."
-
-#. module: his_hygiene
-#: model:ir.actions.client,name:his_hygiene.action_hygiene_team_clock
-#: model:ir.ui.menu,name:his_hygiene.menu_hygiene_team_clock
-msgid "Team Clock-In"
-msgstr "Pointage de l'équipe"
-
-#. module: his_hygiene
-#: code:addons/his_hygiene/models/hygiene_finding.py:0
-msgid ""
-"Nobody present is planned on this area on %s. Add a worker to this area in "
-"the Planning, then dispatch again."
-msgstr "Personne de présent n'est planifié sur cette zone le %s. Ajoutez une salariée à cette zone dans le planning, puis attribuez à nouveau."

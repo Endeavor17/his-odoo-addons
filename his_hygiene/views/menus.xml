@@ -54,8 +54,15 @@
               parent="menu_hygiene_root"
               sequence="90"
               groups="group_hygiene_manager"/>
+    <!-- La responsable les lit (et colore son equipe) ; les creer revient aux
+         RH pour les personnes et a l'Inventaire pour les lieux (2026-11-10). -->
     <menuitem id="menu_hygiene_member" name="Team Members" parent="menu_hygiene_config"
               action="action_his_hygiene_member" sequence="10"/>
     <menuitem id="menu_hygiene_area" name="Areas" parent="menu_hygiene_config"
               action="action_his_hygiene_area" sequence="20"/>
+
+    <menuitem id="menu_hr_hygiene_member" name="Hygiene Team" parent="hr.menu_hr_root"
+              action="action_his_hygiene_member" sequence="90" groups="hr.group_hr_user"/>
+    <menuitem id="menu_patrimoine_hygiene_area" name="Cleaning Areas" parent="his_patrimoine.menu_patrimoine"
+              action="action_his_hygiene_area" sequence="40" groups="stock.group_stock_user"/>
 </odoo>

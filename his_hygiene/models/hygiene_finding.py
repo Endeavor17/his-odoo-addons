@@ -37,11 +37,48 @@ class HisHygieneFinding(models.Model):
         "maintenance.university.finding", string="Maintenance Finding", readonly=True
     )
     assignment_ids = fields.One2many("his.hygiene.assignment", "finding_id", string="Extra Work")
+    # La responsable choisit qui part (demande du 2026-11-10) : la liste arrive
+    # pre-remplie avec l'equipe planifiee sur la zone aujourd'hui, elle la change
+    # avant d'envoyer.
+    dispatch_employee_ids = fields.Many2many(
+        "hr.employee",
+        "his_hygiene_finding_dispatch_rel",
+        "finding_id",
+        "employee_id",
+        string="Assign To",
+        compute="_compute_dispatch_employee_ids",
+        store=True,
+        readonly=False,
+    )
+    dispatch_allowed_ids = fields.Many2many(
+        "hr.employee", string="Allowed Workers", compute="_compute_dispatch_allowed_ids"
+    )
 
     @api.depends("area_id", "date")
     def _compute_display_name(self):
         for finding in self:
             finding.display_name = f"{finding.area_id.name} - {format_date(self.env, finding.date)}"
+
+    @api.depends("area_id", "kind")
+    def _compute_dispatch_employee_ids(self):
+        # sudo : le constat est souvent cree par une salariee, qui ne lit que
+        # ses propres cases du planning.
+        Assignment = self.env["his.hygiene.assignment"].sudo()
+        today = fields.Date.context_today(self)
+        absent = Assignment._his_absent_by_date(today, today)[today]
+        for finding in self:
+            if finding.kind != "cleaning" or not finding.area_id:
+                finding.dispatch_employee_ids = False
+                continue
+            planned = Assignment.search(
+                [("area_id", "=", finding.area_id.id), ("date", "=", today), ("is_extra", "=", False)], limit=1
+            )
+            finding.dispatch_employee_ids = planned.employee_ids.filtered(lambda e: e.id not in absent)
+
+    def _compute_dispatch_allowed_ids(self):
+        members = self.env["his.hygiene.member"].sudo().search([]).employee_id
+        for finding in self:
+            finding.dispatch_allowed_ids = members
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -88,9 +125,9 @@ class HisHygieneFinding(models.Model):
     def action_dispatch(self, date=None, employee_ids=None):
         """Fait d'une salissure du travail en plus, ce jour-la (aujourd'hui par defaut).
 
-        Sans equipe precisee : celle deja planifiee sur la zone ce jour-la, moins
-        les absentes. Personne pour le recevoir = refuse : le constat reste a
-        attribuer plutot que de partir vers personne.
+        Sans equipe precisee : celle que la responsable a choisie dans « Assign
+        To ». Personne = refuse : le constat reste a attribuer plutot que de
+        partir vers personne.
         """
         self.ensure_one()
         Assignment = self.env["his.hygiene.assignment"]
@@ -99,17 +136,14 @@ class HisHygieneFinding(models.Model):
             raise UserError(_("Only a cleaning finding is dispatched to the team."))
         day = fields.Date.to_date(date) if date else fields.Date.context_today(self)
         if employee_ids is None:
-            planned = Assignment.search(
-                [("area_id", "=", self.area_id.id), ("date", "=", day), ("is_extra", "=", False)], limit=1
-            )
-            absent = Assignment._his_absent_by_date(day, day)[day]
-            employee_ids = [e for e in planned.employee_ids.ids if e not in absent]
+            employee_ids = self.dispatch_employee_ids.ids
         if not employee_ids:
+            raise UserError(_("Choose who will clean it in Assign To, then dispatch again."))
+        absent = Assignment._his_absent_by_date(day, day)[day]
+        names = self.env["hr.employee"].browse([e for e in employee_ids if e in absent]).mapped("name")
+        if names:
             raise UserError(
-                _(
-                    "Nobody present is planned on this area on %s. Add a worker to this area in the Planning, then dispatch again.",
-                    format_date(self.env, day),
-                )
+                _("%(names)s is absent on %(day)s.", names=", ".join(names), day=format_date(self.env, day))
             )
         extra = Assignment.create(
             {
