@@ -134,3 +134,28 @@ class TestFindings(HygieneCase):
         )
         self.env.invalidate_all()
         self.assertFalse(self.env["maintenance.request"].with_user(self.fatima_user).search([]))
+
+    def test_la_responsable_choisit_qui_part(self):
+        self._plan_today(self.area_rdc, self.karima)
+        finding = self._report(self.fatima_user, self.area_rdc, "cleaning")
+        self.assertEqual(finding.dispatch_employee_ids, self.karima, "pre-rempli avec l'equipe du jour")
+        finding.with_user(self.manager_user).dispatch_employee_ids = self.fatima
+        extra = finding.with_user(self.manager_user).action_dispatch()
+        self.assertEqual(extra.employee_ids, self.fatima)
+
+    def test_zone_sans_planning_mais_choix_manuel(self):
+        finding = self._report(self.fatima_user, self.area_rdc, "cleaning")
+        self.assertFalse(finding.dispatch_employee_ids)
+        finding.with_user(self.manager_user).dispatch_employee_ids = self.karima
+        self.assertEqual(finding.with_user(self.manager_user).action_dispatch().employee_ids, self.karima)
+
+    def test_envoyer_a_une_absente_est_refuse(self):
+        today = fields.Date.context_today(self.env.user)
+        finding = self._report(self.fatima_user, self.area_rdc, "cleaning")
+        self.env["his.hygiene.assignment"].with_user(self.manager_user).toggle_absence(
+            self.karima.id, today.isoformat()
+        )
+        finding.with_user(self.manager_user).dispatch_employee_ids = self.karima
+        with self.assertRaises(UserError):
+            finding.with_user(self.manager_user).action_dispatch()
+        self.assertEqual(finding.state, "new")

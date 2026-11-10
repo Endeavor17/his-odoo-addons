@@ -7,7 +7,8 @@ import { useService } from "@web/core/utils/hooks";
 import { Component, onWillStart, useEffect, useRef, useState } from "@odoo/owl";
 import { memberColor, memberInk } from "../common/colors";
 
-// La matrice du mois : zones en lignes, chaque jour en colonne.
+// La matrice : zones en lignes, chaque jour en colonne. Deux vues, comme un
+// agenda : la semaine (grandes cases, prenoms en clair) et le mois (compact).
 //
 // Le geste principal est le pinceau : on choisit une salariee dans la palette,
 // puis chaque clic sur une case l'ajoute ou la retire. Maj+clic sur la meme
@@ -28,10 +29,9 @@ export class HygienePlanning extends Component {
         this.orm = useService("orm");
         this.dialog = useService("dialog");
         this.notification = useService("notification");
-        const now = today();
         this.state = useState({
-            year: now.year,
-            month: now.month,
+            view: "week",
+            focus: today(),
             data: null,
             brush: null,
             anchor: null,
@@ -47,28 +47,52 @@ export class HygienePlanning extends Component {
                     ?.querySelector("thead .o_hyg_today")
                     ?.scrollIntoView({ block: "nearest", inline: "center" });
             },
-            () => [this.state.data?.year, this.state.data?.month]
+            () => [this.state.data?.date_from, this.state.view]
         );
     }
 
     async load() {
-        this.state.data = await this.orm.call("his.hygiene.assignment", "get_matrix", [
-            this.state.year,
-            this.state.month,
+        const [from, to] = this.range;
+        this.state.data = await this.orm.call("his.hygiene.assignment", "get_range", [
+            from.toISODate(),
+            to.toISODate(),
         ]);
         this.state.anchor = null;
+    }
+
+    // La semaine commence le dimanche (vendredi et samedi chomes).
+    get range() {
+        const focus = this.state.focus;
+        if (this.state.view === "week") {
+            const start = focus.minus({ days: focus.weekday % 7 });
+            return [start, start.plus({ days: 6 })];
+        }
+        const start = focus.startOf("month");
+        return [start, start.endOf("month").startOf("day")];
     }
 
     // ------------------------------------------------------------------
     // Lecture
     // ------------------------------------------------------------------
-    get monthLabel() {
-        return this.firstOfMonth.toFormat("LLLL yyyy");
+    get title() {
+        const [from, to] = this.range;
+        if (this.state.view === "month") {
+            return from.toFormat("LLLL yyyy");
+        }
+        const left = from.year === to.year ? from.toFormat("d LLL") : from.toFormat("d LLL yyyy");
+        return `${left} – ${to.toFormat("d LLL yyyy")}`;
     }
 
-    get firstOfMonth() {
-        const month = String(this.state.month).padStart(2, "0");
-        return deserializeDate(`${this.state.year}-${month}-01`);
+    get isWeek() {
+        return this.state.view === "week";
+    }
+
+    avatarUrl(member) {
+        return `/web/image/hr.employee.public/${member.id}/avatar_128`;
+    }
+
+    firstName(member) {
+        return member.name.split(" ")[0];
     }
 
     get buildings() {
@@ -84,8 +108,8 @@ export class HygienePlanning extends Component {
         return groups;
     }
 
-    weekdayLetter(day) {
-        return deserializeDate(day.date).toFormat("ccc");
+    weekdayLabel(day) {
+        return deserializeDate(day.date).toFormat(this.isWeek ? "cccc" : "ccc");
     }
 
     member(id) {
@@ -94,6 +118,10 @@ export class HygienePlanning extends Component {
 
     cell(area, day) {
         return this.state.data.cells[`${area.id}|${day.date}`];
+    }
+
+    memberColorOf(member) {
+        return memberColor(member.color);
     }
 
     chipStyle(member) {
@@ -167,6 +195,18 @@ export class HygienePlanning extends Component {
         this.state.anchor = { areaId: area.id, date: day.date };
     }
 
+    async setView(view) {
+        if (view !== this.state.view) {
+            this.state.view = view;
+            await this.load();
+        }
+    }
+
+    async goToday() {
+        this.state.focus = today();
+        await this.load();
+    }
+
     async onAbsenceClick(member, day) {
         if (this.state.busy || !this.state.data.can_edit) {
             return;
@@ -190,8 +230,8 @@ export class HygienePlanning extends Component {
             confirm: async () => {
                 const count = await this.run(() =>
                     this.orm.call("his.hygiene.assignment", "copy_previous_month", [
-                        this.state.year,
-                        this.state.month,
+                        this.state.focus.year,
+                        this.state.focus.month,
                     ])
                 );
                 await this.load();
@@ -201,11 +241,8 @@ export class HygienePlanning extends Component {
         });
     }
 
-    async changeMonth(delta) {
-        const next = this.firstOfMonth.plus({ months: delta });
-        this.state.year = next.year;
-        this.state.month = next.month;
-        this.state.brush = null;
+    async move(delta) {
+        this.state.focus = this.state.focus.plus(this.isWeek ? { weeks: delta } : { months: delta });
         await this.load();
     }
 

@@ -3,50 +3,83 @@
 
     <t t-name="his_hygiene.Planning">
         <div class="o_hyg_planning o_content p-3 p-md-4" t-att-dir="dir">
-            <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3">
-                <div>
+            <!-- Barre d'agenda : titre, aujourd'hui, fleches, semaine / mois. -->
+            <div class="o_hyg_toolbar">
+                <div class="o_hyg_title">
                     <div class="o_hyg_eyebrow">Planning</div>
-                    <h2 class="mb-0 fw-bold text-capitalize" t-esc="monthLabel"/>
+                    <h2 class="mb-0 fw-bold text-capitalize" t-esc="title"/>
                 </div>
-                <div class="d-flex align-items-center gap-2">
+                <div class="o_hyg_controls">
                     <i t-if="state.busy" class="fa fa-spinner fa-spin text-muted"/>
-                    <button class="btn btn-outline-secondary" title="Previous month" aria-label="Previous month" t-on-click="() => this.changeMonth(-1)">
-                        <i class="oi oi-arrow-left"/>
-                    </button>
-                    <button class="btn btn-outline-secondary" title="Next month" aria-label="Next month" t-on-click="() => this.changeMonth(1)">
-                        <i class="oi oi-arrow-right"/>
-                    </button>
-                    <button t-if="state.data?.can_edit" class="btn btn-secondary" t-on-click="copyPreviousMonth">
+                    <button class="btn btn-light o_hyg_today_btn" t-on-click="goToday">Today</button>
+                    <div class="o_hyg_nav">
+                        <button class="btn btn-light" title="Previous" aria-label="Previous" t-on-click="() => this.move(-1)">
+                            <i class="oi oi-chevron-left"/>
+                        </button>
+                        <button class="btn btn-light" title="Next" aria-label="Next" t-on-click="() => this.move(1)">
+                            <i class="oi oi-chevron-right"/>
+                        </button>
+                    </div>
+                    <div class="o_hyg_segmented" role="group">
+                        <button t-att-class="{ active: isWeek }" t-on-click="() => this.setView('week')">Week</button>
+                        <button t-att-class="{ active: !isWeek }" t-on-click="() => this.setView('month')">Month</button>
+                    </div>
+                    <button t-if="state.data?.can_edit and !isWeek" class="btn btn-secondary" t-on-click="copyPreviousMonth">
                         <i class="fa fa-copy me-1"/>Copy previous month
                     </button>
                 </div>
             </div>
 
             <t t-if="state.data">
-                <div t-if="state.data.can_edit" class="o_hyg_palette mb-3">
-                    <span class="o_hyg_palette_label">Brush</span>
-                    <button t-foreach="state.data.members" t-as="member" t-key="member.id"
-                            class="o_hyg_brush" t-att-class="{ 'o_hyg_brush_active': state.brush === member.id }"
-                            t-on-click="() => this.pickBrush(member)">
-                        <span class="o_hyg_chip" t-att-style="chipStyle(member)" t-esc="member.initials"/>
-                        <span t-esc="member.name"/>
-                    </button>
-                    <span class="o_hyg_hint">Click a cell to add or remove the selected worker. Shift+click further along the row to repeat the last cell.</span>
+                <!-- L'equipe : une carte par salariee. Pour la responsable, la
+                     carte est aussi le pinceau. -->
+                <div class="o_hyg_team">
+                    <t t-foreach="state.data.members" t-as="member" t-key="member.id">
+                        <div class="o_hyg_mcard"
+                             t-att-class="{ o_hyg_mcard_active: state.brush === member.id, o_hyg_mcard_clickable: state.data.can_edit }"
+                             t-att-style="'--hyg-member: ' + memberColorOf(member)"
+                             t-att-role="state.data.can_edit ? 'button' : undefined"
+                             t-on-click="() => state.data.can_edit and this.pickBrush(member)">
+                            <div class="o_hyg_mcard_avatar">
+                                <img t-att-src="avatarUrl(member)" t-att-alt="member.name" loading="lazy"/>
+                                <span t-if="member.absent_today" class="o_hyg_mcard_dot" title="Absent today"/>
+                            </div>
+                            <div class="o_hyg_mcard_body">
+                                <div class="o_hyg_mcard_name" t-att-title="member.name" t-esc="member.name"/>
+                                <div class="o_hyg_mcard_job"><t t-if="member.job" t-esc="member.job"/><t t-else="">Cleaning team</t></div>
+                                <div class="o_hyg_mcard_meta">
+                                    <span class="o_hyg_pill">
+                                        <i class="fa fa-calendar-check-o me-1"/><t t-esc="member.planned_days"/>&#160;<t t-if="isWeek">days this week</t><t t-else="">days this month</t>
+                                    </span>
+                                    <span t-if="member.absent_today" class="o_hyg_pill o_hyg_pill_danger">Absent today</span>
+                                    <span t-if="!member.has_account" class="o_hyg_pill o_hyg_pill_muted" title="She has no Odoo account: the manager clocks her in.">No account</span>
+                                </div>
+                                <a t-if="member.phone" class="o_hyg_mcard_phone" t-att-href="'tel:' + member.phone"
+                                   t-on-click.stop="() => {}">
+                                    <i class="fa fa-phone me-1"/><t t-esc="member.phone"/>
+                                </a>
+                            </div>
+                            <i t-if="state.brush === member.id" class="fa fa-paint-brush o_hyg_mcard_brush" title="Selected"/>
+                        </div>
+                    </t>
+                </div>
+                <div t-if="state.data.can_edit" class="o_hyg_hint">
+                    Select a worker, then click the cells to add or remove her. Shift+click further along a row repeats the last cell.
                 </div>
 
                 <div t-if="!state.data.areas.length" class="alert alert-info">
-                    No area yet. Add the places the team cleans in Configuration, Areas.
+                    No area yet. Inventory adds the places the team cleans in Inventory, Patrimoine, Cleaning Areas.
                 </div>
 
-                <div t-else="" class="o_hyg_scroll" t-ref="scroll">
+                <div t-else="" class="o_hyg_scroll" t-att-class="{ o_hyg_week: isWeek, o_hyg_month: !isWeek }" t-ref="scroll">
                     <table class="o_hyg_matrix">
                         <thead>
                             <tr>
                                 <th class="o_hyg_corner">Area</th>
                                 <th t-foreach="state.data.days" t-as="day" t-key="day.date"
                                     t-att-class="{ o_hyg_off: day.off, o_hyg_today: day.today }">
-                                    <div class="o_hyg_wd" t-esc="weekdayLetter(day)"/>
-                                    <div t-esc="day.day"/>
+                                    <div class="o_hyg_wd" t-esc="weekdayLabel(day)"/>
+                                    <div class="o_hyg_daynum" t-esc="day.day"/>
                                 </th>
                             </tr>
                         </thead>
@@ -65,11 +98,19 @@
                                         <div t-if="c" class="o_hyg_cell_inner">
                                             <t t-foreach="c.employee_ids" t-as="employeeId" t-key="employeeId">
                                                 <t t-set="m" t-value="member(employeeId)"/>
-                                                <span t-if="m" class="o_hyg_chip"
-                                                      t-att-class="{ o_hyg_chip_absent: c.absent_ids.includes(employeeId) }"
-                                                      t-att-style="chipStyle(m)" t-att-title="m.name" t-esc="m.initials"/>
+                                                <t t-if="m">
+                                                    <span t-if="isWeek" class="o_hyg_cperson"
+                                                          t-att-class="{ o_hyg_chip_absent: c.absent_ids.includes(employeeId) }"
+                                                          t-att-style="chipStyle(m)" t-att-title="m.name">
+                                                        <img t-att-src="avatarUrl(m)" alt="" loading="lazy"/>
+                                                        <span t-esc="firstName(m)"/>
+                                                    </span>
+                                                    <span t-else="" class="o_hyg_chip"
+                                                          t-att-class="{ o_hyg_chip_absent: c.absent_ids.includes(employeeId) }"
+                                                          t-att-style="chipStyle(m)" t-att-title="m.name" t-esc="m.initials"/>
+                                                </t>
                                             </t>
-                                            <i t-if="c.done" class="fa fa-check o_hyg_done_mark" title="Done"/>
+                                            <i t-if="c.done" class="fa fa-check-circle o_hyg_done_mark" title="Done"/>
                                             <span t-if="c.extra" class="o_hyg_extra" title="Extra work">+<t t-esc="c.extra"/></span>
                                         </div>
                                     </td>
@@ -79,18 +120,18 @@
                         <tbody class="o_hyg_absences">
                             <tr class="o_hyg_building">
                                 <th>Absences</th>
-                                <td t-att-colspan="state.data.days.length" class="text-muted small"><t t-if="state.data.can_edit">Click a day to mark a worker absent; her areas show uncovered until someone else is added.</t></td>
+                                <td t-att-colspan="state.data.days.length" class="text-muted small fw-normal"><t t-if="state.data.can_edit">Click a day to mark a worker absent; her areas show uncovered until someone else is added.</t></td>
                             </tr>
                             <tr t-foreach="state.data.members" t-as="member" t-key="member.id">
-                                <th class="o_hyg_area">
-                                    <span class="o_hyg_chip me-1" t-att-style="chipStyle(member)" t-esc="member.initials"/>
+                                <th class="o_hyg_area o_hyg_absence_who">
+                                    <img class="o_hyg_mini_avatar" t-att-src="avatarUrl(member)" alt="" loading="lazy"/>
                                     <t t-esc="member.name"/>
                                 </th>
                                 <td t-foreach="state.data.days" t-as="day" t-key="day.date"
                                     class="o_hyg_cell o_hyg_absence_cell"
                                     t-att-class="{ o_hyg_off: day.off, o_hyg_today: day.today, o_hyg_is_absent: isAbsent(member, day) }"
                                     t-on-click="() => this.onAbsenceClick(member, day)">
-                                    <span t-if="isAbsent(member, day)">A</span>
+                                    <span t-if="isAbsent(member, day)"><t t-if="isWeek">Absent</t><t t-else="">A</t></span>
                                 </td>
                             </tr>
                         </tbody>
@@ -99,7 +140,7 @@
 
                 <div class="o_hyg_legend mt-2">
                     <span><span class="o_hyg_swatch o_hyg_swatch_uncovered"/>Uncovered</span>
-                    <span><i class="fa fa-check text-success me-1"/>Done</span>
+                    <span><i class="fa fa-check-circle text-success me-1"/>Done</span>
                     <span><span class="o_hyg_chip o_hyg_chip_absent o_hyg_chip_demo">AB</span>Absent</span>
                     <span><span class="o_hyg_extra">+1</span> Extra work</span>
                     <span><span class="o_hyg_swatch o_hyg_swatch_off"/>Day off</span>

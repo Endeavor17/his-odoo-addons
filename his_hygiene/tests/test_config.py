@@ -1,6 +1,6 @@
 """Equipe et zones : les personnes et les lieux viennent des referentiels."""
 
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import tagged
 from odoo.tools import mute_logger
 from psycopg2 import IntegrityError
@@ -37,3 +37,45 @@ class TestConfig(HygieneCase):
 
     def test_chaque_membre_a_sa_couleur(self):
         self.assertNotEqual(self.m_fatima.color, self.m_karima.color)
+
+
+@tagged("post_install", "-at_install")
+class TestConfigDroits(HygieneCase):
+    """L'equipe vient des RH, les zones de l'Inventaire (2026-11-10)."""
+
+    def _user(self, login, *groups):
+        return (
+            self.env["res.users"]
+            .with_context(no_reset_password=True)
+            .create({"name": login, "login": login, "group_ids": [(6, 0, [self.env.ref(g).id for g in groups])]})
+        )
+
+    def test_la_responsable_n_ajoute_ni_salariee_ni_zone(self):
+        other = self.env["hr.employee"].create({"name": "Nadia"})
+        with self.assertRaises(AccessError):
+            self.env["his.hygiene.member"].with_user(self.manager_user).create({"employee_id": other.id})
+        with self.assertRaises(AccessError):
+            self.env["his.hygiene.area"].with_user(self.manager_user).create({"location_id": self.loc_rdc.id})
+        with self.assertRaises(AccessError):
+            self.area_rdc.with_user(self.manager_user).unlink()
+
+    def test_la_responsable_colore_son_equipe(self):
+        self.m_fatima.with_user(self.manager_user).color = 7
+        self.assertEqual(self.m_fatima.color, 7)
+
+    def test_personne_ne_change_la_salariee_d_une_fiche(self):
+        other = self.env["hr.employee"].create({"name": "Nadia"})
+        with self.assertRaises(UserError):
+            self.m_fatima.employee_id = other
+
+    def test_les_rh_ajoutent_une_salariee(self):
+        hr_user = self._user("rh.hyg@his.test", "hr.group_hr_user")
+        other = self.env["hr.employee"].create({"name": "Nadia"})
+        member = self.env["his.hygiene.member"].with_user(hr_user).create({"employee_id": other.id})
+        self.assertEqual(member.employee_id, other)
+
+    def test_l_inventaire_ajoute_une_zone(self):
+        stock_user = self._user("stock.hyg@his.test", "stock.group_stock_user")
+        salle = self.env["stock.location"].create({"name": "Salle 9", "location_id": self.loc_rdc.id})
+        area = self.env["his.hygiene.area"].with_user(stock_user).create({"location_id": salle.id})
+        self.assertEqual(area.name, "Bloc H / RDC / Salle 9")

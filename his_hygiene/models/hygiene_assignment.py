@@ -109,6 +109,14 @@ class HisHygieneAssignment(models.Model):
 
     @api.model
     def get_matrix(self, year, month):
+        first = date(year, month, 1)
+        last = first + relativedelta(months=1, days=-1)
+        return {**self.get_range(first.isoformat(), last.isoformat()), "year": year, "month": month}
+
+    @api.model
+    def get_range(self, date_from, date_to):
+        """La matrice sur une periode quelconque : un mois, ou une semaine a
+        cheval sur deux mois (vue semaine du planning)."""
         # La salariee lit le planning (recette 2026-10-28) : ses cases et ses
         # absences seulement, par les regles ; seule la responsable le modifie.
         is_manager = self._his_is_manager()
@@ -117,8 +125,7 @@ class HisHygieneAssignment(models.Model):
         members = self.env["his.hygiene.member"].search(
             [] if is_manager else [("employee_id.user_id", "=", self.env.uid)]
         )
-        first = date(year, month, 1)
-        last = first + relativedelta(months=1, days=-1)
+        first, last = sorted([fields.Date.to_date(date_from), fields.Date.to_date(date_to)])
         off = self._hygiene_off_weekdays()
         today = fields.Date.context_today(self)
         absent = self._his_absent_by_date(first, last)
@@ -149,17 +156,37 @@ class HisHygieneAssignment(models.Model):
             )
             current += timedelta(days=1)
 
+        # Les cartes de l'equipe : jours planifies sur la periode, absente
+        # aujourd'hui. La fiche employe est lue en sudo (poste, telephone) : la
+        # responsable n'a pas les droits RH.
+        planned = defaultdict(set)
+        for assignment in assignments.filtered(lambda a: not a.is_extra):
+            for employee_id in assignment.employee_ids.ids:
+                planned[employee_id].add(assignment.date)
+        absent_today = self._his_absent_by_date(today, today)[today]
+
         return {
             "can_edit": is_manager,
-            "year": year,
-            "month": month,
+            "date_from": first.isoformat(),
+            "date_to": last.isoformat(),
             "days": days,
             "areas": [
                 {"id": a.id, "name": a.name, "building": a.building_id.name}
                 for a in self.env["his.hygiene.area"].search([])
             ],
             "members": [
-                {"id": m.employee_id.id, "name": m.name, "initials": m.initials, "color": m.color} for m in members
+                {
+                    "id": m.employee_id.id,
+                    "name": m.name,
+                    "initials": m.initials,
+                    "color": m.color,
+                    "job": m.employee_id.sudo().job_title or m.employee_id.sudo().job_id.name or "",
+                    "phone": m.employee_id.sudo().mobile_phone or m.employee_id.sudo().work_phone or "",
+                    "has_account": bool(m.user_id),
+                    "planned_days": len(planned[m.employee_id.id]),
+                    "absent_today": m.employee_id.id in absent_today,
+                }
+                for m in members
             ],
             "cells": cells,
             "absences": {

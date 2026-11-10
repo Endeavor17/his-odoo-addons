@@ -156,3 +156,19 @@ class TestPlanning(HygieneCase):
         stranger = self.env["hr.employee"].create({"name": "Hors equipe"})
         with self.assertRaises(ValidationError):
             self.Plan.set_cell(self.area_rdc.id, "2026-11-02", [stranger.id])
+
+
+@tagged("post_install", "-at_install")
+class TestPlanningSemaine(HygieneCase):
+    def test_une_semaine_a_cheval_sur_deux_mois(self):
+        Plan = self.env["his.hygiene.assignment"].with_user(self.manager_user)
+        Plan.set_cell(self.area_rdc.id, "2026-12-01", [self.fatima.id])
+        Plan.set_cell(self.area_rdc.id, "2026-11-29", [self.fatima.id])
+        data = Plan.get_range("2026-11-29", "2026-12-05")
+        self.assertEqual(len(data["days"]), 7)
+        self.assertIn(f"{self.area_rdc.id}|2026-12-01", data["cells"])
+        fatima = next(m for m in data["members"] if m["id"] == self.fatima.id)
+        self.assertEqual(fatima["planned_days"], 2)
+        self.assertTrue(fatima["has_account"])
+        karima = next(m for m in data["members"] if m["id"] == self.karima.id)
+        self.assertFalse(karima["has_account"])
