@@ -44,6 +44,7 @@
                     <group invisible="kind != 'cleaning'">
                         <field name="dispatch_employee_ids" widget="many2many_tags_avatar"
                                readonly="state != 'new'" options="{'no_create': True}"
+                               context="{'list_view_ref': 'his_hygiene.view_hr_employee_hygiene_pick_list'}"
                                domain="[('id', 'in', dispatch_allowed_ids)]"
                                help="Suggested: the workers planned on this area today. Change it before dispatching."/>
                     </group>
@@ -54,6 +55,53 @@
                             <field name="is_done"/>
                         </list>
                     </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Ouvert depuis « Extra Work » d'un constat. Sans ce formulaire, Odoo
+         en genere un ou Workers est la liste standard des employes, dont la
+         colonne Work Location (hr_homeworking) est refusee a tout non-RH.
+         Les etiquettes ne lisent que le nom. -->
+    <!-- « Search More » des champs Workers / Assign To : la liste standard
+         des employes lit des champs reserves aux RH (Work Location, version),
+         la responsable hygiene n'y a pas droit. En Odoo 19 le poste et le
+         departement passent par version_id (RH aussi) : le nom seul. -->
+    <record id="view_hr_employee_hygiene_pick_list" model="ir.ui.view">
+        <field name="name">hr.employee.hygiene.pick.list</field>
+        <field name="model">hr.employee</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_his_hygiene_assignment_form" model="ir.ui.view">
+        <field name="name">his.hygiene.assignment.form</field>
+        <field name="model">his.hygiene.assignment</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="area_id" readonly="1"/>
+                            <field name="date" readonly="1"/>
+                            <field name="is_extra" readonly="1"/>
+                            <field name="allowed_employee_ids" invisible="1"/>
+                            <field name="employee_ids" widget="many2many_tags" readonly="is_done"
+                                   options="{'no_create': True}"
+                                   context="{'list_view_ref': 'his_hygiene.view_hr_employee_hygiene_pick_list'}"
+                                   domain="[('id', 'in', allowed_employee_ids)]"/>
+                        </group>
+                        <group>
+                            <field name="is_done"/>
+                            <field name="done_by_id" invisible="not is_done"/>
+                            <field name="done_at" invisible="not is_done"/>
+                        </group>
+                    </group>
                 </sheet>
             </form>
         </field>
