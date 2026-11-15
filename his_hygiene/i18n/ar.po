@@ -96,6 +96,7 @@ msgid "Added on top of the plan, e.g. after a cleaning finding."
 msgstr "مضاف إلى المخطط، مثلاً بعد بلاغ عن اتساخ."
 
 #. module: his_hygiene
+#: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_assignment__allowed_employee_ids
 #: model:ir.model.fields,field_description:his_hygiene.field_his_hygiene_finding__dispatch_allowed_ids
 msgid "Allowed Workers"
 msgstr "العاملات المسموح بهن"

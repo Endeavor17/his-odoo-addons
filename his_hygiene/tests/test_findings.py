@@ -3,9 +3,11 @@
 import base64
 from datetime import timedelta
 
+from lxml import etree
 from odoo import fields
 from odoo.exceptions import AccessError, UserError
 from odoo.tests import tagged
+from odoo.tools import format_date
 
 from .common import HygieneCase
 
@@ -159,3 +161,28 @@ class TestFindings(HygieneCase):
         with self.assertRaises(UserError):
             finding.with_user(self.manager_user).action_dispatch()
         self.assertEqual(finding.state, "new")
+
+    def test_le_travail_en_plus_s_ouvre_sans_droits_rh(self):
+        # Le formulaire genere par Odoo montrait Workers en liste d'employes,
+        # dont la colonne Work Location (hr_homeworking) est refusee aux non-RH.
+        finding = self._report(self.fatima_user, self.area_rdc, "cleaning")
+        finding.with_user(self.manager_user).dispatch_employee_ids = self.karima
+        extra = finding.with_user(self.manager_user).action_dispatch().with_user(self.manager_user)
+
+        form = extra.get_views([(False, "form")])["views"]["form"]["arch"]
+        workers = etree.fromstring(form).xpath("//field[@name='employee_ids']")[0]
+        self.assertEqual(workers.get("widget"), "many2many_tags", "des etiquettes, jamais la liste des employes")
+
+        data = extra.web_read(
+            {"display_name": {}, "allowed_employee_ids": {}, "employee_ids": {"fields": {"display_name": {}}}}
+        )[0]
+        self.assertEqual(data["display_name"], f"{self.area_rdc.name} - {format_date(self.env, extra.date)}")
+        self.assertLessEqual({self.fatima.id, self.karima.id}, set(data["allowed_employee_ids"]))
+        # « Search More » ouvre la liste nommee dans le contexte du champ : ses
+        # colonnes doivent rester lisibles sans droits RH.
+        Employee = self.env["hr.employee"].with_user(self.manager_user)
+        pick = Employee.get_views([(self.env.ref("his_hygiene.view_hr_employee_hygiene_pick_list").id, "list")])
+        columns = etree.fromstring(pick["views"]["list"]["arch"]).xpath("//field/@name")
+        Employee.web_search_read([("id", "in", data["allowed_employee_ids"])], {name: {} for name in columns})
+        extra.write({"employee_ids": [(4, self.fatima.id)]})
+        self.assertEqual(extra.employee_ids, self.karima | self.fatima)

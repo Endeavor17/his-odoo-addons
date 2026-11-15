@@ -4,6 +4,7 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.tools import format_date
 
 
 class HisHygieneAssignment(models.Model):
@@ -27,10 +28,26 @@ class HisHygieneAssignment(models.Model):
     is_done = fields.Boolean(string="Done", readonly=True)
     done_by_id = fields.Many2one("res.users", string="Done By", readonly=True)
     done_at = fields.Datetime(string="Done At", readonly=True)
+    # Domaine du champ Workers dans le formulaire : sans lui, « Search More »
+    # ouvre la liste standard des employes, qu'un non-RH ne peut pas charger
+    # (colonne Work Location de hr_homeworking).
+    allowed_employee_ids = fields.Many2many(
+        "hr.employee", string="Allowed Workers", compute="_compute_allowed_employee_ids"
+    )
 
     _planned_unique = models.UniqueIndex(
         "(date, area_id) WHERE is_extra IS NOT TRUE", "This area is already planned on that day."
     )
+
+    @api.depends("area_id", "date")
+    def _compute_display_name(self):
+        for assignment in self:
+            assignment.display_name = f"{assignment.area_id.name} - {format_date(self.env, assignment.date)}"
+
+    def _compute_allowed_employee_ids(self):
+        members = self.env["his.hygiene.member"].sudo().search([]).employee_id
+        for assignment in self:
+            assignment.allowed_employee_ids = members
 
     @api.constrains("employee_ids")
     def _check_members(self):
