@@ -11,9 +11,8 @@
 """
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
-
 from odoo.addons.his_purchase.models.his_purchase_followup import add_working_days
+from odoo.exceptions import UserError
 
 from .common import is_finance
 

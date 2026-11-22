@@ -10,7 +10,6 @@ Une facture sans ligne de commande n'est pas verifiee (cas 5, encore ouvert).
 """
 
 from markupsafe import Markup
-
 from odoo import _, fields, models
 from odoo.exceptions import UserError
 
@@ -52,10 +51,18 @@ class AccountMove(models.Model):
                 continue
             order = pol.order_id
             if line.currency_id != order.currency_id:
-                issues.append(_("%(line)s: invoiced in %(currency)s, ordered in another currency.", line=label, currency=line.currency_id.name))
+                issues.append(
+                    _(
+                        "%(line)s: invoiced in %(currency)s, ordered in another currency.",
+                        line=label,
+                        currency=line.currency_id.name,
+                    )
+                )
                 continue
             # Prix net dans l'unite de la commande : 12 unites a 100 = 1 carton a 1 200.
-            billed = line.product_uom_id._compute_price(line.price_unit * (1 - (line.discount or 0.0) / 100), pol.product_uom_id)
+            billed = line.product_uom_id._compute_price(
+                line.price_unit * (1 - (line.discount or 0.0) / 100), pol.product_uom_id
+            )
             ordered = pol.price_unit * (1 - (pol.discount or 0.0) / 100)
             if order.currency_id.compare_amounts(billed, ordered):
                 issues.append(
@@ -71,7 +78,9 @@ class AccountMove(models.Model):
             if self.move_type != "in_invoice":
                 continue
             if pol.product_id.type == "service" and not order.his_service_done_on:
-                issues.append(_("%(line)s: the service on %(order)s has not been confirmed done.", line=label, order=order.name))
+                issues.append(
+                    _("%(line)s: the service on %(order)s has not been confirmed done.", line=label, order=order.name)
+                )
             elif pol.product_uom_id.compare(pol.qty_invoiced, pol.qty_received) > 0:
                 issues.append(
                     _(
@@ -87,7 +96,10 @@ class AccountMove(models.Model):
     def _his_run_check(self):
         for move in self.filtered(lambda m: m.state == "posted" and m._his_is_checked_bill()):
             issues = move._his_mismatches()
-            vals = {"his_check_state": "reserve" if issues else "validated", "his_check_reason": "\n".join(issues) or False}
+            vals = {
+                "his_check_state": "reserve" if issues else "validated",
+                "his_check_reason": "\n".join(issues) or False,
+            }
             if not move.his_first_check_done:
                 vals.update(his_first_check_done=True, his_first_check_clean=not issues)
             move.write(vals)
@@ -95,7 +107,10 @@ class AccountMove(models.Model):
             if issues:
                 move.message_post(
                     body=Markup("%s<ul>%s</ul>")
-                    % (_("Put on hold by the purchase order check:"), Markup("").join(Markup("<li>%s</li>") % i for i in issues))
+                    % (
+                        _("Put on hold by the purchase order check:"),
+                        Markup("").join(Markup("<li>%s</li>") % i for i in issues),
+                    )
                 )
 
     def _his_sync_payment_block(self):

@@ -66,7 +66,9 @@ JOURNALS = [
 def setup_accounts(env, company):
     """Cree les comptes et journaux manquants de `company` ; sans plan comptable, ne fait rien."""
     if not company.chart_template:
-        _logger.warning("his_purchase_finance: %s has no chart of accounts, purchase accounts not created.", company.name)
+        _logger.warning(
+            "his_purchase_finance: %s has no chart of accounts, purchase accounts not created.", company.name
+        )
         return
     Account = env["account.account"].with_company(company)
     for code, name, account_type in ACCOUNTS:

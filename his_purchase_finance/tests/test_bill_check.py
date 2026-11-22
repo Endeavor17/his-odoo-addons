@@ -15,7 +15,9 @@ class TestBillCheck(HisFinanceCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.repair = cls.env["product.product"].create({"name": "Printer repair", "type": "service", "purchase_ok": True})
+        cls.repair = cls.env["product.product"].create(
+            {"name": "Printer repair", "type": "service", "purchase_ok": True}
+        )
 
     # ------------------------------------------------------------------
 
@@ -179,7 +181,11 @@ class TestBillCheck(HisFinanceCase):
             {
                 "partner_id": self.supplier_a.id,
                 "order_line": [
-                    (0, 0, {"product_id": self.toner.id, "product_qty": 1, "product_uom_id": dozen.id, "price_unit": 1200})
+                    (
+                        0,
+                        0,
+                        {"product_id": self.toner.id, "product_qty": 1, "product_uom_id": dozen.id, "price_unit": 1200},
+                    )
                 ],
             }
         )
@@ -218,11 +224,15 @@ class TestBillCheck(HisFinanceCase):
         with self.assertRaises(UserError):
             self._register(bill, proof=False)._create_payments()
         payments = self._register(bill)._create_payments()
-        attachment = self.env["ir.attachment"].search([("res_model", "=", "account.payment"), ("res_id", "in", payments.ids)])
+        attachment = self.env["ir.attachment"].search(
+            [("res_model", "=", "account.payment"), ("res_id", "in", payments.ids)]
+        )
         self.assertEqual(attachment.name, "virement.pdf")
 
     def test_manual_supplier_payment_needs_attachment(self):
-        journal = self.env["account.journal"].search([("type", "=", "bank"), ("company_id", "=", self.company.id)], limit=1)
+        journal = self.env["account.journal"].search(
+            [("type", "=", "bank"), ("company_id", "=", self.company.id)], limit=1
+        )
         payment = self.env["account.payment"].create(
             {
                 "payment_type": "outbound",

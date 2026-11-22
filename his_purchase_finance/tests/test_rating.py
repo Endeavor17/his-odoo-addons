@@ -1,17 +1,26 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from psycopg2 import IntegrityError
-
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import tagged
 from odoo.tools import mute_logger
+from psycopg2 import IntegrityError
 
 from .common import HisFinanceCase
 
 PURCHASE_FOURS = dict.fromkeys(
-    ["purchase_delay", "purchase_quality", "purchase_compliance", "purchase_quantity", "purchase_responsiveness", "purchase_warranty", "purchase_price"],
+    [
+        "purchase_delay",
+        "purchase_quality",
+        "purchase_compliance",
+        "purchase_quantity",
+        "purchase_responsiveness",
+        "purchase_warranty",
+        "purchase_price",
+    ],
     4,
 )
-FINANCE_TWOS = dict.fromkeys(["finance_admin", "finance_invoicing", "finance_bank", "finance_payment_terms", "finance_anomalies"], 2)
+FINANCE_TWOS = dict.fromkeys(
+    ["finance_admin", "finance_invoicing", "finance_bank", "finance_payment_terms", "finance_anomalies"], 2
+)
 
 
 @tagged("post_install", "-at_install")

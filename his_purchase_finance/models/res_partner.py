@@ -37,14 +37,19 @@ class ResPartner(models.Model):
     @api.constrains("his_supplier_status", "his_supplier_status_reason")
     def _check_his_supplier_reason(self):
         for partner in self:
-            if partner.his_supplier_status in ("reserve", "refused") and not (
-                partner.his_supplier_status_reason or ""
-            ).strip():
-                raise ValidationError(_("Give the reason why the supplier file of %s is on reserve or refused.", partner.name))
+            if (
+                partner.his_supplier_status in ("reserve", "refused")
+                and not (partner.his_supplier_status_reason or "").strip()
+            ):
+                raise ValidationError(
+                    _("Give the reason why the supplier file of %s is on reserve or refused.", partner.name)
+                )
 
     @api.model_create_multi
     def create(self, vals_list):
-        if not is_finance(self.env) and any(vals.get("his_supplier_status", "waiting") != "waiting" for vals in vals_list):
+        if not is_finance(self.env) and any(
+            vals.get("his_supplier_status", "waiting") != "waiting" for vals in vals_list
+        ):
             raise AccessError(_("Only Finance can validate a supplier file."))
         return super().create(vals_list)
 

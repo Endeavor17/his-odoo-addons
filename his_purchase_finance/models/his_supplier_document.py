@@ -2,7 +2,6 @@
 """Pieces du dossier fournisseur (procedure Finance, etape 4.1)."""
 
 from dateutil.relativedelta import relativedelta
-
 from odoo import api, fields, models
 
 DOC_TYPES = [
@@ -31,9 +30,7 @@ class HisSupplierDocument(models.Model):
     _description = "Supplier Document"
     _order = "doc_type, id desc"
 
-    partner_id = fields.Many2one(
-        "res.partner", string="Supplier", required=True, ondelete="cascade", index=True
-    )
+    partner_id = fields.Many2one("res.partner", string="Supplier", required=True, ondelete="cascade", index=True)
     doc_type = fields.Selection(DOC_TYPES, string="Document", required=True)
     name = fields.Char(string="Reference")
     file = fields.Binary(string="File", attachment=True)

@@ -2137,3 +2137,91 @@ msgstr "Département figé"
 #: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__his_requester_locked
 msgid "His Requester Locked"
 msgstr "Demandeur figé"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__payment_terms
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__payment_terms
+msgid "Best payment terms"
+msgstr "Meilleures conditions de paiement"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__lowest_price
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__lowest_price
+msgid "Best price"
+msgstr "Prix le plus avantageux"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/wizard/his_purchase_choice.py:0
+msgid "Explain the choice in the note for this criterion."
+msgstr "Justifiez le choix dans la note pour ce motif."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_reject__mode
+msgid "Mode"
+msgstr "Mode"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__state__on_hold
+msgid "On Hold"
+msgstr "En attente"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__only_supplier
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__only_supplier
+msgid "Only supplier or technical exclusivity"
+msgstr "Fournisseur unique ou exclusivité technique"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__availability
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__availability
+msgid "Product or service availability"
+msgstr "Disponibilité du produit ou du service"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Put Purchase Request on Hold"
+msgstr "Mettre la demande d'achat en attente"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request_reject__mode__hold
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_form
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_reject_form
+msgid "Put on Hold"
+msgstr "Mettre en attente"
+
+#. module: his_purchase
+#. odoo-python
+#: code:addons/his_purchase/models/his_purchase_request.py:0
+msgid "Put on hold by %(user)s: %(reason)s"
+msgstr "Mise en attente par %(user)s : %(reason)s"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__quality
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__quality
+msgid "Quality and technical compliance"
+msgstr "Qualité et conformité technique"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__reliability
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__reliability
+msgid "Supplier reliability and experience"
+msgstr "Fiabilité et expérience du fournisseur"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__usual_supplier
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__usual_supplier
+msgid "Usual supplier"
+msgstr "Fournisseur habituel"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_choice__criterion__warranty
+#: model:ir.model.fields.selection,name:his_purchase.selection__purchase_order__his_choice_criterion__warranty
+msgid "Warranty and after-sales service"
+msgstr "Garanties et service après-vente"
+
+#. module: his_purchase
+#: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_reject_form
+msgid "Why? The requester will receive this reason."
+msgstr "Pourquoi ? Le demandeur recevra ce motif."

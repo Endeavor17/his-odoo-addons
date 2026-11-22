@@ -2,7 +2,6 @@
 import base64
 
 from dateutil.relativedelta import relativedelta
-
 from odoo import fields
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import Form, new_test_user, tagged
@@ -50,7 +49,9 @@ class TestSupplierFile(HisFinanceCase):
         for status in ("reserve", "refused"):
             with self.assertRaises(ValidationError):
                 partner.with_user(self.finance).write({"his_supplier_status": status})
-        partner.with_user(self.finance).write({"his_supplier_status": "reserve", "his_supplier_status_reason": "RIB missing"})
+        partner.with_user(self.finance).write(
+            {"his_supplier_status": "reserve", "his_supplier_status_reason": "RIB missing"}
+        )
         self.assertEqual(partner.his_supplier_status, "reserve")
 
     def test_document_status(self):
@@ -65,8 +66,10 @@ class TestSupplierFile(HisFinanceCase):
         self.assertEqual(Doc.create({**base, "non_compliant": True}).status, "non_compliant")
 
     def test_buyer_adds_documents_but_does_not_edit_them(self):
-        doc = self.env["his.supplier.document"].with_user(self.officer).create(
-            {"partner_id": self.supplier_a.id, "doc_type": "nif", "name": "000016001234567"}
+        doc = (
+            self.env["his.supplier.document"]
+            .with_user(self.officer)
+            .create({"partner_id": self.supplier_a.id, "doc_type": "nif", "name": "000016001234567"})
         )
         self.env.invalidate_all()
         with self.assertRaises(AccessError):
@@ -76,14 +79,20 @@ class TestSupplierFile(HisFinanceCase):
         contact = self.env["res.partner"].create({"name": "Salesman", "parent_id": self.supplier_a.id})
         self.assertEqual(contact._his_supplier_blockers(), [])
         self.env["his.supplier.document"].create(
-            {"partner_id": self.supplier_a.id, "doc_type": "rib", "expires_on": fields.Date.today() - relativedelta(days=1)}
+            {
+                "partner_id": self.supplier_a.id,
+                "doc_type": "rib",
+                "expires_on": fields.Date.today() - relativedelta(days=1),
+            }
         )
         self.assertEqual(len(contact._his_supplier_blockers()), 1)
         self.supplier_b.sudo().write({"his_supplier_status": "refused", "his_supplier_status_reason": "Fake RC"})
         self.assertIn("Refused", self.supplier_b._his_supplier_blockers()[0])
 
     def _supplier_payment(self, bank):
-        journal = self.env["account.journal"].search([("type", "=", "bank"), ("company_id", "=", self.company.id)], limit=1)
+        journal = self.env["account.journal"].search(
+            [("type", "=", "bank"), ("company_id", "=", self.company.id)], limit=1
+        )
         payment = self.env["account.payment"].create(
             {
                 "payment_type": "outbound",
@@ -100,7 +109,9 @@ class TestSupplierFile(HisFinanceCase):
         return payment
 
     def test_payment_to_untrusted_bank_refused(self):
-        bank = self.env["res.partner.bank"].create({"partner_id": self.supplier_a.id, "acc_number": "00799999000123456789"})
+        bank = self.env["res.partner.bank"].create(
+            {"partner_id": self.supplier_a.id, "acc_number": "00799999000123456789"}
+        )
         self.assertFalse(bank.allow_out_payment)
         with self.assertRaises(UserError):
             self._supplier_payment(bank).action_post()

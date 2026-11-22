@@ -1,7 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo.tests import TransactionCase, new_test_user, tagged
-
 from odoo.addons.his_purchase_finance.hooks import ACCOUNTS, JOURNALS, setup_accounts
+from odoo.tests import TransactionCase, new_test_user, tagged
 
 
 @tagged("post_install", "-at_install")

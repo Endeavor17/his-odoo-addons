@@ -1,7 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo.tests import new_test_user
-
 from odoo.addons.his_purchase.tests.common import HisPurchaseCase
+from odoo.tests import new_test_user
 
 
 class HisFinanceCase(HisPurchaseCase):

@@ -2,7 +2,6 @@
 from datetime import date
 
 from dateutil.relativedelta import relativedelta
-
 from odoo import fields
 from odoo.exceptions import UserError
 from odoo.tests import tagged
@@ -56,7 +55,12 @@ class TestSendConfirm(HisFinanceCase):
         eur = self.env.ref("base.EUR")
         eur.active = True
         self.env["res.currency.rate"].create(
-            {"currency_id": eur.id, "rate": 0.5, "name": fields.Date.today() - relativedelta(days=1), "company_id": self.company.id}
+            {
+                "currency_id": eur.id,
+                "rate": 0.5,
+                "name": fields.Date.today() - relativedelta(days=1),
+                "company_id": self.company.id,
+            }
         )
         order = self._offer(price=30000)
         order.currency_id = eur
@@ -111,7 +115,11 @@ class TestSendConfirm(HisFinanceCase):
                 order.with_user(self.finance).button_confirm()
         self.supplier_a.sudo().his_supplier_status = "validated"
         doc = self.env["his.supplier.document"].create(
-            {"partner_id": self.supplier_a.id, "doc_type": "rc", "expires_on": fields.Date.today() - relativedelta(days=1)}
+            {
+                "partner_id": self.supplier_a.id,
+                "doc_type": "rc",
+                "expires_on": fields.Date.today() - relativedelta(days=1),
+            }
         )
         with self.assertRaises(UserError):
             order.with_user(self.finance).button_confirm()
