@@ -409,3 +409,14 @@ class TestOrder(HisPurchaseCase):
         order.order_line.product_qty = 3
         with self.assertRaisesRegex(UserError, "more than requested"):
             order.with_user(self.officer).button_confirm()
+
+    def test_motif_autre_exige_une_note(self):
+        request = self._approved_request()
+        order = self._source_rfq(request, self.supplier_a)
+        order.order_line.price_unit = 9500
+        self._alternative(order, self.supplier_b, 9000)
+        Choice = self.env["his.purchase.choice"].with_user(self.officer)
+        for criterion in ("other", "usual_supplier"):
+            with self.assertRaises(UserError):
+                Choice.create({"order_id": order.id, "criterion": criterion, "note": "  "}).action_confirm()
+        self.assertEqual(len(dict(self.env["purchase.order"]._fields["his_choice_criterion"].selection)), 10)

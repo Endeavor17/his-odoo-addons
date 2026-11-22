@@ -1,0 +1,1030 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_purchase_finance
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260810\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-20 13:58+0000\n"
+"PO-Revision-Date: 2026-10-20 13:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "%(line)s: %(invoiced)s %(uom)s invoiced so far, %(received)s received."
+msgstr "%(line)s : %(invoiced)s %(uom)s facturé(s) à ce jour, %(received)s reçu(s)."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "%(line)s: invoiced at %(billed)s, ordered at %(ordered)s."
+msgstr "%(line)s : facturé à %(billed)s, commandé à %(ordered)s."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "%(line)s: invoiced in %(currency)s, ordered in another currency."
+msgstr "%(line)s : facturé en %(currency)s, commandé dans une autre devise."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "%(line)s: the service on %(order)s has not been confirmed done."
+msgstr "%(line)s : le service fait de %(order)s n'a pas été attesté."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "%(order)s cannot be confirmed: %(reasons)s."
+msgstr "%(order)s ne peut pas être confirmée : %(reasons)s."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/his_purchase_choice.py:0
+msgid ""
+"%(order)s is %(amount)s excl. tax with %(count)s quote(s): from "
+"%(threshold)s, %(required)s quotes are required. Explain the exception in "
+"the note."
+msgstr "%(order)s s'élève à %(amount)s HT avec %(count)s devis : à partir de %(threshold)s, %(required)s devis sont exigés. Justifiez la dérogation dans la note."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_service.py:0
+msgid "%s has no confirmed service waiting for confirmation."
+msgstr "%s n'a aucun service confirmé en attente d'attestation."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "%s has not been sent to Finance yet."
+msgstr "%s n'a pas encore été envoyée à la Finance."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "%s is already with Finance."
+msgstr "%s est déjà à la Finance."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/account_payment_register.py:0
+msgid ""
+"%s is held by the purchase order check: Finance must validate or release it "
+"first."
+msgstr "%s est en réserve suite au rapprochement : la Finance doit d'abord la valider ou la libérer."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "%s is not a checked vendor bill."
+msgstr "%s n'est pas une facture fournisseur contrôlée."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "%s is not a request for quotation any more."
+msgstr "%s n'est plus une demande de prix."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "%s is not on the purchase order."
+msgstr "%s ne figure pas sur le bon de commande."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "%s is not waiting for Finance."
+msgstr "%s n'attend pas la Finance."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "%s is with Finance: ask Finance to return it before changing it."
+msgstr "%s est à la Finance : demandez-lui de vous la renvoyer avant de la modifier."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "%s: taxes differ from the purchase order."
+msgstr "%s : les taxes diffèrent du bon de commande."
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_form_finance
+msgid ", sent by"
+msgstr ", envoyée par"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_supplier_rating_form
+msgid "1 Very poor, 2 Poor, 3 Acceptable, 4 Good, 5 Excellent"
+msgstr "1 Très insuffisant, 2 Insuffisant, 3 Acceptable, 4 Bon, 5 Excellent"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__finance_admin
+msgid "Administrative and Tax Compliance"
+msgstr "Conformité administrative et fiscale"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/account_payment_register.py:0
+msgid "Attach the payment proof before paying a supplier."
+msgstr "Joignez la preuve de paiement avant de payer un fournisseur."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_payment.py:0
+msgid "Attach the payment proof to %s before posting it."
+msgstr "Joignez la preuve de paiement à %s avant de la comptabiliser."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__finance_bank
+msgid "Bank Details"
+msgstr "Coordonnées bancaires"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__doc_type__rib
+msgid "Bank Details (RIB)"
+msgstr "Relevé d'identité bancaire (RIB)"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_account_payment_register__his_proof
+msgid "Bank transfer order, cheque copy or signed receipt."
+msgstr "Ordre de virement, copie du chèque ou reçu signé."
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.res_config_settings_view_form_his_finance
+msgid ""
+"Buyers send orders to Finance, which alone confirms them once the supplier "
+"file is validated"
+msgstr "Les acheteurs envoient les commandes à la Finance, qui seule les confirme une fois le dossier fournisseur validé"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_purchase_order__his_finance_confirms
+#: model:ir.model.fields,help:his_purchase_finance.field_res_company__his_finance_confirms
+#: model:ir.model.fields,help:his_purchase_finance.field_res_config_settings__his_finance_confirms
+msgid ""
+"Buyers send orders to Finance, which alone confirms them, once the supplier "
+"file is validated."
+msgstr "Les acheteurs envoient les commandes à la Finance, qui seule les confirme, une fois le dossier fournisseur validé."
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.view_move_form_finance_check
+msgid "Check Again"
+msgstr "Contrôler à nouveau"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__purchase_compliance
+msgid "Compliance"
+msgstr "Conformité"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_bank_statement_line__his_first_check_clean
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__his_first_check_clean
+msgid "Compliant at First Check"
+msgstr "Conforme au premier contrôle"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_service.py:0
+#: model:ir.model,name:his_purchase_finance.model_his_service_done
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_request_form_service
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_service_done_form
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_form_finance
+msgid "Confirm Service Done"
+msgstr "Attester le service fait"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Confirm purchase order %s"
+msgstr "Confirmer le bon de commande %s"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_service_done_form
+msgid ""
+"Confirm that the service was carried out as ordered. Finance needs this "
+"confirmation to pay the supplier."
+msgstr "Attestez que la prestation a été réalisée conformément à la commande. La Finance en a besoin pour payer le fournisseur."
+
+#. module: his_purchase_finance
+#: model:res.groups,comment:his_purchase_finance.group_finance
+msgid ""
+"Confirms purchase orders, validates supplier files, trusts bank accounts and\n"
+"            releases vendor bills on hold. Comes with the Accountant role."
+msgstr "Confirme les bons de commande, valide les dossiers fournisseurs, approuve les comptes bancaires et\n            libère les factures en réserve. Vient avec le rôle Comptable."
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_bill_decision__create_uid
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_finance_return__create_uid
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_service_done__create_uid
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__create_uid
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_bill_decision__create_date
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_finance_return__create_date
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_service_done__create_date
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__create_date
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_bill_decision__decision
+msgid "Decision"
+msgstr "Décision"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__purchase_delay
+msgid "Delivery Delays"
+msgstr "Délais"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_bill_decision_form
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_finance_return_form
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_service_done_form
+msgid "Discard"
+msgstr "Annuler"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment_register__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_bill_decision__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_finance_return__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_choice__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_request__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_service_done__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order_line__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_company__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_partner__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__doc_type
+msgid "Document"
+msgstr "Pièce"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_choice__needs_exception
+msgid "Exception Needed"
+msgstr "Dérogation nécessaire"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/his_purchase_choice.py:0
+msgid "Exception to the 3-quote rule (%(count)s quote(s)): %(note)s"
+msgstr "Dérogation à la règle des 3 devis (%(count)s devis) : %(note)s"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__status__expired
+msgid "Expired"
+msgstr "Expiré"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__expires_on
+msgid "Expires On"
+msgstr "Expire le"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__res_partner__his_rating_label__failing
+msgid "Failing"
+msgstr "Défaillant"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_choice_form_finance
+msgid ""
+"Fewer than 3 quotes from 100,000 DA excl. tax: explain the exception in the "
+"note."
+msgstr "Moins de 3 devis à partir de 100 000 DA HT : justifiez la dérogation dans la note."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__file
+msgid "File"
+msgstr "Fichier"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__file_name
+msgid "File Name"
+msgstr "Nom du fichier"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_rating__side__finance
+msgid "Finance"
+msgstr "Finance"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_bank_statement_line__his_check_state
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__his_check_state
+msgid "Finance Check"
+msgstr "Contrôle Finance"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_bank_statement_line__his_check_reason
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__his_check_reason
+msgid "Finance Check Reason"
+msgstr "Motif du contrôle Finance"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_finance_confirms
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_company__his_finance_confirms
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_config_settings__his_finance_confirms
+msgid "Finance Confirms Purchase Orders"
+msgstr "La Finance confirme les bons de commande"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_his_bill_decision
+msgid "Finance Decision on a Vendor Bill"
+msgstr "Décision de la Finance sur une facture fournisseur"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_account_bank_statement_line__his_first_check_clean
+#: model:ir.model.fields,help:his_purchase_finance.field_account_move__his_first_check_clean
+msgid "For the monthly indicator."
+msgstr "Pour l'indicateur mensuel."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Framework contract %s"
+msgstr "Contrat-cadre %s"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/res_partner.py:0
+msgid "Give the reason why the supplier file of %s is on reserve or refused."
+msgstr "Indiquez pourquoi le dossier fournisseur de %s est en réserve ou refusé."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__finance_anomalies
+msgid "Handling of Anomalies"
+msgstr "Régularisation des anomalies"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_has_services
+msgid "Has Services"
+msgstr "Comporte des services"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_can_confirm
+msgid "His Can Confirm"
+msgstr "Peut confirmer"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_bank_statement_line__his_first_check_done
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__his_first_check_done
+msgid "His First Check Done"
+msgstr "Premier contrôle fait"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment_register__his_proof_required
+msgid "His Proof Required"
+msgstr "Preuve exigée"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment_register__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_bill_decision__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_finance_return__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_choice__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_request__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_service_done__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order_line__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_company__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_config_settings__id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_partner__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__finance_invoicing
+msgid "Invoicing"
+msgstr "Facturation"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_bill_decision__write_uid
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_finance_return__write_uid
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_service_done__write_uid
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__write_uid
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_bill_decision__write_date
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_finance_return__write_date
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_service_done__write_date
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__write_date
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__doc_type__id_card
+msgid "Legal Representative's ID"
+msgstr "Pièce d'identité du représentant légal"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_bill_decision__move_id
+msgid "Move"
+msgstr "Pièce"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__non_compliant_note
+msgid "Non-Compliance Reason"
+msgstr "Motif de non-conformité"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__non_compliant
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__status__non_compliant
+msgid "Non-Compliant"
+msgstr "Non conforme"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__note
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_supplier_rating_form
+msgid "Observations"
+msgstr "Observations"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__account_move__his_check_state__reserve
+msgid "On Hold"
+msgstr "En réserve"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.view_account_move_filter_finance_check
+msgid "On Hold (Purchase Check)"
+msgstr "En réserve (rapprochement)"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__res_partner__his_supplier_status__reserve
+msgid "On Reserve"
+msgstr "En réserve"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/res_partner.py:0
+msgid "Only Finance can change the status of a supplier file."
+msgstr "Seule la Finance peut changer le statut d'un dossier fournisseur."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "Only Finance can decide on a vendor bill check."
+msgstr "Seule la Finance décide du contrôle d'une facture fournisseur."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_supplier_rating.py:0
+msgid "Only Finance can give the Finance rating."
+msgstr "Seule la Finance peut donner l'évaluation Finance."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Only Finance can return an order to the buyer."
+msgstr "Seule la Finance peut renvoyer une commande à l'acheteur."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/res_partner.py:0
+msgid "Only Finance can validate a supplier file."
+msgstr "Seule la Finance peut valider un dossier fournisseur."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Only Finance confirms purchase orders: use “Send to Finance”."
+msgstr "Seule la Finance confirme les bons de commande : utilisez « Envoyer à la Finance »."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_service.py:0
+msgid "Only the requesting department can confirm the service on %s."
+msgstr "Seul le département demandeur peut attester le service fait de %s."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_finance_return__order_id
+msgid "Order"
+msgstr "Commande"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__doc_type__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_account_payment_register
+msgid "Pay"
+msgstr "Payer"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment_register__his_proof
+msgid "Payment Proof"
+msgstr "Preuve de paiement"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment_register__his_proof_name
+msgid "Payment Proof Name"
+msgstr "Nom de la preuve de paiement"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__finance_payment_terms
+msgid "Payment Terms"
+msgstr "Conditions de paiement"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/account_payment_register.py:0
+msgid "Payment proof"
+msgstr "Preuve de paiement"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_account_payment
+msgid "Payments"
+msgstr "Paiements"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_service_done__period
+msgid "Period or Date of the Service"
+msgstr "Période ou date de la prestation"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__purchase_price
+msgid "Price Competitiveness"
+msgstr "Compétitivité des prix"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__doc_type__licence
+msgid "Professional Licence"
+msgstr "Agrément ou autorisation professionnelle"
+
+#. module: his_purchase_finance
+#: model:res.groups,name:his_purchase_finance.group_finance
+#: model:res.groups.privilege,name:his_purchase_finance.res_groups_privilege_finance
+msgid "Purchase Finance"
+msgstr "Finance achats"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_purchase_order
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_service_done__order_ref
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__order_id
+msgid "Purchase Order"
+msgstr "Bon de commande"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Ligne de bon de commande"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_his_purchase_request
+msgid "Purchase Request"
+msgstr "Demande d'achat"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_rating__side__purchase
+msgid "Purchasing"
+msgstr "Achats"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "Put on hold by the purchase order check:"
+msgstr "Mise en réserve par le rapprochement avec la commande :"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__purchase_quality
+msgid "Quality"
+msgstr "Qualité"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__purchase_quantity
+msgid "Quantities"
+msgstr "Quantités"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_choice__quote_count
+msgid "Quotes"
+msgstr "Devis"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_supplier_rating.py:0
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_form_rating
+msgid "Rate Supplier"
+msgstr "Évaluer le fournisseur"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_supplier_rating.py:0
+msgid "Rate every criterion from 1 (very poor) to 5 (excellent)."
+msgstr "Notez chaque critère de 1 (très insuffisant) à 5 (excellent)."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__side
+msgid "Rated By"
+msgstr "Évalué par"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_bill_decision__reason
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_finance_return__reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__received_on
+msgid "Received On"
+msgstr "Reçu le"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__name
+msgid "Reference"
+msgstr "Référence"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_bill_decision__decision__refuse
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_bill_decision_form
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.view_move_form_finance_check
+msgid "Refuse"
+msgstr "Refuser"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "Refuse Bill"
+msgstr "Refuser la facture"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__account_move__his_check_state__refused
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__res_partner__his_supplier_status__refused
+msgid "Refused"
+msgstr "Refusé"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "Refused by %(user)s: %(reason)s"
+msgstr "Refusée par %(user)s : %(reason)s"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_bill_decision__decision__release
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_bill_decision_form
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.view_move_form_finance_check
+msgid "Release"
+msgstr "Libérer"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "Release Bill"
+msgstr "Libérer la facture"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "Released by %(user)s despite the check: %(reason)s"
+msgstr "Libérée par %(user)s malgré le contrôle : %(reason)s"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_service_done__note
+msgid "Reservations or Anomalies"
+msgstr "Réserves ou anomalies"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_service_done_form
+msgid "Reservations or anomalies, if any"
+msgstr "Réserves ou anomalies éventuelles"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__purchase_responsiveness
+msgid "Responsiveness"
+msgstr "Réactivité"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_his_finance_return
+msgid "Return Purchase Order to Buyer"
+msgstr "Renvoyer le bon de commande à l'acheteur"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_finance_return_form
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_form_finance
+msgid "Return to Buyer"
+msgstr "Renvoyer à l'acheteur"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Returned to the buyer by %(user)s: %(reason)s"
+msgstr "Renvoyée à l'acheteur par %(user)s : %(reason)s"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__res_partner__his_rating_label__satisfactory
+msgid "Satisfactory"
+msgstr "Satisfaisant"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__score
+msgid "Score"
+msgstr "Note"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_choice_form_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_form_finance
+msgid "Send to Finance"
+msgstr "Envoyer à la Finance"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_sent_to_finance_by_id
+msgid "Sent to Finance By"
+msgstr "Envoyée à la Finance par"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_sent_to_finance_on
+msgid "Sent to Finance On"
+msgstr "Envoyée à la Finance le"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Sent to Finance for confirmation by %s."
+msgstr "Envoyée à la Finance pour confirmation par %s."
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_form_finance
+msgid "Service Done"
+msgstr "Service fait"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_service_done_by_id
+msgid "Service Done Confirmed By"
+msgstr "Service fait attesté par"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_service_done_on
+msgid "Service Done Confirmed On"
+msgstr "Service fait attesté le"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_service_period
+msgid "Service Period"
+msgstr "Période de la prestation"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_service_note
+msgid "Service Reservations"
+msgstr "Réserves sur la prestation"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_service.py:0
+msgid "Service done confirmed by %(user)s (%(period)s). %(note)s"
+msgstr "Service fait attesté par %(user)s (%(period)s). %(note)s"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_request__his_service_pending
+msgid "Service to Confirm"
+msgstr "Service fait à attester"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_person__his_supplier_status
+#: model:ir.model.fields,help:his_purchase_finance.field_res_partner__his_supplier_status
+#: model:ir.model.fields,help:his_purchase_finance.field_res_users__his_supplier_status
+msgid ""
+"Set by Finance. Waiting (orange): not checked yet. On Reserve (red): "
+"documents missing, expired or non-compliant. Validated (green): orders can "
+"be confirmed. Refused (dark red)."
+msgstr "Fixé par la Finance. En attente (orange) : pas encore vérifié. En réserve (rouge) : pièces manquantes, expirées ou non conformes. Validé (vert) : les commandes peuvent être confirmées. Refusé (rouge foncé)."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__doc_type__nis
+msgid "Statistical ID (NIS)"
+msgstr "Numéro d'identification statistique (NIS)"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__status
+msgid "Status"
+msgstr "Statut"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__partner_id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__partner_id
+msgid "Supplier"
+msgstr "Fournisseur"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_his_purchase_choice
+msgid "Supplier Choice"
+msgstr "Choix du fournisseur"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_his_supplier_document
+msgid "Supplier Document"
+msgstr "Pièce du dossier fournisseur"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_person__his_supplier_document_ids
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_partner__his_supplier_document_ids
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_users__his_supplier_document_ids
+msgid "Supplier Documents"
+msgstr "Pièces du dossier fournisseur"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_person__his_supplier_status
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_partner__his_supplier_status
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_users__his_supplier_status
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.view_partner_form_supplier_file
+msgid "Supplier File"
+msgstr "Dossier fournisseur"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_person__his_supplier_status_reason
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_partner__his_supplier_status_reason
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_users__his_supplier_status_reason
+msgid "Supplier File Reason"
+msgstr "Motif du statut du dossier"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_his_supplier_rating
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_person__his_rating_label
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_partner__his_rating_label
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_users__his_rating_label
+msgid "Supplier Rating"
+msgstr "Évaluation fournisseur"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_person__his_rating_score
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_partner__his_rating_score
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_users__his_rating_score
+msgid "Supplier Score"
+msgstr "Note fournisseur"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__doc_type__tax_certificate
+msgid "Tax Existence Certificate (AI)"
+msgstr "Certificat d'existence fiscale (AI)"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__doc_type__nif
+msgid "Tax ID (NIF)"
+msgstr "Numéro d'identification fiscale (NIF)"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_payment.py:0
+msgid ""
+"The bank account %(account)s of %(supplier)s has not been validated by "
+"Finance: no payment can be sent to it."
+msgstr "Le compte bancaire %(account)s de %(supplier)s n'a pas été validé par la Finance : aucun paiement ne peut y être envoyé."
+
+#. module: his_purchase_finance
+#: model:ir.model.constraint,message:his_purchase_finance.constraint_his_supplier_rating_order_side_uniq
+msgid "This order already has a rating from this side."
+msgstr "Cette commande a déjà une évaluation de ce côté."
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_search_finance
+msgid "To Confirm (Finance)"
+msgstr "À confirmer (Finance)"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__status__to_refresh
+msgid "To Refresh"
+msgstr "À actualiser"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__res_partner__his_rating_label__watch
+msgid "To Watch"
+msgstr "À surveiller"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__doc_type__rc
+msgid "Trade Register (RC)"
+msgstr "Registre de commerce (RC)"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_supplier_document__status__valid
+msgid "Valid"
+msgstr "Valide"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__account_move__his_check_state__validated
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__res_partner__his_supplier_status__validated
+msgid "Validated"
+msgstr "Validé"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__account_move__his_check_state__waiting
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__res_partner__his_supplier_status__waiting
+msgid "Waiting"
+msgstr "En attente"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__purchase_warranty
+msgid "Warranty"
+msgstr "Garanties"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_finance_return_form
+msgid "What must the buyer correct? They will receive this reason."
+msgstr "Que doit corriger l'acheteur ? Il recevra ce motif."
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_bill_decision_form
+msgid "Why? This reason is kept on the bill."
+msgstr "Pourquoi ? Ce motif reste sur la facture."
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_form_finance
+msgid "With Finance since"
+msgstr "À la Finance depuis le"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/res_partner.py:0
+msgid "documents expired or non-compliant: %s"
+msgstr "pièces expirées ou non conformes : %s"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_service_done_form
+msgid "e.g. 3-14 November 2026"
+msgstr "ex. 3-14 novembre 2026"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/res_partner.py:0
+msgid "the supplier file of %(supplier)s is “%(status)s”"
+msgstr "le dossier fournisseur de %(supplier)s est « %(status)s »"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_account_move_line
+msgid "Journal Item"
+msgstr "Écriture comptable"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "The purchase order check is set by Finance decisions only."
+msgstr "Le contrôle de la facture ne change que par une décision de la Finance."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "The supplier choice of %s is recorded and cannot be changed."
+msgstr "Le choix du fournisseur de %s est enregistré et ne peut plus changer."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "These fields are set by the Finance workflow only."
+msgstr "Ces champs ne sont renseignés que par le circuit Finance."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid ""
+"This bill is held by the purchase order check: Finance releases it with a "
+"reason."
+msgstr "Cette facture est en réserve suite au rapprochement : la Finance la libère avec un motif."

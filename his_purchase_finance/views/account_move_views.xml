@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_finance_check" model="ir.ui.view">
+        <field name="name">account.move.form.his.finance.check</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_set_checked']" position="after">
+                <button name="action_his_check_again" type="object" string="Check Again"
+                    invisible="state != 'posted' or his_check_state not in ('reserve', 'refused')" groups="his_purchase_finance.group_finance"/>
+                <button name="action_open_release" type="object" string="Release" class="btn-primary"
+                    invisible="state != 'posted' or his_check_state not in ('reserve', 'refused')" groups="his_purchase_finance.group_finance"/>
+                <button name="action_open_refuse" type="object" string="Refuse"
+                    invisible="state != 'posted' or his_check_state != 'reserve'" groups="his_purchase_finance.group_finance"/>
+            </xpath>
+            <xpath expr="//div[@id='alerts']" position="before">
+                <div class="alert alert-warning mb-0" role="alert" invisible="his_check_state not in ('reserve', 'refused')">
+                    <strong><field name="his_check_state" readonly="1" class="d-inline"/>: </strong>
+                    <field name="his_check_reason" class="d-inline"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_in_invoice_bill_tree_finance_check" model="ir.ui.view">
+        <field name="name">account.move.list.his.finance.check</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_in_invoice_bill_tree"/>
+        <field name="arch" type="xml">
+            <field name="currency_id" position="after">
+                <field name="his_check_state" optional="show" widget="badge"
+                    decoration-warning="his_check_state in ('waiting', 'reserve')" decoration-danger="his_check_state == 'refused'"
+                    decoration-success="his_check_state == 'validated'"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_account_move_filter_finance_check" model="ir.ui.view">
+        <field name="name">account.move.search.his.finance.check</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="his_on_hold" string="On Hold (Purchase Check)" domain="[('his_check_state', 'in', ('reserve', 'refused'))]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_payment_register_form_proof" model="ir.ui.view">
+        <field name="name">account.payment.register.form.his.proof</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <field name="communication" position="after">
+                <field name="his_proof_required" invisible="1"/>
+                <field name="his_proof_name" invisible="1"/>
+                <field name="his_proof" filename="his_proof_name" invisible="not his_proof_required" required="his_proof_required"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="his_bill_decision_form" model="ir.ui.view">
+        <field name="name">his.bill.decision.form</field>
+        <field name="model">his.bill.decision</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="move_id" invisible="1"/>
+                <field name="decision" invisible="1"/>
+                <group>
+                    <field name="reason" placeholder="Why? This reason is kept on the bill."/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Release" class="btn-primary" invisible="decision != 'release'"/>
+                    <button name="action_apply" type="object" string="Refuse" class="btn-primary" invisible="decision != 'refuse'"/>
+                    <button special="cancel" string="Discard"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

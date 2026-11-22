@@ -25,13 +25,16 @@ PURCHASE_TYPES = [
 STATES = [
     ("draft", "Draft"),
     ("submitted", "Submitted"),
+    ("on_hold", "On Hold"),
     ("approved", "Approved"),
     ("sourcing", "Sourcing"),
     ("ordered", "Ordered"),
     ("done", "Done"),
     ("cancel", "Cancelled"),
 ]
-OPEN_STATES = ("submitted", "approved", "sourcing")
+OPEN_STATES = ("submitted", "on_hold", "approved", "sourcing")
+# L'approbateur peut approuver ou refuser une demande soumise ou mise en attente.
+DECISION_STATES = ("submitted", "on_hold")
 # Delais en jours ouvres, valides par Mohamed le 2026-10-15.
 DAYS_TO_APPROVE = 2
 DAYS_TO_SOURCE = 2
@@ -183,7 +186,7 @@ class HisPurchaseRequest(models.Model):
 
     def _his_director_approved(self):
         self.ensure_one()
-        return self.his_purchase_type == "investment" and self.state not in ("draft", "submitted", "cancel")
+        return self.his_purchase_type == "investment" and self.state not in ("draft", "submitted", "on_hold", "cancel")
 
     @api.depends("line_ids.estimated_subtotal")
     def _compute_estimated_amount(self):
@@ -374,7 +377,7 @@ class HisPurchaseRequest(models.Model):
     def action_approve(self):
         self._his_check_approver()
         for request in self:
-            if request.state != "submitted":
+            if request.state not in DECISION_STATES:
                 raise UserError(_("%s is not waiting for approval.", request.name))
             if not request.his_purchase_type:
                 raise UserError(_("Set the purchase type of %s first: usual purchase or investment.", request.name))
@@ -427,7 +430,7 @@ class HisPurchaseRequest(models.Model):
     def _his_reject(self, reason):
         self._his_check_approver()
         for request in self:
-            if request.state != "submitted":
+            if request.state not in DECISION_STATES:
                 raise UserError(_("%s is not waiting for approval.", request.name))
             request.sudo().write({"state": "draft"})
             request.sudo()._his_notify(
@@ -437,12 +440,34 @@ class HisPurchaseRequest(models.Model):
     def _his_text_rejected(self, user_name, reason):
         return _("Rejected by %(user)s: %(reason)s", user=user_name, reason=reason)
 
+    def action_open_hold(self):
+        self._his_check_approver()
+        action = self.action_open_reject()
+        action["name"] = _("Put Purchase Request on Hold")
+        action["context"] = dict(action["context"], default_mode="hold")
+        return action
+
+    def _his_hold(self, reason):
+        """En attente (procedure Finance, etape 2) : l'approbateur attend une
+        information ; pas de relance, il approuve ou refuse ensuite."""
+        self._his_check_approver()
+        for request in self:
+            if request.state != "submitted":
+                raise UserError(_("%s is not waiting for approval.", request.name))
+            request.sudo().write({"state": "on_hold"})
+            request.sudo()._his_notify(
+                request.requester_user_id, lambda r, name=self.env.user.name: r._his_text_on_hold(name, reason)
+            )
+
+    def _his_text_on_hold(self, user_name, reason):
+        return _("Put on hold by %(user)s: %(reason)s", user=user_name, reason=reason)
+
     def action_cancel(self):
         self._his_check_requester()
         for request in self:
             if request.state in ("ordered", "done"):
                 raise UserError(_("%s is already ordered: cancel its purchase orders first.", request.name))
-            if request.state not in ("draft", "submitted") and not self._his_is_purchasing():
+            if request.state not in ("draft", "submitted", "on_hold") and not self._his_is_purchasing():
                 raise UserError(_("Ask the purchasing team to cancel %s.", request.name))
         self.sudo().write({"state": "cancel"})
         return True

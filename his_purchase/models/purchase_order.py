@@ -26,13 +26,21 @@ ANSWERS = [
     ("declined", "Declined"),
     ("no_answer", "No Answer"),
 ]
+# Les 10 motifs de la procedure Finance (2026-11-22) ; les 5 cles d'origine gardees.
 CRITERIA = [
-    ("lowest_price", "Lowest price"),
+    ("lowest_price", "Best price"),
+    ("payment_terms", "Best payment terms"),
     ("earliest_delivery", "Earliest delivery"),
-    ("quality", "Quality"),
-    ("only_supplier", "Only supplier"),
+    ("quality", "Quality and technical compliance"),
+    ("warranty", "Warranty and after-sales service"),
+    ("reliability", "Supplier reliability and experience"),
+    ("availability", "Product or service availability"),
+    ("usual_supplier", "Usual supplier"),
+    ("only_supplier", "Only supplier or technical exclusivity"),
     ("other", "Other"),
 ]
+# « Sous reserve de justification » / « a preciser » : la note est obligatoire.
+NOTE_REQUIRED_CRITERIA = {"usual_supplier", "other"}
 CHOICE_FIELDS = {"his_choice_criterion", "his_choice_note", "his_chosen_by_id", "his_chosen_on"}
 DAYS_TO_REPLY = 5
 DAYS_TO_APPROVE = 2

@@ -8,7 +8,11 @@ class HisPurchaseRequestReject(models.TransientModel):
 
     request_id = fields.Many2one("his.purchase.request", required=True)
     reason = fields.Text(string="Reason", required=True)
+    mode = fields.Selection([("reject", "Reject"), ("hold", "Put on Hold")], default="reject", required=True)
 
     def action_reject(self):
-        self.request_id._his_reject(self.reason)
+        if self.mode == "hold":
+            self.request_id._his_hold(self.reason)
+        else:
+            self.request_id._his_reject(self.reason)
         return {"type": "ir.actions.act_window_close"}
