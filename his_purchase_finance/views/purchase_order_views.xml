@@ -23,6 +23,25 @@
                 <button name="action_open_his_return" type="object" string="Return to Buyer"
                     invisible="state not in ('draft', 'sent') or not his_sent_to_finance_on" groups="his_purchase_finance.group_finance"/>
             </xpath>
+            <xpath expr="//button[@id='draft_confirm']" position="after">
+                <field name="his_has_services" invisible="1"/>
+                <field name="his_service_done_on" invisible="1"/>
+                <button name="action_open_service_done" type="object" string="Confirm Service Done"
+                    invisible="state != 'purchase' or not his_has_services or his_service_done_on or his_request_id"
+                    groups="purchase.group_purchase_manager"/>
+            </xpath>
+            <xpath expr="//page[@name='his_answer']" position="after">
+                <page string="Service Done" name="his_service_done" invisible="not his_has_services">
+                    <group>
+                        <group>
+                            <field name="his_service_done_by_id"/>
+                            <field name="his_service_done_on"/>
+                            <field name="his_service_period"/>
+                        </group>
+                    </group>
+                    <field name="his_service_note"/>
+                </page>
+            </xpath>
             <xpath expr="//sheet" position="before">
                 <div class="alert alert-info mb-0" role="status" invisible="state not in ('draft', 'sent') or not his_sent_to_finance_on">
                     With Finance since <field name="his_sent_to_finance_on" class="d-inline"/>, sent by
@@ -64,6 +83,38 @@
             <xpath expr="//button[@name='action_confirm']" position="after">
                 <button name="action_confirm" type="object" string="Send to Finance" class="btn-primary"
                     invisible="not context.get('his_send_to_finance')"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="his_service_done_form" model="ir.ui.view">
+        <field name="name">his.service.done.form</field>
+        <field name="model">his.service.done</field>
+        <field name="arch" type="xml">
+            <form>
+                <p>Confirm that the service was carried out as ordered. Finance needs this confirmation to pay the supplier.</p>
+                <group>
+                    <field name="order_ref"/>
+                    <field name="period" placeholder="e.g. 3-14 November 2026"/>
+                    <field name="note" placeholder="Reservations or anomalies, if any"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm Service Done" class="btn-primary"/>
+                    <button special="cancel" string="Discard"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="his_purchase_request_form_service" model="ir.ui.view">
+        <field name="name">his.purchase.request.form.service</field>
+        <field name="model">his.purchase.request</field>
+        <field name="inherit_id" ref="his_purchase.his_purchase_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_remind']" position="before">
+                <field name="his_service_pending" invisible="1"/>
+                <button name="action_open_service_done" type="object" string="Confirm Service Done" class="btn-primary"
+                    invisible="not his_service_pending"/>
             </xpath>
         </field>
     </record>
