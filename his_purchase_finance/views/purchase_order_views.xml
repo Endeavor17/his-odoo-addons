@@ -10,7 +10,21 @@
             <field name="partner_id" position="before">
                 <field name="his_finance_confirms" invisible="1"/>
                 <field name="his_can_confirm" invisible="1"/>
+                <field name="his_locked_for_me" invisible="1"/>
             </field>
+            <!-- Envoyee a la Finance : ce que write() refuse ne doit pas sembler modifiable. -->
+            <xpath expr="//sheet//field[@name='partner_id']" position="attributes">
+                <attribute name="readonly">state in ['cancel', 'purchase'] or his_locked_for_me</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group/field[@name='currency_id'][1]" position="attributes">
+                <attribute name="readonly">state in ['cancel', 'purchase'] or his_locked_for_me</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group/field[@name='currency_id'][2]" position="attributes">
+                <attribute name="readonly">state in ['cancel', 'purchase'] or his_locked_for_me</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="readonly">state == 'cancel' or locked or his_locked_for_me</attribute>
+            </xpath>
             <xpath expr="//button[@id='bid_confirm']" position="attributes">
                 <attribute name="invisible">state != 'sent' or not his_can_confirm</attribute>
             </xpath>

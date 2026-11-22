@@ -400,6 +400,11 @@ msgid "His Can Confirm"
 msgstr "Peut confirmer"
 
 #. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_locked_for_me
+msgid "His Locked For Me"
+msgstr "Verrouillée pour moi"
+
+#. module: his_purchase_finance
 #: model:ir.model.fields,field_description:his_purchase_finance.field_account_bank_statement_line__his_first_check_done
 #: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__his_first_check_done
 msgid "His First Check Done"
