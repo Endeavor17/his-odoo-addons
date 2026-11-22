@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_groups_privilege_finance" model="res.groups.privilege">
+        <field name="name">Purchase Finance</field>
+        <field name="sequence">11</field>
+        <field name="category_id" ref="his_access_base.module_category_his_access"/>
+    </record>
+
+    <!-- La Finance confirme les commandes, valide les dossiers fournisseurs,
+         approuve les comptes bancaires et libere les factures en reserve
+         (procedure Finance, decisions du 2026-11-22). -->
+    <record id="group_finance" model="res.groups">
+        <field name="name">Purchase Finance</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_finance"/>
+        <field name="implied_ids" eval="[(4, ref('purchase.group_purchase_user')), (4, ref('account.group_account_invoice')), (4, ref('account.group_validate_bank_account'))]"/>
+        <field name="comment">Confirms purchase orders, validates supplier files, trusts bank accounts and
+            releases vendor bills on hold. Comes with the Accountant role.</field>
+    </record>
+
+    <!-- « Finance » = le role Comptable (decision du 2026-11-22). -->
+    <record id="account.group_account_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_finance'))]"/>
+    </record>
+</odoo>
