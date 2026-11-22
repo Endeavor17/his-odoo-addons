@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_supplier_file" model="ir.ui.view">
+        <field name="name">res.partner.form.his.supplier.file</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="his_supplier_file" string="Supplier File" groups="purchase.group_purchase_user" invisible="not is_company and parent_id">
+                    <group>
+                        <group>
+                            <field name="his_supplier_status" widget="badge" groups="!his_purchase_finance.group_finance"
+                                decoration-warning="his_supplier_status == 'waiting'" decoration-danger="his_supplier_status in ('reserve', 'refused')"
+                                decoration-success="his_supplier_status == 'validated'"/>
+                            <field name="his_supplier_status" groups="his_purchase_finance.group_finance"/>
+                            <field name="his_supplier_status_reason" readonly="1" groups="!his_purchase_finance.group_finance"
+                                invisible="his_supplier_status not in ('reserve', 'refused')"/>
+                            <field name="his_supplier_status_reason" groups="his_purchase_finance.group_finance"
+                                required="his_supplier_status in ('reserve', 'refused')"/>
+                        </group>
+                    </group>
+                    <field name="his_supplier_document_ids" context="{'default_partner_id': id}">
+                        <list editable="bottom" decoration-danger="status in ('expired', 'non_compliant')" decoration-warning="status == 'to_refresh'">
+                            <field name="doc_type"/>
+                            <field name="name"/>
+                            <field name="file" filename="file_name" widget="binary"/>
+                            <field name="file_name" column_invisible="1"/>
+                            <field name="received_on"/>
+                            <field name="expires_on"/>
+                            <field name="non_compliant"/>
+                            <field name="non_compliant_note"/>
+                            <field name="status" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

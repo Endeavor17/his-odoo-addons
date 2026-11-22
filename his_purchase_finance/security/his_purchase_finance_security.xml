@@ -13,7 +13,7 @@
         <field name="name">Purchase Finance</field>
         <field name="sequence">10</field>
         <field name="privilege_id" ref="res_groups_privilege_finance"/>
-        <field name="implied_ids" eval="[(4, ref('purchase.group_purchase_user')), (4, ref('account.group_account_invoice')), (4, ref('account.group_validate_bank_account'))]"/>
+        <field name="implied_ids" eval="[(4, ref('purchase.group_purchase_user')), (4, ref('account.group_account_invoice')), (4, ref('account.group_validate_bank_account')), (4, ref('base.group_partner_manager'))]"/>
         <field name="comment">Confirms purchase orders, validates supplier files, trusts bank accounts and
             releases vendor bills on hold. Comes with the Accountant role.</field>
     </record>

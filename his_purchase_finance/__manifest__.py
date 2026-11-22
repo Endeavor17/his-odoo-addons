@@ -25,6 +25,7 @@ Controles du Departement Finance sur les achats
     "data": [
         "security/his_purchase_finance_security.xml",
         "security/ir.model.access.csv",
+        "views/res_partner_views.xml",
     ],
     "post_init_hook": "post_init_hook",
     "installable": True,
