@@ -244,3 +244,52 @@ class TestRequest(HisPurchaseCase):
             {"name": self.manager.name, "user_id": self.manager.id, "job_id": self.officer_job.id}
         )
         self.assertEqual(self._approved_request().user_id, self.manager)
+
+    # ------------------------------------------------------------------
+    # En attente (procedure Finance, decision 1 du 2026-11-22)
+    # ------------------------------------------------------------------
+
+    def _hold(self, request, user=None, reason="Which room is it for?"):
+        wizard = (
+            self.env["his.purchase.request.reject"]
+            .with_user(user or self.officer)
+            .create({"request_id": request.id, "reason": reason, "mode": "hold"})
+        )
+        wizard.action_reject()
+
+    def test_mise_en_attente_previent_le_demandeur(self):
+        request = self._request()
+        request.action_submit()
+        request.with_user(self.officer).his_purchase_type = "usual"
+        self._hold(request)
+        self.assertEqual(request.state, "on_hold")
+        self.assertIn("Which room is it for?", request.message_ids[0].body)
+        self.assertFalse(request.his_step, "pas de relance tant que la demande attend une information")
+
+    def test_approuver_ou_refuser_une_demande_en_attente(self):
+        request = self._request()
+        request.action_submit()
+        request.with_user(self.officer).his_purchase_type = "usual"
+        self._hold(request)
+        request.with_user(self.officer).action_approve()
+        self.assertEqual(request.state, "approved")
+        other = self._request()
+        other.action_submit()
+        other.with_user(self.officer).his_purchase_type = "usual"
+        self._hold(other)
+        self.env["his.purchase.request.reject"].with_user(self.officer).create(
+            {"request_id": other.id, "reason": "Not this year."}
+        ).action_reject()
+        self.assertEqual(other.state, "draft")
+
+    def test_seul_l_approbateur_met_en_attente(self):
+        request = self._request()
+        request.action_submit()
+        self.env.invalidate_all()
+        with self.assertRaises(AccessError):
+            self._hold(request, user=self.requester)
+        request.with_user(self.officer).his_purchase_type = "investment"
+        with self.assertRaises(AccessError):
+            self._hold(request, user=self.officer)
+        self._hold(request, user=self.director)
+        self.assertEqual(request.state, "on_hold")

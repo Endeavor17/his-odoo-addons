@@ -15,7 +15,7 @@
                 <field name="estimated_amount" sum="Total" optional="show"/>
                 <field name="user_id" optional="show"/>
                 <field name="his_is_late" column_invisible="1"/>
-                <field name="state" widget="badge" decoration-info="state in ('submitted', 'approved', 'sourcing')" decoration-success="state in ('ordered', 'done')"/>
+                <field name="state" widget="badge" decoration-info="state in ('submitted', 'approved', 'sourcing')" decoration-warning="state == 'on_hold'" decoration-success="state in ('ordered', 'done')"/>
             </list>
         </field>
     </record>
@@ -27,10 +27,11 @@
             <form>
                 <header>
                     <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'submitted'" groups="purchase.group_purchase_user"/>
-                    <button name="action_open_reject" type="object" string="Reject" invisible="state != 'submitted'" groups="purchase.group_purchase_user"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state not in ('submitted', 'on_hold')" groups="purchase.group_purchase_user"/>
+                    <button name="action_open_hold" type="object" string="Put on Hold" invisible="state != 'submitted'" groups="purchase.group_purchase_user"/>
+                    <button name="action_open_reject" type="object" string="Reject" invisible="state not in ('submitted', 'on_hold')" groups="purchase.group_purchase_user"/>
                     <button name="action_open_source" type="object" string="Source" class="btn-primary" invisible="state not in ('approved', 'sourcing')" groups="purchase.group_purchase_user"/>
-                    <button name="action_remind" type="object" string="Remind" invisible="state not in ('submitted', 'approved', 'sourcing')"/>
+                    <button name="action_remind" type="object" string="Remind" invisible="state not in ('submitted', 'on_hold', 'approved', 'sourcing')"/>
                     <button name="action_cancel" type="object" string="Cancel" invisible="state in ('ordered', 'done', 'cancel')"/>
                     <button name="action_draft" type="object" string="Reset to Draft" invisible="state != 'cancel'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,sourcing,ordered,done"/>
@@ -56,9 +57,9 @@
                         </group>
                         <group>
                             <field name="date_required" readonly="state not in ('draft', 'approved')"/>
-                            <field name="his_purchase_type" readonly="state not in ('submitted', 'approved')"/>
+                            <field name="his_purchase_type" readonly="state not in ('submitted', 'on_hold', 'approved')"/>
                             <field name="estimated_amount"/>
-                            <field name="user_id" readonly="state in ('done', 'cancel')" invisible="state in ('draft', 'submitted')"/>
+                            <field name="user_id" readonly="state in ('done', 'cancel')" invisible="state in ('draft', 'submitted', 'on_hold')"/>
                             <field name="currency_id" invisible="1"/>
                         </group>
                     </group>
@@ -117,8 +118,8 @@
                 <field name="department_id"/>
                 <field name="line_ids" string="Product" filter_domain="['|', ('line_ids.product_id', 'ilike', self), ('line_ids.description', 'ilike', self)]"/>
                 <filter name="mine" string="My Requests" domain="[('requester_user_id', '=', uid)]"/>
-                <filter name="to_approve" string="To Approve" domain="[('state', '=', 'submitted'), ('approver_id', '=', uid)]"/>
-                <filter name="open" string="Open" domain="[('state', 'in', ('submitted', 'approved', 'sourcing'))]"/>
+                <filter name="to_approve" string="To Approve" domain="[('state', 'in', ('submitted', 'on_hold')), ('approver_id', '=', uid)]"/>
+                <filter name="open" string="Open" domain="[('state', 'in', ('submitted', 'on_hold', 'approved', 'sourcing'))]"/>
                 <filter name="late" string="Late" domain="[('his_is_late', '=', True)]"/>
                 <filter name="needs_product" string="Waiting for a Catalogue Item" domain="[('state', '=', 'approved'), ('his_needs_product', '=', True)]"/>
                 <separator/>
