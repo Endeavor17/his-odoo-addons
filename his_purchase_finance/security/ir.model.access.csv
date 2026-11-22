@@ -3,3 +3,4 @@ access_supplier_document_purchase,his.supplier.document purchase user,model_his_
 access_supplier_document_finance,his.supplier.document finance,model_his_supplier_document,group_finance,1,1,1,1
 access_finance_return,his.finance.return,model_his_finance_return,group_finance,1,1,1,1
 access_service_done_requester,his.service.done requester,model_his_service_done,his_purchase.group_requester,1,1,1,1
+access_bill_decision,his.bill.decision,model_his_bill_decision,group_finance,1,1,1,1

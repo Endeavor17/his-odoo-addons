@@ -65,9 +65,6 @@ class PurchaseOrder(models.Model):
             )
             order._his_recheck_bills()
 
-    def _his_recheck_bills(self):
-        """Relance le rapprochement des factures en reserve (account_move.py)."""
-
     def action_open_service_done(self):
         self.ensure_one()
         return {

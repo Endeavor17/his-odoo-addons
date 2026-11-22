@@ -1,4 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+import base64
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import fields
@@ -82,7 +84,7 @@ class TestSupplierFile(HisFinanceCase):
 
     def _supplier_payment(self, bank):
         journal = self.env["account.journal"].search([("type", "=", "bank"), ("company_id", "=", self.company.id)], limit=1)
-        return self.env["account.payment"].create(
+        payment = self.env["account.payment"].create(
             {
                 "payment_type": "outbound",
                 "partner_type": "supplier",
@@ -92,6 +94,10 @@ class TestSupplierFile(HisFinanceCase):
                 "partner_bank_id": bank.id if bank else False,
             }
         )
+        self.env["ir.attachment"].create(
+            {"name": "proof.pdf", "datas": base64.b64encode(b"x"), "res_model": "account.payment", "res_id": payment.id}
+        )
+        return payment
 
     def test_payment_to_untrusted_bank_refused(self):
         bank = self.env["res.partner.bank"].create({"partner_id": self.supplier_a.id, "acc_number": "00799999000123456789"})
