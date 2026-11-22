@@ -7,8 +7,10 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet/notebook" position="inside">
+                <!-- Reserve aux caissiers repas : lire les cartes leur est reserve,
+                     sinon le formulaire contact plante pour l'acheteur ou la Finance. -->
                 <page string="Meal Account" name="meal_account"
-                      invisible="not meal_card_ids">
+                      invisible="not meal_card_ids" groups="his_meal_management.group_meal_cashier">
                     <!-- See his_person_views.xml: a hook for the wallet's
                          typography, no layout of its own. -->
                     <div class="o_his_wallet">
@@ -81,7 +83,8 @@
                 <!-- Searching by card number is the common case: it is the number
                      printed on the sheet and read by the reader. -->
                 <field name="meal_card_ids" string="Card number"
-                       filter_domain="[('meal_card_ids.code', 'ilike', self)]"/>
+                       filter_domain="[('meal_card_ids.code', 'ilike', self)]"
+                       groups="his_meal_management.group_meal_cashier"/>
             </field>
         </field>
     </record>
