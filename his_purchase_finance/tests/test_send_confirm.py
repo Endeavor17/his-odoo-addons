@@ -146,6 +146,14 @@ class TestSendConfirm(HisFinanceCase):
         # Les champs hors commande (notes de reponse) restent libres.
         order.with_user(self.officer).his_answer_note = "Delivery Monday."
 
+    def test_form_shows_sent_order_read_only(self):
+        order = self._offer()
+        self.assertFalse(order.with_user(self.officer).his_locked_for_me)
+        self._send(order)
+        self.env.invalidate_all()
+        self.assertTrue(order.with_user(self.officer).his_locked_for_me)
+        self.assertFalse(order.with_user(self.finance).his_locked_for_me)
+
     def test_return_to_buyer_clears_choice(self):
         order = self._offer()
         self._send(order)

@@ -40,6 +40,7 @@ class PurchaseOrder(models.Model):
     his_sent_to_finance_by_id = fields.Many2one("res.users", string="Sent to Finance By", readonly=True, copy=False)
     his_finance_confirms = fields.Boolean(related="company_id.his_finance_confirms")
     his_can_confirm = fields.Boolean(compute="_compute_his_can_confirm")
+    his_locked_for_me = fields.Boolean(compute="_compute_his_locked_for_me")
 
     @api.depends("company_id.his_finance_confirms", "his_sent_to_finance_on")
     @api.depends_context("uid")
@@ -47,6 +48,14 @@ class PurchaseOrder(models.Model):
         finance = is_finance(self.env)
         for order in self:
             order.his_can_confirm = not order.his_finance_confirms or (finance and bool(order.his_sent_to_finance_on))
+
+    @api.depends("company_id.his_finance_confirms", "his_sent_to_finance_on", "state")
+    @api.depends_context("uid")
+    def _compute_his_locked_for_me(self):
+        """Le formulaire montre en lecture seule ce que write() refuserait."""
+        locked = self.browse() if is_finance(self.env) else self._his_locked_orders()
+        for order in self:
+            order.his_locked_for_me = order in locked
 
     # ------------------------------------------------------------------
     # Regle des devis
