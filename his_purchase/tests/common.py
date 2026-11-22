@@ -95,6 +95,10 @@ class HisPurchaseCase(TransactionCase):
         )
         cls.toner.supplier_taxes_id = cls.tva19
         cls.company.write({"po_double_validation": "two_step", "po_double_validation_amount": 0})
+        # Ces tests decrivent le circuit de l'acheteur : le controle Finance
+        # (his_purchase_finance, s'il est installe) a ses propres tests.
+        if "his_finance_confirms" in cls.company._fields:
+            cls.company.his_finance_confirms = False
         Users.flush_model()
 
     def _request(self, user=None, employee=None, lines=None, **vals):

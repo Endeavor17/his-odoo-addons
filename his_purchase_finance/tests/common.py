@@ -15,6 +15,7 @@ class HisFinanceCase(HisPurchaseCase):
             groups="his_purchase_finance.group_finance",
             email="finance@example.com",
         )
+        cls.company.his_finance_confirms = True
         (cls.supplier_a | cls.supplier_b | cls.supplier_c | cls.supplier_ifu).sudo().his_supplier_status = "validated"
 
     def _offer(self, supplier=None, price=9000, purchase_type="usual"):

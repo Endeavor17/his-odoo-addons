@@ -29,10 +29,17 @@ class HisPurchaseChoice(models.TransientModel):
 
     def action_confirm(self):
         self.ensure_one()
+        self._his_check()
+        self._his_record()
+        return self.order_id.with_context(his_choice_done=True).button_confirm()
+
+    def _his_check(self):
         if self.criterion == "lowest_price" and not self.order_id._his_is_cheapest():
             raise UserError(_("%s is not the cheapest offer: choose another criterion.", self.order_id.name))
         if self.criterion in NOTE_REQUIRED_CRITERIA and not (self.note or "").strip():
             raise UserError(_("Explain the choice in the note for this criterion."))
+
+    def _his_record(self):
         self.order_id.with_context(his_choice_write=True).write(
             {
                 "his_choice_criterion": self.criterion,
@@ -41,4 +48,3 @@ class HisPurchaseChoice(models.TransientModel):
                 "his_chosen_on": fields.Datetime.now(),
             }
         )
-        return self.order_id.with_context(his_choice_done=True).button_confirm()

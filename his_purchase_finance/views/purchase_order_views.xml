@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_form_finance" model="ir.ui.view">
+        <field name="name">purchase.order.form.his.finance</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Seule la Finance confirme, une fois la commande envoyee ;
+                 l'acheteur, si le controle Finance est coupe. -->
+            <field name="partner_id" position="before">
+                <field name="his_finance_confirms" invisible="1"/>
+                <field name="his_can_confirm" invisible="1"/>
+            </field>
+            <xpath expr="//button[@id='bid_confirm']" position="attributes">
+                <attribute name="invisible">state != 'sent' or not his_can_confirm</attribute>
+            </xpath>
+            <xpath expr="//button[@id='draft_confirm']" position="attributes">
+                <attribute name="invisible">state != 'draft' or not his_can_confirm</attribute>
+            </xpath>
+            <xpath expr="//button[@id='draft_confirm']" position="after">
+                <button name="action_his_send_to_finance" type="object" string="Send to Finance" class="oe_highlight"
+                    invisible="not his_finance_confirms or state not in ('draft', 'sent') or his_sent_to_finance_on" groups="purchase.group_purchase_user"/>
+                <button name="action_open_his_return" type="object" string="Return to Buyer"
+                    invisible="state not in ('draft', 'sent') or not his_sent_to_finance_on" groups="his_purchase_finance.group_finance"/>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info mb-0" role="status" invisible="state not in ('draft', 'sent') or not his_sent_to_finance_on">
+                    With Finance since <field name="his_sent_to_finance_on" class="d-inline"/>, sent by
+                    <field name="his_sent_to_finance_by_id" class="d-inline" options="{'no_open': True}"/>.
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_search_finance" model="ir.ui.view">
+        <field name="name">purchase.order.search.his.finance</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="his_with_finance" string="To Confirm (Finance)"
+                    domain="[('his_sent_to_finance_on', '!=', False), ('state', 'in', ('draft', 'sent'))]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="his_purchase_choice_form_finance" model="ir.ui.view">
+        <field name="name">his.purchase.choice.form.finance</field>
+        <field name="model">his.purchase.choice</field>
+        <field name="inherit_id" ref="his_purchase.his_purchase_choice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group" position="before">
+                <field name="needs_exception" invisible="1"/>
+                <div class="alert alert-warning" role="alert" invisible="not needs_exception">
+                    Fewer than 3 quotes from 100,000 DA excl. tax: explain the exception in the note.
+                </div>
+            </xpath>
+            <field name="offer_summary" position="after">
+                <field name="quote_count"/>
+            </field>
+            <xpath expr="//button[@name='action_confirm']" position="attributes">
+                <attribute name="invisible">context.get('his_send_to_finance')</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_confirm']" position="after">
+                <button name="action_confirm" type="object" string="Send to Finance" class="btn-primary"
+                    invisible="not context.get('his_send_to_finance')"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="his_finance_return_form" model="ir.ui.view">
+        <field name="name">his.finance.return.form</field>
+        <field name="model">his.finance.return</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="order_id" invisible="1"/>
+                <group>
+                    <field name="reason" placeholder="What must the buyer correct? They will receive this reason."/>
+                </group>
+                <footer>
+                    <button name="action_return" type="object" string="Return to Buyer" class="btn-primary"/>
+                    <button special="cancel" string="Discard"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

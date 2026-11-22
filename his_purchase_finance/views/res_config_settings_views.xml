@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_his_finance" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.his_purchase_finance</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="his_purchase.res_config_settings_view_form_his_purchase"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='his_purchase_people']" position="after">
+                <setting id="his_finance_confirms" company_dependent="1"
+                    help="Buyers send orders to Finance, which alone confirms them once the supplier file is validated">
+                    <field name="his_finance_confirms"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

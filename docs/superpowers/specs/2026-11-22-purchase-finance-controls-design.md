@@ -118,7 +118,8 @@ edits to `his_purchase` (chosen).** The request hold and the 10 reasons belong
 to the purchasing team's circuit, so they go into `his_purchase`. Everything
 Finance owns goes into the new module: confirmation, supplier file, bill
 check, service done, payment proof, rating, accounts. his_purchase's tests
-run at install, before the new module, so they stay as they are. The module
+keep describing the buyer's circuit, with the Finance gate switched off in
+their fixture (§6.4). The module
 can be installed when Finance is ready. Cost: one more module to install and
 add to CI.
 
@@ -202,6 +203,12 @@ A note is required with `usual_supplier` ("subject to justification") and
 - Additional checks before the existing ones: the order was sent to Finance,
   the supplier is **validated**, and the supplier has no expired or
   non-compliant document.
+- A company setting **Finance Confirms Purchase Orders** (`res.company.his_finance_confirms`,
+  on by default, in Purchase settings) switches this gate off: the buyer
+  confirms as before, with no supplier check. It exists because his_purchase's
+  own tests are post-install and run with this module installed (they switch
+  it off in their fixture), and it gives a go-live lever if Finance is not
+  staffed yet.
 - Then the existing flow, unchanged: the his_purchase checks, the choice
   already recorded (so no wizard), core confirmation, routed approval
   (manager or director). Finance confirming does not replace the approval.
@@ -372,9 +379,8 @@ file). No new catalogue role: the Accountant role already carries
 - Finance assigns category and journal accounts.
 - Metabase: build the 6 cards on the Purchasing dashboard and add Purchase
   Finance to its groups.
-- Running his_purchase's own tests on a base where his_purchase_finance is
-  installed fails by design (the buyer can no longer confirm). CI is not
-  affected, because those tests run at install, before the new module.
+- his_purchase's tests are post-install, so they run with this module
+  installed; their fixture turns `his_finance_confirms` off.
 
 ## 9. Tests (`his_purchase_finance/tests`)
 

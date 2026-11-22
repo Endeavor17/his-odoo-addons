@@ -1,2 +1,2 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from . import test_setup, test_supplier_file
+from . import test_send_confirm, test_setup, test_supplier_file
