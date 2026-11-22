@@ -20,6 +20,17 @@ QUOTE_THRESHOLD = 100_000
 QUOTES_REQUIRED = 3
 DAYS_TO_CONFIRM = 2
 LOCKED_WHEN_SENT = {"partner_id", "currency_id", "order_line"}
+# Ecrits seulement par le code (en sudo) : « readonly » ne protege pas d'un appel RPC.
+SUDO_ONLY_FIELDS = {
+    "his_sent_to_finance_on",
+    "his_sent_to_finance_by_id",
+    "his_service_done_by_id",
+    "his_service_done_on",
+    "his_service_period",
+    "his_service_note",
+}
+CHOICE_FIELDS = {"his_choice_criterion", "his_choice_note", "his_chosen_by_id", "his_chosen_on"}
+CONFIRMED_STATES = ("to approve", "purchase", "done")
 
 
 class PurchaseOrder(models.Model):
@@ -75,7 +86,7 @@ class PurchaseOrder(models.Model):
         self.ensure_one()
         self._his_check_sendable()
         self._his_confirm_checks()
-        if self.requisition_id:
+        if self._his_contract_covers():
             # Le contrat-cadre a ete mis en concurrence : il tient lieu de choix.
             self.with_context(his_choice_write=True).write(
                 {
@@ -94,6 +105,18 @@ class PurchaseOrder(models.Model):
             action["context"]["default_criterion"] = False
         return action
 
+    def _his_contract_covers(self):
+        """Le contrat-cadre lie couvre vraiment la commande : en cours, meme
+        fournisseur, et chaque article de la commande y figure."""
+        self.ensure_one()
+        contract = self.requisition_id
+        if not contract or contract.state not in ("confirmed", "done"):
+            return False
+        if contract.vendor_id.commercial_partner_id != self.partner_id.commercial_partner_id:
+            return False
+        products = self.order_line.filtered(lambda line: not line.display_type).product_id
+        return bool(products) and not (products - contract.line_ids.product_id)
+
     def _his_mark_sent(self):
         self._his_check_sendable()
         for order in self:
@@ -101,7 +124,7 @@ class PurchaseOrder(models.Model):
             if order.his_supplier_answer == "pending":
                 # Plus de relance au fournisseur : son offre est retenue.
                 vals["his_supplier_answer"] = "quoted"
-            order.write(vals)
+            order.sudo().write(vals)
             order.message_post(body=_("Sent to Finance for confirmation by %s.", self.env.user.name))
         self._his_sync_step()
         return True
@@ -124,7 +147,7 @@ class PurchaseOrder(models.Model):
             if not order.his_sent_to_finance_on or order.state not in ("draft", "sent"):
                 raise UserError(_("%s is not waiting for Finance.", order.name))
             buyer = order.his_sent_to_finance_by_id or order.user_id
-            order.with_context(his_choice_write=True).write(
+            order.sudo().with_context(his_choice_write=True).write(
                 {
                     "his_sent_to_finance_on": False,
                     "his_sent_to_finance_by_id": False,
@@ -144,17 +167,54 @@ class PurchaseOrder(models.Model):
     # ORM : une commande envoyee ne change plus que par la Finance
     # ------------------------------------------------------------------
 
+    def _his_locked_orders(self):
+        """Envoyees a la Finance, ou confirmees par elle et en attente d'approbation."""
+        return self.filtered(
+            lambda o: (
+                o.company_id.his_finance_confirms
+                and ((o.his_sent_to_finance_on and o.state in ("draft", "sent")) or o.state == "to approve")
+            )
+        )
+
     def _his_check_not_with_finance(self):
         if is_finance(self.env):
             return
-        sent = self.filtered(lambda o: o.his_sent_to_finance_on and o.state in ("draft", "sent"))
-        if sent:
-            raise UserError(_("%s is with Finance: ask Finance to return it before changing it.", sent[0].name))
+        locked = self._his_locked_orders()
+        if locked:
+            raise UserError(_("%s is with Finance: ask Finance to return it before changing it.", locked[0].name))
+
+    def _his_check_no_bypass(self):
+        """Un devis ne passe en commande que par la confirmation de la Finance."""
+        if is_finance(self.env):
+            return
+        rfqs = self.filtered(lambda o: o.company_id.his_finance_confirms and o.state in ("draft", "sent"))
+        if rfqs:
+            raise UserError(_("Only Finance confirms purchase orders: use “Send to Finance”."))
 
     def write(self, vals):
+        if SUDO_ONLY_FIELDS & set(vals) and not self.env.su:
+            raise UserError(_("These fields are set by the Finance workflow only."))
         if LOCKED_WHEN_SENT & set(vals):
             self._his_check_not_with_finance()
+        if vals.get("state") in CONFIRMED_STATES:
+            self._his_check_no_bypass()
+        if CHOICE_FIELDS & set(vals) and not self.env.su:
+            # La cle his_choice_write de his_purchase se met dans un contexte RPC :
+            # le choix ne s'ecrit que sur un devis encore chez l'acheteur.
+            frozen = self.filtered(
+                lambda o: (
+                    o.company_id.his_finance_confirms
+                    and (o.his_sent_to_finance_on or o.state not in ("draft", "sent"))
+                    and not (is_finance(self.env) and o.state in ("draft", "sent"))
+                )
+            )
+            if frozen:
+                raise UserError(_("The supplier choice of %s is recorded and cannot be changed.", frozen[0].name))
         return super().write(vals)
+
+    def button_approve(self, force=False):
+        self._his_check_no_bypass()
+        return super().button_approve(force=force)
 
     # ------------------------------------------------------------------
     # Confirmation par la Finance
@@ -173,6 +233,19 @@ class PurchaseOrder(models.Model):
                     _("%(order)s cannot be confirmed: %(reasons)s.", order=order.name, reasons="; ".join(blockers))
                 )
         return super().button_confirm()
+
+    def _his_check_request_quantities(self):
+        # Le complement autorise par le responsable achats a l'envoi vaut pour
+        # la confirmation de la Finance (qui n'est pas responsable achats).
+        sender = self.his_sent_to_finance_by_id
+        if (
+            is_finance(self.env)
+            and sender
+            and not self.env.user.has_group("purchase.group_purchase_manager")
+            and sender.has_group("purchase.group_purchase_manager")
+        ):
+            return super(PurchaseOrder, self.with_user(sender))._his_check_request_quantities()
+        return super()._his_check_request_quantities()
 
     # ------------------------------------------------------------------
     # Suivi : l'a-faire de la Finance

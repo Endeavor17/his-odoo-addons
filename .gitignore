@@ -15,6 +15,8 @@ venv/
 # Sauvegardes et dumps de base. Ils peuvent peser des centaines de Mo et
 # contenir des donnees reelles (candidats, matricules) : jamais dans le depot.
 *.sql
+# ... sauf les requetes des tableaux de bord, versionnees.
+!docs/metabase/*.sql
 *.dump
 *.zip
 /backups/

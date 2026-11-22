@@ -15,6 +15,8 @@ from odoo.exceptions import UserError
 
 from .common import is_finance
 
+CHECK_FIELDS = {"his_check_state", "his_check_reason", "his_first_check_done", "his_first_check_clean"}
+HELD = ("waiting", "reserve", "refused")
 CHECK_STATES = [
     ("waiting", "Waiting"),
     ("reserve", "On Hold"),
@@ -102,7 +104,7 @@ class AccountMove(models.Model):
             }
             if not move.his_first_check_done:
                 vals.update(his_first_check_done=True, his_first_check_clean=not issues)
-            move.write(vals)
+            move.sudo().write(vals)
             move._his_sync_payment_block()
             if issues:
                 move.message_post(
@@ -114,7 +116,7 @@ class AccountMove(models.Model):
                 )
 
     def _his_sync_payment_block(self):
-        for move in self:
+        for move in self.sudo():
             if move.his_check_state == "validated":
                 if move.payment_state == "blocked":
                     move.payment_state = "not_paid"
@@ -129,8 +131,21 @@ class AccountMove(models.Model):
 
     def button_draft(self):
         res = super().button_draft()
-        self.filtered("his_check_state").write({"his_check_state": "waiting", "his_check_reason": False})
+        self.filtered("his_check_state").sudo().write({"his_check_state": "waiting", "his_check_reason": False})
         return res
+
+    def write(self, vals):
+        # « readonly » n'arrete pas un appel RPC : seul le code (en sudo) decide.
+        if CHECK_FIELDS & set(vals) and not self.env.su:
+            raise UserError(_("The purchase order check is set by Finance decisions only."))
+        return super().write(vals)
+
+    def action_toggle_block_payment(self):
+        # Le deblocage du coeur rendrait payable une facture en reserve sans
+        # motif ecrit : la Finance passe par « Liberer ».
+        if self.filtered(lambda m: m.his_check_state in HELD):
+            raise UserError(_("This bill is held by the purchase order check: Finance releases it with a reason."))
+        return super().action_toggle_block_payment()
 
     # ------------------------------------------------------------------
     # Decisions de la Finance
@@ -170,12 +185,27 @@ class AccountMove(models.Model):
                 raise UserError(_("%s is not a checked vendor bill.", move.name))
             if decision == "release":
                 body = _("Released by %(user)s despite the check: %(reason)s", user=self.env.user.name, reason=reason)
-                move.write({"his_check_state": "validated", "his_check_reason": body})
+                move.sudo().write({"his_check_state": "validated", "his_check_reason": body})
             else:
                 body = _("Refused by %(user)s: %(reason)s", user=self.env.user.name, reason=reason)
-                move.write({"his_check_state": "refused", "his_check_reason": body})
+                move.sudo().write({"his_check_state": "refused", "his_check_reason": body})
             move._his_sync_payment_block()
             move.message_post(body=body)
+
+
+class AccountMoveLine(models.Model):
+    _inherit = "account.move.line"
+
+    def reconcile(self):
+        # Le lettrage (widget « Ajouter », assistant des ecritures) paie une
+        # facture sans passer par l'enregistrement du paiement : une facture en
+        # reserve ne se lettre qu'avec une autre facture ou un avoir.
+        held = self.move_id.filtered(lambda m: m.his_check_state in HELD)
+        if held and (self.move_id - held).filtered(lambda m: m.move_type not in ("in_invoice", "in_refund")):
+            raise UserError(
+                _("%s is held by the purchase order check: Finance must validate or release it first.", held[0].name)
+            )
+        return super().reconcile()
 
 
 class PurchaseOrder(models.Model):

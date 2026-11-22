@@ -997,3 +997,34 @@ msgstr "ex. 3-14 novembre 2026"
 #: code:addons/his_purchase_finance/models/res_partner.py:0
 msgid "the supplier file of %(supplier)s is “%(status)s”"
 msgstr "le dossier fournisseur de %(supplier)s est « %(status)s »"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_account_move_line
+msgid "Journal Item"
+msgstr "Écriture comptable"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "The purchase order check is set by Finance decisions only."
+msgstr "Le contrôle de la facture ne change que par une décision de la Finance."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "The supplier choice of %s is recorded and cannot be changed."
+msgstr "Le choix du fournisseur de %s est enregistré et ne peut plus changer."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "These fields are set by the Finance workflow only."
+msgstr "Ces champs ne sont renseignés que par le circuit Finance."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid ""
+"This bill is held by the purchase order check: Finance releases it with a "
+"reason."
+msgstr "Cette facture est en réserve suite au rapprochement : la Finance la libère avec un motif."
