@@ -29,6 +29,7 @@ Controles du Departement Finance sur les achats
         "views/purchase_order_views.xml",
         "views/res_config_settings_views.xml",
         "views/account_move_views.xml",
+        "views/his_supplier_rating_views.xml",
     ],
     "post_init_hook": "post_init_hook",
     "installable": True,

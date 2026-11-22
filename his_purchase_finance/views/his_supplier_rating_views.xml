@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="his_supplier_rating_form" model="ir.ui.view">
+        <field name="name">his.supplier.rating.form</field>
+        <field name="model">his.supplier.rating</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="order_id" readonly="1"/>
+                            <field name="partner_id"/>
+                            <field name="side" readonly="1"/>
+                            <field name="score"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">1 Very poor, 2 Poor, 3 Acceptable, 4 Good, 5 Excellent</p>
+                    <group invisible="side != 'purchase'">
+                        <field name="purchase_delay" required="side == 'purchase'"/>
+                        <field name="purchase_quality" required="side == 'purchase'"/>
+                        <field name="purchase_compliance" required="side == 'purchase'"/>
+                        <field name="purchase_quantity" required="side == 'purchase'"/>
+                        <field name="purchase_responsiveness" required="side == 'purchase'"/>
+                        <field name="purchase_warranty" required="side == 'purchase'"/>
+                        <field name="purchase_price" required="side == 'purchase'"/>
+                    </group>
+                    <group invisible="side != 'finance'">
+                        <field name="finance_admin" required="side == 'finance'"/>
+                        <field name="finance_invoicing" required="side == 'finance'"/>
+                        <field name="finance_bank" required="side == 'finance'"/>
+                        <field name="finance_payment_terms" required="side == 'finance'"/>
+                        <field name="finance_anomalies" required="side == 'finance'"/>
+                    </group>
+                    <field name="note" placeholder="Observations"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="his_supplier_rating_list" model="ir.ui.view">
+        <field name="name">his.supplier.rating.list</field>
+        <field name="model">his.supplier.rating</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="order_id"/>
+                <field name="partner_id"/>
+                <field name="side"/>
+                <field name="score"/>
+                <field name="note" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_order_form_rating" model="ir.ui.view">
+        <field name="name">purchase.order.form.his.rating</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_his_rate" type="object" string="Rate Supplier"
+                    invisible="state not in ('purchase', 'done')" groups="purchase.group_purchase_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_form_rating" model="ir.ui.view">
+        <field name="name">res.partner.form.his.rating</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="his_purchase_finance.view_partner_form_supplier_file"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='his_supplier_file']//group/group" position="after">
+                <group>
+                    <field name="his_rating_label" widget="badge" decoration-success="his_rating_label == 'satisfactory'"
+                        decoration-warning="his_rating_label == 'watch'" decoration-danger="his_rating_label == 'failing'"/>
+                    <field name="his_rating_score"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

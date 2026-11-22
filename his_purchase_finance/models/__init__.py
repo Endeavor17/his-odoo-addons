@@ -3,6 +3,7 @@ from . import (
     account_move,
     account_payment,
     his_supplier_document,
+    his_supplier_rating,
     purchase_order,
     purchase_order_service,
     res_company,
