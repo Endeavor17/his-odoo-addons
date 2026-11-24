@@ -6,6 +6,7 @@
         <field name="model">his.purchase.request</field>
         <field name="arch" type="xml">
             <list decoration-danger="his_is_late" decoration-muted="state == 'cancel'">
+                <field name="priority" widget="priority" optional="show"/>
                 <field name="name"/>
                 <field name="requester_id"/>
                 <field name="department_id"/>
@@ -13,6 +14,7 @@
                 <field name="date_required"/>
                 <field name="his_step_since" string="In This Step Since" optional="show"/>
                 <field name="estimated_amount" sum="Total" optional="show"/>
+                <field name="estimated_amount_total" sum="Total" optional="hide"/>
                 <field name="user_id" optional="show"/>
                 <field name="his_is_late" column_invisible="1"/>
                 <field name="state" widget="badge" decoration-info="state in ('submitted', 'approved', 'sourcing')" decoration-warning="state == 'on_hold'" decoration-success="state in ('ordered', 'done')"/>
@@ -44,7 +46,7 @@
                     </div>
                     <widget name="web_ribbon" title="Late" bg_color="text-bg-danger" invisible="not his_is_late"/>
                     <div class="oe_title">
-                        <h1><field name="name"/></h1>
+                        <h1><field name="priority" widget="priority" class="me-3" readonly="state in ('done', 'cancel')"/><field name="name"/></h1>
                     </div>
                     <group>
                         <group>
@@ -59,6 +61,8 @@
                             <field name="date_required" readonly="state not in ('draft', 'approved')"/>
                             <field name="his_purchase_type" readonly="state not in ('submitted', 'on_hold', 'approved')"/>
                             <field name="estimated_amount"/>
+                            <field name="estimated_tax"/>
+                            <field name="estimated_amount_total"/>
                             <field name="user_id" readonly="state in ('done', 'cancel')" invisible="state in ('draft', 'submitted', 'on_hold')"/>
                             <field name="currency_id" invisible="1"/>
                         </group>
@@ -81,6 +85,7 @@
                                     <field name="product_uom_id"/>
                                     <field name="estimated_price_unit"/>
                                     <field name="estimated_subtotal" sum="Total"/>
+                                    <field name="estimated_tax" sum="Total" optional="show"/>
                                     <field name="qty_ordered" optional="show"/>
                                     <field name="his_monthly_requisition_id" optional="hide"/>
                                     <field name="currency_id" column_invisible="1"/>
