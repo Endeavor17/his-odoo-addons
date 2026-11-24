@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le Responsable du Departement Finance (procedure points de vente §6.3) :
+         clot les ecarts importants et majeurs, revoit ceux de la caisse Direction. -->
+    <record id="group_finance_head" model="res.groups">
+        <field name="name">Finance Head</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="his_purchase_finance.res_groups_privilege_finance"/>
+        <field name="implied_ids" eval="[(4, ref('his_purchase_finance.group_finance'))]"/>
+        <field name="comment">Closes important and major cash gaps and reviews the Direction cash box gaps.</field>
+    </record>
+
+    <record id="rule_discrepancy_company" model="ir.rule">
+        <field name="name">Cash discrepancies: own companies</field>
+        <field name="model_id" ref="model_his_cash_discrepancy"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_transfer_company" model="ir.rule">
+        <field name="name">Cash transfers: own companies</field>
+        <field name="model_id" ref="model_his_cash_transfer"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

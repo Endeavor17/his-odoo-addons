@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="his_cash_transfer_view_form" model="ir.ui.view">
+        <field name="name">his.cash.transfer.form</field>
+        <field name="model">his.cash.transfer</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send" type="object" string="Send" class="btn-primary" invisible="state != 'draft'"
+                        groups="his_purchase_finance.group_finance"/>
+                    <button name="action_open_receive" type="object" string="Receive" class="btn-primary" invisible="state != 'sent'"/>
+                    <button name="%(action_report_cash_transfer)d" type="action" string="Print Slip" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="from_journal_id" readonly="state != 'draft'"/>
+                            <field name="to_journal_id" readonly="state != 'draft'"/>
+                            <field name="from_session_id" invisible="not from_session_id"/>
+                            <field name="to_session_id" invisible="not to_session_id"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_sent" readonly="state != 'draft'"/>
+                            <field name="amount_received" invisible="state != 'received'"/>
+                            <field name="sent_by" invisible="not sent_by"/>
+                            <field name="sent_at" invisible="not sent_at"/>
+                            <field name="received_by" invisible="not received_by"/>
+                            <field name="received_at" invisible="not received_at"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Note..." readonly="state != 'draft'"/>
+                    <field name="his_discrepancy_ids" invisible="not his_discrepancy_ids" readonly="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="his_cash_transfer_view_list" model="ir.ui.view">
+        <field name="name">his.cash.transfer.list</field>
+        <field name="model">his.cash.transfer</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'sent'">
+                <field name="name"/>
+                <field name="sent_at"/>
+                <field name="from_journal_id"/>
+                <field name="to_journal_id"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount_sent" sum="Total"/>
+                <field name="amount_received" sum="Total"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="his_cash_transfer_view_search" model="ir.ui.view">
+        <field name="name">his.cash.transfer.search</field>
+        <field name="model">his.cash.transfer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="from_journal_id"/>
+                <field name="to_journal_id"/>
+                <filter name="not_received" string="Not Received" domain="[('state', '=', 'sent')]"/>
+                <group>
+                    <filter name="by_from" string="From" context="{'group_by': 'from_journal_id'}"/>
+                    <filter name="by_month" string="Month" context="{'group_by': 'sent_at:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="his_cash_transfer_action" model="ir.actions.act_window">
+        <field name="name">Cash Transfers</field>
+        <field name="res_model">his.cash.transfer</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="his_cash_transfer_receive_view_form" model="ir.ui.view">
+        <field name="name">his.cash.transfer.receive.form</field>
+        <field name="model">his.cash.transfer.receive</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="transfer_id" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="amount_sent"/>
+                    <field name="amount"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm Receipt" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_his_cash_transfer_pos" action="his_cash_transfer_action" parent="point_of_sale.menu_point_of_sale"
+        sequence="51" groups="point_of_sale.group_pos_manager,his_purchase_finance.group_finance,his_purchase.group_purchase_director"/>
+    <menuitem id="menu_his_cash_transfer_account" action="his_cash_transfer_action" parent="account.menu_finance_entries"
+        sequence="51" groups="his_purchase_finance.group_finance,his_purchase.group_purchase_director"/>
+</odoo>

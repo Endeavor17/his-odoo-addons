@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <!-- pos_hr ne montre « Fermer la caisse » qu'au responsable ou a l'utilisateur
+         qui a ouvert la session. Nos caisses s'ouvrent depuis un compte comptoir
+         partage, et le caissier (liste « basique ») ferme lui-meme sa journee
+         (procedure Finance, decision 1 du 2026-11-24). -->
+    <t t-name="his_pos_finance.Navbar" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+        <xpath expr="//DropdownItem[contains(text(), 'Close Register')]" position="attributes">
+            <attribute name="t-if">!pos.config.module_pos_hr or pos.cashier</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('pos-burger-menu-items')]" position="inside">
+            <DropdownItem t-if="pos.config.cash_control" onSelected="() => this.hisHandOver()">Hand over to Finance</DropdownItem>
+            <DropdownItem t-if="pos.config.cash_control" onSelected="() => this.hisReceiveCash()">Receive cash</DropdownItem>
+        </xpath>
+    </t>
+</templates>

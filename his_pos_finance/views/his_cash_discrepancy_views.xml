@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="his_cash_discrepancy_view_form" model="ir.ui.view">
+        <field name="name">his.cash.discrepancy.form</field>
+        <field name="model">his.cash.discrepancy</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send_to_finance" type="object" string="Send to Finance" class="btn-primary" invisible="state != 'to_review'"/>
+                    <button name="action_open_decide" type="object" string="Decide" class="btn-primary" invisible="state != 'finance'"
+                        groups="his_purchase_finance.group_finance"/>
+                    <button name="action_direction_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'direction'"
+                        groups="his_purchase.group_purchase_director"/>
+                    <button name="action_send_back" type="object" string="Send Back to Finance" invisible="state != 'direction'"
+                        groups="his_purchase.group_purchase_director"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="journal_id"/>
+                            <field name="session_id" invisible="not session_id"/>
+                            <field name="holder_id"/>
+                            <field name="holder_employee_id" invisible="not holder_employee_id"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="expected"/>
+                            <field name="counted"/>
+                            <field name="amount" decoration-danger="amount &lt; 0" decoration-success="amount &gt; 0"/>
+                            <field name="nature"/>
+                            <field name="tier"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="explanation" readonly="state != 'to_review'"/>
+                        <field name="manager_note" readonly="state != 'to_review'"/>
+                        <field name="finance_decision" invisible="not finance_decision"/>
+                        <field name="finance_note" readonly="state == 'closed'"/>
+                        <field name="his_account_id" invisible="not his_account_id"/>
+                        <field name="provisional_move_id"/>
+                        <field name="regularisation_move_id" invisible="not regularisation_move_id"/>
+                        <field name="closed_date" invisible="not closed_date"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="his_cash_discrepancy_view_list" model="ir.ui.view">
+        <field name="name">his.cash.discrepancy.list</field>
+        <field name="model">his.cash.discrepancy</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'closed'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="journal_id"/>
+                <field name="holder_id"/>
+                <field name="kind"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount" sum="Total"/>
+                <field name="tier"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="his_cash_discrepancy_view_search" model="ir.ui.view">
+        <field name="name">his.cash.discrepancy.search</field>
+        <field name="model">his.cash.discrepancy</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="holder_id"/>
+                <field name="journal_id"/>
+                <filter name="open" string="Open" domain="[('state', '!=', 'closed')]"/>
+                <filter name="this_month" string="This Month" domain="[('date', '&gt;=', (context_today() + relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter name="by_journal" string="Cash Box" context="{'group_by': 'journal_id'}"/>
+                    <filter name="by_holder" string="Holder" context="{'group_by': 'holder_id'}"/>
+                    <filter name="by_month" string="Month" context="{'group_by': 'date:month'}"/>
+                    <filter name="by_tier" string="Level" context="{'group_by': 'tier'}"/>
+                    <filter name="by_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="his_cash_discrepancy_view_pivot" model="ir.ui.view">
+        <field name="name">his.cash.discrepancy.pivot</field>
+        <field name="model">his.cash.discrepancy</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="journal_id" type="row"/>
+                <field name="holder_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="his_cash_discrepancy_view_graph" model="ir.ui.view">
+        <field name="name">his.cash.discrepancy.graph</field>
+        <field name="model">his.cash.discrepancy</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="date" interval="month"/>
+                <field name="holder_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="his_cash_discrepancy_action" model="ir.actions.act_window">
+        <field name="name">Cash Discrepancies</field>
+        <field name="res_model">his.cash.discrepancy</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="context">{'search_default_open': 1}</field>
+    </record>
+
+    <record id="his_cash_discrepancy_decide_view_form" model="ir.ui.view">
+        <field name="name">his.cash.discrepancy.decide.form</field>
+        <field name="model">his.cash.discrepancy.decide</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="discrepancy_id" invisible="1"/>
+                    <field name="decision" widget="radio"/>
+                    <field name="account_id" invisible="decision != 'accepted'"/>
+                    <field name="note"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_his_cash_discrepancy_pos" action="his_cash_discrepancy_action" parent="point_of_sale.menu_point_of_sale"
+        sequence="50" groups="point_of_sale.group_pos_manager,his_purchase_finance.group_finance,his_purchase.group_purchase_director"/>
+    <menuitem id="menu_his_cash_discrepancy_account" action="his_cash_discrepancy_action" parent="account.menu_finance_entries"
+        sequence="50" groups="his_purchase_finance.group_finance,his_purchase.group_purchase_director"/>
+</odoo>

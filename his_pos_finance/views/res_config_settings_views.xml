@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_his_pos_finance" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.his_pos_finance</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="his_purchase_finance.res_config_settings_view_form_his_finance"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='his_finance_confirms']" position="after">
+                <setting id="his_gap_tiers" company_dependent="1" string="Cash Gap Levels"
+                    help="Up to the first amount: POS manager and Finance; then Finance; then the Finance Head; above the last: the Director too">
+                    <div class="row"><label for="his_gap_minor" class="col-6"/><field name="his_gap_minor" class="col-6"/></div>
+                    <div class="row"><label for="his_gap_significant" class="col-6"/><field name="his_gap_significant" class="col-6"/></div>
+                    <div class="row"><label for="his_gap_important" class="col-6"/><field name="his_gap_important" class="col-6"/></div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

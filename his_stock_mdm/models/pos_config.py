@@ -50,7 +50,7 @@ class PosConfig(models.Model):
         self.ensure_one()
         roles = self.sudo().his_cashier_role_ids
         if not roles:
-            return self.env["hr.employee"]
+            return self.env["hr.employee"].sudo()  # sudo comme la recherche : le PIN est reserve aux RH
         return (
             self.env["hr.employee"]
             .sudo()
@@ -78,10 +78,13 @@ class PosConfig(models.Model):
     def _his_sync_tills(self):
         """Deduit des postes la liste des noms de chaque caisse.
 
-        Les caissiers vont dans la liste « avancee » : ils font les entrees et
-        sorties d'especes et ferment la caisse (decision de Mohamed). pos_hr y
-        rajoute lui-meme, a chaque ecriture, les responsables POS — qui restent
-        sur toutes les caisses (decision de Mohamed). Sans PIN, pas de nom.
+        Les caissiers vont dans la liste « basique » : ils vendent et ferment la
+        caisse, mais les entrees/sorties d'especes et les changements de prix
+        reviennent au responsable (procedure Finance des points de vente,
+        decision du 2026-11-24, qui remplace « le caissier fait tout » du
+        2026-10-27). pos_hr met lui-meme, a chaque ecriture, les responsables
+        POS dans la liste « avancee » — ils restent sur toutes les caisses
+        (decision de Mohamed). Sans PIN, pas de nom.
         """
         # ponytail: syncs every till on any change; scope it to affected tills if tills grow beyond a handful.
         for config in self.sudo().search([("module_pos_hr", "=", True)]):
@@ -93,18 +96,19 @@ class PosConfig(models.Model):
                 .user_ids.filtered(lambda u, c=config.company_id: c in u.company_ids)
                 .employee_id
             )
-            avances = config.advanced_employee_ids
+            basiques = caissiers - responsables
             if (
-                avances - responsables == caissiers - responsables
-                and responsables <= avances
-                and not config.basic_employee_ids
+                config.basic_employee_ids == basiques
+                and not config.advanced_employee_ids - responsables
+                and responsables <= config.advanced_employee_ids
                 and not config.minimal_employee_ids
             ):
                 continue
+            # pos_hr rajoute les responsables apres le clear.
             config.write(
                 {
-                    "advanced_employee_ids": [Command.set(caissiers.ids)],
-                    "basic_employee_ids": [Command.clear()],
+                    "basic_employee_ids": [Command.set(basiques.ids)],
+                    "advanced_employee_ids": [Command.clear()],
                     "minimal_employee_ids": [Command.clear()],
                 }
             )
@@ -112,8 +116,8 @@ class PosConfig(models.Model):
     def _employee_domain(self, user_id):
         """Qui peut taper son nom a cette caisse.
 
-        pos_hr ne filtre que si la liste « basique » est remplie ; nos caissiers
-        sont dans l'« avancee ». Ici, toute liste remplie — ou un role de caissier
+        pos_hr ne filtre que si la liste « basique » est remplie, et pas sur les
+        autres listes. Ici, toute liste remplie — ou un role de caissier
         lie — restreint la caisse a ses listes : retirer le dernier role ne la
         rouvre donc pas a tout le monde. Et seulement ceux qui ont un PIN : pos_hr
         met tout responsable POS sur la liste, PIN ou pas, et sans PIN n'importe

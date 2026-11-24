@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Comme his_metabase : le numero du tableau Metabase se saisit sur le
+         serveur (Parametres > Tableaux de bord) ; les 4 questions sont dans
+         docs/pos-finance-metabase.md. -->
+    <data noupdate="1">
+        <record id="dashboard_cash" model="his.metabase.dashboard">
+            <field name="name">Cash Control</field>
+            <field name="code">cash</field>
+            <field name="group_ids" eval="[Command.set([ref('his_purchase_finance.group_finance')])]"/>
+        </record>
+    </data>
+
+    <record id="action_dashboard_cash" model="ir.actions.client">
+        <field name="name">Cash Indicators</field>
+        <field name="tag">his_metabase_dashboard</field>
+        <field name="params" eval="{'code': 'cash'}"/>
+    </record>
+    <menuitem id="menu_dashboard_cash" name="Cash Indicators" parent="account.menu_finance_entries"
+              action="action_dashboard_cash" sequence="54" groups="his_purchase_finance.group_finance"/>
+</odoo>
