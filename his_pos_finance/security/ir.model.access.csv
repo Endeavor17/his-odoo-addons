@@ -3,3 +3,8 @@ access_discrepancy_pos_manager,discrepancy pos manager,model_his_cash_discrepanc
 access_discrepancy_finance,discrepancy finance,model_his_cash_discrepancy,his_purchase_finance.group_finance,1,1,0,0
 access_discrepancy_director,discrepancy director,model_his_cash_discrepancy,his_purchase.group_purchase_director,1,1,0,0
 access_discrepancy_decide_finance,discrepancy decide finance,model_his_cash_discrepancy_decide,his_purchase_finance.group_finance,1,1,1,0
+access_transfer_pos_user,transfer pos user,model_his_cash_transfer,point_of_sale.group_pos_user,1,0,0,0
+access_transfer_finance,transfer finance,model_his_cash_transfer,his_purchase_finance.group_finance,1,1,1,0
+access_transfer_director,transfer director,model_his_cash_transfer,his_purchase.group_purchase_director,1,0,0,0
+access_transfer_receive_finance,transfer receive finance,model_his_cash_transfer_receive,his_purchase_finance.group_finance,1,1,1,0
+access_transfer_receive_director,transfer receive director,model_his_cash_transfer_receive,his_purchase.group_purchase_director,1,1,1,0
