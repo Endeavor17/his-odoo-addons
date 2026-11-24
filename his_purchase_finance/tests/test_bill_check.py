@@ -181,6 +181,28 @@ class TestBillCheck(HisFinanceCase):
         self.assertIn("Down payment", bill.his_check_reason)
         self.assertNotIn("received", bill.his_check_reason)
 
+    def test_credit_note_with_order_terms_not_held(self):
+        # Revue finale : l'assistant d'avoir vide les conditions de paiement.
+        order = self._offer()
+        order.payment_term_id = self.env.ref("account.account_payment_term_30days")
+        order = self._confirmed(order)
+        self._receive(order)
+        bill = self._bill(order, post=False)
+        bill.invoice_payment_term_id = order.payment_term_id
+        bill.action_post()
+        self.assertEqual(bill.his_check_state, "validated")
+        reversal = (
+            self.env["account.move.reversal"]
+            .with_user(self.finance)
+            .with_context(active_model="account.move", active_ids=bill.ids)
+            .create({"journal_id": bill.journal_id.id, "date": fields.Date.today()})
+        )
+        reversal.refund_moves()
+        refund = self.env["account.move"].search([("reversed_entry_id", "=", bill.id)])
+        refund.action_post()
+        self.assertFalse(refund.invoice_payment_term_id)
+        self.assertEqual(refund.his_check_state, "validated", refund.his_check_reason)
+
     def test_bill_other_supplier(self):
         order = self._received_order()
         bill = self._bill(order, post=False)

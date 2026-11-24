@@ -46,3 +46,12 @@ class TestReceiptRefusal(HisFinanceCase):
         order = self._confirmed()
         self._validate(order, 2)
         self.assertFalse(self.env["his.purchase.anomaly"].sudo().search([("order_id", "=", order.id)]))
+
+    def test_whole_delivery_refused(self):
+        # Revue finale : tout refuser (0 accepte) doit etre possible.
+        order = self._confirmed()
+        picking = self._validate(order, 0, refused=2, reason="Wrong model delivered")
+        self.assertEqual(picking.state, "cancel")
+        anomaly = self.env["his.purchase.anomaly"].sudo().search([("order_id", "=", order.id)])
+        self.assertEqual(len(anomaly), 1)
+        self.assertIn("Wrong model", anomaly.description)

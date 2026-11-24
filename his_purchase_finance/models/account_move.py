@@ -60,6 +60,30 @@ class AccountMove(models.Model):
             return True
         return self.move_type in ("in_invoice", "in_refund") and bool(self.invoice_line_ids.purchase_line_id)
 
+    def _his_header_mismatches(self, order):
+        """Fournisseur et conditions de paiement de la facture contre la commande."""
+        issues = []
+        supplier = order.partner_id.commercial_partner_id
+        if self.commercial_partner_id != supplier:
+            issues.append(
+                _(
+                    "%(order)s was placed with %(supplier)s, but this bill is from %(billed)s.",
+                    order=order.name,
+                    supplier=supplier.name,
+                    billed=self.commercial_partner_id.name,
+                )
+            )
+        if order.payment_term_id and self.invoice_payment_term_id != order.payment_term_id:
+            issues.append(
+                _(
+                    "%(order)s: payment terms %(ordered)s, billed %(billed)s.",
+                    order=order.name,
+                    ordered=order.payment_term_id.name,
+                    billed=self.invoice_payment_term_id.name or _("none"),
+                )
+            )
+        return issues
+
     def _his_order_mismatches(self, order):
         """Ecarts propres a une commande liee (les anomalies ouvertes s'y ajoutent)."""
         return []
@@ -79,7 +103,10 @@ class AccountMove(models.Model):
                 continue
             order = pol.order_id
             if pol.is_downpayment:
-                issues.append(_("Down payment on %s: needs Finance's authorisation.", order.name))
+                # La deduction de l'acompte sur la facture finale (quantite
+                # negative) a deja ete autorisee : seul l'acompte lui-meme l'est.
+                if self.move_type == "in_invoice" and line.quantity > 0:
+                    issues.append(_("Down payment on %s: needs Finance's authorisation.", order.name))
                 continue
             if line.currency_id != order.currency_id:
                 issues.append(
@@ -123,25 +150,10 @@ class AccountMove(models.Model):
                     )
                 )
         for order in product_lines.purchase_line_id.order_id:
-            supplier = order.partner_id.commercial_partner_id
-            if self.commercial_partner_id != supplier:
-                issues.append(
-                    _(
-                        "%(order)s was placed with %(supplier)s, but this bill is from %(billed)s.",
-                        order=order.name,
-                        supplier=supplier.name,
-                        billed=self.commercial_partner_id.name,
-                    )
-                )
-            if order.payment_term_id and self.invoice_payment_term_id != order.payment_term_id:
-                issues.append(
-                    _(
-                        "%(order)s: payment terms %(ordered)s, billed %(billed)s.",
-                        order=order.name,
-                        ordered=order.payment_term_id.name,
-                        billed=self.invoice_payment_term_id.name or _("none"),
-                    )
-                )
+            if self.move_type != "in_refund":
+                # L'argent qui revient ne se bloque pas ; l'assistant d'avoir
+                # vide d'ailleurs les conditions de paiement.
+                issues.extend(self._his_header_mismatches(order))
             issues.extend(self._his_order_mismatches(order))
         return issues
 

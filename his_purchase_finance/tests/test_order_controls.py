@@ -91,6 +91,40 @@ class TestOrderControls(TestBillCheck):
         self.assertEqual(bill.his_check_state, "reserve")
         self.assertIn("Down payment", bill.his_check_reason)
 
+    def test_final_bill_after_down_payment_not_held(self):
+        # Revue finale : la ligne de deduction de l'acompte (quantite -1) ne
+        # remet pas la facture finale en reserve.
+        order = self._order_with_down_payment()
+        self._receive(order)
+        action = order.with_user(self.finance).action_create_invoice()
+        final = self.env["account.move"].browse(action["res_id"])
+        final.invoice_date = fields.Date.today()
+        final.action_post()
+        self.assertTrue(final.invoice_line_ids.filtered(lambda line: line.is_downpayment and line.quantity < 0))
+        self.assertEqual(final.his_check_state, "validated", final.his_check_reason)
+
+    def _order_with_down_payment(self):
+        """Commande confirmee avec un acompte autorise par la Finance."""
+        order = self._confirmed()
+        bill = (
+            self.env["account.move"]
+            .with_user(self.finance)
+            .create(
+                {
+                    "move_type": "in_invoice",
+                    "partner_id": order.partner_id.id,
+                    "invoice_date": fields.Date.today(),
+                    "invoice_line_ids": [(0, 0, {"name": "Advance 30%", "quantity": 1, "price_unit": 5400})],
+                }
+            )
+        )
+        self.env["bill.to.po.wizard"].with_user(self.officer).with_context(
+            active_ids=[-bill.invoice_line_ids.id]
+        ).create({"purchase_order_id": order.id}).action_add_downpayment()
+        bill.action_post()
+        bill.with_user(self.finance)._his_decide("release", "Advance agreed in the order terms")
+        return order
+
     # ------------------------------------------------------------------
     # Avoir du apres retour
     # ------------------------------------------------------------------
