@@ -18,6 +18,10 @@
                             <field name="his_supplier_status_reason" groups="his_purchase_finance.group_finance"
                                 required="his_supplier_status in ('reserve', 'refused')"/>
                         </group>
+                        <group>
+                            <field name="his_documents_exempt" readonly="1" groups="!his_purchase_finance.group_finance"/>
+                            <field name="his_documents_exempt" groups="his_purchase_finance.group_finance"/>
+                        </group>
                     </group>
                     <field name="his_supplier_document_ids" context="{'default_partner_id': id}">
                         <list editable="bottom" decoration-danger="status in ('expired', 'non_compliant')" decoration-warning="status == 'to_refresh'">

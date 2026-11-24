@@ -24,7 +24,7 @@ class TestSupplierFile(HisFinanceCase):
         self.assertEqual(partner.his_supplier_status, "waiting")
 
     def test_only_finance_sets_status(self):
-        partner = self.env["res.partner"].create({"name": "New Shop", "is_company": True})
+        partner = self.env["res.partner"].create({"name": "New Shop", "is_company": True, "his_documents_exempt": True})
         self.env.invalidate_all()
         with self.assertRaises(AccessError):
             partner.with_user(self.buyer).his_supplier_status = "validated"
@@ -122,3 +122,84 @@ class TestSupplierFile(HisFinanceCase):
         cash = self._supplier_payment(False)
         cash.action_post()
         self.assertNotEqual(cash.state, "draft")
+
+    # ------------------------------------------------------------------
+    # Pieces exigees, NIF unique, paiement (procedure 4.1 et 8.1)
+    # ------------------------------------------------------------------
+
+    def _docs(self, partner, types):
+        for doc_type in types:
+            self.env["his.supplier.document"].create({"partner_id": partner.id, "doc_type": doc_type})
+
+    def test_validate_refused_without_documents(self):
+        self.env.invalidate_all()
+        with self.assertRaisesRegex(ValidationError, "Trade Register"):
+            self.supplier_bare.with_user(self.finance).his_supplier_status = "validated"
+
+    def test_validate_with_documents(self):
+        self._docs(self.supplier_bare, ["rc", "nif", "nis", "tax_certificate", "rib", "id_card"])
+        self.env.invalidate_all()
+        self.supplier_bare.with_user(self.finance).his_supplier_status = "validated"
+        self.assertEqual(self.supplier_bare.his_supplier_status, "validated")
+
+    def test_expired_document_does_not_count(self):
+        self._docs(self.supplier_bare, ["rc", "nif", "nis", "tax_certificate", "id_card"])
+        self.env["his.supplier.document"].create(
+            {
+                "partner_id": self.supplier_bare.id,
+                "doc_type": "rib",
+                "expires_on": fields.Date.today() - relativedelta(days=1),
+            }
+        )
+        with self.assertRaisesRegex(ValidationError, "RIB"):
+            self.supplier_bare.with_user(self.finance).his_supplier_status = "validated"
+
+    def test_individual_required_set(self):
+        person = self.env["res.partner"].create({"name": "Ali Plombier", "is_company": False})
+        self.assertEqual(
+            sorted(person._his_missing_documents()),
+            sorted(["Tax ID (NIF)", "Statistical ID (NIS)", "Legal Representative's ID", "Bank Details (RIB)"]),
+        )
+        self._docs(person, ["nif", "nis", "id_card", "rib"])
+        self.assertEqual(person._his_missing_documents(), [])
+
+    def test_exempt_needs_none(self):
+        utility = self.env["res.partner"].create({"name": "Sonelgaz", "is_company": True})
+        utility.with_user(self.finance).his_documents_exempt = True
+        utility.with_user(self.finance).his_supplier_status = "validated"
+        self.assertEqual(utility.his_supplier_status, "validated")
+
+    def test_exempt_finance_only(self):
+        self.env.invalidate_all()
+        with self.assertRaises(AccessError):
+            self.supplier_bare.with_user(self.buyer).his_documents_exempt = True
+
+    def test_old_green_supplier_blocked_at_confirm(self):
+        # Fournisseur valide avant la regle des pieces, sans aucune piece.
+        self.env.cr.execute(
+            "UPDATE res_partner SET his_supplier_status = 'validated', his_documents_exempt = FALSE WHERE id = %s",
+            [self.supplier_a.id],
+        )
+        self.env.invalidate_all()
+        order = self._offer()
+        self._send(order)
+        with self.assertRaisesRegex(UserError, "Trade Register"):
+            order.with_user(self.finance).button_confirm()
+
+    def test_nif_unique(self):
+        Partner = self.env["res.partner"]
+        first = Partner.create({"name": "Papeterie Une", "is_company": True, "vat": "000016009999999"})
+        with self.assertRaises(ValidationError):
+            Partner.create({"name": "Papeterie Bis", "is_company": True, "vat": "000016 009999999"})
+        # Le contact d'une societe porte le NIF de la societe.
+        contact = Partner.create({"name": "Vendeur", "parent_id": first.id})
+        self.assertEqual(contact.vat, "000016009999999")
+
+    def test_payment_refused_supplier_not_green(self):
+        self.supplier_a.sudo().write({"his_supplier_status": "reserve", "his_supplier_status_reason": "RC expired"})
+        with self.assertRaisesRegex(UserError, "Supplier A"):
+            self._supplier_payment(False).action_post()
+        self.company.his_finance_confirms = False
+        payment = self._supplier_payment(False)
+        payment.action_post()
+        self.assertNotEqual(payment.state, "draft")
