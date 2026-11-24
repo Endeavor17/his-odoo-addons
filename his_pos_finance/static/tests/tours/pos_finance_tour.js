@@ -21,6 +21,10 @@ registry.category("web_tour.tours").add("his_pos_finance_tour", {
             Dialog.confirm("Open Register"),
 
             ProductScreen.addOrderline("Desk Pad", "1"),
+            {
+                content: "a cashier cannot flip a line negative (refund without PIN)",
+                trigger: "div.numpad button:contains(/^\\+\\/-$/):disabled",
+            },
             ProductScreen.clickNumpad("Price"),
             // en mode restreint, la premiere touche ouvre la saisie du prix
             ProductScreen.clickNumpad("5"),

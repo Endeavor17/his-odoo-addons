@@ -11,6 +11,8 @@
                         groups="his_purchase_finance.group_finance"/>
                     <button name="action_direction_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'direction'"
                         groups="his_purchase.group_purchase_director"/>
+                    <button name="action_send_back" type="object" string="Send Back to Finance" invisible="state != 'direction'"
+                        groups="his_purchase.group_purchase_director"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

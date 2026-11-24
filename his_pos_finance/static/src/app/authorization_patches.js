@@ -1,3 +1,4 @@
+import { ProductScreen } from "@point_of_sale/app/screens/product_screen/product_screen";
 import { OrderSummary } from "@point_of_sale/app/screens/product_screen/order_summary/order_summary";
 import { TicketScreen } from "@point_of_sale/app/screens/ticket_screen/ticket_screen";
 import { PosStore } from "@point_of_sale/app/services/pos_store";
@@ -66,7 +67,27 @@ patch(PosStore.prototype, {
     },
 });
 
+// Une quantite negative est un remboursement : sans la touche +/- , le
+// caissier passe par l'ecran des tickets, ou le PIN du responsable est demande.
+patch(ProductScreen.prototype, {
+    getNumpadButtons() {
+        const buttons = super.getNumpadButtons(...arguments);
+        if (!this.pos.hisNeedsApproval() || this.pos.getCashier()?._role === "manager") {
+            return buttons;
+        }
+        return buttons.map((b) => (b.value === "-" ? { ...b, disabled: true } : b));
+    },
+});
+
 patch(OrderSummary.prototype, {
+    async updateSelectedOrderline({ key }) {
+        // le clavier physique aussi
+        if (key === "-" && this.pos.hisNeedsApproval() && this.pos.getCashier()?._role !== "manager") {
+            this.numberBuffer.reset();
+            return;
+        }
+        return super.updateSelectedOrderline(...arguments);
+    },
     async setLinePrice(line, price) {
         if (!this.pos.hisNeedsApproval()) {
             return super.setLinePrice(...arguments);

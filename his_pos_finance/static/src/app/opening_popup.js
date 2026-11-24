@@ -7,7 +7,9 @@ patch(OpeningControlPopup.prototype, {
         if (!this.env.utils.isValidFloat(this.state.openingCash)) {
             return false;
         }
-        const difference = parseFloat(this.state.openingCash) - (this.pos.session.cash_register_balance_start || 0);
+        // montant affiche formate (« 5,000.00 ») : le parseFloat natif lirait 5
+        const difference =
+            this.env.utils.parseValidFloat(this.state.openingCash) - (this.pos.session.cash_register_balance_start || 0);
         return !this.pos.currency.isZero(difference) && !this.state.notes.trim();
     },
 });

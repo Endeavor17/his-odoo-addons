@@ -129,3 +129,34 @@ class TestTransfer(HisPosFinanceCase):
         self.assertNotIn(avec, found)
         self.assertTrue(sans.his_no_handover)
         self.assertFalse(avec.his_no_handover)
+
+    def test_back_office_cannot_send_from_a_till(self):
+        transfer = (
+            self.env["his.cash.transfer"]
+            .with_user(self.finance)
+            .create(
+                {
+                    "from_journal_id": self._journal("CCAF").id,
+                    "to_journal_id": self._journal("CFIN").id,
+                    "amount_sent": 100,
+                }
+            )
+        )
+        with self.assertRaises(UserError):
+            transfer.action_send()
+        self.assertEqual(self._balance("530200"), 0)
+
+    def test_back_office_cannot_send_to_the_same_box(self):
+        transfer = (
+            self.env["his.cash.transfer"]
+            .with_user(self.finance)
+            .create(
+                {
+                    "from_journal_id": self._journal("CFIN").id,
+                    "to_journal_id": self._journal("CFIN").id,
+                    "amount_sent": 100,
+                }
+            )
+        )
+        with self.assertRaises(UserError):
+            transfer.action_send()

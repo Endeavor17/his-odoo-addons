@@ -1149,3 +1149,20 @@ msgstr "Vous ne pouvez pas compter %(box)s."
 #: code:addons/his_pos_finance/models/his_cash_transfer.py:0
 msgid "You cannot receive cash into %(box)s."
 msgstr "Vous ne pouvez pas recevoir d'espèces dans %(box)s."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "Choose two different cash boxes."
+msgstr "Choisissez deux caisses différentes."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "Cash leaves a till only through its own hand over, from the till."
+msgstr "Les espèces ne sortent d'une caisse que par son propre versement, depuis la caisse."
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_form
+msgid "Send Back to Finance"
+msgstr "Renvoyer à la Finance"

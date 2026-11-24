@@ -160,3 +160,7 @@ class TestDiscrepancy(HisPosFinanceCase):
         )
         wizard.action_confirm()
         self.assertEqual(form.state, "closed")
+
+    def test_director_has_a_send_back_button(self):
+        arch = self.env.ref("his_pos_finance.his_cash_discrepancy_view_form").arch
+        self.assertIn('name="action_send_back"', arch)

@@ -134,6 +134,12 @@ class HisCashTransfer(models.Model):
                 raise AccessError(_("Only Finance sends cash from the back office."))
             if transfer.amount_sent <= 0:
                 raise UserError(_("The amount must be positive."))
+            if transfer.from_journal_id == transfer.to_journal_id:
+                raise UserError(_("Choose two different cash boxes."))
+            if transfer._his_is_till(transfer.from_journal_id):
+                # sinon la caisse serait debitee hors session, puis une seconde
+                # fois comme manquant a l'ouverture suivante
+                raise UserError(_("Cash leaves a till only through its own hand over, from the till."))
             source = transfer.from_journal_id
             move = transfer._his_move(
                 source, transfer._his_link_account(), source.default_account_id, transfer.amount_sent

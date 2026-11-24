@@ -1,4 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+from odoo import fields
 from odoo.addons.his_meal_management.tests.test_meal_credit_invoice import TestTheCreditMealTill
 from odoo.addons.his_pos_finance.hooks import setup_pos_finance
 from odoo.addons.pos_hr.tests.test_frontend import TestPosHrHttpCommon
@@ -18,6 +19,17 @@ class TestFinanceTill(TestPosHrHttpCommon):
             {"loss_account_id": ecart.id, "profit_account_id": ecart.id}
         )
         config.write({"restrict_price_control": True, "cash_control": True, "set_maximum_difference": False})
+        # Revue finale : la veille a ferme sur 5 000 DA ; l'ouverture affiche
+        # « 5,000.00 » et ne doit pas voir d'ecart quand on compte juste.
+        veille = self.env["pos.session"].create({"config_id": config.id, "user_id": self.pos_admin.id})
+        veille.write(
+            {
+                "state": "closed",
+                "start_at": fields.Datetime.now(),
+                "stop_at": fields.Datetime.now(),
+                "cash_register_balance_end_real": 5000,
+            }
+        )
         # Comme au comptoir : un compte connecte, le caissier tape son nom et son PIN.
         config.with_user(self.pos_admin).open_ui()
         self.start_pos_tour("his_pos_finance_tour", login="pos_admin")
