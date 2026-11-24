@@ -53,7 +53,7 @@ patch(PosStore.prototype, {
             line.his_authorization_kind = approval.kind;
         }
     },
-    async setDiscountFromUI(line, val) {
+    async setDiscountFromUI(line) {
         if (!this.hisNeedsApproval()) {
             return super.setDiscountFromUI(...arguments);
         }

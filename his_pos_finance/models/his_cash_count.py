@@ -35,8 +35,16 @@ class HisCashCount(models.Model):
         # Fige a la creation : ne depend pas des ecritures postees ensuite.
         for count in self:
             account = count.journal_id.default_account_id
-            lines = self.env["account.move.line"].sudo().search(
-                [("account_id", "=", account.id), ("parent_state", "=", "posted"), ("company_id", "=", count.company_id.id)]
+            lines = (
+                self.env["account.move.line"]
+                .sudo()
+                .search(
+                    [
+                        ("account_id", "=", account.id),
+                        ("parent_state", "=", "posted"),
+                        ("company_id", "=", count.company_id.id),
+                    ]
+                )
             )
             count.expected = sum(lines.mapped("balance")) if account else 0.0
 

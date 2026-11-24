@@ -17,7 +17,11 @@ class TestTransfer(HisPosFinanceCase):
             self.env["his.cash.transfer"]
             .with_user(self.finance)
             .create(
-                {"from_journal_id": self._journal(source).id, "to_journal_id": self._journal(target).id, "amount_sent": amount}
+                {
+                    "from_journal_id": self._journal(source).id,
+                    "to_journal_id": self._journal(target).id,
+                    "amount_sent": amount,
+                }
             )
         )
         transfer.action_send()
@@ -28,7 +32,9 @@ class TestTransfer(HisPosFinanceCase):
         self._sell_cash(session, 6000)
         transfer = self.env["his.cash.transfer"].browse(session.with_user(self.cashier_user).his_handover(4000, ""))
         session.invalidate_recordset()
-        self.assertEqual((transfer.state, transfer.to_journal_id.code, transfer.from_journal_id.code), ("sent", "CFIN", "CCAF"))
+        self.assertEqual(
+            (transfer.state, transfer.to_journal_id.code, transfer.from_journal_id.code), ("sent", "CFIN", "CCAF")
+        )
         self.assertEqual(transfer.sent_by, self.cashier_user)
         self.assertEqual(session.cash_register_balance_end, 2000)
         transfer.with_user(self.finance).action_receive(4000)

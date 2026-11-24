@@ -82,7 +82,9 @@ class HisCashTransfer(models.Model):
 
     def _his_is_till(self, journal):
         return bool(
-            self.env["pos.payment.method"].sudo().search_count([("journal_id", "=", journal.id), ("is_cash_count", "=", True)])
+            self.env["pos.payment.method"]
+            .sudo()
+            .search_count([("journal_id", "=", journal.id), ("is_cash_count", "=", True)])
         )
 
     def _his_move(self, journal, debit_account, credit_account, amount):
@@ -133,7 +135,9 @@ class HisCashTransfer(models.Model):
             if transfer.amount_sent <= 0:
                 raise UserError(_("The amount must be positive."))
             source = transfer.from_journal_id
-            move = transfer._his_move(source, transfer._his_link_account(), source.default_account_id, transfer.amount_sent)
+            move = transfer._his_move(
+                source, transfer._his_link_account(), source.default_account_id, transfer.amount_sent
+            )
             transfer.sudo().write(
                 {"state": "sent", "send_move_id": move.id, "sent_by": self.env.uid, "sent_at": fields.Datetime.now()}
             )
@@ -184,7 +188,9 @@ class HisCashTransfer(models.Model):
                 raise UserError(_("Open the till before receiving cash into it."))
             move = self._his_till_line(session, amount) if amount else self.env["account.move"]
         else:
-            move = self._his_move(target, target.default_account_id, link, amount) if amount else self.env["account.move"]
+            move = (
+                self._his_move(target, target.default_account_id, link, amount) if amount else self.env["account.move"]
+            )
         self.write(
             {
                 "state": "received",
@@ -251,8 +257,10 @@ class PosSession(models.Model):
                     cash=self.cash_register_balance_end,
                 )
             )
-        finance = self.env["account.journal"].sudo().search(
-            [("code", "=", "CFIN"), ("company_id", "=", self.company_id.id)], limit=1
+        finance = (
+            self.env["account.journal"]
+            .sudo()
+            .search([("code", "=", "CFIN"), ("company_id", "=", self.company_id.id)], limit=1)
         )
         Transfer = self.env["his.cash.transfer"].sudo()
         transfer = Transfer.create(
@@ -265,7 +273,9 @@ class PosSession(models.Model):
             }
         )
         move = transfer._his_till_line(self, -amount)
-        transfer.write({"state": "sent", "send_move_id": move.id, "sent_by": self.env.uid, "sent_at": fields.Datetime.now()})
+        transfer.write(
+            {"state": "sent", "send_move_id": move.id, "sent_by": self.env.uid, "sent_at": fields.Datetime.now()}
+        )
         return transfer.id
 
     def his_handover_proposal(self):
@@ -275,8 +285,10 @@ class PosSession(models.Model):
 
     def his_pending_transfers(self):
         self.ensure_one()
-        transfers = self.env["his.cash.transfer"].sudo().search(
-            [("state", "=", "sent"), ("to_journal_id", "=", self.cash_journal_id.id)]
+        transfers = (
+            self.env["his.cash.transfer"]
+            .sudo()
+            .search([("state", "=", "sent"), ("to_journal_id", "=", self.cash_journal_id.id)])
         )
         return [{"id": t.id, "name": t.name, "amount_sent": t.amount_sent} for t in transfers]
 

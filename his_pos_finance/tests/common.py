@@ -67,7 +67,9 @@ class HisPosFinanceCase(TransactionCase):
                             },
                         ]
                     ],
-                    "payment_ids": [[0, 0, {"amount": amount, "name": fields.Datetime.now(), "payment_method_id": cash.id}]],
+                    "payment_ids": [
+                        [0, 0, {"amount": amount, "name": fields.Datetime.now(), "payment_method_id": cash.id}]
+                    ],
                     "amount_paid": amount,
                     "amount_total": amount,
                     "amount_tax": 0.0,
@@ -88,6 +90,10 @@ class HisPosFinanceCase(TransactionCase):
 
     def _balance(self, code):
         lines = self.env["account.move.line"].search(
-            [("account_id", "=", self._account(code).id), ("parent_state", "=", "posted"), ("company_id", "=", self.company.id)]
+            [
+                ("account_id", "=", self._account(code).id),
+                ("parent_state", "=", "posted"),
+                ("company_id", "=", self.company.id),
+            ]
         )
         return sum(lines.mapped("balance"))

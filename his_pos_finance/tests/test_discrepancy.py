@@ -14,8 +14,16 @@ class TestDiscrepancy(HisPosFinanceCase):
             {
                 "journal_id": box.id,
                 "line_ids": [
-                    (0, 0, {"account_id": box.default_account_id.id, "debit": max(amount, 0), "credit": max(-amount, 0)}),
-                    (0, 0, {"account_id": self._account("476000").id, "debit": max(-amount, 0), "credit": max(amount, 0)}),
+                    (
+                        0,
+                        0,
+                        {"account_id": box.default_account_id.id, "debit": max(amount, 0), "credit": max(-amount, 0)},
+                    ),
+                    (
+                        0,
+                        0,
+                        {"account_id": self._account("476000").id, "debit": max(-amount, 0), "credit": max(amount, 0)},
+                    ),
                 ],
             }
         )
@@ -82,7 +90,9 @@ class TestDiscrepancy(HisPosFinanceCase):
     def test_accept_gain_goes_to_757(self):
         form = self._sent(40)
         form.with_user(self.finance).action_decide("accepted")
-        self.assertEqual(form.regularisation_move_id.line_ids.filtered(lambda line: line.credit).account_id.code, "757000")
+        self.assertEqual(
+            form.regularisation_move_id.line_ids.filtered(lambda line: line.credit).account_id.code, "757000"
+        )
 
     def test_important_needs_finance_head(self):
         form = self._sent(-3000)
@@ -143,8 +153,10 @@ class TestDiscrepancy(HisPosFinanceCase):
 
     def test_decide_wizard(self):
         form = self._sent(-10)
-        wizard = self.env["his.cash.discrepancy.decide"].with_user(self.finance).create(
-            {"discrepancy_id": form.id, "decision": "accepted"}
+        wizard = (
+            self.env["his.cash.discrepancy.decide"]
+            .with_user(self.finance)
+            .create({"discrepancy_id": form.id, "decision": "accepted"})
         )
         wizard.action_confirm()
         self.assertEqual(form.state, "closed")

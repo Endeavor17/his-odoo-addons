@@ -1,9 +1,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo.tests import tagged
-
-from odoo.addons.his_pos_finance.hooks import setup_pos_finance
 from odoo.addons.his_meal_management.tests.test_meal_credit_invoice import TestTheCreditMealTill
+from odoo.addons.his_pos_finance.hooks import setup_pos_finance
 from odoo.addons.pos_hr.tests.test_frontend import TestPosHrHttpCommon
+from odoo.tests import tagged
 
 
 @tagged("post_install", "-at_install")

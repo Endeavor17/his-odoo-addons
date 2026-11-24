@@ -15,8 +15,10 @@ class AccountJournal(models.Model):
     def _compute_his_count_state(self):
         debut = fields.Datetime.to_datetime(fields.Date.context_today(self))
         for journal in self:
-            last = self.env["his.cash.count"].sudo().search(
-                [("journal_id", "=", journal.id), ("date", ">=", debut)], order="date desc, id desc", limit=1
+            last = (
+                self.env["his.cash.count"]
+                .sudo()
+                .search([("journal_id", "=", journal.id), ("date", ">=", debut)], order="date desc, id desc", limit=1)
             )
             journal.his_count_state = {"opening": "opened", "closing": "closed"}.get(last.kind, "none")
 

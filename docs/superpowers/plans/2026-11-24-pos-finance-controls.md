@@ -67,7 +67,19 @@ Mohamed wants few, grouped test runs: write a whole task, then run once.
 ```python
 def test_accounts_and_journals(self):
     acc = lambda c: self.env["account.account"].search([("code", "=", c), ("company_ids", "in", self.company.id)])
-    for code in ("530000", "530001", "530100", "581000", "476000", "657000", "757000", "700300", "701300", "706200", "411300"):
+    for code in (
+        "530000",
+        "530001",
+        "530100",
+        "581000",
+        "476000",
+        "657000",
+        "757000",
+        "700300",
+        "701300",
+        "706200",
+        "411300",
+    ):
         self.assertTrue(acc(code), code)
     self.assertTrue(acc("476000").reconcile)
     j = lambda c: self.env["account.journal"].search([("code", "=", c), ("company_id", "=", self.company.id)])
@@ -77,6 +89,7 @@ def test_accounts_and_journals(self):
     self.assertEqual(j("CCAF").profit_account_id, acc("476000"))
     self.assertEqual(j("VCAF").type, "sale")
     self.assertEqual(self.company.transfer_account_id, acc("581000"))
+
 
 def test_till_config(self):
     c = self.cafeteria
@@ -91,14 +104,18 @@ def test_till_config(self):
     self.assertFalse(fp.tax_ids)  # comptes seulement, la TVA reste celle de his_pos_tva
     self.assertIn(self.env["account.account"].search([("code", "=", "700200")]), fp.account_ids.account_dest_id)
 
+
 def test_setup_is_idempotent(self):
     from odoo.addons.his_pos_finance.hooks import setup_pos_finance
+
     n = self.env["account.journal"].search_count([])
     setup_pos_finance(self.env, self.company)
     self.assertEqual(self.env["account.journal"].search_count([]), n)
 
+
 def test_setup_refuses_open_session(self):
     from odoo.addons.his_pos_finance.hooks import setup_pos_finance
+
     self._open_session(self.cafeteria)
     with self.assertRaisesRegex(UserError, "Close every till"):
         setup_pos_finance(self.env, self.company)
@@ -172,19 +189,24 @@ def test_cash_in_out_refused_on_tills(self):
 def test_tier_and_nature(self):
     for amount, tier in ((-3, "minor"), (-5, "minor"), (-6, "significant"), (2500, "important"), (-5001, "major")):
         f = self._form(amount)
-        self.assertEqual(f.tier, tier); self.assertEqual(f.nature, "surplus" if amount > 0 else "shortage")
+        self.assertEqual(f.tier, tier)
+        self.assertEqual(f.nature, "surplus" if amount > 0 else "shortage")
+
 
 def test_no_form_without_gap(self):
     self.assertFalse(self._form(0.004))
+
 
 def test_reviewer_per_box(self):
     self.assertEqual(self._form(-10, journal="CCAF")._his_reviewer_group(), "point_of_sale.group_pos_manager")
     self.assertEqual(self._form(-10, journal="CFIN")._his_reviewer_group(), "his_purchase.group_purchase_director")
     self.assertEqual(self._form(-10, journal="CDIR")._his_reviewer_group(), "his_pos_finance.group_finance_head")
 
+
 def test_cashier_cannot_send(self):
     with self.assertRaises(AccessError):
         self._form(-10).with_user(self.cashier_user).action_send_to_finance()
+
 
 def test_accept_loss_posts_and_reconciles(self):
     f = self._form(-100, explanation="Monnaie rendue", manager_note="Verifie")
@@ -193,8 +215,15 @@ def test_accept_loss_posts_and_reconciles(self):
     self.assertEqual(f.state, "closed")
     lines = f.regularisation_move_id.line_ids
     self.assertEqual(lines.filtered(lambda l: l.debit).account_id.code, "657000")
-    self.assertTrue(all(l.reconciled for l in (f.provisional_move_id | f.regularisation_move_id).line_ids
-                        .filtered(lambda l: l.account_id.code == "476000")))
+    self.assertTrue(
+        all(
+            l.reconciled
+            for l in (f.provisional_move_id | f.regularisation_move_id).line_ids.filtered(
+                lambda l: l.account_id.code == "476000"
+            )
+        )
+    )
+
 
 def test_important_needs_finance_head(self):
     f = self._sent(-3000)
@@ -202,24 +231,30 @@ def test_important_needs_finance_head(self):
         f.with_user(self.finance).action_decide("accepted")
     f.with_user(self.finance_head).action_decide("accepted")
 
+
 def test_major_goes_to_director(self):
     f = self._sent(-6000)
     f.with_user(self.finance_head).action_decide("accepted")
-    self.assertEqual(f.state, "direction"); self.assertFalse(f.regularisation_move_id)
+    self.assertEqual(f.state, "direction")
+    self.assertFalse(f.regularisation_move_id)
     f.with_user(self.director).action_direction_approve()
-    self.assertEqual(f.state, "closed"); self.assertTrue(f.regularisation_move_id)
+    self.assertEqual(f.state, "closed")
+    self.assertTrue(f.regularisation_move_id)
+
 
 def test_refused_goes_back(self):
     f = self._sent(-10)
     f.with_user(self.finance).action_decide("refused", note="Recompter")
     self.assertEqual(f.state, "to_review")
 
-def test_accept_twice_posts_once(self):   # Review Focus 5
+
+def test_accept_twice_posts_once(self):  # Review Focus 5
     f = self._sent(-10)
     f.with_user(self.finance).action_decide("accepted")
     with self.assertRaises(UserError):
         f.with_user(self.finance).action_decide("accepted")
     self.assertEqual(len(self.env["account.move"].search([("ref", "=", f.name)])), 1)
+
 
 def test_other_account_for_surplus(self):
     f = self._sent(50)
@@ -261,37 +296,52 @@ def test_other_account_for_surplus(self):
 
 ```python
 def test_close_with_gap_needs_notes(self):
-    s = self._open_session(self.cafeteria); self._sell_cash(s, 600)
+    s = self._open_session(self.cafeteria)
+    self._sell_cash(s, 600)
     s.post_closing_cash_details(590)
     s.update_closing_control_state_session("")
     res = s.close_session_from_ui()
-    self.assertFalse(res["successful"]); self.assertIn("Explain", res["message"])
+    self.assertFalse(res["successful"])
+    self.assertIn("Explain", res["message"])
+
 
 def test_close_with_gap_opens_form_on_476(self):
-    s = self._open_session(self.cafeteria); self._sell_cash(s, 600)
-    s.post_closing_cash_details(590); s.update_closing_control_state_session("Erreur de monnaie")
+    s = self._open_session(self.cafeteria)
+    self._sell_cash(s, 600)
+    s.post_closing_cash_details(590)
+    s.update_closing_control_state_session("Erreur de monnaie")
     self.assertTrue(s.close_session_from_ui()["successful"])
     f = s.his_discrepancy_ids
     self.assertEqual((f.kind, f.amount, f.explanation), ("closing", -10, "Erreur de monnaie"))
     self.assertIn("476000", f.provisional_move_id.line_ids.account_id.mapped("code"))
 
-def test_back_end_close_without_notes_still_opens_form(self):   # Review Focus 2
-    s = self._open_session(self.cafeteria); self._sell_cash(s, 600)
+
+def test_back_end_close_without_notes_still_opens_form(self):  # Review Focus 2
+    s = self._open_session(self.cafeteria)
+    self._sell_cash(s, 600)
     s.cash_register_balance_end_real = 590
     s.with_user(self.pos_manager).action_pos_session_closing_control()
-    self.assertEqual(s.state, "closed"); self.assertEqual(s.his_discrepancy_ids.explanation, False)
+    self.assertEqual(s.state, "closed")
+    self.assertEqual(s.his_discrepancy_ids.explanation, False)
 
-def test_sub_rounding_gap_ignored(self):   # Review Focus 3
-    s = self._open_session(self.cafeteria); self._sell_cash(s, 600)
-    s.post_closing_cash_details(600.004); s.update_closing_control_state_session("")
-    self.assertTrue(s.close_session_from_ui()["successful"]); self.assertFalse(s.his_discrepancy_ids)
+
+def test_sub_rounding_gap_ignored(self):  # Review Focus 3
+    s = self._open_session(self.cafeteria)
+    self._sell_cash(s, 600)
+    s.post_closing_cash_details(600.004)
+    s.update_closing_control_state_session("")
+    self.assertTrue(s.close_session_from_ui()["successful"])
+    self.assertFalse(s.his_discrepancy_ids)
+
 
 def test_opening_gap_posts_once(self):
-    s1 = self._open_session(self.cafeteria); s1.post_closing_cash_details(1000)
-    s1.update_closing_control_state_session("x"); s1.close_session_from_ui()
+    s1 = self._open_session(self.cafeteria)
+    s1.post_closing_cash_details(1000)
+    s1.update_closing_control_state_session("x")
+    s1.close_session_from_ui()
     s2 = self._open_session(self.cafeteria, cashbox=980, notes="Billet manquant")
     self.assertEqual(s2.cash_register_balance_start, 1000)
-    self.assertEqual(s2.cash_register_balance_end, 980)        # attendu = compte, pas 960
+    self.assertEqual(s2.cash_register_balance_end, 980)  # attendu = compte, pas 960
     self.assertEqual(s2.his_discrepancy_ids.kind, "opening")
 ```
 (`_open_session(config, cashbox=None, notes="")` calls `action_pos_session_open()` then `set_opening_control(cashbox, notes)` when `cashbox` is given; extend the Task 1 helper.)
@@ -326,7 +376,8 @@ def test_opening_gap_posts_once(self):
 
 ```python
 def test_handover_from_till(self):
-    s = self._open_session(self.cafeteria, cashbox=1000); self._sell_cash(s, 5000)
+    s = self._open_session(self.cafeteria, cashbox=1000)
+    self._sell_cash(s, 5000)
     tid = s.his_handover(4000, "")
     t = self.env["his.cash.transfer"].browse(tid)
     self.assertEqual((t.state, t.to_journal_id.code), ("sent", "CFIN"))
@@ -336,6 +387,7 @@ def test_handover_from_till(self):
     self.assertEqual(self._balance("581000"), 0)
     self.assertEqual(self._balance("530001"), 4000)
 
+
 def test_receive_less_opens_handover_form(self):
     t = self._sent_handover(4000)
     t.with_user(self.finance).action_receive(3950)
@@ -343,12 +395,14 @@ def test_receive_less_opens_handover_form(self):
     self.assertEqual((f.kind, f.amount, f.journal_id.code), ("handover", -50, "CFIN"))
     self.assertEqual(self._balance("581000"), 0)
 
-def test_invalid_handover_amount(self):   # Review Focus 4
+
+def test_invalid_handover_amount(self):  # Review Focus 4
     s = self._open_session(self.cafeteria, cashbox=1000)
     for bad in (0, -5, 1000.01):
         with self.assertRaises(UserError):
             s.his_handover(bad, "")
     self.assertFalse(self.env["his.cash.transfer"].search([]))
+
 
 def test_injection_received_at_till(self):
     s = self._open_session(self.cafeteria, cashbox=0)
@@ -356,12 +410,16 @@ def test_injection_received_at_till(self):
     s.his_receive_transfer(t.id, 2000)
     self.assertEqual(s.cash_register_balance_end, 2000)
 
+
 def test_only_finance_receives_handover(self):
     with self.assertRaises(AccessError):
         self._sent_handover(100).with_user(self.pos_manager).action_receive(100)
 
+
 def test_slip_renders(self):
-    pdf, _ = self.env["ir.actions.report"]._render_qweb_html("his_pos_finance.action_report_cash_transfer", self._sent_handover(100).ids)
+    pdf, _ = self.env["ir.actions.report"]._render_qweb_html(
+        "his_pos_finance.action_report_cash_transfer", self._sent_handover(100).ids
+    )
     self.assertIn(b"VERS/", pdf)
 ```
 
@@ -426,6 +484,7 @@ def test_count_without_gap(self):
     c = self._count("CFIN", "opening", counted=self._balance("530001"))
     self.assertFalse(c.his_discrepancy_ids)
 
+
 def test_count_gap_needs_note_and_opens_form(self):
     with self.assertRaises(ValidationError):
         self._count("CFIN", "closing", counted=self._balance("530001") - 20, note="")
@@ -434,6 +493,7 @@ def test_count_gap_needs_note_and_opens_form(self):
     self.assertEqual((f.kind, f.amount), ("count", -20))
     self.assertEqual(f._his_reviewer_group(), "his_purchase.group_purchase_director")
     self.assertEqual(self._balance("476000"), 20)
+
 
 def test_count_rights(self):
     with self.assertRaises(AccessError):

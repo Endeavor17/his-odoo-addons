@@ -40,9 +40,7 @@ class HisCashDiscrepancy(models.Model):
     expected = fields.Monetary(readonly=True)
     counted = fields.Monetary(readonly=True)
     amount = fields.Monetary(compute="_compute_amount", store=True, help="Counted minus expected.")
-    nature = fields.Selection(
-        [("shortage", "Shortage"), ("surplus", "Surplus")], compute="_compute_amount", store=True
-    )
+    nature = fields.Selection([("shortage", "Shortage"), ("surplus", "Surplus")], compute="_compute_amount", store=True)
     tier = fields.Selection(
         [("minor", "Minor"), ("significant", "Significant"), ("important", "Important"), ("major", "Major")],
         compute="_compute_amount",
@@ -205,7 +203,11 @@ class HisCashDiscrepancy(models.Model):
                 "journal_id": journal.id,
                 "ref": self.name,
                 "line_ids": [
-                    (0, 0, {"account_id": ecart.id, "name": self.name, "debit": max(amount, 0), "credit": max(-amount, 0)}),
+                    (
+                        0,
+                        0,
+                        {"account_id": ecart.id, "name": self.name, "debit": max(amount, 0), "credit": max(-amount, 0)},
+                    ),
                     (
                         0,
                         0,

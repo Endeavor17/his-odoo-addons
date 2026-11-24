@@ -1,8 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+from odoo.addons.his_pos_finance.hooks import setup_pos_finance
 from odoo.exceptions import UserError
 from odoo.tests import tagged
-
-from odoo.addons.his_pos_finance.hooks import setup_pos_finance
 
 from .common import HisPosFinanceCase
 
@@ -10,7 +9,19 @@ from .common import HisPosFinanceCase
 @tagged("post_install", "-at_install")
 class TestSetup(HisPosFinanceCase):
     def test_accounts_and_journals(self):
-        for code in ("530000", "530001", "530100", "581000", "476000", "657000", "757000", "700300", "701300", "706200", "411300"):
+        for code in (
+            "530000",
+            "530001",
+            "530100",
+            "581000",
+            "476000",
+            "657000",
+            "757000",
+            "700300",
+            "701300",
+            "706200",
+            "411300",
+        ):
             self.assertTrue(self._account(code), code)
         self.assertTrue(self._account("476000").reconcile)
         ccaf = self._journal("CCAF")
@@ -33,26 +44,38 @@ class TestSetup(HisPosFinanceCase):
         self.assertEqual(c.payment_method_ids.filtered("is_cash_count").journal_id.code, "CCAF")
         fp = c.default_fiscal_position_id
         # comptes seulement : la TVA de his_pos_tva passe telle quelle
-        for tax in self.env["account.tax"].search([("type_tax_use", "=", "sale"), ("company_id", "=", self.company.id)]):
+        for tax in self.env["account.tax"].search(
+            [("type_tax_use", "=", "sale"), ("company_id", "=", self.company.id)]
+        ):
             self.assertEqual(fp.map_tax(tax), tax, tax.name)
         self.assertIn(self._account("700200"), fp.account_ids.account_dest_id)
         resto = self.restaurant.default_fiscal_position_id
         self.assertEqual(resto.map_account(self._account("700200")), self._account("700300"))
-        self.assertEqual(self.copy_center.default_fiscal_position_id.map_account(self._account("700200")), self._account("700100"))
+        self.assertEqual(
+            self.copy_center.default_fiscal_position_id.map_account(self._account("700200")), self._account("700100")
+        )
 
     def test_income_by_category(self):
         ref = self.env.ref
-        self.assertEqual(ref("his_stock_mdm.categ_copy_impression").property_account_income_categ_id, self._account("706200"))
-        self.assertEqual(ref("his_stock_mdm.categ_cafe_boissons").property_account_income_categ_id, self._account("700200"))
         self.assertEqual(
-            ref("his_meal_management.product_category_meal_plans").property_account_income_categ_id, self._account("701300")
+            ref("his_stock_mdm.categ_copy_impression").property_account_income_categ_id, self._account("706200")
         )
-        self.assertEqual(ref("his_pos_menu.product_category_menu").property_account_income_categ_id, self._account("701300"))
+        self.assertEqual(
+            ref("his_stock_mdm.categ_cafe_boissons").property_account_income_categ_id, self._account("700200")
+        )
+        self.assertEqual(
+            ref("his_meal_management.product_category_meal_plans").property_account_income_categ_id,
+            self._account("701300"),
+        )
+        self.assertEqual(
+            ref("his_pos_menu.product_category_menu").property_account_income_categ_id, self._account("701300")
+        )
 
     def test_sale_taxes_on_445720(self):
         tax = self.company.account_sale_tax_id
         self.assertEqual(
-            tax.invoice_repartition_line_ids.filtered(lambda r: r.repartition_type == "tax").account_id, self._account("445720")
+            tax.invoice_repartition_line_ids.filtered(lambda r: r.repartition_type == "tax").account_id,
+            self._account("445720"),
         )
 
     def test_setup_is_idempotent(self):

@@ -9,9 +9,8 @@ limite a 5 (VEN-CAF n'y tient pas).
 
 import logging
 
-from odoo.exceptions import UserError
-
 from odoo.addons.his_pos_tva.hooks import TVA_BIENS, TVA_SERVICES
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -65,7 +64,11 @@ JOURNALS = [
 
 # Compte de produit de base par categorie d'articles.
 INCOME_BY_CATEGORY = {
-    "706200": ["his_stock_mdm.categ_copy_impression", "his_stock_mdm.categ_copy_photocopie", "his_stock_mdm.categ_copy_scan"],
+    "706200": [
+        "his_stock_mdm.categ_copy_impression",
+        "his_stock_mdm.categ_copy_photocopie",
+        "his_stock_mdm.categ_copy_scan",
+    ],
     "700100": ["his_stock_mdm.categ_copy_bureautique", "his_stock_mdm.categ_copy_flexy", "his_stock_mdm.categ_book"],
     "700200": [
         "his_stock_mdm.categ_cafe_biscuits",
@@ -93,16 +96,8 @@ def _changes(record, vals):
     return {name: getattr(value, "id", value) for name, value in vals.items() if record[name] != value}
 
 
-def setup_pos_finance(env, company):
-    """Cree comptes et journaux manquants, puis regle les trois caisses de `company`."""
-    if not company.chart_template:
-        _logger.warning("his_pos_finance: %s has no chart of accounts, nothing set up.", company.name)
-        return
+def _setup_accounts(env, company, account):
     Account = env["account.account"].with_company(company)
-
-    def account(code):
-        return Account.search([("code", "=", code), ("company_ids", "in", company.id)], limit=1)
-
     for code, name, account_type, reconcile in ACCOUNTS:
         existing = account(code)
         if not existing:
@@ -123,6 +118,8 @@ def setup_pos_finance(env, company):
                 vals["account_type"] = account_type
             existing.write(vals)
 
+
+def _setup_journals(env, company, account):
     Journal = env["account.journal"]
     ecart = account("476000")
     for code, name, journal_type, default_code in JOURNALS:
@@ -131,11 +128,30 @@ def setup_pos_finance(env, company):
         if journal_type == "cash":
             vals.update(loss_account_id=ecart, profit_account_id=ecart)
         if not journal:
-            Journal.create({"code": code, "name": name, "type": journal_type, "company_id": company.id, **_changes(Journal, vals)})
+            Journal.create(
+                {"code": code, "name": name, "type": journal_type, "company_id": company.id, **_changes(Journal, vals)}
+            )
         else:
             vals = _changes(journal, vals)
             if vals:
                 journal.write(vals)
+
+
+def setup_pos_finance(env, company):
+    """Cree comptes et journaux manquants, puis regle les trois caisses de `company`."""
+    if not company.chart_template:
+        _logger.warning("his_pos_finance: %s has no chart of accounts, nothing set up.", company.name)
+        return
+
+    def account(code):
+        return (
+            env["account.account"]
+            .with_company(company)
+            .search([("code", "=", code), ("company_ids", "in", company.id)], limit=1)
+        )
+
+    _setup_accounts(env, company, account)
+    _setup_journals(env, company, account)
 
     if company.transfer_account_id != account("581000"):
         company.transfer_account_id = account("581000")

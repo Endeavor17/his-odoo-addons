@@ -1,0 +1,1151 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* his_pos_finance
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260926\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-24 09:53+0000\n"
+"PO-Revision-Date: 2026-11-24 09:53+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "%(name)s is already sent."
+msgstr "%(name)s est déjà remis."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_discrepancy.py:0
+msgid "%(name)s is no longer at this step."
+msgstr "%(name)s n'est plus à cette étape."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "%(name)s is not waiting to be received."
+msgstr "%(name)s n'attend pas de réception."
+
+#. module: his_pos_finance
+#: model:ir.actions.report,print_report_name:his_pos_finance.action_report_cash_transfer
+msgid "'Bordereau %s' % object.name"
+msgstr "'Bordereau %s' % object.name"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "<strong>Handed over by</strong><br/><br/><br/>Signature"
+msgstr "<strong>Remis par</strong><br/><br/><br/>Signature"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "<strong>Received by</strong><br/><br/><br/>Signature"
+msgstr "<strong>Reçu par</strong><br/><br/><br/>Signature"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_count.py:0
+msgid "A cash count cannot be changed; count again."
+msgstr "Un comptage ne se modifie pas : recomptez."
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__finance_decision__accepted
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy_decide__decision__accepted
+msgid "Accepted"
+msgstr "Acceptée"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__message_needaction
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__amount
+msgid "Amount"
+msgstr "Montant"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer_receive__amount
+msgid "Amount Counted"
+msgstr "Montant compté"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__amount_received
+msgid "Amount Received"
+msgstr "Montant reçu"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__amount_sent
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer_receive__amount_sent
+msgid "Amount Sent"
+msgstr "Montant remis"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/cash_transfer_buttons.js:0
+msgid "Amount counted"
+msgstr "Montant compté"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "Amount received"
+msgstr "Montant reçu"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "Amount sent"
+msgstr "Montant remis"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_form
+msgid "Approve"
+msgstr "Valider"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__message_attachment_count
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_order_line__his_authorization_kind
+msgid "Authorization"
+msgstr "Autorisation"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_order_line__his_authorization_reason
+msgid "Authorization Reason"
+msgstr "Motif de l'autorisation"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/authorization_dialog.xml:0
+msgid "Authorize"
+msgstr "Autoriser"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_order_line__his_authorized_by_id
+msgid "Authorized By"
+msgstr "Autorisé par"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/authorization_dialog.xml:0
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_decide_view_form
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_transfer_receive_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__journal_id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__journal_id
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_search
+msgid "Cash Box"
+msgstr "Caisse"
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_his_cash_count
+msgid "Cash Box Count"
+msgstr "Comptage de caisse"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_account_journal__his_holder_id
+msgid "Cash Box Holder"
+msgstr "Détenteur de la caisse"
+
+#. module: his_pos_finance
+#: model:ir.actions.act_window,name:his_pos_finance.his_cash_box_action
+#: model:ir.ui.menu,name:his_pos_finance.menu_his_cash_box
+msgid "Cash Boxes"
+msgstr "Caisses Finance et Direction"
+
+#. module: his_pos_finance
+#: model:his.metabase.dashboard,name:his_pos_finance.dashboard_cash
+msgid "Cash Control"
+msgstr "Contrôle des caisses"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__kind__count
+msgid "Cash Count"
+msgstr "Comptage"
+
+#. module: his_pos_finance
+#: model:ir.actions.act_window,name:his_pos_finance.his_cash_count_action
+#: model:ir.ui.menu,name:his_pos_finance.menu_his_cash_count
+msgid "Cash Counts"
+msgstr "Comptages de caisse"
+
+#. module: his_pos_finance
+#: model:ir.actions.act_window,name:his_pos_finance.his_cash_discrepancy_action
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__his_discrepancy_ids
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__his_discrepancy_ids
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_session__his_discrepancy_ids
+#: model:ir.ui.menu,name:his_pos_finance.menu_his_cash_discrepancy_account
+#: model:ir.ui.menu,name:his_pos_finance.menu_his_cash_discrepancy_pos
+msgid "Cash Discrepancies"
+msgstr "Écarts de caisse"
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_his_cash_discrepancy
+msgid "Cash Discrepancy"
+msgstr "Écart de caisse"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.res_config_settings_view_form_his_pos_finance
+msgid "Cash Gap Levels"
+msgstr "Seuils des écarts de caisse"
+
+#. module: his_pos_finance
+#: model:ir.actions.client,name:his_pos_finance.action_dashboard_cash
+#: model:ir.ui.menu,name:his_pos_finance.menu_dashboard_cash
+msgid "Cash Indicators"
+msgstr "Indicateurs caisses"
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_his_cash_transfer
+msgid "Cash Transfer"
+msgstr "Versement"
+
+#. module: his_pos_finance
+#: model:ir.actions.report,name:his_pos_finance.action_report_cash_transfer
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "Cash Transfer Slip"
+msgstr "Bordereau de versement"
+
+#. module: his_pos_finance
+#: model:ir.actions.act_window,name:his_pos_finance.his_cash_transfer_action
+#: model:ir.ui.menu,name:his_pos_finance.menu_his_cash_transfer_account
+#: model:ir.ui.menu,name:his_pos_finance.menu_his_cash_transfer_pos
+msgid "Cash Transfers"
+msgstr "Versements"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_count.py:0
+msgid "Cash count %s"
+msgstr "Comptage %s"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_discrepancy.py:0
+msgid "Cash discrepancies change only through their buttons."
+msgstr "Une fiche d'écart ne change que par ses boutons."
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_pos_config__his_float_amount
+msgid "Cash left in the till after the evening hand over to Finance."
+msgstr "Espèces laissées dans la caisse après le versement du soir à la Finance."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/pos_session.py:0
+msgid "Cash only leaves a till by a hand over to Finance."
+msgstr "Les espèces ne sortent d'une caisse que par un versement à la Finance."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "Cash transfers change only through their buttons."
+msgstr "Un versement ne change que par ses boutons."
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__holder_employee_id
+msgid "Cashier"
+msgstr "Caissier"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_box_view_kanban
+msgid "Close Count"
+msgstr "Comptage de clôture"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/hooks.py:0
+msgid "Close every till before installing Finance controls."
+msgstr "Fermez toutes les caisses avant d'installer les contrôles Finance."
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__account_journal__his_count_state__closed
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__state__closed
+msgid "Closed"
+msgstr "Clôturée"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__closed_date
+msgid "Closed Date"
+msgstr "Date de clôture"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_session__his_no_handover
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.view_pos_session_search_his_handover
+msgid "Closed Without Hand Over"
+msgstr "Fermée sans versement"
+
+#. module: his_pos_finance
+#: model:res.groups,comment:his_pos_finance.group_finance_head
+msgid ""
+"Closes important and major cash gaps and reviews the Direction cash box "
+"gaps."
+msgstr "Clôt les écarts importants et majeurs et revoit ceux de la caisse Direction."
+
+#. module: his_pos_finance
+#: model:his.role,description:his_pos_finance.role_finance_head
+msgid "Closes important and major cash gaps; reviews Direction cash box gaps."
+msgstr "Clôt les écarts importants et majeurs ; revoit ceux de la caisse Direction."
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_count__kind__closing
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__kind__closing
+msgid "Closing"
+msgstr "Clôture"
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__company_id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__company_id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_count__company_id
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_discrepancy__company_id
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_transfer__company_id
+msgid "Company related to this journal"
+msgstr "Société liée à ce journal"
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_decide_view_form
+msgid "Confirm"
+msgstr "Confirmer"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_transfer_receive_view_form
+msgid "Confirm Receipt"
+msgstr "Confirmer la réception"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__count_id
+msgid "Count"
+msgstr "Comptage"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__counted
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__counted
+msgid "Counted"
+msgstr "Compté"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_discrepancy__amount
+msgid "Counted minus expected."
+msgstr "Compté moins attendu."
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__create_uid
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__create_uid
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy_decide__create_uid
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__create_uid
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer_receive__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__create_date
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__create_date
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy_decide__create_date
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__create_date
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer_receive__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__currency_id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__currency_id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__currency_id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer_receive__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__date
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__date
+msgid "Date"
+msgstr "Date"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_form
+msgid "Decide"
+msgstr "Décider"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy_decide__decision
+msgid "Decision"
+msgstr "Décision"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__difference
+msgid "Difference"
+msgstr "Écart"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__state__direction
+msgid "Direction"
+msgstr "Direction"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/authorization_patches.js:0
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__pos_order_line__his_authorization_kind__discount
+msgid "Discount"
+msgstr "Remise"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy_decide__discrepancy_id
+msgid "Discrepancy"
+msgstr "Écart"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_account_journal__display_name
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__display_name
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__display_name
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy_decide__display_name
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__display_name
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer_receive__display_name
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_config__display_name
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_order_line__display_name
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_session__display_name
+#: model:ir.model.fields,field_description:his_pos_finance.field_res_company__display_name
+#: model:ir.model.fields,field_description:his_pos_finance.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_transfer__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_discrepancy_decide__account_id
+msgid "Empty: 657000 for a shortage, 757000 for a surplus."
+msgstr "Vide : 657000 pour un manquant, 757000 pour un excédent."
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__expected
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__expected
+msgid "Expected"
+msgstr "Attendu"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/pos_session.py:0
+msgid "Explain the cash difference before closing."
+msgstr "Expliquez l'écart de caisse avant de fermer."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_count.py:0
+msgid "Explain the cash difference."
+msgstr "Expliquez l'écart de caisse."
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/popups.xml:0
+msgid "Explain the difference"
+msgstr "Expliquez l'écart"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__explanation
+msgid "Explanation"
+msgstr "Explication"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_discrepancy.py:0
+msgid "Fill in the holder's explanation and your observations first."
+msgstr "Renseignez d'abord l'explication du détenteur et vos observations."
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__state__finance
+msgid "Finance"
+msgstr "Finance"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__finance_decision
+msgid "Finance Decision"
+msgstr "Décision de la Finance"
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_his_cash_discrepancy_decide
+msgid "Finance Decision on a Cash Discrepancy"
+msgstr "Décision de la Finance sur un écart de caisse"
+
+#. module: his_pos_finance
+#: model:his.role,name:his_pos_finance.role_finance_head
+#: model:res.groups,name:his_pos_finance.group_finance_head
+msgid "Finance Head"
+msgstr "Responsable Finance"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__finance_note
+msgid "Finance Note"
+msgstr "Note de la Finance"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_config__his_float_amount
+msgid "Fixed Float"
+msgstr "Fonds de caisse fixe"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__message_follower_ids
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__message_partner_ids
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__from_journal_id
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_transfer_view_search
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "From"
+msgstr "De"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__from_session_id
+msgid "From Session"
+msgstr "Session d'origine"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__finance_decision__investigating
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy_decide__decision__investigating
+msgid "Further Investigation"
+msgstr "Investigations complémentaires"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__kind__handover
+msgid "Hand Over"
+msgstr "Versement"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_session__his_transfer_ids
+msgid "Hand Overs"
+msgstr "Versements"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid ""
+"Hand over an amount between 0 and the cash expected in the till (%(cash)s)."
+msgstr "Versez un montant entre 0 et les espèces attendues en caisse (%(cash)s)."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "Hand over only from an open till that takes cash."
+msgstr "Un versement ne part que d'une caisse ouverte qui encaisse des espèces."
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/cash_transfer_buttons.js:0
+#: code:addons/his_pos_finance/static/src/app/navbar.xml:0
+msgid "Hand over to Finance"
+msgstr "Verser à la Finance"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__has_message
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__holder_id
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_search
+msgid "Holder"
+msgstr "Détenteur"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_account_journal__id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy_decide__id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer_receive__id
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_config__id
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_order_line__id
+#: model:ir.model.fields,field_description:his_pos_finance.field_pos_session__id
+#: model:ir.model.fields,field_description:his_pos_finance.field_res_company__id
+#: model:ir.model.fields,field_description:his_pos_finance.field_res_config_settings__id
+msgid "ID"
+msgstr "ID"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_discrepancy__message_needaction
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_transfer__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_discrepancy__message_has_error
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_discrepancy__message_has_sms_error
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_transfer__message_has_error
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_transfer__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__tier__important
+msgid "Important"
+msgstr "Important"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_res_company__his_gap_important
+#: model:ir.model.fields,field_description:his_pos_finance.field_res_config_settings__his_gap_important
+msgid "Important Gap Up To"
+msgstr "Écart important jusqu'à"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__message_is_follower
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_account_journal
+msgid "Journal"
+msgstr "Journal"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__kind
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__write_uid
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__write_uid
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy_decide__write_uid
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__write_uid
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer_receive__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__write_date
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__write_date
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy_decide__write_date
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__write_date
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer_receive__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_search
+msgid "Level"
+msgstr "Niveau"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__tier__major
+msgid "Major"
+msgstr "Majeur"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/authorization_dialog.xml:0
+msgid "Manager"
+msgstr "Responsable"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/authorization_dialog.xml:0
+msgid "Manager PIN"
+msgstr "Code PIN du responsable"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__message_has_error
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__message_ids
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__tier__minor
+msgid "Minor"
+msgstr "Mineur"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_res_company__his_gap_minor
+#: model:ir.model.fields,field_description:his_pos_finance.field_res_config_settings__his_gap_minor
+msgid "Minor Gap Up To"
+msgstr "Écart mineur jusqu'à"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_search
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_transfer_view_search
+msgid "Month"
+msgstr "Mois"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__name
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__nature
+msgid "Nature"
+msgstr "Nature"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/cash_transfer_buttons.js:0
+msgid "No cash is waiting for this till."
+msgstr "Aucune somme n'attend cette caisse."
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/authorization_dialog.xml:0
+msgid "No manager with a PIN on this till."
+msgstr "Aucun responsable avec un code PIN sur cette caisse."
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__account_journal__his_count_state__none
+msgid "Not Opened"
+msgstr "Non ouverte"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_transfer_view_search
+msgid "Not Received"
+msgstr "Non reçus"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__note
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy_decide__note
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__note
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "Note"
+msgstr "Note"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_transfer_view_form
+msgid "Note..."
+msgstr "Note..."
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__message_needaction_counter
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__message_has_error_counter
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_discrepancy__message_needaction_counter
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_transfer__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_discrepancy__message_has_error_counter
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_transfer__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur d'envoi"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "Only Finance sends cash from the back office."
+msgstr "Seule la Finance remet des espèces depuis le back-office."
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_search
+msgid "Open"
+msgstr "Ouvertes"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_box_view_kanban
+msgid "Open Count"
+msgstr "Comptage d'ouverture"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "Open the till before receiving cash into it."
+msgstr "Ouvrez la caisse avant d'y recevoir des espèces."
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__account_journal__his_count_state__opened
+msgid "Opened"
+msgstr "Ouverte"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_count__kind__opening
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__kind__opening
+msgid "Opening"
+msgstr "Ouverture"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/pos_session.py:0
+msgid "Opening difference (%s)"
+msgstr "Écart d'ouverture (%s)"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_account_journal__his_holder_id
+msgid "Person who holds this cash box."
+msgstr "Personne qui détient cette caisse."
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_pos_config
+msgid "Point of Sale Configuration"
+msgstr "Configuration du point de vente"
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_pos_order_line
+msgid "Point of Sale Order Lines"
+msgstr "Lignes de commande du point de vente"
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_pos_session
+msgid "Point of Sale Session"
+msgstr "Session du point de vente"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__pos_order_line__his_authorization_kind__price
+msgid "Price Change"
+msgstr "Changement de prix"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/authorization_patches.js:0
+msgid "Price change"
+msgstr "Changement de prix"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_transfer_view_form
+msgid "Print Slip"
+msgstr "Imprimer le bordereau"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__provisional_move_id
+msgid "Provisional Move"
+msgstr "Écriture provisoire"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/authorization_dialog.xml:0
+msgid "Reason (required)"
+msgstr "Motif (obligatoire)"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_transfer_view_form
+msgid "Receive"
+msgstr "Recevoir"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__receive_move_id
+msgid "Receive Move"
+msgstr "Écriture de réception"
+
+#. module: his_pos_finance
+#: model:ir.model,name:his_pos_finance.model_his_cash_transfer_receive
+msgid "Receive a Cash Transfer"
+msgstr "Recevoir un versement"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/cash_transfer_buttons.js:0
+#: code:addons/his_pos_finance/static/src/app/navbar.xml:0
+msgid "Receive cash"
+msgstr "Recevoir des espèces"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_transfer__state__received
+msgid "Received"
+msgstr "Reçu"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__received_at
+msgid "Received At"
+msgstr "Reçu le"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__received_by
+msgid "Received By"
+msgstr "Reçu par"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "Received by"
+msgstr "Reçu par"
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/authorization_patches.js:0
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__pos_order_line__his_authorization_kind__refund
+msgid "Refund"
+msgstr "Remboursement"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__finance_decision__refused
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy_decide__decision__refused
+msgid "Refused"
+msgstr "Refusée"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__his_account_id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy_decide__account_id
+msgid "Regularisation Account"
+msgstr "Compte de régularisation"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__regularisation_move_id
+msgid "Regularisation Move"
+msgstr "Écriture de régularisation"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_count_view_form
+msgid "Required when the count differs"
+msgstr "Obligatoire si le comptage diffère"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__manager_note
+msgid "Reviewer Observations"
+msgstr "Observations du responsable"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__message_has_sms_error
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_transfer_view_form
+msgid "Send"
+msgstr "Remettre"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__send_move_id
+msgid "Send Move"
+msgstr "Écriture de remise"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_form
+msgid "Send to Finance"
+msgstr "Transmettre à la Finance"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_transfer__state__sent
+msgid "Sent"
+msgstr "Remis"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__sent_at
+msgid "Sent At"
+msgstr "Remis le"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__sent_by
+msgid "Sent By"
+msgstr "Remis par"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "Sent by"
+msgstr "Remis par"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "Sent on"
+msgstr "Remis le"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__session_id
+msgid "Session"
+msgstr "Session"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "Set the internal transfer account (581000) on the company first."
+msgstr "Renseignez d'abord le compte de virements internes (581000) de la société."
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__nature__shortage
+msgid "Shortage"
+msgstr "Manquant"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__tier__significant
+msgid "Significant"
+msgstr "Significatif"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_res_company__his_gap_significant
+#: model:ir.model.fields,field_description:his_pos_finance.field_res_config_settings__his_gap_significant
+msgid "Significant Gap Up To"
+msgstr "Écart significatif jusqu'à"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__state
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__state
+msgid "State"
+msgstr "État"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__nature__surplus
+msgid "Surplus"
+msgstr "Excédent"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "The amount must be positive."
+msgstr "Le montant doit être positif."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "The amount received cannot be negative."
+msgstr "Le montant reçu ne peut pas être négatif."
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_search
+msgid "This Month"
+msgstr "Ce mois-ci"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "This transfer is not for this till."
+msgstr "Ce versement n'est pas destiné à cette caisse."
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__tier
+msgid "Tier"
+msgstr "Niveau"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__to_journal_id
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.report_cash_transfer
+msgid "To"
+msgstr "Vers"
+
+#. module: his_pos_finance
+#: model:ir.model.fields.selection,name:his_pos_finance.selection__his_cash_discrepancy__state__to_review
+msgid "To Review"
+msgstr "À revoir"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__to_session_id
+msgid "To Session"
+msgstr "Session de destination"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_account_journal__his_count_state
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_list
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_transfer_view_list
+msgid "Total"
+msgstr "Total"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__transfer_id
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer_receive__transfer_id
+msgid "Transfer"
+msgstr "Versement"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "Unsupported search on Closed Without Hand Over."
+msgstr "Recherche non prise en charge sur « Fermée sans versement »."
+
+#. module: his_pos_finance
+#: model_terms:ir.ui.view,arch_db:his_pos_finance.res_config_settings_view_form_his_pos_finance
+msgid ""
+"Up to the first amount: POS manager and Finance; then Finance; then the "
+"Finance Head; above the last: the Director too"
+msgstr "Jusqu'au premier montant : responsable du point de vente et Finance ; puis la Finance ; puis le Responsable Finance ; au-delà du dernier : la Direction aussi"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_count__user_id
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_discrepancy__website_message_ids
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_discrepancy__website_message_ids
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_transfer__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des échanges sur le site web"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,help:his_pos_finance.field_his_cash_discrepancy__explanation
+msgid "Written explanation of the holder."
+msgstr "Explication écrite du détenteur."
+
+#. module: his_pos_finance
+#. odoo-javascript
+#: code:addons/his_pos_finance/static/src/app/authorization_dialog.xml:0
+msgid "Wrong PIN"
+msgstr "Code PIN erroné"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_discrepancy.py:0
+msgid "You are not allowed to act on %(name)s at this step."
+msgstr "Vous ne pouvez pas agir sur %(name)s à cette étape."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_count.py:0
+msgid "You cannot count %(box)s."
+msgstr "Vous ne pouvez pas compter %(box)s."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "You cannot receive cash into %(box)s."
+msgstr "Vous ne pouvez pas recevoir d'espèces dans %(box)s."

@@ -17,7 +17,8 @@ class PosOrderLine(models.Model):
 
     @api.model
     def _load_pos_data_fields(self, config):
-        return super()._load_pos_data_fields(config) + [
+        return [
+            *super()._load_pos_data_fields(config),
             "his_authorized_by_id",
             "his_authorization_reason",
             "his_authorization_kind",

@@ -1,8 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+from odoo.addons.his_pos_finance.hooks import post_init_hook
 from odoo.exceptions import UserError
 from odoo.tests import tagged
-
-from odoo.addons.his_pos_finance.hooks import post_init_hook
 
 from .common import HisPosFinanceCase
 

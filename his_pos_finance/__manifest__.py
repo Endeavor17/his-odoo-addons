@@ -10,7 +10,15 @@ Controles du Departement Finance sur les caisses
     """,
     "author": "Groupe HIS-HTC-IRA",
     "license": "LGPL-3",
-    "depends": ["point_of_sale", "pos_hr", "his_stock_mdm", "his_purchase_finance", "his_purchase", "his_pos_tva", "his_metabase"],
+    "depends": [
+        "point_of_sale",
+        "pos_hr",
+        "his_stock_mdm",
+        "his_purchase_finance",
+        "his_purchase",
+        "his_pos_tva",
+        "his_metabase",
+    ],
     "data": [
         "security/his_pos_finance_security.xml",
         "security/ir.model.access.csv",
