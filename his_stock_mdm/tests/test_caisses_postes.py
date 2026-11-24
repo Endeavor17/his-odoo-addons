@@ -135,3 +135,10 @@ class TestCaissesPostes(TransactionCase):
         )
         data = self.env["pos.config"].with_user(comptoir)._load_pos_data_search_read({}, self.cafeteria)
         self.assertEqual([c["id"] for c in data], self.cafeteria.ids)
+
+    def test_till_without_role_loads_for_a_counter_account(self):
+        """Sans role de caissier lie, la caisse se charge quand meme pour un compte sans droits RH
+        (le PIN des employes est reserve aux RH ; vu par le tour de his_pos_finance)."""
+        self.cafeteria.his_cashier_role_ids = [(5, 0, 0)]
+        self.cafeteria.invalidate_recordset()
+        self.assertTrue(self.cafeteria.with_user(self.comptoir).his_till_issue)

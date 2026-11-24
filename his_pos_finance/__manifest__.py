@@ -21,10 +21,14 @@ Controles du Departement Finance sur les caisses
         "report/his_cash_transfer_report.xml",
         "views/his_cash_transfer_views.xml",
         "views/his_cash_count_views.xml",
+        "views/pos_order_views.xml",
     ],
     "assets": {
         "point_of_sale._assets_pos": [
             "his_pos_finance/static/src/app/**/*",
+        ],
+        "web.assets_tests": [
+            "his_pos_finance/static/tests/tours/**/*",
         ],
     },
     "post_init_hook": "post_init_hook",

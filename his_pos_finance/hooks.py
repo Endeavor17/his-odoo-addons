@@ -9,7 +9,6 @@ limite a 5 (VEN-CAF n'y tient pas).
 
 import logging
 
-from odoo import _
 from odoo.exceptions import UserError
 
 from odoo.addons.his_pos_tva.hooks import TVA_BIENS, TVA_SERVICES
@@ -179,9 +178,10 @@ def _setup_tills(env, company, account):
     todo = []
     for xmlid, (sale_code, cash_code, mapping) in TILLS.items():
         config = env.ref(xmlid, raise_if_not_found=False)
-        if not config or config.company_id != company:
+        # sudo : la caisse d'une autre societe n'est pas lisible depuis celle-ci
+        if not config or config.sudo().company_id != company:
             continue
-        name = _("Revenue – %s", config.name)
+        name = f"Revenue – {config.name}"
         position = env["account.fiscal.position"].search(
             [("name", "=", name), ("company_id", "=", company.id)], limit=1
         ) or env["account.fiscal.position"].create({"name": name, "company_id": company.id})
@@ -210,7 +210,7 @@ def _setup_tills(env, company, account):
         cash_vals = {}
         if not cash:
             cash = env["pos.payment.method"].create(
-                {"name": _("Cash %s", config.name), "journal_id": journal(cash_code).id, "company_id": company.id}
+                {"name": f"Cash {config.name}", "journal_id": journal(cash_code).id, "company_id": company.id}
             )
             vals["payment_method_ids"] = [(4, cash.id)]
         elif cash.journal_id != journal(cash_code):
@@ -221,7 +221,7 @@ def _setup_tills(env, company, account):
     if todo and env["pos.session"].search_count(
         [("config_id", "in", [config.id for config, *_rest in todo]), ("state", "!=", "closed")]
     ):
-        raise UserError(_("Close every till before installing Finance controls."))
+        raise UserError(env._("Close every till before installing Finance controls."))
     for config, vals, cash, cash_vals in todo:
         if cash_vals:
             cash.write(cash_vals)

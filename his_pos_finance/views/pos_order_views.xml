@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_pos_form_his_authorization" model="ir.ui.view">
+        <field name="name">pos.order.form.his_authorization</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lines']/list/field[@name='discount']" position="after">
+                <field name="his_authorization_kind" optional="show"/>
+                <field name="his_authorized_by_id" optional="show"/>
+                <field name="his_authorization_reason" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -50,7 +50,7 @@ class PosConfig(models.Model):
         self.ensure_one()
         roles = self.sudo().his_cashier_role_ids
         if not roles:
-            return self.env["hr.employee"]
+            return self.env["hr.employee"].sudo()  # sudo comme la recherche : le PIN est reserve aux RH
         return (
             self.env["hr.employee"]
             .sudo()

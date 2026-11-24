@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="his_pos_finance.HisAuthorizationDialog">
+        <Dialog title="props.title" size="'md'">
+            <div class="his-approval d-flex flex-column gap-3">
+                <div t-if="!props.self">
+                    <div class="mb-1">Manager</div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <t t-foreach="props.managers" t-as="manager" t-key="manager.id">
+                            <button type="button" class="btn btn-lg his-approval-manager"
+                                t-att-class="state.manager === manager ? 'btn-primary' : 'btn-secondary'"
+                                t-on-click="() => state.manager = manager" t-esc="manager.name"/>
+                        </t>
+                    </div>
+                    <div t-if="!props.managers.length" class="text-danger">No manager with a PIN on this till.</div>
+                </div>
+                <input t-if="!props.self" type="password" inputmode="numeric" class="form-control form-control-lg his-approval-pin"
+                    placeholder="Manager PIN" t-model="state.pin"/>
+                <div t-if="state.error" class="text-danger">Wrong PIN</div>
+                <textarea class="form-control his-approval-reason" rows="2" placeholder="Reason (required)" t-model="state.reason"/>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg his-approval-confirm" t-att-disabled="!canConfirm" t-on-click="confirm">Authorize</button>
+                <button class="btn btn-secondary btn-lg" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>
