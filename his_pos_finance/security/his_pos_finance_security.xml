@@ -20,18 +20,4 @@
         <field name="model_id" ref="model_his_cash_transfer"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
-    <!-- Les comptages des caisses Finance et Direction : chacun sa caisse,
-         la Finance et la Direction voient tout. -->
-    <record id="rule_count_holder" model="ir.rule">
-        <field name="name">Cash counts: own cash box</field>
-        <field name="model_id" ref="model_his_cash_count"/>
-        <field name="domain_force">[('journal_id.his_holder_id', '=', user.id)]</field>
-        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-    </record>
-    <record id="rule_count_finance" model="ir.rule">
-        <field name="name">Cash counts: Finance and Direction</field>
-        <field name="model_id" ref="model_his_cash_count"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('his_purchase_finance.group_finance')), (4, ref('his_purchase.group_purchase_director'))]"/>
-    </record>
 </odoo>

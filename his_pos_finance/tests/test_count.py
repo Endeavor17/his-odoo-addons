@@ -56,7 +56,7 @@ class TestCount(HisPosFinanceCase):
         with self.assertRaises(AccessError):
             self._count("CFIN", "opening", counted=0, user=self.cashier_user)
 
-    def test_holder_may_count(self):
-        holder = self.pos_manager
-        self._journal("CDIR").his_holder_id = holder
-        self._count("CDIR", "opening", counted=0, user=holder)
+    def test_holder_may_count_own_box(self):
+        # un agent Finance detenteur de la caisse Direction la compte lui-meme
+        self._journal("CDIR").his_holder_id = self.finance
+        self._count("CDIR", "opening", counted=0, user=self.finance)
