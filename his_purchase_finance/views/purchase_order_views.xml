@@ -110,6 +110,7 @@
                 <group>
                     <field name="order_ref"/>
                     <field name="period" placeholder="e.g. 3-14 November 2026"/>
+                    <field name="compliant"/>
                     <field name="note" placeholder="Reservations or anomalies, if any"/>
                 </group>
                 <footer>

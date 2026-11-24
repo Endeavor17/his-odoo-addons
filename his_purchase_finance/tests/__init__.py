@@ -1,5 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from . import (
+    test_anomaly,
     test_bill_check,
     test_rating,
     test_review_fixes,

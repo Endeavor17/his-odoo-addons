@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="his_purchase_anomaly_list" model="ir.ui.view">
+        <field name="name">his.purchase.anomaly.list</field>
+        <field name="model">his.purchase.anomaly</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="his_is_late" decoration-muted="state in ('closed', 'cancelled')">
+                <field name="name"/>
+                <field name="order_id"/>
+                <field name="partner_id"/>
+                <field name="kind"/>
+                <field name="declared_by_id"/>
+                <field name="declared_on"/>
+                <field name="solution" optional="show"/>
+                <field name="his_is_late" column_invisible="1"/>
+                <field name="state" widget="badge" decoration-warning="state in ('declared', 'proposed')"
+                    decoration-info="state in ('approved', 'executed')" decoration-success="state == 'closed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="his_purchase_anomaly_form" model="ir.ui.view">
+        <field name="name">his.purchase.anomaly.form</field>
+        <field name="model">his.purchase.anomaly</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_propose" type="object" string="Propose to Finance" class="btn-primary"
+                        invisible="state != 'declared'" groups="purchase.group_purchase_user"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                        invisible="state != 'proposed'" groups="his_purchase_finance.group_finance"/>
+                    <button name="action_execute" type="object" string="Carried Out" class="btn-primary"
+                        invisible="state != 'approved'" groups="purchase.group_purchase_user"/>
+                    <button name="action_close" type="object" string="Close" class="btn-primary"
+                        invisible="state != 'executed'" groups="his_purchase_finance.group_finance"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                        invisible="state in ('closed', 'cancelled')" groups="his_purchase_finance.group_finance"/>
+                    <field name="state" widget="statusbar" statusbar_visible="declared,proposed,approved,executed,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="order_id"/>
+                            <field name="partner_id"/>
+                            <field name="picking_id" invisible="not picking_id"/>
+                            <field name="move_id" invisible="not move_id"/>
+                        </group>
+                        <group>
+                            <field name="kind" readonly="state != 'declared'"/>
+                            <field name="declared_by_id"/>
+                            <field name="declared_on"/>
+                        </group>
+                    </group>
+                    <field name="description" readonly="state != 'declared'"/>
+                    <group string="Solution">
+                        <field name="solution" readonly="state not in ('declared', 'proposed')"/>
+                        <field name="solution_note" readonly="state not in ('declared', 'proposed')"/>
+                    </group>
+                    <group string="Finance">
+                        <field name="finance_note" readonly="state in ('closed', 'cancelled')"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="his_purchase_anomaly_search" model="ir.ui.view">
+        <field name="name">his.purchase.anomaly.search</field>
+        <field name="model">his.purchase.anomaly</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="order_id"/>
+                <field name="partner_id"/>
+                <filter name="open" string="Open" domain="[('state', 'not in', ('closed', 'cancelled'))]"/>
+                <filter name="late" string="Late" domain="[('his_is_late', '=', True)]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_partner" string="Supplier" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_his_purchase_anomaly" model="ir.actions.act_window">
+        <field name="name">Purchase Anomalies</field>
+        <field name="res_model">his.purchase.anomaly</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+    </record>
+
+    <menuitem id="menu_his_purchase_anomaly" name="Anomalies" parent="purchase.menu_procurement_management"
+        action="action_his_purchase_anomaly" sequence="40" groups="purchase.group_purchase_user"/>
+
+    <record id="his_anomaly_declare_form" model="ir.ui.view">
+        <field name="name">his.anomaly.declare.form</field>
+        <field name="model">his.anomaly.declare</field>
+        <field name="arch" type="xml">
+            <form>
+                <p>Describe the gap, the damage or the non-compliance. The purchasing team agrees a solution with the
+                    supplier, then Finance approves it. The order's bills stay on hold until it is closed.</p>
+                <group>
+                    <field name="order_ref"/>
+                    <field name="kind"/>
+                    <field name="description" placeholder="What is missing, damaged or not compliant?"/>
+                </group>
+                <footer>
+                    <button name="action_declare" type="object" string="Declare Anomaly" class="btn-primary"/>
+                    <button special="cancel" string="Discard"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Points d'entree : commande, reception, facture, demande. -->
+    <record id="purchase_order_form_anomaly" model="ir.ui.view">
+        <field name="name">purchase.order.form.his.anomaly</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_his_declare_anomaly" type="object" string="Declare Anomaly"
+                    invisible="state not in ('purchase', 'done')" groups="purchase.group_purchase_user"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_his_anomalies" type="object" class="oe_stat_button" icon="fa-exclamation-triangle"
+                    invisible="not his_anomaly_count">
+                    <field name="his_anomaly_count" widget="statinfo" string="Anomalies"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_picking_form_anomaly" model="ir.ui.view">
+        <field name="name">stock.picking.form.his.anomaly</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_his_declare_anomaly" type="object" string="Declare Anomaly"
+                    invisible="picking_type_code != 'incoming' or not purchase_id" groups="stock.group_stock_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_move_form_anomaly" model="ir.ui.view">
+        <field name="name">account.move.form.his.anomaly</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_his_declare_anomaly" type="object" string="Declare Anomaly"
+                    invisible="move_type != 'in_invoice' or state != 'posted'" groups="purchase.group_purchase_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="his_purchase_request_form_anomaly" model="ir.ui.view">
+        <field name="name">his.purchase.request.form.anomaly</field>
+        <field name="model">his.purchase.request</field>
+        <field name="inherit_id" ref="his_purchase.his_purchase_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_remind']" position="before">
+                <button name="action_open_his_anomaly" type="object" string="Declare Anomaly"
+                    invisible="state not in ('ordered', 'done')"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
