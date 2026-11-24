@@ -9,4 +9,5 @@ from . import (
     purchase_order_service,
     res_company,
     res_partner,
+    stock_move,
 )

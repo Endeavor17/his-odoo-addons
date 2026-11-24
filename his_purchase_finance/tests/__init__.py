@@ -3,6 +3,7 @@ from . import (
     test_anomaly,
     test_bill_check,
     test_rating,
+    test_receipt_refusal,
     test_review_fixes,
     test_send_confirm,
     test_service_done,

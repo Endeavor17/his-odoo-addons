@@ -142,6 +142,13 @@
                 <button name="action_his_declare_anomaly" type="object" string="Declare Anomaly"
                     invisible="picking_type_code != 'incoming' or not purchase_id" groups="stock.group_stock_user"/>
             </xpath>
+            <!-- Procedure 6.1 : quantites refusees et motif, sur les receptions. -->
+            <xpath expr="//field[@name='move_ids']/list/field[@name='quantity']" position="after">
+                <field name="his_qty_refused" optional="show" column_invisible="parent.picking_type_code != 'incoming'"
+                    readonly="parent.state in ('done', 'cancel')"/>
+                <field name="his_refusal_reason" optional="show" column_invisible="parent.picking_type_code != 'incoming'"
+                    readonly="parent.state in ('done', 'cancel')" required="his_qty_refused &gt; 0"/>
+            </xpath>
         </field>
     </record>
 
