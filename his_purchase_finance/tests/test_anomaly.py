@@ -26,7 +26,9 @@ class TestAnomaly(TestBillCheck):
         self.assertEqual(anomaly.state, "declared")
         self.assertTrue(anomaly.name.startswith("ANO/"))
         self.assertIn(buyer, self._todo(anomaly))
-        anomaly.with_user(self.officer).write({"solution": "credit_note", "solution_note": "Supplier sends a credit note"})
+        anomaly.with_user(self.officer).write(
+            {"solution": "credit_note", "solution_note": "Supplier sends a credit note"}
+        )
         anomaly.with_user(self.officer).action_propose()
         self.assertEqual(anomaly.state, "proposed")
         self.assertIn(self.finance, self._todo(anomaly))

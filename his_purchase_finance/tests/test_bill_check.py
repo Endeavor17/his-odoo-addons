@@ -149,18 +149,32 @@ class TestBillCheck(HisFinanceCase):
 
     def test_down_payment_on_hold(self):
         order = self._confirmed()
-        pol = self.env["purchase.order.line"].sudo().create(
-            {"order_id": order.id, "name": "Down payment", "is_downpayment": True, "product_qty": 0, "price_unit": 3000}
+        pol = (
+            self.env["purchase.order.line"]
+            .sudo()
+            .create(
+                {
+                    "order_id": order.id,
+                    "name": "Down payment",
+                    "is_downpayment": True,
+                    "product_qty": 0,
+                    "price_unit": 3000,
+                }
+            )
         )
-        bill = self.env["account.move"].with_user(self.finance).create(
-            {
-                "move_type": "in_invoice",
-                "partner_id": order.partner_id.id,
-                "invoice_date": fields.Date.today(),
-                "invoice_line_ids": [
-                    (0, 0, {"name": "Down payment", "quantity": 1, "price_unit": 3000, "purchase_line_id": pol.id})
-                ],
-            }
+        bill = (
+            self.env["account.move"]
+            .with_user(self.finance)
+            .create(
+                {
+                    "move_type": "in_invoice",
+                    "partner_id": order.partner_id.id,
+                    "invoice_date": fields.Date.today(),
+                    "invoice_line_ids": [
+                        (0, 0, {"name": "Down payment", "quantity": 1, "price_unit": 3000, "purchase_line_id": pol.id})
+                    ],
+                }
+            )
         )
         bill.action_post()
         self.assertEqual(bill.his_check_state, "reserve")

@@ -186,7 +186,7 @@ class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
     his_anomaly_ids = fields.One2many("his.purchase.anomaly", "order_id", string="Anomalies")
-    his_anomaly_count = fields.Integer(compute="_compute_his_anomaly_count", compute_sudo=True)
+    his_anomaly_count = fields.Integer(string="Anomaly Count", compute="_compute_his_anomaly_count", compute_sudo=True)
 
     @api.depends("his_anomaly_ids")
     def _compute_his_anomaly_count(self):

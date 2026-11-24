@@ -27,9 +27,7 @@ class StockPicking(models.Model):
         for picking in self:
             missing = picking._his_refused_moves().filtered(lambda m: not (m.his_refusal_reason or "").strip())
             if missing:
-                raise UserError(
-                    _("Give the reason why %s was refused.", missing[0].product_id.display_name)
-                )
+                raise UserError(_("Give the reason why %s was refused.", missing[0].product_id.display_name))
         return super().button_validate()
 
     def _action_done(self):
@@ -55,7 +53,9 @@ class StockPicking(models.Model):
                 for move in picking._his_refused_moves()
             )
             self.env["his.purchase.anomaly"]._his_declare(
-                picking.purchase_id, "non_compliance", _("Refused at receipt %s:\n", picking.name) + description,
+                picking.purchase_id,
+                "non_compliance",
+                _("Refused at receipt %s:\n", picking.name) + description,
                 picking=picking,
             )
             picking.message_post(body=Markup("%s<ul>%s</ul>") % (_("Refused at receipt:"), lines))

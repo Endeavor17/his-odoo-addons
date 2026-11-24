@@ -705,7 +705,9 @@ class HisPurchaseRequestLine(models.Model):
     @api.depends("product_id", "product_qty", "estimated_price_unit", "company_id")
     def _compute_estimated_tax(self):
         for line in self:
-            taxes = line.product_id.supplier_taxes_id.filtered(lambda t: t.company_id == line.company_id)
+            taxes = line.product_id.supplier_taxes_id.filtered(
+                lambda t, company=line.company_id: t.company_id == company
+            )
             if not taxes:
                 line.estimated_tax = 0.0
                 continue

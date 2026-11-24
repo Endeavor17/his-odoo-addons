@@ -65,13 +65,17 @@ class TestOrderControls(TestBillCheck):
 
     def test_down_payment_by_buyer(self):
         order = self._confirmed()
-        bill = self.env["account.move"].with_user(self.finance).create(
-            {
-                "move_type": "in_invoice",
-                "partner_id": order.partner_id.id,
-                "invoice_date": fields.Date.today(),
-                "invoice_line_ids": [(0, 0, {"name": "Advance 30%", "quantity": 1, "price_unit": 5400})],
-            }
+        bill = (
+            self.env["account.move"]
+            .with_user(self.finance)
+            .create(
+                {
+                    "move_type": "in_invoice",
+                    "partner_id": order.partner_id.id,
+                    "invoice_date": fields.Date.today(),
+                    "invoice_line_ids": [(0, 0, {"name": "Advance 30%", "quantity": 1, "price_unit": 5400})],
+                }
+            )
         )
         line = bill.invoice_line_ids
         self.env.invalidate_all()

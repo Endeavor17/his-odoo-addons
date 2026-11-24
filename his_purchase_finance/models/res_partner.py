@@ -52,7 +52,9 @@ class ResPartner(models.Model):
         if partner.his_documents_exempt:
             return []
         required = REQUIRED_COMPANY if partner.is_company else REQUIRED_INDIVIDUAL
-        held = set(partner.his_supplier_document_ids.filtered(lambda d: d.status in ("valid", "to_refresh")).mapped("doc_type"))
+        held = set(
+            partner.his_supplier_document_ids.filtered(lambda d: d.status in ("valid", "to_refresh")).mapped("doc_type")
+        )
         labels = dict(self.env["his.supplier.document"]._fields["doc_type"]._description_selection(self.env))
         return [labels[doc_type] for doc_type in required if doc_type not in held]
 
@@ -79,14 +81,16 @@ class ResPartner(models.Model):
             if not partner.vat or partner.parent_id:
                 continue
             nif = partner.vat.replace(" ", "")
+            # Le NIF tel quel ou sans espaces : une recherche indexee, pas tous les tiers.
             others = self.sudo().search(
                 [
                     ("id", "!=", partner.id),
                     ("parent_id", "=", False),
-                    ("vat", "!=", False),
+                    ("vat", "in", list({partner.vat, nif})),
                     ("company_id", "in", [partner.company_id.id, False]),
-                ]
-            ).filtered(lambda other: other.vat.replace(" ", "") == nif)
+                ],
+                limit=1,
+            )
             if others:
                 raise ValidationError(
                     _("The NIF %(nif)s is already used by %(other)s.", nif=partner.vat, other=others[0].name)

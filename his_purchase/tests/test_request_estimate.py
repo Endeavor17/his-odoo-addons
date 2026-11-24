@@ -16,7 +16,9 @@ class TestRequestEstimate(HisPurchaseCase):
         self.assertEqual(request.estimated_amount_total, 2380)
 
     def test_no_product_no_tax(self):
-        request = self._request(lines=[{"description": "Shelf for the archives", "product_qty": 1, "estimated_price_unit": 500}])
+        request = self._request(
+            lines=[{"description": "Shelf for the archives", "product_qty": 1, "estimated_price_unit": 500}]
+        )
         self.assertEqual(request.line_ids.estimated_tax, 0)
         self.assertEqual(request.estimated_amount_total, 500)
 

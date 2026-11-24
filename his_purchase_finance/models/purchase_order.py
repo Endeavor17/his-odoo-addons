@@ -112,8 +112,8 @@ class PurchaseOrder(models.Model):
     def _his_quote_files(self):
         self.ensure_one()
         generated = self._his_generated_names()
-        attachments = self.env["ir.attachment"].sudo().search(
-            [("res_model", "=", "purchase.order"), ("res_id", "=", self.id)]
+        attachments = (
+            self.env["ir.attachment"].sudo().search([("res_model", "=", "purchase.order"), ("res_id", "=", self.id)])
         )
         return attachments.filtered(lambda a: a.name.rsplit(".", 1)[0] not in generated)
 

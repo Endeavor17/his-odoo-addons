@@ -66,9 +66,11 @@ class PurchaseOrder(models.Model):
         if order.invoice_status == "to invoice":
             blockers.append(_("something is still to be billed"))
         unpaid = order.invoice_ids.filtered(
-            lambda m: m.state == "posted"
-            and m.move_type == "in_invoice"
-            and m.payment_state not in ("paid", "in_payment", "reversed")
+            lambda m: (
+                m.state == "posted"
+                and m.move_type == "in_invoice"
+                and m.payment_state not in ("paid", "in_payment", "reversed")
+            )
         )
         if unpaid:
             blockers.append(_("bills not paid: %s", ", ".join(unpaid.mapped("name"))))

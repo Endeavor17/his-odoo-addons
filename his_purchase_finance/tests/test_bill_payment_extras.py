@@ -19,7 +19,9 @@ class TestBillPaymentExtras(TestBillCheck):
         self.assertEqual(bill.his_original_state, "missing")
         missing = self.env["account.move"].search([("his_original_state", "=", "missing")])
         self.assertIn(bill, missing)
-        bill.with_user(self.finance).write({"his_original_state": "compliant", "his_original_holder_id": self.finance.id})
+        bill.with_user(self.finance).write(
+            {"his_original_state": "compliant", "his_original_holder_id": self.finance.id}
+        )
         self.assertEqual(bill.his_original_state, "compliant")
 
     def test_cash_warning(self):
@@ -45,5 +47,7 @@ class TestBillPaymentExtras(TestBillCheck):
         with self.assertRaisesRegex(UserError, "reference"):
             self._register(bill, journal_id=self._journal("bank").id, his_bank_reference=False)._create_payments()
         self._register(bill, journal_id=self._journal("bank").id, his_bank_reference="CHQ 004512")._create_payments()
-        payment = self.env["account.payment"].search([("partner_id", "=", bill.partner_id.id)], order="id desc", limit=1)
+        payment = self.env["account.payment"].search(
+            [("partner_id", "=", bill.partner_id.id)], order="id desc", limit=1
+        )
         self.assertEqual(payment.his_bank_reference, "CHQ 004512")

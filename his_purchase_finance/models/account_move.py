@@ -37,7 +37,11 @@ class AccountMove(models.Model):
     his_first_check_done = fields.Boolean(readonly=True, copy=False)
     # Procedure 7.3 : l'original papier, son detenteur et sa conformite au scan.
     his_original_state = fields.Selection(
-        [("missing", "Not Received"), ("compliant", "Received, Matches the Scan"), ("not_compliant", "Received, Differs")],
+        [
+            ("missing", "Not Received"),
+            ("compliant", "Received, Matches the Scan"),
+            ("not_compliant", "Received, Differs"),
+        ],
         string="Paper Original",
         default="missing",
         tracking=True,

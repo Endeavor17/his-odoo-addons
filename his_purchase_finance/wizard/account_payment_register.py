@@ -14,14 +14,16 @@ class AccountPaymentRegister(models.TransientModel):
     his_proof_name = fields.Char(string="Payment Proof Name")
     his_proof_required = fields.Boolean(compute="_compute_his_proof_required")
     his_bank_reference = fields.Char(string="Cheque or Bank Reference")
-    his_reference_required = fields.Boolean(compute="_compute_his_proof_required")
-    his_cash_vat_warning = fields.Char(compute="_compute_his_cash_vat_warning")
+    his_reference_required = fields.Boolean(string="Reference Required", compute="_compute_his_proof_required")
+    his_cash_vat_warning = fields.Char(string="Cash VAT Warning", compute="_compute_his_cash_vat_warning")
 
     def _his_big_bills(self):
         self.ensure_one()
         return self.line_ids.move_id.filtered(
-            lambda m: m.move_type == "in_invoice"
-            and m.company_id.currency_id.compare_amounts(abs(m.amount_total_signed), CASH_VAT_LIMIT) > 0
+            lambda m: (
+                m.move_type == "in_invoice"
+                and m.company_id.currency_id.compare_amounts(abs(m.amount_total_signed), CASH_VAT_LIMIT) > 0
+            )
         )
 
     @api.depends("journal_id", "line_ids")

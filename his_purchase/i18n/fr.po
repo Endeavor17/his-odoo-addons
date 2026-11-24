@@ -2225,3 +2225,29 @@ msgstr "Garanties et service après-vente"
 #: model_terms:ir.ui.view,arch_db:his_purchase.his_purchase_request_reject_form
 msgid "Why? The requester will receive this reason."
 msgstr "Pourquoi ? Le demandeur recevra ce motif."
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__estimated_tax
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request_line__estimated_tax
+msgid "Estimated Taxes"
+msgstr "Taxes estimées"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__estimated_amount_total
+msgid "Estimated Total (incl. tax)"
+msgstr "Total estimé (TTC)"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__priority__0
+msgid "Normal"
+msgstr "Normale"
+
+#. module: his_purchase
+#: model:ir.model.fields,field_description:his_purchase.field_his_purchase_request__priority
+msgid "Priority"
+msgstr "Priorité"
+
+#. module: his_purchase
+#: model:ir.model.fields.selection,name:his_purchase.selection__his_purchase_request__priority__1
+msgid "Urgent"
+msgstr "Urgente"
