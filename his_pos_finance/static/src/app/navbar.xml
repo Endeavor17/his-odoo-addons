@@ -8,5 +8,9 @@
         <xpath expr="//DropdownItem[contains(text(), 'Close Register')]" position="attributes">
             <attribute name="t-if">!pos.config.module_pos_hr or pos.cashier</attribute>
         </xpath>
+        <xpath expr="//div[hasclass('pos-burger-menu-items')]" position="inside">
+            <DropdownItem t-if="pos.config.cash_control" onSelected="() => this.hisHandOver()">Hand over to Finance</DropdownItem>
+            <DropdownItem t-if="pos.config.cash_control" onSelected="() => this.hisReceiveCash()">Receive cash</DropdownItem>
+        </xpath>
     </t>
 </templates>

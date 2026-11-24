@@ -96,3 +96,11 @@ class TestTransfer(HisPosFinanceCase):
         )
         self.assertIn(transfer.name.encode(), html)
         self.assertTrue(transfer.name.startswith("VERS/"))
+
+    def test_handover_proposal_keeps_the_float(self):
+        self.cafeteria.his_float_amount = 500
+        session = self._open_session(self.cafeteria)
+        self.assertEqual(session.his_handover_proposal(), 0)
+        self._sell_cash(session, 2000)
+        session.invalidate_recordset()
+        self.assertEqual(session.his_handover_proposal(), 1500)

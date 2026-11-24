@@ -255,6 +255,11 @@ class PosSession(models.Model):
         transfer.write({"state": "sent", "send_move_id": move.id, "sent_by": self.env.uid, "sent_at": fields.Datetime.now()})
         return transfer.id
 
+    def his_handover_proposal(self):
+        """Ce qu'on propose de verser : les especes attendues moins le fonds fixe."""
+        self.ensure_one()
+        return max(self.cash_register_balance_end - self.config_id.his_float_amount, 0.0)
+
     def his_pending_transfers(self):
         self.ensure_one()
         transfers = self.env["his.cash.transfer"].sudo().search(
