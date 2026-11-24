@@ -20,6 +20,7 @@ Controles du Departement Finance sur les caisses
         "views/his_cash_discrepancy_views.xml",
         "report/his_cash_transfer_report.xml",
         "views/his_cash_transfer_views.xml",
+        "views/his_cash_count_views.xml",
     ],
     "assets": {
         "point_of_sale._assets_pos": [

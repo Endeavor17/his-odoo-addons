@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="his_cash_count_view_form" model="ir.ui.view">
+        <field name="name">his.cash.count.form</field>
+        <field name="model">his.cash.count</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="journal_id" readonly="id"/>
+                    <field name="kind" readonly="id"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="expected"/>
+                    <field name="counted" readonly="id"/>
+                    <field name="difference" invisible="not id"/>
+                    <field name="note" readonly="id" placeholder="Required when the count differs"/>
+                    <field name="his_discrepancy_ids" invisible="not his_discrepancy_ids" readonly="1"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="his_cash_count_view_list" model="ir.ui.view">
+        <field name="name">his.cash.count.list</field>
+        <field name="model">his.cash.count</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="date"/>
+                <field name="journal_id"/>
+                <field name="kind"/>
+                <field name="user_id"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="expected"/>
+                <field name="counted"/>
+                <field name="difference"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="his_cash_box_view_kanban" model="ir.ui.view">
+        <field name="name">account.journal.kanban.his_cash_box</field>
+        <field name="model">account.journal</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <kanban create="0">
+                <field name="his_count_state"/>
+                <templates>
+                    <t t-name="card">
+                        <field name="name" class="fw-bold fs-5"/>
+                        <field name="his_holder_id"/>
+                        <field name="his_count_state" widget="badge"/>
+                        <footer>
+                            <button name="action_his_count" type="object" string="Open Count" class="btn btn-primary"
+                                context="{'his_count_kind': 'opening'}"/>
+                            <button name="action_his_count" type="object" string="Close Count" class="btn btn-secondary"
+                                context="{'his_count_kind': 'closing'}"/>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="his_cash_box_action" model="ir.actions.act_window">
+        <field name="name">Cash Boxes</field>
+        <field name="res_model">account.journal</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="his_cash_box_view_kanban"/>
+        <field name="domain">[('code', 'in', ('CFIN', 'CDIR'))]</field>
+    </record>
+
+    <record id="his_cash_count_action" model="ir.actions.act_window">
+        <field name="name">Cash Counts</field>
+        <field name="res_model">his.cash.count</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_his_cash_box" action="his_cash_box_action" parent="account.menu_finance_entries" sequence="52"
+        groups="his_purchase_finance.group_finance,his_purchase.group_purchase_director"/>
+    <menuitem id="menu_his_cash_count" action="his_cash_count_action" parent="account.menu_finance_entries" sequence="53"
+        groups="his_purchase_finance.group_finance,his_purchase.group_purchase_director"/>
+</odoo>

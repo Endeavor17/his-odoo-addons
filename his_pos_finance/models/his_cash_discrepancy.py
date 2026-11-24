@@ -34,6 +34,7 @@ class HisCashDiscrepancy(models.Model):
     currency_id = fields.Many2one(related="company_id.currency_id")
     session_id = fields.Many2one("pos.session", readonly=True)
     transfer_id = fields.Many2one("his.cash.transfer", readonly=True)
+    count_id = fields.Many2one("his.cash.count", readonly=True)
     holder_id = fields.Many2one("res.users", string="Holder", readonly=True)
     holder_employee_id = fields.Many2one("hr.employee", string="Cashier", readonly=True)
     expected = fields.Monetary(readonly=True)
