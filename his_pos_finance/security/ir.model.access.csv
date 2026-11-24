@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_discrepancy_pos_manager,discrepancy pos manager,model_his_cash_discrepancy,point_of_sale.group_pos_manager,1,1,0,0
+access_discrepancy_finance,discrepancy finance,model_his_cash_discrepancy,his_purchase_finance.group_finance,1,1,0,0
+access_discrepancy_director,discrepancy director,model_his_cash_discrepancy,his_purchase.group_purchase_director,1,1,0,0
+access_discrepancy_decide_finance,discrepancy decide finance,model_his_cash_discrepancy_decide,his_purchase_finance.group_finance,1,1,1,0

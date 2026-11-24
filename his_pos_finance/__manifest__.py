@@ -13,8 +13,11 @@ Controles du Departement Finance sur les caisses
     "depends": ["point_of_sale", "pos_hr", "his_stock_mdm", "his_purchase_finance", "his_purchase", "his_pos_tva", "his_metabase"],
     "data": [
         "security/his_pos_finance_security.xml",
+        "security/ir.model.access.csv",
+        "data/ir_sequence_data.xml",
         "data/his_role_data.xml",
         "views/res_config_settings_views.xml",
+        "views/his_cash_discrepancy_views.xml",
     ],
     "assets": {
         "point_of_sale._assets_pos": [

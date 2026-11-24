@@ -9,4 +9,10 @@
         <field name="implied_ids" eval="[(4, ref('his_purchase_finance.group_finance'))]"/>
         <field name="comment">Closes important and major cash gaps and reviews the Direction cash box gaps.</field>
     </record>
+
+    <record id="rule_discrepancy_company" model="ir.rule">
+        <field name="name">Cash discrepancies: own companies</field>
+        <field name="model_id" ref="model_his_cash_discrepancy"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
 </odoo>
