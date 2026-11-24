@@ -6,7 +6,9 @@ sa ligne de commande, sans tolerance. Non conforme -> « En reserve », avec
 la liste des ecarts, et le paiement bloque (payment_state « blocked » du
 coeur, que l'enregistrement d'un paiement refuse). La Finance relance la
 verification, libere avec un motif ecrit, ou refuse.
-Une facture sans ligne de commande n'est pas verifiee (cas 5, encore ouvert).
+Une facture sans commande est mise en reserve : la Finance la libere avec un
+motif (loyer, electricite...). Un acompte aussi : la liberation vaut
+autorisation (complement du 2026-11-24).
 """
 
 from markupsafe import Markup
@@ -39,19 +41,31 @@ class AccountMove(models.Model):
 
     def _his_is_checked_bill(self):
         self.ensure_one()
+        if self.move_type == "in_invoice" and self.company_id.his_finance_confirms:
+            return True
         return self.move_type in ("in_invoice", "in_refund") and bool(self.invoice_line_ids.purchase_line_id)
+
+    def _his_order_mismatches(self, order):
+        """Ecarts propres a une commande liee (les anomalies ouvertes s'y ajoutent)."""
+        return []
 
     def _his_mismatches(self):
         """Les ecarts de la facture avec ses commandes et receptions ; vide si conforme."""
         self.ensure_one()
         issues = []
-        for line in self.invoice_line_ids.filtered(lambda line: line.display_type == "product"):
+        product_lines = self.invoice_line_ids.filtered(lambda line: line.display_type == "product")
+        if not product_lines.purchase_line_id:
+            return [_("No purchase order: Finance must release this bill with a reason.")]
+        for line in product_lines:
             pol = line.purchase_line_id
             label = line.product_id.display_name or line.name
             if not pol:
                 issues.append(_("%s is not on the purchase order.", label))
                 continue
             order = pol.order_id
+            if pol.is_downpayment:
+                issues.append(_("Down payment on %s: needs Finance's authorisation.", order.name))
+                continue
             if line.currency_id != order.currency_id:
                 issues.append(
                     _(
@@ -93,6 +107,27 @@ class AccountMove(models.Model):
                         uom=pol.product_uom_id.name,
                     )
                 )
+        for order in product_lines.purchase_line_id.order_id:
+            supplier = order.partner_id.commercial_partner_id
+            if self.commercial_partner_id != supplier:
+                issues.append(
+                    _(
+                        "%(order)s was placed with %(supplier)s, but this bill is from %(billed)s.",
+                        order=order.name,
+                        supplier=supplier.name,
+                        billed=self.commercial_partner_id.name,
+                    )
+                )
+            if order.payment_term_id and self.invoice_payment_term_id != order.payment_term_id:
+                issues.append(
+                    _(
+                        "%(order)s: payment terms %(ordered)s, billed %(billed)s.",
+                        order=order.name,
+                        ordered=order.payment_term_id.name,
+                        billed=self.invoice_payment_term_id.name or _("none"),
+                    )
+                )
+            issues.extend(self._his_order_mismatches(order))
         return issues
 
     def _his_run_check(self):
