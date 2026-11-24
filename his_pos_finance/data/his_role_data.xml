@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ici plutot que dans his_role_catalogue : le catalogue ne doit pas
+         dependre d'un module que le staging n'a pas encore installe.
+         forcecreate="0" comme le catalogue : supprime par l'administrateur,
+         il ne revient pas. -->
+    <record id="role_finance_head" model="his.role" forcecreate="0">
+        <field name="name">Finance Head</field>
+        <field name="description">Closes important and major cash gaps; reviews Direction cash box gaps.</field>
+        <field name="group_ids" eval="[Command.set([ref('group_finance_head')])]"/>
+    </record>
+</odoo>
