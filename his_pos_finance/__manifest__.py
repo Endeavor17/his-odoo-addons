@@ -16,6 +16,11 @@ Controles du Departement Finance sur les caisses
         "data/his_role_data.xml",
         "views/res_config_settings_views.xml",
     ],
+    "assets": {
+        "point_of_sale._assets_pos": [
+            "his_pos_finance/static/src/app/**/*",
+        ],
+    },
     "post_init_hook": "post_init_hook",
     "installable": True,
 }

@@ -232,3 +232,5 @@ def _setup_tills(env, company, account):
 def post_init_hook(env):
     for company in env["res.company"].search([]):
         setup_pos_finance(env, company)
+    # Les caissiers deja en place passent en liste « basique » (his_stock_mdm).
+    env["pos.config"]._his_sync_tills()
