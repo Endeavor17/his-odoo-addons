@@ -34,6 +34,8 @@
             <xpath expr="//button[@id='draft_confirm']" position="after">
                 <button name="action_his_send_to_finance" type="object" string="Send to Finance" class="oe_highlight"
                     invisible="not his_finance_confirms or state not in ('draft', 'sent') or his_sent_to_finance_on" groups="purchase.group_purchase_user"/>
+                <button name="action_his_close_file" type="object" string="Close File"
+                    invisible="state != 'purchase' or his_closed_on" groups="his_purchase_finance.group_finance"/>
                 <button name="action_open_his_return" type="object" string="Return to Buyer"
                     invisible="state not in ('draft', 'sent') or not his_sent_to_finance_on" groups="his_purchase_finance.group_finance"/>
             </xpath>
@@ -56,6 +58,12 @@
                     <field name="his_service_note"/>
                 </page>
             </xpath>
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="his_amount_to_refund" invisible="not his_amount_to_refund"/>
+                <field name="company_currency_id" invisible="1"/>
+                <field name="his_closed_on" invisible="not his_closed_on"/>
+                <field name="his_closed_by_id" invisible="not his_closed_on"/>
+            </xpath>
             <xpath expr="//sheet" position="before">
                 <div class="alert alert-info mb-0" role="status" invisible="state not in ('draft', 'sent') or not his_sent_to_finance_on">
                     With Finance since <field name="his_sent_to_finance_on" class="d-inline"/>, sent by
@@ -73,6 +81,8 @@
             <xpath expr="//search" position="inside">
                 <filter name="his_with_finance" string="To Confirm (Finance)"
                     domain="[('his_sent_to_finance_on', '!=', False), ('state', 'in', ('draft', 'sent'))]"/>
+                <filter name="his_credit_note_due" string="Credit Note Due" domain="[('his_amount_to_refund', '>', 0)]"/>
+                <filter name="his_ready_to_close" string="Ready to Close" domain="[('his_ready_to_close', '=', True)]"/>
             </xpath>
         </field>
     </record>

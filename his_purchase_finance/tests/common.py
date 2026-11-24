@@ -1,4 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+import base64
+
 from odoo.addons.his_purchase.tests.common import HisPurchaseCase
 from odoo.tests import new_test_user
 
@@ -26,7 +28,15 @@ class HisFinanceCase(HisPurchaseCase):
         order.order_line.price_unit = price
         return order
 
-    def _send(self, order, criterion="quality", note="Original cartridges."):
+    def _attach(self, record, name):
+        return self.env["ir.attachment"].create(
+            {"name": name, "datas": base64.b64encode(b"%PDF devis"), "res_model": record._name, "res_id": record.id}
+        )
+
+    def _send(self, order, criterion="quality", note="Original cartridges.", quote=True):
+        if quote and not order._his_quote_files():
+            # Le devis du fournisseur, exige a l'envoi (procedure 3.1).
+            self._attach(order, "devis-fournisseur.pdf")
         action = order.with_user(self.officer).action_his_send_to_finance()
         wizard = (
             self.env["his.purchase.choice"]

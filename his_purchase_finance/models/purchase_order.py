@@ -10,9 +10,11 @@
   (decision 4). L'approbation routee de his_purchase suit, inchangee.
 """
 
+from markupsafe import Markup
 from odoo import _, api, fields, models
 from odoo.addons.his_purchase.models.his_purchase_followup import add_working_days
 from odoo.exceptions import UserError
+from odoo.tools.safe_eval import safe_eval, time
 
 from .common import is_finance
 
@@ -28,9 +30,16 @@ SUDO_ONLY_FIELDS = {
     "his_service_done_on",
     "his_service_period",
     "his_service_note",
+    "his_closed_on",
+    "his_closed_by_id",
 }
 CHOICE_FIELDS = {"his_choice_criterion", "his_choice_note", "his_chosen_by_id", "his_chosen_on"}
 CONFIRMED_STATES = ("to approve", "purchase", "done")
+# Commande confirmee : seule la Finance la change (delegation absente, decision 5
+# du courrier a la Finance du 2026-11-24). Les lignes d'acompte restent libres :
+# la facture d'acompte est mise en reserve, sa liberation vaut autorisation.
+LOCKED_WHEN_CONFIRMED = {"partner_id", "currency_id", "payment_term_id"}
+LOCKED_LINE_FIELDS = {"product_id", "product_qty", "price_unit", "discount", "tax_ids"}
 
 
 class PurchaseOrder(models.Model):
@@ -91,6 +100,51 @@ class PurchaseOrder(models.Model):
             if order.his_sent_to_finance_on:
                 raise UserError(_("%s is already with Finance.", order.name))
 
+    def _his_generated_names(self):
+        """Noms des PDF qu'Odoo produit lui-meme pour la commande : pas des devis."""
+        self.ensure_one()
+        names = set()
+        for report in self.env["ir.actions.report"].sudo().search([("model", "=", "purchase.order")]):
+            if report.print_report_name:
+                names.add(safe_eval(report.print_report_name, {"object": self, "time": time}))
+        return names
+
+    def _his_quote_files(self):
+        self.ensure_one()
+        generated = self._his_generated_names()
+        attachments = self.env["ir.attachment"].sudo().search(
+            [("res_model", "=", "purchase.order"), ("res_id", "=", self.id)]
+        )
+        return attachments.filtered(lambda a: a.name.rsplit(".", 1)[0] not in generated)
+
+    def _his_check_quote_file(self):
+        """Procedure 3.1 : un devis ou une offre documentee, jointe a la commande."""
+        for order in self:
+            if not order._his_quote_files():
+                raise UserError(_("Attach the supplier's quote to %s before sending it to Finance.", order.name))
+
+    def _his_post_comparison(self):
+        """Procedure 3.2 : le tableau comparatif des offres, joint au dossier."""
+        self.ensure_one()
+        offers = self | self._his_competitors()
+        headers = [_("Supplier"), _("Excl. Tax"), _("Incl. Tax"), _("Delivery"), _("Payment Terms"), _("Quote File")]
+        head = Markup("").join(Markup("<th>%s</th>") % h for h in headers)
+        rows = Markup("")
+        for offer in offers:
+            cells = [
+                offer.partner_id.name + (" ✔" if offer == self else ""),
+                offer.currency_id.format(offer.amount_untaxed),
+                offer.currency_id.format(offer.amount_total),
+                fields.Date.to_string(offer.date_planned) if offer.date_planned else "",
+                offer.payment_term_id.name or "",
+                _("Yes") if offer._his_quote_files() else _("No"),
+            ]
+            rows += Markup("<tr>%s</tr>") % Markup("").join(Markup("<td>%s</td>") % c for c in cells)
+        self.message_post(
+            body=Markup("<p>%s</p><table class='table table-sm'><tr>%s</tr>%s</table>")
+            % (_("Comparison of the offers (✔ chosen):"), head, rows)
+        )
+
     def action_his_send_to_finance(self):
         self.ensure_one()
         self._his_check_sendable()
@@ -106,6 +160,7 @@ class PurchaseOrder(models.Model):
                 }
             )
             return self._his_mark_sent()
+        self._his_check_quote_file()
         action = self._his_action_choice()
         action["name"] = _("Send to Finance")
         action["context"]["his_send_to_finance"] = True
@@ -135,6 +190,8 @@ class PurchaseOrder(models.Model):
                 vals["his_supplier_answer"] = "quoted"
             order.sudo().write(vals)
             order.message_post(body=_("Sent to Finance for confirmation by %s.", self.env.user.name))
+            if order._his_competitors():
+                order._his_post_comparison()
         self._his_sync_step()
         return True
 
@@ -192,6 +249,18 @@ class PurchaseOrder(models.Model):
         if locked:
             raise UserError(_("%s is with Finance: ask Finance to return it before changing it.", locked[0].name))
 
+    def _his_check_confirmed_unchanged(self):
+        """Une commande confirmee ne change plus que par la Finance."""
+        if is_finance(self.env):
+            return
+        confirmed = self.filtered(lambda o: o.company_id.his_finance_confirms and o.state == "purchase")
+        if confirmed:
+            raise UserError(_("%s is confirmed: only Finance can change it.", confirmed[0].name))
+
+    def button_cancel(self):
+        self._his_check_confirmed_unchanged()
+        return super().button_cancel()
+
     def _his_check_no_bypass(self):
         """Un devis ne passe en commande que par la confirmation de la Finance."""
         if is_finance(self.env):
@@ -205,6 +274,8 @@ class PurchaseOrder(models.Model):
             raise UserError(_("These fields are set by the Finance workflow only."))
         if LOCKED_WHEN_SENT & set(vals):
             self._his_check_not_with_finance()
+        if LOCKED_WHEN_CONFIRMED & set(vals):
+            self._his_check_confirmed_unchanged()
         if vals.get("state") in CONFIRMED_STATES:
             self._his_check_no_bypass()
         if CHOICE_FIELDS & set(vals) and not self.env.su:
@@ -286,16 +357,23 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
+    def _his_locked_lines(self):
+        return self.filtered(lambda line: not line.is_downpayment)
+
     @api.model_create_multi
     def create(self, vals_list):
         lines = super().create(vals_list)
         lines.order_id._his_check_not_with_finance()
+        lines._his_locked_lines().order_id._his_check_confirmed_unchanged()
         return lines
 
     def write(self, vals):
         self.order_id._his_check_not_with_finance()
+        if LOCKED_LINE_FIELDS & set(vals):
+            self._his_locked_lines().order_id._his_check_confirmed_unchanged()
         return super().write(vals)
 
     def unlink(self):
         self.order_id._his_check_not_with_finance()
+        self._his_locked_lines().order_id._his_check_confirmed_unchanged()
         return super().unlink()
