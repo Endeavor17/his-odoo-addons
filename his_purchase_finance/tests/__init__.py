@@ -2,6 +2,7 @@
 from . import (
     test_anomaly,
     test_bill_check,
+    test_bill_payment_extras,
     test_order_controls,
     test_rating,
     test_receipt_refusal,

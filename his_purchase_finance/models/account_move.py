@@ -35,6 +35,17 @@ class AccountMove(models.Model):
     )
     his_check_reason = fields.Text(string="Finance Check Reason", readonly=True, copy=False)
     his_first_check_done = fields.Boolean(readonly=True, copy=False)
+    # Procedure 7.3 : l'original papier, son detenteur et sa conformite au scan.
+    his_original_state = fields.Selection(
+        [("missing", "Not Received"), ("compliant", "Received, Matches the Scan"), ("not_compliant", "Received, Differs")],
+        string="Paper Original",
+        default="missing",
+        tracking=True,
+        copy=False,
+    )
+    his_original_received_on = fields.Date(string="Original Received On", copy=False)
+    his_original_holder_id = fields.Many2one("res.users", string="Original Held By", copy=False)
+    his_original_note = fields.Char(string="Original Note", copy=False)
     his_first_check_clean = fields.Boolean(
         string="Compliant at First Check", readonly=True, copy=False, help="For the monthly indicator."
     )

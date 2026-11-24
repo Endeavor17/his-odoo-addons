@@ -63,12 +63,13 @@ class TestBillCheck(HisFinanceCase):
             bill.action_post()
         return bill
 
-    def _register(self, bill, proof=PROOF):
+    def _register(self, bill, proof=PROOF, **vals):
+        vals.setdefault("his_bank_reference", "VIR 2026-0042")
         return (
             self.env["account.payment.register"]
             .with_user(self.finance)
             .with_context(active_model="account.move", active_ids=bill.ids)
-            .create({"his_proof": proof, "his_proof_name": "virement.pdf"})
+            .create({"his_proof": proof, "his_proof_name": "virement.pdf", **vals})
         )
 
     def _received_order(self):
