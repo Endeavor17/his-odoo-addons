@@ -104,3 +104,22 @@ class TestTransfer(HisPosFinanceCase):
         self._sell_cash(session, 2000)
         session.invalidate_recordset()
         self.assertEqual(session.his_handover_proposal(), 1500)
+
+    def test_closed_without_handover_filter(self):
+        Session = self.env["pos.session"]
+        sans = self._open_session(self.cafeteria)
+        self._sell_cash(sans, 100)
+        sans.post_closing_cash_details(100)
+        sans.update_closing_control_state_session("")
+        sans.close_session_from_ui()
+        avec = self._open_session(self.cafeteria)
+        self._sell_cash(avec, 100)
+        avec.his_handover(100, "")
+        avec.post_closing_cash_details(0)
+        avec.update_closing_control_state_session("")
+        avec.close_session_from_ui()
+        found = Session.search([("his_no_handover", "=", True)])
+        self.assertIn(sans, found)
+        self.assertNotIn(avec, found)
+        self.assertTrue(sans.his_no_handover)
+        self.assertFalse(avec.his_no_handover)

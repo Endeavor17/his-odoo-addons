@@ -22,6 +22,8 @@ Controles du Departement Finance sur les caisses
         "views/his_cash_transfer_views.xml",
         "views/his_cash_count_views.xml",
         "views/pos_order_views.xml",
+        "views/pos_session_views.xml",
+        "data/his_metabase_dashboard_data.xml",
     ],
     "assets": {
         "point_of_sale._assets_pos": [

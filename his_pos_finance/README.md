@@ -18,3 +18,11 @@ Met en place la procédure de gestion comptable et de contrôle des points de ve
   757000, 700100 à 706200, 411xxx, 445600 / 445720.
 - Une position fiscale « Revenue – <caisse> » par caisse : mêmes taxes que le régime national,
   seuls les comptes de marchandises revendues changent selon l'activité qui vend.
+
+## Suivi
+
+- Point de vente > Commandes : **Cash Discrepancies** (liste, tableau croisé, graphique par caisse,
+  caissier, mois) et **Cash Transfers** (filtre « Not Received »).
+- Sessions : filtre **Closed Without Hand Over**.
+- Comptabilité : **Cash Boxes** (comptage d'ouverture et de clôture des caisses CFIN / CDIR) et
+  **Cash Indicators** (tableau Metabase `cash`, questions dans `docs/pos-finance-metabase.md`).

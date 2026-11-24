@@ -88,10 +88,34 @@
         </field>
     </record>
 
+    <record id="his_cash_discrepancy_view_pivot" model="ir.ui.view">
+        <field name="name">his.cash.discrepancy.pivot</field>
+        <field name="model">his.cash.discrepancy</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="journal_id" type="row"/>
+                <field name="holder_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="his_cash_discrepancy_view_graph" model="ir.ui.view">
+        <field name="name">his.cash.discrepancy.graph</field>
+        <field name="model">his.cash.discrepancy</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="date" interval="month"/>
+                <field name="holder_id"/>
+            </graph>
+        </field>
+    </record>
+
     <record id="his_cash_discrepancy_action" model="ir.actions.act_window">
         <field name="name">Cash Discrepancies</field>
         <field name="res_model">his.cash.discrepancy</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">list,form,pivot,graph</field>
         <field name="context">{'search_default_open': 1}</field>
     </record>
 

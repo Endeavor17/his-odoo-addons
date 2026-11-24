@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_session_search_his_handover" model="ir.ui.view">
+        <field name="name">pos.session.search.his_handover</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_session_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="his_no_handover" string="Closed Without Hand Over" domain="[('his_no_handover', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

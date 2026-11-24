@@ -225,6 +225,19 @@ class PosSession(models.Model):
     _inherit = "pos.session"
 
     his_transfer_ids = fields.One2many("his.cash.transfer", "from_session_id", string="Hand Overs")
+    his_no_handover = fields.Boolean(
+        string="Closed Without Hand Over", compute="_compute_his_no_handover", search="_search_his_no_handover"
+    )
+
+    def _compute_his_no_handover(self):
+        for session in self:
+            session.his_no_handover = session.state == "closed" and not session.his_transfer_ids
+
+    def _search_his_no_handover(self, operator, value):
+        if operator not in ("=", "!=") or not isinstance(value, bool):
+            raise NotImplementedError(_("Unsupported search on Closed Without Hand Over."))
+        domain = [("state", "=", "closed"), ("his_transfer_ids", "=", False)]
+        return domain if (operator == "=") == value else ["!", "&", *domain]
 
     def his_handover(self, amount, note=""):
         """Versement du soir a la Finance depuis la caisse ; renvoie l'id du versement."""
