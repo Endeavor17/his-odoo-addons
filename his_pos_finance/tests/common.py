@@ -51,6 +51,7 @@ class HisPosFinanceCase(TransactionCase):
                     "company_id": self.company.id,
                     "session_id": session.id,
                     "uuid": ref,
+                    "state": "paid",
                     "lines": [
                         [
                             0,
