@@ -1,10 +1,12 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import _, models
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
+
+    his_bank_reference = fields.Char(string="Cheque or Bank Reference", copy=False)
 
     def _his_is_supplier_payment(self):
         self.ensure_one()
@@ -14,6 +16,15 @@ class AccountPayment(models.Model):
         proof = self.env.context.get("his_payment_proof")
         Attachment = self.env["ir.attachment"]
         for payment in self.filtered(lambda p: p._his_is_supplier_payment()):
+            # Procedure 8.1 : on ne paie qu'un fournisseur au dossier valide.
+            supplier = payment.partner_id.commercial_partner_id
+            if payment.company_id.his_finance_confirms and supplier and supplier.his_supplier_status != "validated":
+                raise UserError(
+                    _(
+                        "The supplier file of %(supplier)s is not validated by Finance: it cannot be paid.",
+                        supplier=supplier.name,
+                    )
+                )
             # En Community, aucun moyen de paiement n'exige de compte approuve
             # (_get_method_codes_needing_bank_account vide) : on bloque nous-memes
             # tout virement fournisseur vers des coordonnees non validees.

@@ -6,7 +6,9 @@ sa ligne de commande, sans tolerance. Non conforme -> « En reserve », avec
 la liste des ecarts, et le paiement bloque (payment_state « blocked » du
 coeur, que l'enregistrement d'un paiement refuse). La Finance relance la
 verification, libere avec un motif ecrit, ou refuse.
-Une facture sans ligne de commande n'est pas verifiee (cas 5, encore ouvert).
+Une facture sans commande est mise en reserve : la Finance la libere avec un
+motif (loyer, electricite...). Un acompte aussi : la liberation vaut
+autorisation (complement du 2026-11-24).
 """
 
 from markupsafe import Markup
@@ -33,25 +35,79 @@ class AccountMove(models.Model):
     )
     his_check_reason = fields.Text(string="Finance Check Reason", readonly=True, copy=False)
     his_first_check_done = fields.Boolean(readonly=True, copy=False)
+    # Procedure 7.3 : l'original papier, son detenteur et sa conformite au scan.
+    his_original_state = fields.Selection(
+        [
+            ("missing", "Not Received"),
+            ("compliant", "Received, Matches the Scan"),
+            ("not_compliant", "Received, Differs"),
+        ],
+        string="Paper Original",
+        default="missing",
+        tracking=True,
+        copy=False,
+    )
+    his_original_received_on = fields.Date(string="Original Received On", copy=False)
+    his_original_holder_id = fields.Many2one("res.users", string="Original Held By", copy=False)
+    his_original_note = fields.Char(string="Original Note", copy=False)
     his_first_check_clean = fields.Boolean(
         string="Compliant at First Check", readonly=True, copy=False, help="For the monthly indicator."
     )
 
     def _his_is_checked_bill(self):
         self.ensure_one()
+        if self.move_type == "in_invoice" and self.company_id.his_finance_confirms:
+            return True
         return self.move_type in ("in_invoice", "in_refund") and bool(self.invoice_line_ids.purchase_line_id)
+
+    def _his_header_mismatches(self, order):
+        """Fournisseur et conditions de paiement de la facture contre la commande."""
+        issues = []
+        supplier = order.partner_id.commercial_partner_id
+        if self.commercial_partner_id != supplier:
+            issues.append(
+                _(
+                    "%(order)s was placed with %(supplier)s, but this bill is from %(billed)s.",
+                    order=order.name,
+                    supplier=supplier.name,
+                    billed=self.commercial_partner_id.name,
+                )
+            )
+        if order.payment_term_id and self.invoice_payment_term_id != order.payment_term_id:
+            issues.append(
+                _(
+                    "%(order)s: payment terms %(ordered)s, billed %(billed)s.",
+                    order=order.name,
+                    ordered=order.payment_term_id.name,
+                    billed=self.invoice_payment_term_id.name or _("none"),
+                )
+            )
+        return issues
+
+    def _his_order_mismatches(self, order):
+        """Ecarts propres a une commande liee (les anomalies ouvertes s'y ajoutent)."""
+        return []
 
     def _his_mismatches(self):
         """Les ecarts de la facture avec ses commandes et receptions ; vide si conforme."""
         self.ensure_one()
         issues = []
-        for line in self.invoice_line_ids.filtered(lambda line: line.display_type == "product"):
+        product_lines = self.invoice_line_ids.filtered(lambda line: line.display_type == "product")
+        if not product_lines.purchase_line_id:
+            return [_("No purchase order: Finance must release this bill with a reason.")]
+        for line in product_lines:
             pol = line.purchase_line_id
             label = line.product_id.display_name or line.name
             if not pol:
                 issues.append(_("%s is not on the purchase order.", label))
                 continue
             order = pol.order_id
+            if pol.is_downpayment:
+                # La deduction de l'acompte sur la facture finale (quantite
+                # negative) a deja ete autorisee : seul l'acompte lui-meme l'est.
+                if self.move_type == "in_invoice" and line.quantity > 0:
+                    issues.append(_("Down payment on %s: needs Finance's authorisation.", order.name))
+                continue
             if line.currency_id != order.currency_id:
                 issues.append(
                     _(
@@ -93,6 +149,12 @@ class AccountMove(models.Model):
                         uom=pol.product_uom_id.name,
                     )
                 )
+        for order in product_lines.purchase_line_id.order_id:
+            if self.move_type != "in_refund":
+                # L'argent qui revient ne se bloque pas ; l'assistant d'avoir
+                # vide d'ailleurs les conditions de paiement.
+                issues.extend(self._his_header_mismatches(order))
+            issues.extend(self._his_order_mismatches(order))
         return issues
 
     def _his_run_check(self):

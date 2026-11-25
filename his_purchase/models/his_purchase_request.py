@@ -112,6 +112,12 @@ class HisPurchaseRequest(models.Model):
     line_ids = fields.One2many("his.purchase.request.line", "request_id", string="Lines", copy=True)
     currency_id = fields.Many2one(related="company_id.currency_id")
     estimated_amount = fields.Monetary(string="Estimated Amount", compute="_compute_estimated_amount", store=True)
+    # Procedure Finance, etape 1 : taxes estimees et TTC, niveau de priorite.
+    estimated_tax = fields.Monetary(string="Estimated Taxes", compute="_compute_estimated_amount", store=True)
+    estimated_amount_total = fields.Monetary(
+        string="Estimated Total (incl. tax)", compute="_compute_estimated_amount", store=True
+    )
+    priority = fields.Selection([("0", "Normal"), ("1", "Urgent")], string="Priority", default="0", tracking=True)
     state = fields.Selection(STATES, string="Status", default="draft", required=True, tracking=True, copy=False)
     user_id = fields.Many2one(
         "res.users", string="Purchasing Officer", tracking=True, copy=False, domain=[("share", "=", False)]
@@ -188,10 +194,12 @@ class HisPurchaseRequest(models.Model):
         self.ensure_one()
         return self.his_purchase_type == "investment" and self.state not in ("draft", "submitted", "on_hold", "cancel")
 
-    @api.depends("line_ids.estimated_subtotal")
+    @api.depends("line_ids.estimated_subtotal", "line_ids.estimated_tax")
     def _compute_estimated_amount(self):
         for request in self:
             request.estimated_amount = sum(request.line_ids.mapped("estimated_subtotal"))
+            request.estimated_tax = sum(request.line_ids.mapped("estimated_tax"))
+            request.estimated_amount_total = request.estimated_amount + request.estimated_tax
 
     def _compute_order_ids(self):
         for request in self:
@@ -663,6 +671,7 @@ class HisPurchaseRequestLine(models.Model):
     estimated_subtotal = fields.Monetary(
         string="Estimated Subtotal", compute="_compute_estimated_subtotal", store=True, precompute=True
     )
+    estimated_tax = fields.Monetary(string="Estimated Taxes", compute="_compute_estimated_tax", store=True)
     purchase_line_ids = fields.One2many("purchase.order.line", "his_request_line_id", string="Order Lines")
     qty_ordered = fields.Float(
         string="Ordered", compute="_compute_qty_ordered", compute_sudo=True, digits="Product Unit"
@@ -692,6 +701,18 @@ class HisPurchaseRequestLine(models.Model):
     def _compute_estimated_subtotal(self):
         for line in self:
             line.estimated_subtotal = line.product_qty * line.estimated_price_unit
+
+    @api.depends("product_id", "product_qty", "estimated_price_unit", "company_id")
+    def _compute_estimated_tax(self):
+        for line in self:
+            taxes = line.product_id.supplier_taxes_id.filtered(
+                lambda t, company=line.company_id: t.company_id == company
+            )
+            if not taxes:
+                line.estimated_tax = 0.0
+                continue
+            res = taxes.compute_all(line.estimated_price_unit, line.currency_id, line.product_qty, line.product_id)
+            line.estimated_tax = res["total_included"] - res["total_excluded"]
 
     @api.depends(
         "product_uom_id", "purchase_line_ids.product_qty", "purchase_line_ids.product_uom_id", "purchase_line_ids.state"

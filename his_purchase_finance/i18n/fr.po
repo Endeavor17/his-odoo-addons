@@ -1033,3 +1033,950 @@ msgid ""
 "This bill is held by the purchase order check: Finance releases it with a "
 "reason."
 msgstr "Cette facture est en réserve suite au rapprochement : la Finance la libère avec un motif."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "%(name)s is %(state)s."
+msgstr "%(name)s est à l'état « %(state)s »."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "%(order)s cannot be closed: %(reasons)s."
+msgstr "Le dossier %(order)s ne peut pas être clôturé : %(reasons)s."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "%(order)s was placed with %(supplier)s, but this bill is from %(billed)s."
+msgstr "%(order)s a été passée chez %(supplier)s, mais cette facture vient de %(billed)s."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "%(order)s: payment terms %(ordered)s, billed %(billed)s."
+msgstr "%(order)s : conditions de paiement %(ordered)s, facturées %(billed)s."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/his_service_done.py:0
+msgid "%(period)s: %(note)s"
+msgstr "%(period)s : %(note)s"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/stock_move.py:0
+msgid "%(product)s: %(qty)s %(uom)s refused (%(reason)s)"
+msgstr "%(product)s : %(qty)s %(uom)s refusé(s) (%(reason)s)"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "%s is confirmed: only Finance can change it."
+msgstr "%s est confirmée : seule la Finance peut la modifier."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__his_step_level
+msgid "0: on time; 1: owner reminded; 2 and more: escalated."
+msgstr "0 : dans les temps ; 1 : responsable relancé ; 2 et plus : escaladé."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Décoration d'activité d'exception"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__activity_state
+msgid "Activity State"
+msgstr "Statut de l'activité"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_anomaly_ids
+#: model:ir.ui.menu,name:his_purchase_finance.menu_his_purchase_anomaly
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_form_anomaly
+msgid "Anomalies"
+msgstr "Anomalies"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Anomaly %(name)s declared by %(user)s."
+msgstr "Anomalie %(name)s déclarée par %(user)s."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Anomaly %(name)s is open on %(order)s."
+msgstr "L'anomalie %(name)s est ouverte sur %(order)s."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_anomaly_count
+msgid "Anomaly Count"
+msgstr "Nombre d'anomalies"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_anomaly_form
+msgid "Approve"
+msgstr "Approuver"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Approve the solution of anomaly %s"
+msgstr "Valider la solution de l'anomalie %s"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__state__approved
+msgid "Approved by Finance"
+msgstr "Validée par la Finance"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Attach the supplier's quote to %s before sending it to Finance."
+msgstr "Joignez le devis du fournisseur à %s avant de l'envoyer à la Finance."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_anomaly_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Cancelled by Finance."
+msgstr "Annulée par la Finance."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__state__executed
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_anomaly_form
+msgid "Carried Out"
+msgstr "Exécutée"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Carry out the solution of anomaly %s"
+msgstr "Exécuter la solution de l'anomalie %s"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment_register__his_cash_vat_warning
+msgid "Cash VAT Warning"
+msgstr "Alerte TVA espèces"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment__his_bank_reference
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment_register__his_bank_reference
+msgid "Cheque or Bank Reference"
+msgstr "N° de chèque ou référence bancaire"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/his_anomaly_declare.py:0
+msgid "Choose one of the listed purchase orders."
+msgstr "Choisissez l'une des commandes proposées."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Choose the solution agreed with the supplier for %s."
+msgstr "Choisissez la solution convenue avec le fournisseur pour %s."
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_anomaly_form
+msgid "Close"
+msgstr "Clôturer"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_form_finance
+msgid "Close File"
+msgstr "Clôturer le dossier"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Close anomaly %s"
+msgstr "Clôturer l'anomalie %s"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__state__closed
+msgid "Closed"
+msgstr "Clôturée"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Closed by Finance."
+msgstr "Clôturée par la Finance."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__company_currency_id
+msgid "Company Currency"
+msgstr "Devise de la société"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Comparison of the offers (✔ chosen):"
+msgstr "Tableau comparatif des offres (✔ retenue) :"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__solution__complement
+msgid "Complementary Delivery"
+msgstr "Livraison complémentaire"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__solution__correction
+msgid "Correction"
+msgstr "Correction"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__solution__credit_note
+msgid "Credit Note"
+msgstr "Avoir"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_amount_to_refund
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_search_finance
+msgid "Credit Note Due"
+msgstr "Avoir attendu"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order_line__his_qty_to_refund
+msgid "Credit Note Due (Qty)"
+msgstr "Avoir attendu (qté)"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_anomaly_declare__kind__damage
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__kind__damage
+msgid "Damage"
+msgstr "Dommage"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/his_anomaly_declare.py:0
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_anomaly_declare_form
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_request_form_anomaly
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_form_anomaly
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.view_move_form_anomaly
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.view_picking_form_anomaly
+msgid "Declare Anomaly"
+msgstr "Déclarer une anomalie"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_his_anomaly_declare
+msgid "Declare a Purchase Anomaly"
+msgstr "Déclarer une anomalie d'achat"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__state__declared
+msgid "Declared"
+msgstr "Déclarée"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__declared_by_id
+msgid "Declared By"
+msgstr "Déclarée par"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__declared_on
+msgid "Declared On"
+msgstr "Déclarée le"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Delivery"
+msgstr "Livraison"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_anomaly_declare_form
+msgid "Describe the gap, the damage or the non-compliance. The purchasing team agrees a solution with the\n                    supplier, then Finance approves it. The order's bills stay on hold until it is closed."
+msgstr "Décrivez l'écart, le dommage ou la non-conformité. Le Service Achats convient d'une solution avec le\n                    fournisseur, puis la Finance la valide. Les factures de la commande restent en réserve jusqu'à la clôture."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/his_service_done.py:0
+msgid "Describe what is not compliant."
+msgstr "Décrivez ce qui n'est pas conforme."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_anomaly_declare__description
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__description
+msgid "Description"
+msgstr "Description"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "Down payment on %s: needs Finance's authorisation."
+msgstr "Acompte sur %s : à autoriser par la Finance."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Excl. Tax"
+msgstr "HT"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Explain in the Finance assessment why %s is cancelled."
+msgstr "Expliquez dans l'appréciation de la Finance pourquoi %s est annulée."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_closed_by_id
+msgid "File Closed By"
+msgstr "Dossier clôturé par"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_closed_on
+msgid "File Closed On"
+msgstr "Dossier clôturé le"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__finance_note
+msgid "Finance Assessment"
+msgstr "Appréciation de la Finance"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__finance_note
+msgid "Financial, accounting and tax impact."
+msgstr "Impact financier, comptable et fiscal."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__his_step
+msgid "Follow-up Step"
+msgstr "Étape de suivi"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome, par ex. fa-tasks"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/account_payment_register.py:0
+msgid "Give the cheque number or the bank transfer reference."
+msgstr "Indiquez le numéro de chèque ou la référence du virement."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/stock_move.py:0
+msgid "Give the reason why %s was refused."
+msgstr "Indiquez le motif du refus de %s."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__message_has_error
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Incl. Tax"
+msgstr "TTC"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_anomaly_declare__kind__invoice
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__kind__invoice
+msgid "Invoice or Price Discrepancy"
+msgstr "Écart de facture ou de prix"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_purchase_order_line__his_qty_to_refund
+msgid "Invoiced but no longer received (goods returned): a credit note is expected."
+msgstr "Facturé mais plus reçu (marchandise retournée) : un avoir est attendu."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__his_is_late
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_anomaly_search
+msgid "Late"
+msgstr "En retard"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "New"
+msgstr "Nouveau"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Activité suivante de l'événement du calendrier"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "No"
+msgstr "Non"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_person__his_documents_exempt
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_partner__his_documents_exempt
+#: model:ir.model.fields,field_description:his_purchase_finance.field_res_users__his_documents_exempt
+msgid "No Documents Required"
+msgstr "Aucune pièce exigée"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.view_account_move_filter_finance_check
+msgid "No Purchase Order"
+msgstr "Sans bon de commande"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "No purchase order: Finance must release this bill with a reason."
+msgstr "Sans bon de commande : la Finance doit libérer cette facture avec un motif."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_anomaly_declare__kind__non_compliance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__kind__non_compliance
+msgid "Non-Compliance"
+msgstr "Non-conformité"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__account_move__his_original_state__missing
+msgid "Not Received"
+msgstr "Non reçus"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages en erreur d'envoi"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/res_partner.py:0
+msgid "Only Finance can exempt a supplier from documents."
+msgstr "Seule la Finance peut dispenser un fournisseur de pièces."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "Only Finance closes a purchase file."
+msgstr "Seule la Finance clôture un dossier d'achat."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Only Finance writes its assessment."
+msgstr "Seule la Finance rédige son appréciation."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Only the purchasing team proposes the solution."
+msgstr "Seul le Service Achats propose la solution."
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_anomaly_search
+msgid "Open"
+msgstr "En cours"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_bank_statement_line__his_original_holder_id
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__his_original_holder_id
+msgid "Original Held By"
+msgstr "Original détenu par"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_bank_statement_line__his_original_note
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__his_original_note
+msgid "Original Note"
+msgstr "Remarque sur l'original"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_bank_statement_line__his_original_received_on
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__his_original_received_on
+msgid "Original Received On"
+msgstr "Original reçu le"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_bank_statement_line__his_original_state
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_move__his_original_state
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.view_move_form_finance_check
+msgid "Paper Original"
+msgstr "Original papier"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.view_account_move_filter_finance_check
+msgid "Paper Original Missing"
+msgstr "Original papier manquant"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Propose a solution for anomaly %s"
+msgstr "Proposer une solution pour l'anomalie %s"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_anomaly_form
+msgid "Propose to Finance"
+msgstr "Proposer à la Finance"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_person__his_documents_exempt
+#: model:ir.model.fields,help:his_purchase_finance.field_res_partner__his_documents_exempt
+#: model:ir.model.fields,help:his_purchase_finance.field_res_users__his_documents_exempt
+msgid "Public body or utility (electricity, water, telephone): set by Finance."
+msgstr "Organisme public ou concessionnaire (électricité, eau, téléphone) : réglé par la Finance."
+
+#. module: his_purchase_finance
+#: model:ir.actions.act_window,name:his_purchase_finance.action_his_purchase_anomaly
+msgid "Purchase Anomalies"
+msgstr "Anomalies d'achat"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_his_purchase_anomaly
+msgid "Purchase Anomaly"
+msgstr "Anomalie d'achat"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "Purchase file closed by %s."
+msgstr "Dossier d'achat clôturé par %s."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Quote File"
+msgstr "Devis joint"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_purchase_order__his_ready_to_close
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.purchase_order_search_finance
+msgid "Ready to Close"
+msgstr "Prêt à clôturer"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__picking_id
+msgid "Receipt"
+msgstr "Reçu"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__account_move__his_original_state__not_compliant
+msgid "Received, Differs"
+msgstr "Reçu, différent du scan"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__account_move__his_original_state__compliant
+msgid "Received, Matches the Scan"
+msgstr "Reçu, conforme au scan"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_account_payment_register__his_reference_required
+msgid "Reference Required"
+msgstr "Référence exigée"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_stock_move__his_refusal_reason
+msgid "Refusal Reason"
+msgstr "Motif du refus"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/stock_move.py:0
+msgid "Refused at receipt %s:\n"
+msgstr "Refusé à la réception %s :\n"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/stock_move.py:0
+msgid "Refused at receipt:"
+msgstr "Refusé à la réception :"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__his_step_level
+msgid "Reminder Level"
+msgstr "Niveau de relance"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__his_reminder_count
+msgid "Reminders Sent"
+msgstr "Relances envoyées"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__solution__replacement
+msgid "Replacement"
+msgstr "Remplacement"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__solution__return
+msgid "Return"
+msgstr "Retour"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_service_done__compliant
+msgid "Service Compliant"
+msgstr "Service conforme"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_anomaly_declare__kind__service
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__kind__service
+msgid "Service Not Compliant"
+msgstr "Service non conforme"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_anomaly_declare__kind__shortage
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__kind__shortage
+msgid "Shortage"
+msgstr "Manquant"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__solution
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_purchase_anomaly_form
+msgid "Solution"
+msgstr "Solution"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__solution_note
+msgid "Solution Details"
+msgstr "Détail de la solution"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields.selection,name:his_purchase_finance.selection__his_purchase_anomaly__state__proposed
+msgid "Solution Proposed"
+msgstr "Solution proposée"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Solution approved by Finance."
+msgstr "Solution validée par la Finance."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Solution carried out with the supplier."
+msgstr "Solution exécutée avec le fournisseur."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "Solution proposed to Finance."
+msgstr "Solution proposée à la Finance."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__activity_state
+msgid "Status based on activities\nOverdue: Due date is already passed\nToday: Activity date is today\nPlanned: Future activities."
+msgstr "Statut basé sur les activités\nEn retard : la date d'échéance est déjà passée\nAujourd'hui : la date de l'activité est aujourd'hui\nPlanifiée : activités futures."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__his_step_since
+msgid "Step Since"
+msgstr "Étape depuis"
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_stock_move
+msgid "Stock Move"
+msgstr "Mouvement de stock"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/res_partner.py:0
+msgid "The NIF %(nif)s is already used by %(other)s."
+msgstr "Le NIF %(nif)s est déjà utilisé par %(other)s."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "The status of an anomaly changes through its buttons only."
+msgstr "Le statut d'une anomalie ne change que par ses boutons."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/res_partner.py:0
+msgid "The supplier file of %(supplier)s cannot be validated: missing %(documents)s."
+msgstr "Le dossier fournisseur de %(supplier)s ne peut pas être validé : il manque %(documents)s."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_payment.py:0
+msgid "The supplier file of %(supplier)s is not validated by Finance: it cannot be paid."
+msgstr "Le dossier fournisseur de %(supplier)s n'est pas validé par la Finance : il ne peut pas être payé."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/his_anomaly_declare.py:0
+msgid "There is no confirmed purchase order to declare an anomaly on."
+msgstr "Aucune commande confirmée sur laquelle déclarer une anomalie."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "This bill is not linked to a purchase order."
+msgstr "Cette facture n'est liée à aucune commande."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "This receipt is not linked to a purchase order."
+msgstr "Cette réception n'est liée à aucune commande."
+
+#. module: his_purchase_finance
+#: model:ir.model,name:his_purchase_finance.model_stock_picking
+msgid "Transfer"
+msgstr "Transfert"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_anomaly_declare__kind
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__kind
+msgid "Type"
+msgstr "Type"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité d'exception sur l'enregistrement."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "Unsupported search on Ready to Close."
+msgstr "Recherche non prise en charge sur « Prêt à clôturer »."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_service_done__compliant
+msgid "Untick if the service is not compliant: an anomaly is declared instead of the confirmation."
+msgstr "Décochez si le service n'est pas conforme : une anomalie est déclarée au lieu de l'attestation."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/wizard/account_payment_register.py:0
+msgid "VAT on %s is not deductible if paid in cash above 1,000,000 DA incl. tax (Finance Act 2023, art. 23)."
+msgstr "La TVA de %s n'est pas déductible si elle est réglée en espèces au-delà de 1 000 000 DA TTC (loi de finances 2023, art. 23)."
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__move_id
+msgid "Vendor Bill"
+msgstr "Facture fournisseur"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des échanges sur le site web"
+
+#. module: his_purchase_finance
+#: model_terms:ir.ui.view,arch_db:his_purchase_finance.his_anomaly_declare_form
+msgid "What is missing, damaged or not compliant?"
+msgstr "Qu'est-ce qui manque, est endommagé ou non conforme ?"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "Yes"
+msgstr "Oui"
+
+#. module: his_purchase_finance
+#: model:ir.model.fields,help:his_purchase_finance.field_his_purchase_anomaly__partner_id
+msgid "You can find a vendor by its Name, TIN, Email or Internal Reference."
+msgstr "Vous pouvez trouver un fournisseur par son nom, son NIF, son e-mail ou sa référence interne."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "You cannot declare an anomaly on %s."
+msgstr "Vous ne pouvez pas déclarer d'anomalie sur %s."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "You cannot do this on an anomaly."
+msgstr "Vous ne pouvez pas faire cela sur une anomalie."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "a credit note is still due"
+msgstr "un avoir est encore attendu"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "a receipt is still open"
+msgstr "une réception est encore ouverte"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "bills not paid: %s"
+msgstr "factures non payées : %s"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/res_partner.py:0
+msgid "documents missing: %s"
+msgstr "pièces manquantes : %s"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "none"
+msgstr "aucun"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "open anomalies: %s"
+msgstr "anomalies ouvertes : %s"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/his_purchase_anomaly.py:0
+msgid "order_id"
+msgstr "order_id"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "something is still to be billed"
+msgstr "il reste à facturer"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "the order is not confirmed"
+msgstr "la commande n'est pas confirmée"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "the service is not confirmed done"
+msgstr "le service fait n'est pas attesté"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order_file.py:0
+msgid "the supplier is not rated by both Purchasing and Finance"
+msgstr "le fournisseur n'est pas évalué par les Achats et par la Finance"

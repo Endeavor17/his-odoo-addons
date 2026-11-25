@@ -6,3 +6,10 @@ access_service_done_requester,his.service.done requester,model_his_service_done,
 access_bill_decision,his.bill.decision,model_his_bill_decision,group_finance,1,1,1,1
 access_supplier_rating_purchase,his.supplier.rating purchase user,model_his_supplier_rating,purchase.group_purchase_user,1,1,1,0
 access_supplier_rating_finance,his.supplier.rating finance,model_his_supplier_rating,group_finance,1,1,1,1
+access_anomaly_purchase,his.purchase.anomaly purchase user,model_his_purchase_anomaly,purchase.group_purchase_user,1,1,1,0
+access_anomaly_finance,his.purchase.anomaly finance,model_his_purchase_anomaly,group_finance,1,1,1,1
+access_anomaly_stock,his.purchase.anomaly stock user,model_his_purchase_anomaly,stock.group_stock_user,1,0,0,0
+access_anomaly_requester,his.purchase.anomaly requester,model_his_purchase_anomaly,his_purchase.group_requester,1,0,0,0
+access_anomaly_declare_purchase,his.anomaly.declare purchase user,model_his_anomaly_declare,purchase.group_purchase_user,1,1,1,1
+access_anomaly_declare_stock,his.anomaly.declare stock user,model_his_anomaly_declare,stock.group_stock_user,1,1,1,1
+access_anomaly_declare_requester,his.anomaly.declare requester,model_his_anomaly_declare,his_purchase.group_requester,1,1,1,1

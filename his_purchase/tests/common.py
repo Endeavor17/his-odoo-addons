@@ -84,9 +84,12 @@ class HisPurchaseCase(TransactionCase):
         Partner = cls.env["res.partner"]
         ids = {"is_company": True, "vat": "000016001234567", "his_rc": "16/00-1234567B21"}
         cls.supplier_a = Partner.create({"name": "Supplier A", **ids})
-        cls.supplier_b = Partner.create({"name": "Supplier B", **ids})
-        cls.supplier_c = Partner.create({"name": "Supplier C", **ids})
-        cls.supplier_ifu = Partner.create({"name": "Small IFU Shop", "his_tax_regime": "ifu", **ids})
+        # Un NIF par fournisseur : his_purchase_finance refuse les doublons.
+        cls.supplier_b = Partner.create({"name": "Supplier B", **ids, "vat": "000016001234568"})
+        cls.supplier_c = Partner.create({"name": "Supplier C", **ids, "vat": "000016001234569"})
+        cls.supplier_ifu = Partner.create(
+            {"name": "Small IFU Shop", "his_tax_regime": "ifu", **ids, "vat": "000016001234570"}
+        )
         cls.supplier_bare = Partner.create({"name": "No Papers SARL", "is_company": True})
         cls.toner = cls.env["product.product"].create({"name": "Toner HP 85A", "type": "consu", "purchase_ok": True})
         cls.tomatoes = cls.env["product.product"].create({"name": "Tomatoes", "type": "consu", "purchase_ok": True})

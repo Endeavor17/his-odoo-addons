@@ -63,12 +63,13 @@ class TestBillCheck(HisFinanceCase):
             bill.action_post()
         return bill
 
-    def _register(self, bill, proof=PROOF):
+    def _register(self, bill, proof=PROOF, **vals):
+        vals.setdefault("his_bank_reference", "VIR 2026-0042")
         return (
             self.env["account.payment.register"]
             .with_user(self.finance)
             .with_context(active_model="account.move", active_ids=bill.ids)
-            .create({"his_proof": proof, "his_proof_name": "virement.pdf"})
+            .create({"his_proof": proof, "his_proof_name": "virement.pdf", **vals})
         )
 
     def _received_order(self):
@@ -111,17 +112,118 @@ class TestBillCheck(HisFinanceCase):
         self.assertEqual(bill.his_check_state, "reserve")
         self.assertIn("not on the purchase order", bill.his_check_reason)
 
-    def test_bill_without_order_not_checked(self):
-        bill = self.env["account.move"].create(
-            {
-                "move_type": "in_invoice",
-                "partner_id": self.supplier_a.id,
-                "invoice_date": fields.Date.today(),
-                "invoice_line_ids": [(0, 0, {"name": "Electricity", "quantity": 1, "price_unit": 1000})],
-            }
+    def _bill_without_order(self, move_type="in_invoice", post=True):
+        bill = (
+            self.env["account.move"]
+            .with_user(self.finance)
+            .create(
+                {
+                    "move_type": move_type,
+                    "partner_id": self.supplier_a.id,
+                    "invoice_date": fields.Date.today(),
+                    "invoice_line_ids": [(0, 0, {"name": "Rent", "quantity": 1, "price_unit": 1000})],
+                }
+            )
+        )
+        if post:
+            bill.action_post()
+        return bill
+
+    def test_bill_without_order_on_hold(self):
+        bill = self._bill_without_order()
+        self.assertEqual(bill.his_check_state, "reserve")
+        self.assertIn("No purchase order", bill.his_check_reason)
+        self.assertEqual(bill.payment_state, "blocked")
+        bill.with_user(self.finance)._his_decide("release", "Monthly rent, lease 2026")
+        self.assertEqual(bill.his_check_state, "validated")
+        self.assertNotEqual(bill.payment_state, "blocked")
+
+    def test_refund_without_order_not_checked(self):
+        refund = self._bill_without_order(move_type="in_refund")
+        self.assertFalse(refund.his_check_state)
+
+    def test_switch_off_bill_without_order_free(self):
+        self.company.his_finance_confirms = False
+        bill = self._bill_without_order()
+        self.assertFalse(bill.his_check_state)
+
+    def test_down_payment_on_hold(self):
+        order = self._confirmed()
+        pol = (
+            self.env["purchase.order.line"]
+            .sudo()
+            .create(
+                {
+                    "order_id": order.id,
+                    "name": "Down payment",
+                    "is_downpayment": True,
+                    "product_qty": 0,
+                    "price_unit": 3000,
+                }
+            )
+        )
+        bill = (
+            self.env["account.move"]
+            .with_user(self.finance)
+            .create(
+                {
+                    "move_type": "in_invoice",
+                    "partner_id": order.partner_id.id,
+                    "invoice_date": fields.Date.today(),
+                    "invoice_line_ids": [
+                        (0, 0, {"name": "Down payment", "quantity": 1, "price_unit": 3000, "purchase_line_id": pol.id})
+                    ],
+                }
+            )
         )
         bill.action_post()
-        self.assertFalse(bill.his_check_state)
+        self.assertEqual(bill.his_check_state, "reserve")
+        self.assertIn("Down payment", bill.his_check_reason)
+        self.assertNotIn("received", bill.his_check_reason)
+
+    def test_credit_note_with_order_terms_not_held(self):
+        # Revue finale : l'assistant d'avoir vide les conditions de paiement.
+        order = self._offer()
+        order.payment_term_id = self.env.ref("account.account_payment_term_30days")
+        order = self._confirmed(order)
+        self._receive(order)
+        bill = self._bill(order, post=False)
+        bill.invoice_payment_term_id = order.payment_term_id
+        bill.action_post()
+        self.assertEqual(bill.his_check_state, "validated")
+        reversal = (
+            self.env["account.move.reversal"]
+            .with_user(self.finance)
+            .with_context(active_model="account.move", active_ids=bill.ids)
+            .create({"journal_id": bill.journal_id.id, "date": fields.Date.today()})
+        )
+        reversal.refund_moves()
+        refund = self.env["account.move"].search([("reversed_entry_id", "=", bill.id)])
+        refund.action_post()
+        self.assertFalse(refund.invoice_payment_term_id)
+        self.assertEqual(refund.his_check_state, "validated", refund.his_check_reason)
+
+    def test_bill_other_supplier(self):
+        order = self._received_order()
+        bill = self._bill(order, post=False)
+        bill.partner_id = self.supplier_b
+        bill.action_post()
+        self.assertEqual(bill.his_check_state, "reserve")
+        self.assertIn("Supplier B", bill.his_check_reason)
+
+    def test_bill_other_payment_terms(self):
+        order = self._offer()
+        order.payment_term_id = self.env.ref("account.account_payment_term_30days")
+        order = self._confirmed(order)
+        self._receive(order)
+        bill = self._bill(order, post=False)
+        bill.invoice_payment_term_id = self.env.ref("account.account_payment_term_immediate")
+        bill.action_post()
+        self.assertEqual(bill.his_check_state, "reserve")
+        self.assertIn("payment terms", bill.his_check_reason)
+        same = self._bill(order, post=False, qty=0)
+        same.invoice_payment_term_id = order.payment_term_id
+        self.assertNotIn("payment terms", "\n".join(same._his_mismatches()))
 
     def test_held_bill_payment_refused(self):
         bill = self._bill(self._received_order(), price=9100)

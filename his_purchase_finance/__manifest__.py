@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Achats - Controles Finance",
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.1.0",
     "category": "Supply Chain/Purchase",
     "summary": "Commande confirmee par la Finance, dossier fournisseur, rapprochement facture, preuve de paiement",
     "description": """
@@ -25,11 +25,14 @@ Controles du Departement Finance sur les achats
     "data": [
         "security/his_purchase_finance_security.xml",
         "security/ir.model.access.csv",
+        "security/his_purchase_anomaly_rules.xml",
+        "data/ir_sequence_data.xml",
         "views/res_partner_views.xml",
         "views/purchase_order_views.xml",
         "views/res_config_settings_views.xml",
         "views/account_move_views.xml",
         "views/his_supplier_rating_views.xml",
+        "views/his_purchase_anomaly_views.xml",
     ],
     "post_init_hook": "post_init_hook",
     "installable": True,

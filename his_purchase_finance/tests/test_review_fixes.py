@@ -67,6 +67,7 @@ class TestReviewFixes(HisFinanceCase):
         order = self._source_rfq(request, self.supplier_a)
         order.order_line.write({"price_unit": 9000})
         order.order_line.with_user(self.manager).product_qty = 3  # 2 demandes
+        self._attach(order, "devis.pdf")
         action = order.with_user(self.manager).action_his_send_to_finance()
         self.env["his.purchase.choice"].with_user(self.manager).with_context(action["context"]).create(
             {"order_id": order.id, "criterion": "quality", "note": "Spare toner."}
@@ -98,6 +99,7 @@ class TestReviewFixes(HisFinanceCase):
         agreement.action_confirm()
         order = self._offer()
         order.with_user(self.officer).requisition_id = agreement
+        self._attach(order, "devis.pdf")
         action = order.with_user(self.officer).action_his_send_to_finance()
         self.assertIsInstance(action, dict, "le contrat d'un autre fournisseur ne dispense pas du motif")
         self.assertFalse(order.his_sent_to_finance_on)

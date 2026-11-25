@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_his_purchase_anomaly" model="ir.sequence">
+        <field name="name">Purchase Anomaly</field>
+        <field name="code">his.purchase.anomaly</field>
+        <field name="prefix">ANO/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

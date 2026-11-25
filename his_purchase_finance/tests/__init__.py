@@ -1,7 +1,11 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from . import (
+    test_anomaly,
     test_bill_check,
+    test_bill_payment_extras,
+    test_order_controls,
     test_rating,
+    test_receipt_refusal,
     test_review_fixes,
     test_send_confirm,
     test_service_done,

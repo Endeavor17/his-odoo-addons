@@ -15,6 +15,7 @@ class TestSendConfirm(HisFinanceCase):
 
     def test_send_always_asks_reason(self):
         order = self._offer()
+        self._attach(order, "devis.pdf")
         action = order.with_user(self.officer).action_his_send_to_finance()
         self.assertEqual(action["res_model"], "his.purchase.choice")
         self.assertTrue(action["context"]["his_send_to_finance"])
