@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import tagged
 
 from .test_bill_check import TestBillCheck
@@ -23,8 +23,10 @@ class TestBillPaymentExtras(TestBillCheck):
             {"his_original_state": "compliant", "his_original_holder_id": self.finance.id}
         )
         self.assertEqual(bill.his_original_state, "compliant")
+        with self.assertRaises(AccessError):
+            bill.with_user(self.officer).write({"his_original_state": "not_compliant"})
 
-    def test_cash_warning(self):
+    def test_cash_refused_on_big_bill(self):
         order = self._offer(price=500000)  # 2 x 500 000 HT = 1 190 000 TTC
         self._confirmed(order)
         self._receive(order)
@@ -33,9 +35,31 @@ class TestBillPaymentExtras(TestBillCheck):
         bank = self._register(bill, journal_id=self._journal("bank").id)
         self.assertFalse(bank.his_cash_vat_warning)
         cash = self._register(bill, journal_id=self._journal("cash").id, his_bank_reference=False)
-        self.assertIn("not deductible", cash.his_cash_vat_warning)
-        cash._create_payments()
-        self.assertIn("not deductible", "".join(bill.message_ids.mapped("body")))
+        self.assertIn("15-153", cash.his_cash_vat_warning)
+        # bloquant, meme pour une partie de la facture
+        partial = self._register(bill, journal_id=self._journal("cash").id, his_bank_reference=False, amount=1000)
+        for wizard in (cash, partial):
+            with self.assertRaisesRegex(UserError, "15-153"):
+                wizard._create_payments()
+        self.assertEqual(bill.payment_state, "not_paid")
+
+    def test_direct_cash_payment_refused(self):
+        bill = self._bill(self._received_order())
+        payment = (
+            self.env["account.payment"]
+            .with_user(self.finance)
+            .create(
+                {
+                    "payment_type": "outbound",
+                    "partner_type": "supplier",
+                    "partner_id": bill.partner_id.id,
+                    "journal_id": self._journal("cash").id,
+                    "amount": 1_000_000,
+                }
+            )
+        )
+        with self.assertRaisesRegex(UserError, "15-153"):
+            payment.action_post()
 
     def test_small_cash_payment_no_warning(self):
         bill = self._bill(self._received_order())  # 2 x 9 000 HT

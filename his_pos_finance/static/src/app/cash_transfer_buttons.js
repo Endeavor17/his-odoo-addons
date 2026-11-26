@@ -6,6 +6,19 @@ import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { _t } from "@web/core/l10n/translation";
 import { useService } from "@web/core/utils/hooks";
 import { patch } from "@web/core/utils/patch";
+import { parseFloat } from "@web/views/fields/parsers";
+
+// Le pave numerique tape « 1500,50 » en francais : le parseFloat natif lirait 1500.
+function hisAmount(value) {
+    if (value === undefined || value === null || value === "") {
+        return NaN;
+    }
+    try {
+        return parseFloat(`${value}`);
+    } catch {
+        return NaN;
+    }
+}
 
 // Versement du soir a la Finance et reception d'especes, depuis la caisse
 // (procedure §4.4) : la sortie d'especes libre d'Odoo est fermee.
@@ -21,7 +34,7 @@ patch(Navbar.prototype, {
             title: _t("Hand over to Finance"),
             startingValue: proposal,
         });
-        const amount = parseFloat(value);
+        const amount = hisAmount(value);
         if (!value || isNaN(amount)) {
             return;
         }
@@ -53,8 +66,8 @@ patch(Navbar.prototype, {
             title: _t("Amount counted"),
             startingValue: transfer.amount_sent,
         });
-        const amount = parseFloat(value);
-        if (value === undefined || value === null || isNaN(amount)) {
+        const amount = hisAmount(value);
+        if (isNaN(amount)) {
             return;
         }
         await this.pos.data.call("pos.session", "his_receive_transfer", [session.id, transfer.id, amount]);

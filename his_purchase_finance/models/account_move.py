@@ -13,7 +13,7 @@ autorisation (complement du 2026-11-24).
 
 from markupsafe import Markup
 from odoo import _, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 from .common import is_finance
 
@@ -25,6 +25,9 @@ CHECK_STATES = [
     ("validated", "Validated"),
     ("refused", "Refused"),
 ]
+
+
+ORIGINAL_FIELDS = {"his_original_state", "his_original_received_on", "his_original_holder_id", "his_original_note"}
 
 
 class AccountMove(models.Model):
@@ -200,6 +203,9 @@ class AccountMove(models.Model):
         # « readonly » n'arrete pas un appel RPC : seul le code (en sudo) decide.
         if CHECK_FIELDS & set(vals) and not self.env.su:
             raise UserError(_("The purchase order check is set by Finance decisions only."))
+        if ORIGINAL_FIELDS & set(vals) and not is_finance(self.env):
+            # procedure 7.3 : la Finance trace l'original papier
+            raise AccessError(_("Only Finance records the paper original of a bill."))
         return super().write(vals)
 
     def action_toggle_block_payment(self):

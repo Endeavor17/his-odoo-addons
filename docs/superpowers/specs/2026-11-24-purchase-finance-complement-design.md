@@ -238,12 +238,14 @@ A filter "Original missing" on vendor bills.
 
 ### 6.8 Cash payment above 1,000,000 DA (§8.2)
 
-- Register wizard: a computed warning shown when the journal is of type
-  `cash`, the partner is a supplier and one of the bills has
-  `amount_total_signed` above 1,000,000 in company currency: "VAT on this
-  bill is not deductible if paid in cash (Finance Act 2023, art. 23)". Not
-  blocking.
-- When such a payment is created, a note is posted on the bill.
+- **Blocking since 2026-11-26 (Mohamed, no override).** Executive decree
+  15-153 requires cheque or transfer for goods and services of 1,000,000 DA
+  or more; §8.2 allows cash only "within the limits of the regulation".
+- Register wizard: a cash journal and a vendor bill of 1,000,000 DA incl. tax
+  or more (`amount_total_signed`, company currency) shows a red banner and
+  refuses the payment, whatever the amount paid (splitting does not pass).
+- `account.payment.action_post`: a cash supplier payment of 1,000,000 DA or
+  more is refused, for payments entered outside a bill.
 - Threshold as a module constant `CASH_VAT_LIMIT = 1_000_000`.
 
 ### 6.9 Request: priority and tax estimate (`his_purchase`, Step 1)

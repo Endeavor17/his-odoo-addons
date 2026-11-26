@@ -91,6 +91,17 @@ class TestAnomaly(TestBillCheck):
         self._declare(order, kind="damage", description="Dented")
         self.assertEqual(order.his_anomaly_count, 2)
 
+    def test_finance_does_not_play_the_buyer(self):
+        order = self._confirmed()
+        anomaly = (
+            self.env["his.purchase.anomaly"].with_user(self.finance)._his_declare(order, "shortage", "2 manquants")
+        )
+        with self.assertRaises(AccessError):
+            anomaly.with_user(self.finance).write({"solution": "replacement"})
+        anomaly.with_user(self.officer).write({"solution": "replacement"})
+        with self.assertRaises(AccessError):
+            anomaly.with_user(self.finance).action_propose()
+
 
 @tagged("post_install", "-at_install")
 class TestAnomalyRequester(TestServiceDone):

@@ -28,12 +28,11 @@ patch(PosStore.prototype, {
     restrictLineDiscountChange() {
         return this.hisNeedsApproval() || super.restrictLineDiscountChange(...arguments);
     },
+    hisApprovalTitles() {
+        return { price: _t("Price change"), discount: _t("Discount"), refund: _t("Refund") };
+    },
     async hisAskApproval(kind) {
-        const titles = {
-            price: _t("Price change"),
-            discount: _t("Discount"),
-            refund: _t("Refund"),
-        };
+        const titles = this.hisApprovalTitles();
         const cashier = this.getCashier();
         const isManager = cashier?._role === "manager";
         const managers = this.config.module_pos_hr
@@ -49,8 +48,15 @@ patch(PosStore.prototype, {
     hisRecord(lines, approval) {
         const employee = this.config.module_pos_hr ? approval.employee : false;
         for (const line of lines) {
+            // shortcut: a line keeps one approval; earlier ones stay as text in the
+            // reason. A one2many if Finance needs to report on each of them.
+            const before = line.his_authorization_kind
+                ? ` | ${this.hisApprovalTitles()[line.his_authorization_kind]} (${
+                      line.his_authorized_by_id?.name || "-"
+                  }) : ${line.his_authorization_reason || ""}`
+                : "";
             line.his_authorized_by_id = employee;
-            line.his_authorization_reason = approval.reason;
+            line.his_authorization_reason = approval.reason + before;
             line.his_authorization_kind = approval.kind;
         }
     },

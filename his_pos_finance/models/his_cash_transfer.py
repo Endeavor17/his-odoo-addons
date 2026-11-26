@@ -118,6 +118,8 @@ class HisCashTransfer(models.Model):
                     "date": fields.Date.context_today(self),
                     "pos_session_id": session.id,
                     "payment_ref": self.name,
+                    # le popup de cloture affiche ce partenaire comme caissier (« false » sinon)
+                    "partner_id": self.env.user.partner_id.id,
                     "counterpart_account_id": self._his_link_account().id,
                 }
             )
@@ -180,6 +182,9 @@ class HisCashTransfer(models.Model):
             raise AccessError(_("You cannot receive cash into %(box)s.", box=self.to_journal_id.display_name))
         if amount < 0:
             raise UserError(_("The amount received cannot be negative."))
+        if not self.env.su and self.sent_by == self.env.user:
+            # decision 12 : deux personnes, celle qui remet ne compte pas a l'arrivee
+            raise UserError(_("You sent %(name)s: someone else receives and counts it.", name=self.name))
         # Droits verifies : la comptabilite se passe en sudo (un caissier ne lit
         # pas les comptes), l'utilisateur reste trace dans received_by.
         self.sudo()._his_receive(amount, self.env.uid)
@@ -225,7 +230,8 @@ class HisCashTransfer(models.Model):
                 expected=self.amount_sent,
                 counted=amount,
                 provisional_move=residual,
-                explanation=self.note or "",
+                # la note du versement n'explique pas l'ecart : le
+                # reviseur saisit l'explication du detenteur sur la fiche
                 transfer_id=self.id,
                 session_id=session.id,
                 holder_id=uid,

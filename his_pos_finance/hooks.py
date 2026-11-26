@@ -173,6 +173,110 @@ def setup_pos_finance(env, company):
             lines.write({"account_id": collectee.id})
 
     _setup_tills(env, company, account)
+    # apres le report : retirer un moyen de paiement recalcule le journal de
+    # caisse des anciennes sessions, et le report ne les retrouverait plus
+    carry_legacy_cash(env, company)
+    cash_only_tills(env, company)
+
+
+def cash_only_tills(env, company):
+    """Decision 18 : especes seulement. Retire Carte et Compte client des caisses.
+
+    Odoo pose tous les moyens de paiement de la societe sur une caisse creee ;
+    le Compte client passerait la vente en 411, reserve aux clients factures.
+    Une caisse ouverte est laissee telle quelle (on ne change pas ses moyens en
+    pleine session) : elle sera nettoyee a la prochaine mise a jour.
+    """
+    for xmlid in TILLS:
+        config = env.ref(xmlid, raise_if_not_found=False)
+        if not config or config.sudo().company_id != company:
+            continue
+        others = config.payment_method_ids.filtered(lambda m: not m.is_cash_count)
+        if not others:
+            continue
+        if config.current_session_id:
+            _logger.warning("his_pos_finance: %s is open, %s left on it", config.name, others.mapped("name"))
+            continue
+        config.payment_method_ids = [(3, method.id) for method in others]
+
+
+def carry_legacy_cash(env, company):
+    """Reporte le fonds de chaque caisse de l'ancien compte de caisse vers le sien.
+
+    Avant ce module, les caisses versaient leurs especes dans le journal de
+    caisse du plan (CSH1, CSH2...), sur 530001 : le compte que la procedure
+    donne a la caisse Finance (CFIN). La premiere session sur le nouveau
+    journal part du compte de la derniere cloture (le fonds reste en caisse),
+    alors que le nouveau compte 530x est vide : on deplace ce fonds de l'ancien
+    compte vers le compte de la caisse. Puis on archive les anciens journaux qui
+    partagent le compte d'une caisse Finance ou Direction : 530001 et 530000
+    ne bougent plus que par CFIN et CDIR. Ce qui reste sur 530001 venait
+    d'especes sorties des caisses hors du systeme : le premier comptage de
+    CFIN le fait apparaitre sur une fiche d'ecart.
+
+    Idempotent : une ecriture par ancienne session, retrouvee par sa reference.
+    """
+    Journal = env["account.journal"]
+    Move = env["account.move"]
+    for xmlid in TILLS:
+        config = env.ref(xmlid, raise_if_not_found=False)
+        if not config or config.sudo().company_id != company:
+            continue
+        journal = config.payment_method_ids.filtered("is_cash_count")[:1].journal_id
+        if not journal:
+            continue
+        legacy = env["pos.session"].search(
+            [
+                ("config_id", "=", config.id),
+                ("state", "=", "closed"),
+                ("cash_journal_id", "!=", False),
+                ("cash_journal_id", "!=", journal.id),
+            ],
+            order="id desc",
+            limit=1,
+        )
+        old_account = legacy.cash_journal_id.default_account_id
+        amount = legacy.cash_register_balance_end_real
+        if not legacy or not old_account or old_account == journal.default_account_id:
+            continue
+        if company.currency_id.is_zero(amount):
+            continue
+        ref = env._("Till float carried over from %s", legacy.name)
+        if Move.search_count([("journal_id", "=", journal.id), ("ref", "=", ref)]):
+            continue
+        # un fonds negatif (caisse a decouvert) se reporte dans l'autre sens
+        debit, credit = (
+            (journal.default_account_id, old_account) if amount > 0 else (old_account, journal.default_account_id)
+        )
+        move = Move.create(
+            {
+                "journal_id": journal.id,
+                "ref": ref,
+                "line_ids": [
+                    (0, 0, {"account_id": debit.id, "name": ref, "debit": abs(amount), "credit": 0}),
+                    (0, 0, {"account_id": credit.id, "name": ref, "debit": 0, "credit": abs(amount)}),
+                ],
+            }
+        )
+        move.action_post()
+        _logger.info(
+            "his_pos_finance: %s carried %s from %s to %s", config.name, amount, old_account.code, journal.code
+        )
+
+    ours = Journal.search([("code", "in", [code for code, *_rest in JOURNALS]), ("company_id", "=", company.id)])
+    boxes = ours.filtered(lambda j: j.code in ("CFIN", "CDIR")).default_account_id
+    used = env["pos.payment.method"].with_context(active_test=False).search([]).journal_id
+    legacy_journals = Journal.search(
+        [
+            ("type", "=", "cash"),
+            ("company_id", "=", company.id),
+            ("default_account_id", "in", boxes.ids),
+            ("id", "not in", (ours | used).ids),
+        ]
+    )
+    if legacy_journals:
+        _logger.info("his_pos_finance: archiving legacy cash journals %s", legacy_journals.mapped("code"))
+        legacy_journals.active = False
 
 
 def _setup_tills(env, company, account):

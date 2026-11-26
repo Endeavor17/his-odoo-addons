@@ -218,3 +218,28 @@ class TestOrderControls(TestBillCheck):
         self.env["his.purchase.anomaly"].with_user(self.officer)._his_declare(order, "damage", "Dented")
         with self.assertRaisesRegex(UserError, "ANO/"):
             order.with_user(self.finance).action_his_close_file()
+
+    def test_buyer_cannot_cancel_order_with_finance(self):
+        order = self._offer()
+        self._send(order)
+        with self.assertRaises(UserError):
+            order.with_user(self.officer).button_cancel()
+        self.assertNotEqual(order.state, "cancel")
+        # retournee a l'acheteur, elle redevient a lui
+        order.with_user(self.finance)._his_return("Prix a revoir")
+        order.with_user(self.officer).button_cancel()
+        self.assertEqual(order.state, "cancel")
+
+    def test_sender_does_not_confirm_own_order(self):
+        order = self._offer()
+        self._attach(order, "devis-fournisseur.pdf")
+        # un agent Finance qui a monte et envoye la commande
+        action = order.with_user(self.finance).action_his_send_to_finance()
+        self.env["his.purchase.choice"].with_user(self.finance).with_context(action["context"]).create(
+            {"order_id": order.id, "criterion": "quality", "note": "x"}
+        ).action_confirm()
+        with self.assertRaisesRegex(UserError, "another Finance user"):
+            order.with_user(self.finance).button_confirm()
+        other = new_test_user(self.env, login="his_finance_2", groups="his_purchase_finance.group_finance")
+        order.with_user(other).button_confirm()
+        self.assertIn(order.state, ("purchase", "to approve"))

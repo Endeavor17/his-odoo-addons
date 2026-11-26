@@ -572,6 +572,8 @@ msgid "Payment Proof Name"
 msgstr "Nom de la preuve de paiement"
 
 #. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
 #: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__finance_payment_terms
 msgid "Payment Terms"
 msgstr "Conditions de paiement"
@@ -854,6 +856,8 @@ msgid "Status"
 msgstr "Statut"
 
 #. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
 #: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__partner_id
 #: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__partner_id
 msgid "Supplier"
@@ -1869,8 +1873,22 @@ msgstr "Décochez si le service n'est pas conforme : une anomalie est déclarée
 #. module: his_purchase_finance
 #. odoo-python
 #: code:addons/his_purchase_finance/wizard/account_payment_register.py:0
-msgid "VAT on %s is not deductible if paid in cash above 1,000,000 DA incl. tax (Finance Act 2023, art. 23)."
-msgstr "La TVA de %s n'est pas déductible si elle est réglée en espèces au-delà de 1 000 000 DA TTC (loi de finances 2023, art. 23)."
+msgid ""
+"%s is 1,000,000 DA incl. tax or more: pay it by cheque or bank transfer, not "
+"in cash (executive decree 15-153)."
+msgstr ""
+"%s atteint 1 000 000 DA TTC ou plus : réglez-la par chèque ou virement, pas "
+"en espèces (décret exécutif 15-153)."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_payment.py:0
+msgid ""
+"A supplier payment of 1,000,000 DA or more goes by cheque or bank transfer, "
+"not in cash (executive decree 15-153)."
+msgstr ""
+"Un paiement fournisseur de 1 000 000 DA ou plus se fait par chèque ou "
+"virement, pas en espèces (décret exécutif 15-153)."
 
 #. module: his_purchase_finance
 #: model:ir.model.fields,field_description:his_purchase_finance.field_his_purchase_anomaly__move_id
@@ -1980,3 +1998,15 @@ msgstr "le service fait n'est pas attesté"
 #: code:addons/his_purchase_finance/models/purchase_order_file.py:0
 msgid "the supplier is not rated by both Purchasing and Finance"
 msgstr "le fournisseur n'est pas évalué par les Achats et par la Finance"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "You sent %s to Finance: another Finance user confirms it."
+msgstr "Vous avez envoyé %s à la Finance : un autre membre de la Finance la confirme."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "Only Finance records the paper original of a bill."
+msgstr "Seule la Finance enregistre l'original papier d'une facture."

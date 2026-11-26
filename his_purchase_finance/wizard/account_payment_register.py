@@ -2,9 +2,7 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-# Loi de finances 2023, art. 23 (art. 30 CTCA) : au-dela, la TVA d'une facture
-# reglee en especes n'est pas deductible.
-CASH_VAT_LIMIT = 1_000_000
+from ..models.common import CASH_VAT_LIMIT
 
 
 class AccountPaymentRegister(models.TransientModel):
@@ -22,7 +20,7 @@ class AccountPaymentRegister(models.TransientModel):
         return self.line_ids.move_id.filtered(
             lambda m: (
                 m.move_type == "in_invoice"
-                and m.company_id.currency_id.compare_amounts(abs(m.amount_total_signed), CASH_VAT_LIMIT) > 0
+                and m.company_id.currency_id.compare_amounts(abs(m.amount_total_signed), CASH_VAT_LIMIT) >= 0
             )
         )
 
@@ -32,8 +30,8 @@ class AccountPaymentRegister(models.TransientModel):
             big = wizard.journal_id.type == "cash" and wizard._his_big_bills()
             wizard.his_cash_vat_warning = (
                 _(
-                    "VAT on %s is not deductible if paid in cash above 1,000,000 DA incl. tax "
-                    "(Finance Act 2023, art. 23).",
+                    "%s is 1,000,000 DA incl. tax or more: pay it by cheque or bank transfer, "
+                    "not in cash (executive decree 15-153).",
                     ", ".join(big.mapped("name")),
                 )
                 if big
@@ -54,6 +52,9 @@ class AccountPaymentRegister(models.TransientModel):
             raise UserError(
                 _("%s is held by the purchase order check: Finance must validate or release it first.", held[0].name)
             )
+        if self.his_cash_vat_warning:
+            # la facture entiere compte : la payer en plusieurs fois en especes ne passe pas
+            raise UserError(self.his_cash_vat_warning)
         if self.his_proof_required and not self.his_proof:
             raise UserError(_("Attach the payment proof before paying a supplier."))
         if self.his_reference_required and not (self.his_bank_reference or "").strip():
@@ -61,11 +62,7 @@ class AccountPaymentRegister(models.TransientModel):
         wizard = self
         if self.his_proof:
             wizard = self.with_context(his_payment_proof=(self.his_proof_name or _("Payment proof"), self.his_proof))
-        payments = super(AccountPaymentRegister, wizard)._create_payments()
-        if self.his_cash_vat_warning:
-            for bill in self._his_big_bills():
-                bill.message_post(body=self.his_cash_vat_warning)
-        return payments
+        return super(AccountPaymentRegister, wizard)._create_payments()
 
     def _create_payment_vals_from_wizard(self, batch_result):
         vals = super()._create_payment_vals_from_wizard(batch_result)
