@@ -72,7 +72,7 @@
                 <field name="his_bank_reference" invisible="not his_proof_required" required="his_reference_required"/>
             </field>
             <xpath expr="//group" position="before">
-                <div class="alert alert-warning" role="alert" invisible="not his_cash_vat_warning">
+                <div class="alert alert-danger" role="alert" invisible="not his_cash_vat_warning">
                     <field name="his_cash_vat_warning"/>
                 </div>
             </xpath>

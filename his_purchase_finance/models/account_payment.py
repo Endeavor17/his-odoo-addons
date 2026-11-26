@@ -2,6 +2,8 @@
 from odoo import _, fields, models
 from odoo.exceptions import UserError
 
+from .common import CASH_VAT_LIMIT
+
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
@@ -18,6 +20,20 @@ class AccountPayment(models.Model):
         for payment in self.filtered(lambda p: p._his_is_supplier_payment()):
             # Procedure 8.1 : on ne paie qu'un fournisseur au dossier valide.
             supplier = payment.partner_id.commercial_partner_id
+            # decret 15-153 : un paiement saisi hors de la facture n'y echappe pas
+            company_amount = payment.currency_id._convert(
+                payment.amount, payment.company_currency_id, payment.company_id, payment.date or fields.Date.today()
+            )
+            if (
+                payment.journal_id.type == "cash"
+                and payment.company_currency_id.compare_amounts(company_amount, CASH_VAT_LIMIT) >= 0
+            ):
+                raise UserError(
+                    _(
+                        "A supplier payment of 1,000,000 DA or more goes by cheque or bank transfer, "
+                        "not in cash (executive decree 15-153)."
+                    )
+                )
             if payment.company_id.his_finance_confirms and supplier and supplier.his_supplier_status != "validated":
                 raise UserError(
                     _(
