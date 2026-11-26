@@ -11,7 +11,7 @@ class PosSession(models.Model):
     def try_cash_in_out(self, _type, amount, reason, partner_id, extras):
         # Procedure §4.1 : une caisse ne paie ni achat ni fournisseur ; les
         # especes n'en sortent que par un versement a la Finance.
-        raise UserError(_("Cash only leaves a till by a hand over to Finance."))
+        raise UserError(_("Cash enters a till only from Finance, and leaves it only by a hand over to Finance."))
 
     def _his_cash_gap(self):
         return self.config_id.cash_control and not self.currency_id.is_zero(self.cash_register_difference)

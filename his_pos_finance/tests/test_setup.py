@@ -126,3 +126,18 @@ class TestSetup(HisPosFinanceCase):
         self.assertEqual(self._balance(cfin.default_account_id.code) - before[1], -1500.0)
         self.assertFalse(legacy.active)
         self.assertTrue(cfin.active)
+
+    def test_tills_take_cash_only(self):
+        from odoo.addons.his_pos_finance.hooks import cash_only_tills
+
+        bank = self.env["account.journal"].search(
+            [("type", "=", "bank"), ("company_id", "=", self.company.id)], limit=1
+        )
+        card = self.env["pos.payment.method"].create({"name": "Carte test", "journal_id": bank.id})
+        self.env["pos.session"].search([("config_id", "=", self.cafeteria.id), ("state", "!=", "closed")]).write(
+            {"state": "closed"}
+        )
+        self.cafeteria.payment_method_ids = [(4, card.id)]
+        cash_only_tills(self.env, self.company)
+        self.assertNotIn(card, self.cafeteria.payment_method_ids)
+        self.assertEqual(self.cafeteria.payment_method_ids.journal_id.mapped("code"), ["CCAF"])

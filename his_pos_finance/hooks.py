@@ -173,7 +173,31 @@ def setup_pos_finance(env, company):
             lines.write({"account_id": collectee.id})
 
     _setup_tills(env, company, account)
+    # apres le report : retirer un moyen de paiement recalcule le journal de
+    # caisse des anciennes sessions, et le report ne les retrouverait plus
     carry_legacy_cash(env, company)
+    cash_only_tills(env, company)
+
+
+def cash_only_tills(env, company):
+    """Decision 18 : especes seulement. Retire Carte et Compte client des caisses.
+
+    Odoo pose tous les moyens de paiement de la societe sur une caisse creee ;
+    le Compte client passerait la vente en 411, reserve aux clients factures.
+    Une caisse ouverte est laissee telle quelle (on ne change pas ses moyens en
+    pleine session) : elle sera nettoyee a la prochaine mise a jour.
+    """
+    for xmlid in TILLS:
+        config = env.ref(xmlid, raise_if_not_found=False)
+        if not config or config.sudo().company_id != company:
+            continue
+        others = config.payment_method_ids.filtered(lambda m: not m.is_cash_count)
+        if not others:
+            continue
+        if config.current_session_id:
+            _logger.warning("his_pos_finance: %s is open, %s left on it", config.name, others.mapped("name"))
+            continue
+        config.payment_method_ids = [(3, method.id) for method in others]
 
 
 def carry_legacy_cash(env, company):

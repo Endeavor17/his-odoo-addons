@@ -246,8 +246,12 @@ msgstr "Espèces laissées dans la caisse après le versement du soir à la Fina
 #. module: his_pos_finance
 #. odoo-python
 #: code:addons/his_pos_finance/models/pos_session.py:0
-msgid "Cash only leaves a till by a hand over to Finance."
-msgstr "Les espèces ne sortent d'une caisse que par un versement à la Finance."
+msgid ""
+"Cash enters a till only from Finance, and leaves it only by a hand over to "
+"Finance."
+msgstr ""
+"Les espèces n'entrent dans une caisse que depuis la Finance, et n'en sortent "
+"que par un versement à la Finance."
 
 #. module: his_pos_finance
 #. odoo-python
@@ -1178,3 +1182,9 @@ msgstr "Report du fonds de caisse de %s"
 #: code:addons/his_pos_finance/models/his_cash_discrepancy.py:0
 msgid "%(field)s can no longer be changed on %(name)s at this step."
 msgstr "%(field)s ne peut plus être modifié sur %(name)s à cette étape."
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "You sent %(name)s: someone else receives and counts it."
+msgstr "Vous avez remis %(name)s : une autre personne le reçoit et le compte."

@@ -74,8 +74,16 @@ class TestTransfer(HisPosFinanceCase):
 
     def test_receive_at_till_needs_open_session(self):
         transfer = self._backend_transfer("CFIN", "CCAF", 2000)
-        with self.assertRaises(UserError):
-            transfer.with_user(self.finance).action_receive(2000)
+        with self.assertRaisesRegex(UserError, "Open the till"):
+            transfer.with_user(self.cashier_user).action_receive(2000)
+
+    def test_sender_does_not_receive(self):
+        transfer = self._backend_transfer("CFIN", "CDIR", 500)
+        self.finance.write({"group_ids": [(4, self.env.ref("his_pos_finance.group_finance_head").id)]})
+        with self.assertRaisesRegex(UserError, "someone else"):
+            transfer.with_user(self.finance).action_receive(500)
+        transfer.with_user(self.director).action_receive(500)
+        self.assertEqual(transfer.state, "received")
 
     def test_only_finance_receives_handover(self):
         transfer = self._sent_handover(100)
