@@ -572,6 +572,8 @@ msgid "Payment Proof Name"
 msgstr "Nom de la preuve de paiement"
 
 #. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
 #: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__finance_payment_terms
 msgid "Payment Terms"
 msgstr "Conditions de paiement"
@@ -854,6 +856,8 @@ msgid "Status"
 msgstr "Statut"
 
 #. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
 #: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_document__partner_id
 #: model:ir.model.fields,field_description:his_purchase_finance.field_his_supplier_rating__partner_id
 msgid "Supplier"
