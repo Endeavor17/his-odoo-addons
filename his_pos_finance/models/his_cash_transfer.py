@@ -10,6 +10,7 @@ pour que le solde attendu a la cloture reste juste.
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
+from odoo.fields import Domain
 
 EDITABLE_DRAFT = {"from_journal_id", "to_journal_id", "amount_sent", "note"}
 
@@ -35,6 +36,10 @@ class HisCashTransfer(models.Model):
     amount_received = fields.Monetary(readonly=True, tracking=True)
     sent_by = fields.Many2one("res.users", readonly=True)
     received_by = fields.Many2one("res.users", readonly=True)
+    # a la caisse, le compte est partage par le comptoir : la personne est
+    # l'employe qui a tape son nom et son PIN
+    sent_employee_id = fields.Many2one("hr.employee", string="Handed Over by", readonly=True)
+    received_employee_id = fields.Many2one("hr.employee", string="Counted by", readonly=True)
     sent_at = fields.Datetime(readonly=True)
     received_at = fields.Datetime(readonly=True)
     note = fields.Text()
@@ -105,8 +110,14 @@ class HisCashTransfer(models.Model):
         move.action_post()
         return move
 
-    def _his_till_line(self, session, amount):
-        """Mouvement d'especes de la session, contrepartie 581000."""
+    def _his_till_line(self, session, amount, employee=None):
+        """Mouvement d'especes de la session, contrepartie 581000.
+
+        pos_hr regroupe les mouvements du popup de cloture par `employee_id` et
+        affiche son nom (« false » sans employe), puis le partenaire comme
+        caissier de chaque ligne.
+        """
+        employee = (employee or self.env["hr.employee"]).sudo()
         line = (
             self.env["account.bank.statement.line"]
             .sudo()
@@ -118,8 +129,8 @@ class HisCashTransfer(models.Model):
                     "date": fields.Date.context_today(self),
                     "pos_session_id": session.id,
                     "payment_ref": self.name,
-                    # le popup de cloture affiche ce partenaire comme caissier (« false » sinon)
-                    "partner_id": self.env.user.partner_id.id,
+                    "employee_id": employee.id,
+                    "partner_id": (employee.work_contact_id or self.env.user.partner_id).id,
                     "counterpart_account_id": self._his_link_account().id,
                 }
             )
@@ -175,6 +186,12 @@ class HisCashTransfer(models.Model):
         return user.has_group("his_purchase_finance.group_finance")
 
     def action_receive(self, amount):
+        self._his_check_receive(amount)
+        # Droits verifies : la comptabilite se passe en sudo (un caissier ne lit
+        # pas les comptes), l'utilisateur reste trace dans received_by.
+        self.sudo()._his_receive(amount, self.env.uid)
+
+    def _his_check_receive(self, amount):
         self.ensure_one()
         if self.state != "sent":
             raise UserError(_("%(name)s is not waiting to be received.", name=self.name))
@@ -185,11 +202,8 @@ class HisCashTransfer(models.Model):
         if not self.env.su and self.sent_by == self.env.user:
             # decision 12 : deux personnes, celle qui remet ne compte pas a l'arrivee
             raise UserError(_("You sent %(name)s: someone else receives and counts it.", name=self.name))
-        # Droits verifies : la comptabilite se passe en sudo (un caissier ne lit
-        # pas les comptes), l'utilisateur reste trace dans received_by.
-        self.sudo()._his_receive(amount, self.env.uid)
 
-    def _his_receive(self, amount, uid):
+    def _his_receive(self, amount, uid, employee=None):
         target = self.to_journal_id
         link = self._his_link_account()
         session = self.env["pos.session"]
@@ -197,7 +211,7 @@ class HisCashTransfer(models.Model):
             session = self._his_open_session(target)
             if not session:
                 raise UserError(_("Open the till before receiving cash into it."))
-            move = self._his_till_line(session, amount) if amount else self.env["account.move"]
+            move = self._his_till_line(session, amount, employee) if amount else self.env["account.move"]
         else:
             move = (
                 self._his_move(target, target.default_account_id, link, amount) if amount else self.env["account.move"]
@@ -209,6 +223,7 @@ class HisCashTransfer(models.Model):
                 "receive_move_id": move.id,
                 "to_session_id": session.id,
                 "received_by": uid,
+                "received_employee_id": employee.id if employee else False,
                 "received_at": fields.Datetime.now(),
             }
         )
@@ -257,9 +272,35 @@ class PosSession(models.Model):
         domain = [("state", "=", "closed"), ("his_transfer_ids", "=", False)]
         return domain if (operator == "=") == value else ["!", "&", *domain]
 
-    def his_handover(self, amount, note=""):
+    def _his_till_employee(self, employee_id):
+        """Controle l'appel venu de la caisse et renvoie l'employe qui le fait.
+
+        Le compte doit etre un compte de cette caisse (role du comptoir), et
+        l'employe doit pouvoir s'y connecter (meme liste que le selecteur de
+        caissier de pos_hr). Sans employe transmis (onglet ouvert avant la mise
+        a jour), on garde l'employe du compte s'il en a un.
+        """
+        self.ensure_one()
+        config = self.config_id
+        config._his_check_cashier()
+        Employee = self.env["hr.employee"].sudo()
+        if not config.module_pos_hr:
+            return Employee
+        if not employee_id:
+            return Employee.search(
+                [("user_id", "=", self.env.uid), ("company_id", "in", (False, self.company_id.id))], limit=1
+            )
+        employee = Employee.search(
+            Domain.AND([config.sudo()._employee_domain(self.env.uid), [("id", "=", int(employee_id))]]), limit=1
+        )
+        if not employee:
+            raise AccessError(_("This cashier cannot work on %(till)s.", till=config.name))
+        return employee
+
+    def his_handover(self, amount, note="", employee_id=False):
         """Versement du soir a la Finance depuis la caisse ; renvoie l'id du versement."""
         self.ensure_one()
+        employee = self._his_till_employee(employee_id)
         if self.state != "opened" or not self.cash_journal_id:
             raise UserError(_("Hand over only from an open till that takes cash."))
         if amount <= 0 or self.currency_id.compare_amounts(amount, self.cash_register_balance_end) > 0:
@@ -284,9 +325,15 @@ class PosSession(models.Model):
                 "from_session_id": self.id,
             }
         )
-        move = transfer._his_till_line(self, -amount)
+        move = transfer._his_till_line(self, -amount, employee)
         transfer.write(
-            {"state": "sent", "send_move_id": move.id, "sent_by": self.env.uid, "sent_at": fields.Datetime.now()}
+            {
+                "state": "sent",
+                "send_move_id": move.id,
+                "sent_by": self.env.uid,
+                "sent_employee_id": employee.id,
+                "sent_at": fields.Datetime.now(),
+            }
         )
         return transfer.id
 
@@ -297,6 +344,7 @@ class PosSession(models.Model):
 
     def his_pending_transfers(self):
         self.ensure_one()
+        self.config_id._his_check_cashier()
         transfers = (
             self.env["his.cash.transfer"]
             .sudo()
@@ -304,9 +352,11 @@ class PosSession(models.Model):
         )
         return [{"id": t.id, "name": t.name, "amount_sent": t.amount_sent} for t in transfers]
 
-    def his_receive_transfer(self, transfer_id, amount):
+    def his_receive_transfer(self, transfer_id, amount, employee_id=False):
         self.ensure_one()
+        employee = self._his_till_employee(employee_id)
         transfer = self.env["his.cash.transfer"].sudo().browse(transfer_id)
         if transfer.to_journal_id != self.cash_journal_id:
             raise UserError(_("This transfer is not for this till."))
-        transfer.sudo(False).action_receive(amount)
+        transfer.sudo(False)._his_check_receive(amount)
+        transfer.sudo()._his_receive(amount, self.env.uid, employee)

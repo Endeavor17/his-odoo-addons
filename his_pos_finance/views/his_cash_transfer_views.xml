@@ -26,8 +26,10 @@
                             <field name="amount_sent" readonly="state != 'draft'"/>
                             <field name="amount_received" invisible="state != 'received'"/>
                             <field name="sent_by" invisible="not sent_by"/>
+                            <field name="sent_employee_id" invisible="not sent_employee_id"/>
                             <field name="sent_at" invisible="not sent_at"/>
                             <field name="received_by" invisible="not received_by"/>
+                            <field name="received_employee_id" invisible="not received_employee_id"/>
                             <field name="received_at" invisible="not received_at"/>
                         </group>
                     </group>

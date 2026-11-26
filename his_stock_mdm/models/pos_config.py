@@ -140,7 +140,10 @@ class PosConfig(models.Model):
         everything = self._his_sees_every_till()
         mine = self.env.user.all_group_ids
         for config in self:
-            config.his_is_my_till = everything or not config.his_group_ids or bool(config.his_group_ids & mine)
+            # les roles exiges ne sont pas un secret : un compte comptoir sans
+            # droit de lecture sur res.groups doit pouvoir etre controle
+            required = config.sudo().his_group_ids
+            config.his_is_my_till = everything or not required or bool(required & mine)
 
     def _search_his_is_my_till(self, operator, value):
         if operator not in ("=", "!=") or not isinstance(value, bool):

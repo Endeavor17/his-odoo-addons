@@ -1,6 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from odoo.exceptions import AccessError, UserError
-from odoo.tests import tagged
+from odoo.tests import new_test_user, tagged
 
 from .common import HisPosFinanceCase
 
@@ -110,6 +110,56 @@ class TestTransfer(HisPosFinanceCase):
         )
         self.assertIn(transfer.name.encode(), html)
         self.assertTrue(transfer.name.startswith("VERS/"))
+
+    def _till_cashier(self, name="Rym Caissiere", pin="4321"):
+        """Un employe avec PIN sur la liste de la Cafeteria, comme au comptoir."""
+        employee = self.env["hr.employee"].create({"name": name, "pin": pin})
+        self.cafeteria.write({"module_pos_hr": True, "basic_employee_ids": [(4, employee.id)]})
+        return employee
+
+    def test_till_moves_carry_the_cashier(self):
+        rym = self._till_cashier()
+        session = self._open_session(self.cafeteria)
+        injection = self._backend_transfer("CFIN", "CCAF", 2000)
+        till = session.with_user(self.cashier_user)
+        till.his_receive_transfer(injection.id, 2000, rym.id)
+        handover = self.env["his.cash.transfer"].browse(till.his_handover(500, "", rym.id))
+        self.assertEqual(session.statement_line_ids.employee_id, rym)
+        self.assertEqual(session.statement_line_ids.partner_id, rym.work_contact_id)
+        self.assertEqual((injection.received_employee_id, handover.sent_employee_id), (rym, rym))
+        self.assertEqual((injection.received_by, handover.sent_by), (self.cashier_user, self.cashier_user))
+        # popup de cloture : pos_hr groupe par employe, il affichait « false »
+        cash = session.get_closing_control_data()["default_cash_details"]
+        self.assertEqual(cash["moves_per_employee"], [{"id": rym.id, "name": rym.name, "amount": 1500}])
+        self.assertEqual({m["cashier_name"] for m in cash["moves"]}, {rym.name})
+        html, _type = self.env["ir.actions.report"]._render_qweb_html(
+            "his_pos_finance.action_report_cash_transfer", handover.ids
+        )
+        self.assertIn(rym.name.encode(), html)
+
+    def test_till_rpcs_check_till_and_cashier(self):
+        self._till_cashier()
+        outsider = self.env["hr.employee"].create({"name": "Pas sur la liste", "pin": "9999"})
+        session = self._open_session(self.cafeteria)
+        self._sell_cash(session, 1000)
+        injection = self._backend_transfer("CFIN", "CCAF", 2000)
+        with self.assertRaisesRegex(AccessError, "cannot work on"):
+            session.with_user(self.cashier_user).his_handover(100, "", outsider.id)
+        with self.assertRaisesRegex(AccessError, "cannot work on"):
+            session.with_user(self.cashier_user).his_receive_transfer(injection.id, 2000, outsider.id)
+        restaurant_user = new_test_user(
+            self.env, login="pf_restaurant", name="Caisse Restaurant", groups="his_stock_mdm.group_caisse_restaurant"
+        )
+        foreign = session.with_user(restaurant_user)
+        for call in (
+            lambda: foreign.his_handover(100, ""),
+            lambda: foreign.his_receive_transfer(injection.id, 2000),
+            foreign.his_pending_transfers,
+        ):
+            with self.assertRaises(AccessError):
+                call()
+        self.assertEqual(injection.state, "sent")
+        self.assertFalse(session.statement_line_ids)
 
     def test_handover_proposal_keeps_the_float(self):
         self.cafeteria.his_float_amount = 500

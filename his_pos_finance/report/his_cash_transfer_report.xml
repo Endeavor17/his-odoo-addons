@@ -9,6 +9,12 @@
         <field name="binding_model_id" ref="model_his_cash_transfer"/>
     </record>
 
+    <!-- a la caisse le compte est celui du comptoir : on imprime l'employe, et le compte en petit -->
+    <template id="report_cash_transfer_person">
+        <t t-if="employee"><span t-out="employee.name"/> <small class="text-muted">(<span t-out="user.name"/>)</small></t>
+        <span t-elif="user" t-out="user.name"/>
+    </template>
+
     <template id="report_cash_transfer">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
@@ -21,8 +27,8 @@
                             <tr><th>Sent on</th><td><span t-field="o.sent_at"/></td></tr>
                             <tr><th>Amount sent</th><td><span t-field="o.amount_sent"/></td></tr>
                             <tr><th>Amount received</th><td><span t-if="o.state == 'received'" t-field="o.amount_received"/></td></tr>
-                            <tr><th>Sent by</th><td><span t-field="o.sent_by"/></td></tr>
-                            <tr><th>Received by</th><td><span t-field="o.received_by"/></td></tr>
+                            <tr><th>Sent by</th><td><t t-call="his_pos_finance.report_cash_transfer_person"><t t-set="employee" t-value="o.sudo().sent_employee_id"/><t t-set="user" t-value="o.sent_by"/></t></td></tr>
+                            <tr><th>Received by</th><td><t t-call="his_pos_finance.report_cash_transfer_person"><t t-set="employee" t-value="o.sudo().received_employee_id"/><t t-set="user" t-value="o.received_by"/></t></td></tr>
                             <tr t-if="o.note"><th>Note</th><td><span t-field="o.note"/></td></tr>
                         </table>
                         <div class="row mt-5">
