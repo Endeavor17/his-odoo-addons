@@ -20,6 +20,13 @@ function hisAmount(value) {
     }
 }
 
+// Le compte de la caisse est partage par le comptoir : le serveur trace
+// l'employe connecte (selecteur pos_hr), qui apparait au popup de cloture et
+// sur le bordereau.
+function hisEmployeeId(pos) {
+    return (pos.config.module_pos_hr && pos.getCashier()?.id) || false;
+}
+
 // Versement du soir a la Finance et reception d'especes, depuis la caisse
 // (procedure §4.4) : la sortie d'especes libre d'Odoo est fermee.
 patch(Navbar.prototype, {
@@ -38,7 +45,12 @@ patch(Navbar.prototype, {
         if (!value || isNaN(amount)) {
             return;
         }
-        const transferId = await this.pos.data.call("pos.session", "his_handover", [session.id, amount, ""]);
+        const transferId = await this.pos.data.call("pos.session", "his_handover", [
+            session.id,
+            amount,
+            "",
+            hisEmployeeId(this.pos),
+        ]);
         await this.hisReport.doAction("his_pos_finance.action_report_cash_transfer", [transferId]);
     },
     async hisReceiveCash() {
@@ -70,6 +82,11 @@ patch(Navbar.prototype, {
         if (isNaN(amount)) {
             return;
         }
-        await this.pos.data.call("pos.session", "his_receive_transfer", [session.id, transfer.id, amount]);
+        await this.pos.data.call("pos.session", "his_receive_transfer", [
+            session.id,
+            transfer.id,
+            amount,
+            hisEmployeeId(this.pos),
+        ]);
     },
 });

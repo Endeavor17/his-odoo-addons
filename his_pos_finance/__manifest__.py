@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Points de vente - Controles Finance",
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.0.2",
     "category": "Sales/Point of Sale",
     "summary": "Journaux par activite, fiche d'ecart de caisse, versements a la Finance, autorisation du responsable",
     "description": """

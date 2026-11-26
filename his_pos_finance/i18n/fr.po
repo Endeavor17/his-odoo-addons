@@ -1188,3 +1188,19 @@ msgstr "%(field)s ne peut plus être modifié sur %(name)s à cette étape."
 #: code:addons/his_pos_finance/models/his_cash_transfer.py:0
 msgid "You sent %(name)s: someone else receives and counts it."
 msgstr "Vous avez remis %(name)s : une autre personne le reçoit et le compte."
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__sent_employee_id
+msgid "Handed Over by"
+msgstr "Remis par (caissier)"
+
+#. module: his_pos_finance
+#: model:ir.model.fields,field_description:his_pos_finance.field_his_cash_transfer__received_employee_id
+msgid "Counted by"
+msgstr "Compté par (caissier)"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_transfer.py:0
+msgid "This cashier cannot work on %(till)s."
+msgstr "Ce caissier ne peut pas travailler sur %(till)s."
