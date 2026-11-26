@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import tagged
 
 from .test_bill_check import TestBillCheck
@@ -23,6 +23,8 @@ class TestBillPaymentExtras(TestBillCheck):
             {"his_original_state": "compliant", "his_original_holder_id": self.finance.id}
         )
         self.assertEqual(bill.his_original_state, "compliant")
+        with self.assertRaises(AccessError):
+            bill.with_user(self.officer).write({"his_original_state": "not_compliant"})
 
     def test_cash_warning(self):
         order = self._offer(price=500000)  # 2 x 500 000 HT = 1 190 000 TTC

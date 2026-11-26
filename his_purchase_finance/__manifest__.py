@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Achats - Controles Finance",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.1.1",
     "category": "Supply Chain/Purchase",
     "summary": "Commande confirmee par la Finance, dossier fournisseur, rapprochement facture, preuve de paiement",
     "description": """

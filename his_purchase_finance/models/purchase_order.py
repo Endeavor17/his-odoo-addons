@@ -258,7 +258,10 @@ class PurchaseOrder(models.Model):
             raise UserError(_("%s is confirmed: only Finance can change it.", confirmed[0].name))
 
     def button_cancel(self):
+        # Ni une commande confirmee, ni une commande qui attend la Finance :
+        # sinon l'acheteur la retire de la file de la Finance sans trace de decision.
         self._his_check_confirmed_unchanged()
+        self._his_check_not_with_finance()
         return super().button_cancel()
 
     def _his_check_no_bypass(self):
@@ -307,6 +310,9 @@ class PurchaseOrder(models.Model):
         for order in to_check:
             if not order.his_sent_to_finance_on:
                 raise UserError(_("%s has not been sent to Finance yet.", order.name))
+            if not self.env.su and order.his_sent_to_finance_by_id == self.env.user:
+                # separation des taches : celui qui monte la commande ne la confirme pas
+                raise UserError(_("You sent %s to Finance: another Finance user confirms it.", order.name))
             blockers = order.partner_id._his_supplier_blockers()
             if blockers:
                 raise UserError(

@@ -1980,3 +1980,15 @@ msgstr "le service fait n'est pas attesté"
 #: code:addons/his_purchase_finance/models/purchase_order_file.py:0
 msgid "the supplier is not rated by both Purchasing and Finance"
 msgstr "le fournisseur n'est pas évalué par les Achats et par la Finance"
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/purchase_order.py:0
+msgid "You sent %s to Finance: another Finance user confirms it."
+msgstr "Vous avez envoyé %s à la Finance : un autre membre de la Finance la confirme."
+
+#. module: his_purchase_finance
+#. odoo-python
+#: code:addons/his_purchase_finance/models/account_move.py:0
+msgid "Only Finance records the paper original of a bill."
+msgstr "Seule la Finance enregistre l'original papier d'une facture."

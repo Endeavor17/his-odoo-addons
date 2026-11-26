@@ -115,7 +115,11 @@ class HisPurchaseAnomaly(models.Model):
         return super().write(vals)
 
     def _his_is_buyer(self):
-        return self.env.su or self.env.user.has_group("purchase.group_purchase_user")
+        # La Finance a les droits d'achat (lire les commandes) ; elle ne joue pas
+        # pour autant l'acheteur : elle approuverait et clorait ses propres solutions.
+        if self.env.su:
+            return True
+        return self.env.user.has_group("purchase.group_purchase_user") and not is_finance(self.env)
 
     def _his_move(self, from_states, to_state, allowed, message):
         if not allowed:
