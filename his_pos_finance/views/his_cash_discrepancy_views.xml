@@ -39,7 +39,7 @@
                         <field name="explanation" readonly="state != 'to_review'"/>
                         <field name="manager_note" readonly="state != 'to_review'"/>
                         <field name="finance_decision" invisible="not finance_decision"/>
-                        <field name="finance_note" readonly="state == 'closed'"/>
+                        <field name="finance_note" readonly="state not in ('finance', 'direction')"/>
                         <field name="his_account_id" invisible="not his_account_id"/>
                         <field name="provisional_move_id"/>
                         <field name="regularisation_move_id" invisible="not regularisation_move_id"/>

@@ -1166,3 +1166,15 @@ msgstr "Les espèces ne sortent d'une caisse que par son propre versement, depui
 #: model_terms:ir.ui.view,arch_db:his_pos_finance.his_cash_discrepancy_view_form
 msgid "Send Back to Finance"
 msgstr "Renvoyer à la Finance"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/hooks.py:0
+msgid "Till float carried over from %s"
+msgstr "Report du fonds de caisse de %s"
+
+#. module: his_pos_finance
+#. odoo-python
+#: code:addons/his_pos_finance/models/his_cash_discrepancy.py:0
+msgid "%(field)s can no longer be changed on %(name)s at this step."
+msgstr "%(field)s ne peut plus être modifié sur %(name)s à cette étape."

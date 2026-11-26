@@ -164,3 +164,27 @@ class TestDiscrepancy(HisPosFinanceCase):
     def test_director_has_a_send_back_button(self):
         arch = self.env.ref("his_pos_finance.his_cash_discrepancy_view_form").arch
         self.assertIn('name="action_send_back"', arch)
+
+    def test_notes_frozen_by_step(self):
+        form = self._sent(-10)
+        # revue passee : l'explication et les observations sont figees
+        with self.assertRaises(UserError):
+            form.with_user(self.pos_manager).write({"explanation": "texte reecrit"})
+        form.with_user(self.finance).write({"finance_note": "Vu"})
+        form.with_user(self.finance).action_decide("accepted")
+        self.assertEqual(form.state, "closed")
+        for user, field in (
+            (self.pos_manager, "explanation"),
+            (self.pos_manager, "manager_note"),
+            (self.finance, "finance_note"),
+        ):
+            with self.assertRaises(UserError, msg=field):
+                form.with_user(user).write({field: "apres cloture"})
+
+    def test_only_the_reviewer_writes_observations(self):
+        form = self._form(-10, journal="CFIN", explanation="x")
+        with self.assertRaises(AccessError):
+            form.with_user(self.finance).write({"manager_note": "pas mon etape"})
+        form.with_user(self.director).write({"manager_note": "Recompte"})
+        with self.assertRaises(AccessError):
+            form.with_user(self.pos_manager).write({"finance_note": "pas Finance"})

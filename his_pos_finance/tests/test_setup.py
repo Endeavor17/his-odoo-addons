@@ -97,3 +97,32 @@ class TestSetup(HisPosFinanceCase):
     def test_finance_head_role(self):
         role = self.env.ref("his_pos_finance.role_finance_head")
         self.assertIn(self.env.ref("his_pos_finance.group_finance_head"), role.group_ids)
+
+    def test_legacy_float_carried_and_old_journal_archived(self):
+        from odoo.addons.his_pos_finance.hooks import carry_legacy_cash
+
+        cfin = self._journal("CFIN")
+        legacy = self.env["account.journal"].create(
+            {
+                "name": "Ancienne caisse",
+                "code": "OLDC",
+                "type": "cash",
+                "company_id": self.company.id,
+                "default_account_id": cfin.default_account_id.id,
+            }
+        )
+        # une session close avant le module, sur l'ancien journal (une base
+        # de recette peut avoir la caisse ouverte : on la ferme ici)
+        self.env["pos.session"].search([("config_id", "=", self.cafeteria.id), ("state", "!=", "closed")]).write(
+            {"state": "closed"}
+        )
+        session = self.env["pos.session"].create({"config_id": self.cafeteria.id, "user_id": self.env.uid})
+        session.write({"state": "closed", "cash_register_balance_end_real": 1500.0})
+        session.cash_journal_id = legacy
+        before = self._balance("530200"), self._balance(cfin.default_account_id.code)
+        carry_legacy_cash(self.env, self.company)
+        carry_legacy_cash(self.env, self.company)  # idempotent
+        self.assertEqual(self._balance("530200") - before[0], 1500.0)
+        self.assertEqual(self._balance(cfin.default_account_id.code) - before[1], -1500.0)
+        self.assertFalse(legacy.active)
+        self.assertTrue(cfin.active)

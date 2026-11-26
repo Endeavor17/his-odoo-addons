@@ -64,7 +64,7 @@ class PosSession(models.Model):
                         "amount": ecart,
                         "date": fields.Date.context_today(self),
                         "pos_session_id": self.id,
-                        "payment_ref": _("Opening difference (%s)", self.name),
+                        "payment_ref": _("Opening difference (%s)", self.config_id.name),
                         "counterpart_account_id": (
                             journal.loss_account_id if ecart < 0 else journal.profit_account_id
                         ).id,

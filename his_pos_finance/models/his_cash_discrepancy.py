@@ -106,9 +106,36 @@ class HisCashDiscrepancy(models.Model):
         )
 
     def write(self, vals):
-        if not self.env.su and set(vals) - EDITABLE - {f for f in vals if f.startswith(("message_", "activity_"))}:
-            raise AccessError(_("Cash discrepancies change only through their buttons."))
+        if not self.env.su:
+            if set(vals) - EDITABLE - {f for f in vals if f.startswith(("message_", "activity_"))}:
+                raise AccessError(_("Cash discrepancies change only through their buttons."))
+            for form in self:
+                for field in set(vals) & EDITABLE:
+                    form._his_check_note(field)
         return super().write(vals)
+
+    def _his_check_note(self, field):
+        """Chaque note a son etape et son auteur ; plus rien ne bouge apres la cloture."""
+        self.ensure_one()
+        user = self.env.user
+        if field == "finance_note":
+            steps = ("finance", "direction")
+            allowed = user.has_group(self._his_decider_group()) or (
+                self.state == "direction" and user.has_group("his_purchase.group_purchase_director")
+            )
+        else:
+            steps = ("to_review",)
+            allowed = user.has_group(self._his_reviewer_group()) or (field == "explanation" and self.holder_id == user)
+        if not allowed:
+            raise AccessError(_("You are not allowed to act on %(name)s at this step.", name=self.name))
+        if self.state not in steps:
+            raise UserError(
+                _(
+                    "%(field)s can no longer be changed on %(name)s at this step.",
+                    field=self._fields[field].get_description(self.env)["string"],
+                    name=self.name,
+                )
+            )
 
     # -- qui fait quoi -----------------------------------------------------
 

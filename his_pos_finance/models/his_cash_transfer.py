@@ -225,7 +225,8 @@ class HisCashTransfer(models.Model):
                 expected=self.amount_sent,
                 counted=amount,
                 provisional_move=residual,
-                explanation=self.note or "",
+                # la note du versement n'explique pas l'ecart : le
+                # reviseur saisit l'explication du detenteur sur la fiche
                 transfer_id=self.id,
                 session_id=session.id,
                 holder_id=uid,
